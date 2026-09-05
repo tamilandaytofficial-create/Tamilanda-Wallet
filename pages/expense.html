@@ -2,738 +2,240 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  >
-
-  <meta name="theme-color" content="#09070d">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Expenses - Tamilanda Wallet</title>
 
-  <link rel="manifest" href="../manifest.json">
   <link rel="stylesheet" href="../css/style.css">
+  <link rel="manifest" href="../manifest.json">
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background: #09070d;
-      color: #fff;
-      font-family: Arial, sans-serif;
-    }
-
-    .page {
-      max-width: 600px;
-      margin: auto;
-      padding: 18px 15px 105px;
-    }
-
-    .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .title-box h1 {
-      margin: 0;
-      font-size: 23px;
-    }
-
-    .title-box p {
-      margin: 5px 0 0;
-      color: #96939d;
-      font-size: 13px;
-    }
-
-    .add-btn {
-      border: 0;
-      border-radius: 13px;
-      padding: 11px 14px;
-      background: #7b4dff;
-      color: #fff;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .summary {
-      background: linear-gradient(
-        145deg,
-        rgba(255, 85, 85, 0.12),
-        rgba(255,255,255,0.035)
-      );
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 20px;
-      padding: 19px;
-      margin-bottom: 16px;
-    }
-
-    .summary-label {
-      color: #9b98a2;
-      font-size: 12px;
-      margin-bottom: 7px;
-    }
-
-    .summary-value {
-      font-size: 28px;
-      font-weight: 800;
-    }
-
-    .summary-bottom {
-      display: flex;
-      gap: 10px;
-      margin-top: 17px;
-    }
-
-    .mini {
-      flex: 1;
-      padding: 11px;
-      border-radius: 13px;
-      background: rgba(255,255,255,0.045);
-    }
-
-    .mini span {
-      display: block;
-      color: #8f8c96;
-      font-size: 11px;
-      margin-bottom: 5px;
-    }
-
-    .mini strong {
-      font-size: 14px;
-    }
-
-    .toolbar {
-      display: flex;
-      gap: 9px;
-      margin-bottom: 16px;
-    }
-
-    .search {
-      flex: 1;
-    }
-
-    .filter {
-      width: 135px;
-    }
-
-    input,
-    select,
-    textarea {
-      width: 100%;
-      padding: 13px;
-      border-radius: 13px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: #111017;
-      color: #fff;
-      outline: none;
-      font-size: 14px;
-      font-family: inherit;
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
-      border-color: rgba(123,77,255,0.7);
-    }
-
-    select option {
-      background: #111017;
-      color: #fff;
-    }
-
-    textarea {
-      min-height: 78px;
-      resize: vertical;
-    }
-
-    .section-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 18px 2px 10px;
-    }
-
-    .section-title h2 {
-      margin: 0;
-      font-size: 16px;
-    }
-
-    .section-title span {
-      color: #88858f;
-      font-size: 12px;
-    }
-
-    .expense-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .expense-card {
-      background: #111017;
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 18px;
-      padding: 15px;
-    }
-
-    .expense-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .expense-info {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      min-width: 0;
-    }
-
-    .expense-icon {
-      width: 43px;
-      height: 43px;
-      border-radius: 13px;
-      background: rgba(255, 82, 82, 0.10);
-      border: 1px solid rgba(255, 82, 82, 0.17);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 19px;
-      flex-shrink: 0;
-    }
-
-    .expense-title {
-      font-size: 14px;
-      font-weight: 700;
-      word-break: break-word;
-    }
-
-    .expense-category {
-      color: #898690;
-      font-size: 11px;
-      margin-top: 4px;
-    }
-
-    .expense-amount {
-      color: #ff8d8d;
-      font-size: 15px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .expense-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      margin-top: 12px;
-    }
-
-    .tag {
-      padding: 6px 9px;
-      border-radius: 9px;
-      background: rgba(255,255,255,0.04);
-      color: #96939c;
-      font-size: 10px;
-    }
-
-    .expense-note {
-      color: #817e88;
-      font-size: 12px;
-      line-height: 1.5;
-      margin-top: 10px;
-    }
-
-    .actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 13px;
-    }
-
-    .action-btn {
-      flex: 1;
-      padding: 9px;
-      border-radius: 11px;
-      border: 1px solid rgba(255,255,255,0.07);
-      background: rgba(255,255,255,0.035);
-      color: #d2cfd7;
-      font-size: 12px;
-      cursor: pointer;
-    }
-
-    .action-btn.delete {
-      color: #ff9898;
-    }
-
-    .empty {
-      text-align: center;
-      padding: 38px 15px;
-      border-radius: 18px;
-      background: #111017;
-      border: 1px solid rgba(255,255,255,0.06);
-      color: #8d8994;
-    }
-
-    .empty-icon {
-      font-size: 34px;
-      margin-bottom: 10px;
-    }
-
-    .empty strong {
-      display: block;
-      color: #d6d3da;
-      margin-bottom: 6px;
-    }
-
-    .empty p {
-      margin: 0;
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    /* MODAL */
-
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.73);
-      backdrop-filter: blur(8px);
-      display: none;
-      align-items: flex-end;
-      justify-content: center;
-      z-index: 2000;
-    }
-
-    .modal.show {
-      display: flex;
-    }
-
-    .modal-box {
-      width: 100%;
-      max-width: 600px;
-      max-height: 92vh;
-      overflow-y: auto;
-      background: #111017;
-      border-radius: 24px 24px 0 0;
-      padding: 20px 17px 28px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 17px;
-    }
-
-    .modal-header h2 {
-      margin: 0;
-      font-size: 19px;
-    }
-
-    .close-btn {
-      width: 36px;
-      height: 36px;
-      border: 0;
-      border-radius: 11px;
-      background: rgba(255,255,255,0.06);
-      color: #fff;
-      font-size: 20px;
-      cursor: pointer;
-    }
-
-    .field {
-      margin-bottom: 15px;
-    }
-
-    .field label {
-      display: block;
-      color: #c7c4cc;
-      font-size: 12px;
-      font-weight: 600;
-      margin-bottom: 7px;
-    }
-
-    .error {
-      display: none;
-      padding: 11px;
-      border-radius: 12px;
-      background: rgba(255,70,70,0.08);
-      border: 1px solid rgba(255,70,70,0.17);
-      color: #ff9c9c;
-      font-size: 12px;
-      line-height: 1.5;
-      margin-bottom: 13px;
-    }
-
-    .account-preview {
-      display: none;
-      margin-top: 8px;
-      padding: 10px 12px;
-      border-radius: 11px;
-      background: rgba(255,255,255,0.035);
-      color: #98959e;
-      font-size: 11px;
-    }
-
-    .save-btn {
-      width: 100%;
-      padding: 14px;
-      border: 0;
-      border-radius: 14px;
-      background: #7b4dff;
-      color: #fff;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    .cancel-btn {
-      width: 100%;
-      padding: 13px;
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 14px;
-      background: transparent;
-      color: #aaa7b0;
-      font-weight: 600;
-      margin-top: 9px;
-      cursor: pointer;
-    }
-
-    .bottom-nav {
-      position: fixed;
-      left: 50%;
-      bottom: 0;
-      transform: translateX(-50%);
-      width: 100%;
-      max-width: 600px;
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 8px calc(10px + env(safe-area-inset-bottom));
-      background: rgba(9,7,13,0.96);
-      backdrop-filter: blur(16px);
-      border-top: 1px solid rgba(255,255,255,0.07);
-      z-index: 1000;
-    }
-
-    .nav-item {
-      flex: 1;
-      text-align: center;
-      color: #8f8b96;
-      text-decoration: none;
-      font-size: 11px;
-      padding: 5px 0;
-    }
-
-    .nav-icon {
-      display: block;
-      font-size: 19px;
-      margin-bottom: 3px;
-    }
-
-    .nav-item.active {
-      color: #bca4ff;
-    }
-
-    @media (max-width: 380px) {
-      .page {
-        padding-left: 12px;
-        padding-right: 12px;
-      }
-
-      .summary-bottom {
-        flex-direction: column;
-      }
-
-      .filter {
-        width: 115px;
-      }
-
-      .expense-amount {
-        font-size: 14px;
-      }
-    }
-  </style>
+  <meta name="theme-color" content="#09070d">
 </head>
 
 <body>
 
-  <main class="page">
+  <div class="app-container">
 
-    <!-- TOP BAR -->
-    <div class="top-bar">
-
-      <div class="title-box">
+    <!-- HEADER -->
+    <header class="page-header">
+      <div>
         <h1>Expenses</h1>
-        <p>Track where your money goes</p>
+        <p>Track your spending</p>
       </div>
 
-      <button
-        type="button"
-        class="add-btn"
-        id="addExpenseBtn"
-      >
-        + Add
+      <button class="primary-btn" onclick="openExpenseModal()">
+        + Add Expense
       </button>
-
-    </div>
+    </header>
 
 
     <!-- SUMMARY -->
-    <section class="summary">
+    <section class="summary-grid">
 
-      <div class="summary-label">
-        Total Expenses
+      <div class="summary-card">
+        <span class="summary-label">Total Expenses</span>
+        <strong id="totalExpense">₹0.00</strong>
       </div>
 
-      <div
-        class="summary-value"
-        id="totalExpense"
-      >
-        ₹0.00
+      <div class="summary-card">
+        <span class="summary-label">This Month</span>
+        <strong id="monthExpense">₹0.00</strong>
       </div>
 
-      <div class="summary-bottom">
-
-        <div class="mini">
-          <span>Today</span>
-          <strong id="todayExpense">
-            ₹0.00
-          </strong>
-        </div>
-
-        <div class="mini">
-          <span>Entries</span>
-          <strong id="expenseCount">
-            0
-          </strong>
-        </div>
-
+      <div class="summary-card">
+        <span class="summary-label">Today</span>
+        <strong id="todayExpense">₹0.00</strong>
       </div>
 
     </section>
 
 
-    <!-- SEARCH / FILTER -->
-    <div class="toolbar">
+    <!-- FILTERS -->
+    <section class="card">
 
-      <div class="search">
+      <div class="form-grid">
 
-        <input
-          type="search"
-          id="searchInput"
-          placeholder="Search expenses..."
-          autocomplete="off"
-        >
+        <div class="form-group">
+          <label>Search</label>
+          <input
+            type="text"
+            id="searchExpense"
+            placeholder="Search expense..."
+            oninput="renderExpenses()"
+          >
+        </div>
+
+        <div class="form-group">
+          <label>Category</label>
+          <select id="filterCategory" onchange="renderExpenses()">
+            <option value="">All Categories</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Account</label>
+          <select id="filterAccount" onchange="renderExpenses()">
+            <option value="">All Accounts</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Date</label>
+          <input
+            type="date"
+            id="filterDate"
+            onchange="renderExpenses()"
+          >
+        </div>
 
       </div>
 
-      <div class="filter">
+      <button class="secondary-btn" onclick="clearExpenseFilters()">
+        Clear Filters
+      </button>
 
-        <select id="categoryFilter">
+    </section>
 
-          <option value="all">
-            All Categories
-          </option>
 
-        </select>
+    <!-- EXPENSE LIST -->
+    <section class="card">
 
+      <div class="section-header">
+        <div>
+          <h2>Expense History</h2>
+          <p id="expenseCount">0 expenses</p>
+        </div>
       </div>
 
-    </div>
+      <div id="expenseList"></div>
+
+    </section>
+
+  </div>
 
 
-    <!-- LIST TITLE -->
-    <div class="section-title">
+  <!-- ADD / EDIT EXPENSE MODAL -->
+  <div id="expenseModal" class="modal-overlay">
 
-      <h2>Expense History</h2>
-
-      <span id="visibleCount">
-        0 entries
-      </span>
-
-    </div>
-
-
-    <!-- LIST -->
-    <div
-      class="expense-list"
-      id="expenseList"
-    ></div>
-
-  </main>
-
-
-  <!-- ADD / EDIT MODAL -->
-  <div
-    class="modal"
-    id="expenseModal"
-  >
-
-    <div class="modal-box">
+    <div class="modal">
 
       <div class="modal-header">
 
-        <h2 id="modalTitle">
-          Add Expense
-        </h2>
+        <div>
+          <h2 id="expenseModalTitle">Add Expense</h2>
+          <p>Enter your expense details</p>
+        </div>
 
-        <button
-          type="button"
-          class="close-btn"
-          id="closeModalBtn"
-        >
+        <button class="close-btn" onclick="closeExpenseModal()">
           ×
         </button>
 
       </div>
 
 
-      <div
-        class="error"
-        id="formError"
-      ></div>
+      <form id="expenseForm" onsubmit="saveExpense(event)">
+
+        <input type="hidden" id="expenseId">
 
 
-      <form id="expenseForm">
-
-        <!-- AMOUNT -->
-
-        <div class="field">
-
-          <label for="expenseAmount">
-            Amount
-          </label>
-
-          <input
-            type="number"
-            id="expenseAmount"
-            min="0.01"
-            step="0.01"
-            inputmode="decimal"
-            placeholder="Enter amount"
-            required
-          >
-
-        </div>
-
-
-        <!-- CATEGORY -->
-
-        <div class="field">
-
-          <label for="expenseCategory">
-            Category
-          </label>
-
-          <select
-            id="expenseCategory"
-            required
-          ></select>
-
-        </div>
-
-
-        <!-- ACCOUNT -->
-
-        <div class="field">
-
-          <label for="expenseAccount">
-            Paid From
-          </label>
-
-          <select
-            id="expenseAccount"
-            required
-          >
-            <option value="">
-              Select account
-            </option>
-          </select>
-
-          <div
-            class="account-preview"
-            id="accountPreview"
-          ></div>
-
-        </div>
-
-
-        <!-- DATE -->
-
-        <div class="field">
-
-          <label for="expenseDate">
-            Date
-          </label>
-
-          <input
-            type="date"
-            id="expenseDate"
-            required
-          >
-
-        </div>
-
-
-        <!-- DESCRIPTION -->
-
-        <div class="field">
-
-          <label for="expenseDescription">
-            Description
-          </label>
+        <div class="form-group">
+          <label>Description *</label>
 
           <input
             type="text"
             id="expenseDescription"
-            maxlength="120"
-            placeholder="Example: Petrol"
+            placeholder="Example: Petrol, Food, Shopping"
+            required
           >
+        </div>
+
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label>Amount *</label>
+
+            <input
+              type="number"
+              id="expenseAmount"
+              min="0.01"
+              step="0.01"
+              placeholder="0.00"
+              required
+            >
+          </div>
+
+
+          <div class="form-group">
+            <label>Date *</label>
+
+            <input
+              type="date"
+              id="expenseDate"
+              required
+            >
+          </div>
 
         </div>
 
 
-        <!-- NOTE -->
+        <div class="form-grid">
 
-        <div class="field">
+          <div class="form-group">
 
-          <label for="expenseNote">
-            Note
-          </label>
+            <label>Category *</label>
+
+            <select id="expenseCategory" required>
+              <option value="">Select Category</option>
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Account *</label>
+
+            <select id="expenseAccount" required>
+              <option value="">Select Account</option>
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Note</label>
 
           <textarea
             id="expenseNote"
-            maxlength="300"
-            placeholder="Optional note"
+            rows="3"
+            placeholder="Optional note..."
           ></textarea>
 
         </div>
 
 
-        <button
-          type="submit"
-          class="save-btn"
-          id="saveExpenseBtn"
-        >
-          Save Expense
-        </button>
+        <div class="modal-actions">
 
+          <button
+            type="button"
+            class="secondary-btn"
+            onclick="closeExpenseModal()"
+          >
+            Cancel
+          </button>
 
-        <button
-          type="button"
-          class="cancel-btn"
-          id="cancelModalBtn"
-        >
-          Cancel
-        </button>
+          <button
+            type="submit"
+            class="primary-btn"
+          >
+            Save Expense
+          </button>
+
+        </div>
 
       </form>
 
@@ -742,1842 +244,1420 @@
   </div>
 
 
-  <!-- BOTTOM NAV -->
-  <nav class="bottom-nav">
-
-    <a
-      href="../index.html"
-      class="nav-item"
-    >
-      <span class="nav-icon">⌂</span>
-      Home
-    </a>
-
-    <a
-      href="transactions.html"
-      class="nav-item"
-    >
-      <span class="nav-icon">▤</span>
-      Transactions
-    </a>
-
-    <a
-      href="buyers.html"
-      class="nav-item"
-    >
-      <span class="nav-icon">👥</span>
-      Buyers
-    </a>
-
-    <a
-      href="accounts.html"
-      class="nav-item"
-    >
-      <span class="nav-icon">🏦</span>
-      Accounts
-    </a>
-
-    <a
-      href="more.html"
-      class="nav-item"
-    >
-      <span class="nav-icon">☰</span>
-      More
-    </a>
-
-  </nav>
-
-
   <script src="../js/app.js"></script>
 
 
   <script>
-    "use strict";
-
-
-    /* =====================================================
-       ELEMENTS
-       ===================================================== */
-
-    const expenseList =
-      document.getElementById(
-        "expenseList"
-      );
-
-    const totalExpense =
-      document.getElementById(
-        "totalExpense"
-      );
-
-    const todayExpense =
-      document.getElementById(
-        "todayExpense"
-      );
-
-    const expenseCount =
-      document.getElementById(
-        "expenseCount"
-      );
-
-    const visibleCount =
-      document.getElementById(
-        "visibleCount"
-      );
-
-    const searchInput =
-      document.getElementById(
-        "searchInput"
-      );
-
-    const categoryFilter =
-      document.getElementById(
-        "categoryFilter"
-      );
-
-    const modal =
-      document.getElementById(
-        "expenseModal"
-      );
-
-    const modalTitle =
-      document.getElementById(
-        "modalTitle"
-      );
-
-    const expenseForm =
-      document.getElementById(
-        "expenseForm"
-      );
-
-    const expenseAmount =
-      document.getElementById(
-        "expenseAmount"
-      );
-
-    const expenseCategory =
-      document.getElementById(
-        "expenseCategory"
-      );
-
-    const expenseAccount =
-      document.getElementById(
-        "expenseAccount"
-      );
-
-    const expenseDate =
-      document.getElementById(
-        "expenseDate"
-      );
-
-    const expenseDescription =
-      document.getElementById(
-        "expenseDescription"
-      );
-
-    const expenseNote =
-      document.getElementById(
-        "expenseNote"
-      );
-
-    const accountPreview =
-      document.getElementById(
-        "accountPreview"
-      );
-
-    const formError =
-      document.getElementById(
-        "formError"
-      );
-
-
-    let walletData = null;
 
     let editingExpenseId = null;
 
 
-    /* =====================================================
-       DATA HELPERS
-       ===================================================== */
+    /* ================================
+       HELPERS
+    ================================= */
 
-    function getData() {
+    function getWalletData() {
+      return window.TamilandaWallet?.data || {};
+    }
 
-      if (
-        window.TamilandaWallet &&
-        typeof window.TamilandaWallet.getData ===
-          "function"
-      ) {
 
-        return window.TamilandaWallet.getData();
+    function getTransactions() {
+      return getWalletData().transactions || [];
+    }
 
+
+    function getAccounts() {
+      return getWalletData().accounts || [];
+    }
+
+
+    function getCategories() {
+
+      const data = getWalletData();
+
+      if (Array.isArray(data.categories)) {
+        return data.categories;
       }
 
-
-      try {
-
-        return JSON.parse(
-          localStorage.getItem(
-            "tamilanda_wallet_data"
-          )
-        ) || {
-          accounts: [],
-          transactions: [],
-          categories: {
-            expense: []
-          }
-        };
-
-      } catch (error) {
-
-        return {
-          accounts: [],
-          transactions: [],
-          categories: {
-            expense: []
-          }
-        };
-
-      }
+      return [
+        "Food",
+        "Travel",
+        "Shopping",
+        "Bills",
+        "Fuel",
+        "Medical",
+        "Entertainment",
+        "Education",
+        "Other"
+      ];
 
     }
 
 
-    function saveData() {
+    function todayStringLocal() {
 
-      if (
-        window.TamilandaWallet &&
-        typeof window.TamilandaWallet.save ===
-          "function"
-      ) {
+      const d = new Date();
 
-        return window.TamilandaWallet.save();
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
 
-      }
-
-
-      localStorage.setItem(
-        "tamilanda_wallet_data",
-        JSON.stringify(walletData)
-      );
-
-      return true;
+      return `${year}-${month}-${day}`;
 
     }
 
 
-    function money(value) {
+    function formatMoney(value) {
 
-      if (
-        window.TamilandaWallet &&
-        typeof window.TamilandaWallet.formatMoney ===
-          "function"
-      ) {
+      const amount = Number(value) || 0;
 
-        return window.TamilandaWallet.formatMoney(
-          Number(value || 0)
-        );
-
+      if (window.TamilandaWallet?.formatMoney) {
+        return window.TamilandaWallet.formatMoney(amount);
       }
 
-
-      return (
-        "₹" +
-        Number(value || 0)
-          .toLocaleString(
-            "en-IN",
-            {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            }
-          )
-      );
-
-    }
-
-
-    function todayString() {
-
-      if (
-        window.TamilandaWallet &&
-        typeof window.TamilandaWallet.todayString ===
-          "function"
-      ) {
-
-        return window.TamilandaWallet.todayString();
-
-      }
-
-
-      const date = new Date();
-
-      return (
-        date.getFullYear() +
-        "-" +
-        String(
-          date.getMonth() + 1
-        ).padStart(2, "0") +
-        "-" +
-        String(
-          date.getDate()
-        ).padStart(2, "0")
-      );
-
-    }
-
-
-    function displayDate(value) {
-
-      if (
-        window.TamilandaWallet &&
-        typeof window.TamilandaWallet.formatDisplayDate ===
-          "function"
-      ) {
-
-        return window.TamilandaWallet.formatDisplayDate(
-          value
-        );
-
-      }
-
-
-      if (!value) {
-        return "—";
-      }
-
-
-      const date =
-        new Date(
-          value + "T00:00:00"
-        );
-
-
-      if (
-        Number.isNaN(
-          date.getTime()
-        )
-      ) {
-
-        return value;
-
-      }
-
-
-      return date.toLocaleDateString(
-        "en-IN",
-        {
-          day: "2-digit",
-          month: "short",
-          year: "numeric"
-        }
-      );
+      return "₹" + amount.toLocaleString("en-IN", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
 
     }
 
 
     function escapeHtml(value) {
 
-      if (
-        window.TamilandaWallet &&
-        typeof window.TamilandaWallet.escapeHtml ===
-          "function"
-      ) {
-
-        return window.TamilandaWallet.escapeHtml(
-          value
-        );
-
+      if (window.TamilandaWallet?.escapeHtml) {
+        return window.TamilandaWallet.escapeHtml(value);
       }
-
 
       return String(value ?? "")
-        .replace(
-          /&/g,
-          "&amp;"
-        )
-        .replace(
-          /</g,
-          "&lt;"
-        )
-        .replace(
-          />/g,
-          "&gt;"
-        )
-        .replace(
-          /"/g,
-          "&quot;"
-        )
-        .replace(
-          /'/g,
-          "&#039;"
-        );
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
     }
 
 
-    function getAccount(accountId) {
+    function getAccountName(accountId) {
 
-      return (
-        walletData.accounts || []
-      ).find(
-        account =>
-          String(account.id) ===
-          String(accountId)
+      const account = getAccounts().find(
+        a => String(a.id) === String(accountId)
       );
 
+      return account ? account.name : "Unknown Account";
+
     }
 
 
-    function getAccountName(account) {
+    function formatDate(dateString) {
 
-      if (!account) {
-        return "Unknown Account";
+      if (!dateString) return "-";
+
+      const date = new Date(dateString + "T00:00:00");
+
+      if (Number.isNaN(date.getTime())) {
+        return dateString;
       }
 
-      return (
-        account.name ||
-        account.accountName ||
-        account.title ||
-        "Unnamed Account"
-      );
+      return date.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      });
 
     }
 
 
-    function getBalance(account) {
+    function isExpenseTransaction(transaction) {
 
-      if (!account) {
-        return 0;
-      }
+      if (!transaction) return false;
 
-      return Number(
-        account.balance ??
-        account.currentBalance ??
-        0
-      );
-
-    }
-
-
-    /* =====================================================
-       EXPENSE TRANSACTIONS
-       ===================================================== */
-
-    function getExpenseTransactions() {
-
-      return (
-        walletData.transactions || []
-      ).filter(
-        transaction =>
-          transaction.type ===
-          "expense"
-      );
+      return [
+        "expense",
+        "recurring_payment",
+        "emi_payment",
+        "money_to_give_payment"
+      ].includes(transaction.type);
 
     }
 
 
-    /* =====================================================
-       CATEGORIES
-       ===================================================== */
+    /* ================================
+       LOAD FILTERS
+    ================================= */
 
-    function loadCategories() {
+    function loadExpenseFilters() {
 
-      walletData = getData();
+      const categorySelect =
+        document.getElementById("filterCategory");
+
+      const accountSelect =
+        document.getElementById("filterAccount");
+
+      const expenseCategory =
+        document.getElementById("expenseCategory");
+
+      const expenseAccount =
+        document.getElementById("expenseAccount");
 
 
-      const categories =
-        Array.isArray(
-          walletData.categories?.expense
-        )
-          ? walletData.categories.expense
-          : [
-              "Food",
-              "Petrol",
-              "Shopping",
-              "Business",
-              "Bills",
-              "Vehicle",
-              "EMI",
-              "Other Expense"
-            ];
+      const categories = getCategories();
 
+      categorySelect.innerHTML =
+        `<option value="">All Categories</option>`;
 
       expenseCategory.innerHTML =
-        "";
+        `<option value="">Select Category</option>`;
 
 
-      categories.forEach(
-        category => {
+      categories.forEach(category => {
 
-          const option =
-            document.createElement(
-              "option"
-            );
+        const name =
+          typeof category === "string"
+            ? category
+            : category.name || category.title || "Other";
 
-          option.value =
-            category;
+        categorySelect.innerHTML +=
+          `<option value="${escapeHtml(name)}">
+            ${escapeHtml(name)}
+          </option>`;
 
-          option.textContent =
-            category;
+        expenseCategory.innerHTML +=
+          `<option value="${escapeHtml(name)}">
+            ${escapeHtml(name)}
+          </option>`;
 
-          expenseCategory.appendChild(
-            option
-          );
-
-        }
-      );
+      });
 
 
-      categoryFilter.innerHTML =
-        `<option value="all">
-          All Categories
-        </option>`;
-
-
-      categories.forEach(
-        category => {
-
-          const option =
-            document.createElement(
-              "option"
-            );
-
-          option.value =
-            category;
-
-          option.textContent =
-            category;
-
-          categoryFilter.appendChild(
-            option
-          );
-
-        }
-      );
-
-    }
-
-
-    /* =====================================================
-       ACCOUNTS
-       ===================================================== */
-
-    function loadAccounts(
-      selectedId = ""
-    ) {
-
-      walletData = getData();
-
-
-      const accounts =
-        Array.isArray(
-          walletData.accounts
-        )
-          ? walletData.accounts
-          : [];
-
+      accountSelect.innerHTML =
+        `<option value="">All Accounts</option>`;
 
       expenseAccount.innerHTML =
-        `<option value="">
-          Select account
-        </option>`;
+        `<option value="">Select Account</option>`;
 
 
-      accounts.forEach(
-        account => {
+      getAccounts().forEach(account => {
 
-          const option =
-            document.createElement(
-              "option"
-            );
+        accountSelect.innerHTML +=
+          `<option value="${escapeHtml(account.id)}">
+            ${escapeHtml(account.name)}
+          </option>`;
 
-          option.value =
-            account.id;
+        expenseAccount.innerHTML +=
+          `<option value="${escapeHtml(account.id)}">
+            ${escapeHtml(account.name)}
+          </option>`;
 
-          option.textContent =
-            `${getAccountName(account)} — ${money(getBalance(account))}`;
-
-
-          if (
-            String(account.id) ===
-            String(selectedId)
-          ) {
-
-            option.selected =
-              true;
-
-          }
-
-
-          expenseAccount.appendChild(
-            option
-          );
-
-        }
-      );
-
-
-      updateAccountPreview();
+      });
 
     }
 
 
-    function updateAccountPreview() {
-
-      const account =
-        getAccount(
-          expenseAccount.value
-        );
-
-
-      if (!account) {
-
-        accountPreview.style.display =
-          "none";
-
-        accountPreview.textContent =
-          "";
-
-        return;
-
-      }
-
-
-      accountPreview.style.display =
-        "block";
-
-      accountPreview.textContent =
-        `Current balance: ${money(
-          getBalance(account)
-        )}`;
-
-    }
-
-
-    /* =====================================================
+    /* ================================
        SUMMARY
-       ===================================================== */
+    ================================= */
 
-    function renderSummary() {
+    function updateExpenseSummary() {
 
-      const expenses =
-        getExpenseTransactions();
+      const transactions = getTransactions()
+        .filter(isExpenseTransaction);
 
 
       const total =
-        expenses.reduce(
-          (sum, transaction) =>
-            sum +
-            Number(
-              transaction.amount || 0
-            ),
+        transactions.reduce(
+          (sum, item) => sum + Number(item.amount || 0),
           0
         );
 
 
-      const today =
-        todayString();
+      const now = new Date();
+
+      const currentYear =
+        now.getFullYear();
+
+      const currentMonth =
+        now.getMonth();
 
 
-      const todayTotal =
-        expenses
-          .filter(
-            transaction =>
-              transaction.date ===
-              today
-          )
+      const monthTotal =
+        transactions
+          .filter(item => {
+
+            const date =
+              new Date(
+                String(item.date || "") + "T00:00:00"
+              );
+
+            return (
+              date.getFullYear() === currentYear &&
+              date.getMonth() === currentMonth
+            );
+
+          })
           .reduce(
-            (sum, transaction) =>
-              sum +
-              Number(
-                transaction.amount || 0
-              ),
+            (sum, item) =>
+              sum + Number(item.amount || 0),
             0
           );
 
 
-      totalExpense.textContent =
-        money(total);
+      const today =
+        todayStringLocal();
 
-      todayExpense.textContent =
-        money(todayTotal);
 
-      expenseCount.textContent =
-        expenses.length;
+      const todayTotal =
+        transactions
+          .filter(
+            item => String(item.date) === today
+          )
+          .reduce(
+            (sum, item) =>
+              sum + Number(item.amount || 0),
+            0
+          );
+
+
+      document.getElementById("totalExpense")
+        .textContent = formatMoney(total);
+
+      document.getElementById("monthExpense")
+        .textContent = formatMoney(monthTotal);
+
+      document.getElementById("todayExpense")
+        .textContent = formatMoney(todayTotal);
 
     }
 
 
-    /* =====================================================
-       FILTER
-       ===================================================== */
+    /* ================================
+       RENDER EXPENSES
+    ================================= */
 
-    function getFilteredExpenses() {
+    function renderExpenses() {
 
-      walletData =
-        getData();
-
-
-      const expenses =
-        getExpenseTransactions();
+      const list =
+        document.getElementById("expenseList");
 
 
       const search =
-        searchInput.value
+        document.getElementById("searchExpense")
+          .value
           .trim()
           .toLowerCase();
 
 
       const category =
-        categoryFilter.value;
+        document.getElementById("filterCategory")
+          .value;
 
 
-      return expenses.filter(
-        transaction => {
+      const accountId =
+        document.getElementById("filterAccount")
+          .value;
 
-          const account =
-            getAccount(
-              transaction.accountId
-            );
 
+      const selectedDate =
+        document.getElementById("filterDate")
+          .value;
 
-          const accountName =
-            getAccountName(
-              account
-            ).toLowerCase();
 
+      let expenses =
+        getTransactions()
+          .filter(isExpenseTransaction);
 
-          const title =
-            String(
-              transaction.description ||
-              ""
-            ).toLowerCase();
 
-
-          const note =
-            String(
-              transaction.note ||
-              ""
-            ).toLowerCase();
-
-
-          const transactionCategory =
-            String(
-              transaction.category ||
-              ""
-            );
-
-
-          const matchesSearch =
-            !search ||
-            title.includes(search) ||
-            note.includes(search) ||
-            accountName.includes(search) ||
-            transactionCategory
-              .toLowerCase()
-              .includes(search);
-
-
-          const matchesCategory =
-            category === "all" ||
-            transactionCategory ===
-              category;
-
-
-          return (
-            matchesSearch &&
-            matchesCategory
-          );
-
-        }
-      );
-
-    }
-
-
-    /* =====================================================
-       RENDER
-       ===================================================== */
-
-    function renderExpenses() {
-
-      walletData =
-        getData();
-
-
-      const allExpenses =
-        getExpenseTransactions();
-
-
-      const filtered =
-        getFilteredExpenses();
-
-
-      renderSummary();
-
-
-      visibleCount.textContent =
-        `${filtered.length} ${
-          filtered.length === 1
-            ? "entry"
-            : "entries"
-        }`;
-
-
-      if (
-        allExpenses.length === 0
-      ) {
-
-        expenseList.innerHTML = `
-          <div class="empty">
-
-            <div class="empty-icon">
-              💸
-            </div>
-
-            <strong>
-              No expenses yet
-            </strong>
-
-            <p>
-              Add your first expense
-              to start tracking spending.
-            </p>
-
-          </div>
-        `;
-
-        return;
-
-      }
-
-
-      if (
-        filtered.length === 0
-      ) {
-
-        expenseList.innerHTML = `
-          <div class="empty">
-
-            <div class="empty-icon">
-              🔎
-            </div>
-
-            <strong>
-              No matching expenses
-            </strong>
-
-            <p>
-              Try another search or category.
-            </p>
-
-          </div>
-        `;
-
-        return;
-
-      }
-
-
-      expenseList.innerHTML =
-        filtered
-          .map(
-            transaction => {
-
-              const account =
-                getAccount(
-                  transaction.accountId
-                );
-
-
-              const accountName =
-                getAccountName(
-                  account
-                );
-
-
-              const category =
-                transaction.category ||
-                "Expense";
-
-
-              const title =
-                transaction.description ||
-                category ||
-                "Expense";
-
-
-              const note =
-                transaction.note ||
-                "";
-
-
-              return `
-                <div
-                  class="expense-card"
-                  data-id="${escapeHtml(
-                    transaction.id
-                  )}"
-                >
-
-                  <div class="expense-top">
-
-                    <div class="expense-info">
-
-                      <div class="expense-icon">
-                        💸
-                      </div>
-
-                      <div>
-
-                        <div class="expense-title">
-                          ${escapeHtml(title)}
-                        </div>
-
-                        <div class="expense-category">
-                          ${escapeHtml(category)}
-                        </div>
-
-                      </div>
-
-                    </div>
-
-
-                    <div class="expense-amount">
-                      -${escapeHtml(
-                        money(
-                          transaction.amount
-                        )
-                      )}
-                    </div>
-
-                  </div>
-
-
-                  <div class="expense-meta">
-
-                    <span class="tag">
-                      📅 ${escapeHtml(
-                        displayDate(
-                          transaction.date
-                        )
-                      )}
-                    </span>
-
-                    <span class="tag">
-                      🏦 ${escapeHtml(
-                        accountName
-                      )}
-                    </span>
-
-                  </div>
-
-
-                  ${
-                    note
-                      ? `
-                        <div class="expense-note">
-                          ${escapeHtml(note)}
-                        </div>
-                      `
-                      : ""
-                  }
-
-
-                  <div class="actions">
-
-                    <button
-                      type="button"
-                      class="action-btn"
-                      data-action="edit"
-                      data-id="${escapeHtml(
-                        transaction.id
-                      )}"
-                    >
-                      ✎ Edit
-                    </button>
-
-                    <button
-                      type="button"
-                      class="action-btn delete"
-                      data-action="delete"
-                      data-id="${escapeHtml(
-                        transaction.id
-                      )}"
-                    >
-                      🗑 Delete
-                    </button>
-
-                  </div>
-
-                </div>
-              `;
-
-            }
-          )
-          .join("");
-
-    }
-
-
-    /* =====================================================
-       MODAL
-       ===================================================== */
-
-    function openAddModal() {
-
-      editingExpenseId =
-        null;
-
-
-      modalTitle.textContent =
-        "Add Expense";
-
-
-      expenseForm.reset();
-
-
-      expenseDate.value =
-        todayString();
-
-
-      loadCategories();
-
-      loadAccounts();
-
-
-      formError.style.display =
-        "none";
-
-
-      modal.classList.add(
-        "show"
-      );
-
-
-      setTimeout(
-        () =>
-          expenseAmount.focus(),
-        100
-      );
-
-    }
-
-
-    function openEditModal(
-      transaction
-    ) {
-
-      if (!transaction) {
-        return;
-      }
-
-
-      editingExpenseId =
-        String(transaction.id);
-
-
-      modalTitle.textContent =
-        "Edit Expense";
-
-
-      expenseAmount.value =
-        Number(
-          transaction.amount || 0
-        );
-
-
-      loadCategories();
-
-
-      loadAccounts(
-        transaction.accountId
-      );
-
-
-      expenseCategory.value =
-        transaction.category ||
-        expenseCategory.options[0]?.value ||
-        "";
-
-
-      expenseDate.value =
-        transaction.date ||
-        todayString();
-
-
-      expenseDescription.value =
-        transaction.description ||
-        "";
-
-
-      expenseNote.value =
-        transaction.note ||
-        "";
-
-
-      formError.style.display =
-        "none";
-
-
-      modal.classList.add(
-        "show"
-      );
-
-    }
-
-
-    function closeModal() {
-
-      modal.classList.remove(
-        "show"
-      );
-
-      editingExpenseId =
-        null;
-
-    }
-
-
-    function showError(message) {
-
-      formError.textContent =
-        message;
-
-      formError.style.display =
-        "block";
-
-    }
-
-
-    /* =====================================================
-       SAVE EXPENSE
-       ===================================================== */
-
-    expenseForm.addEventListener(
-      "submit",
-      function(event) {
-
-        event.preventDefault();
-
-
-        walletData =
-          getData();
-
-
-        const amount =
-          Number(
-            expenseAmount.value
-          );
-
-
-        const category =
-          expenseCategory.value;
-
-
-        const accountId =
-          expenseAccount.value;
-
-
-        const date =
-          expenseDate.value;
-
+      expenses = expenses.filter(item => {
 
         const description =
-          expenseDescription.value
-            .trim();
+          String(
+            item.description ||
+            item.title ||
+            item.name ||
+            ""
+          ).toLowerCase();
 
 
         const note =
-          expenseNote.value
-            .trim();
+          String(
+            item.note ||
+            item.notes ||
+            ""
+          ).toLowerCase();
 
 
-        if (
-          !Number.isFinite(amount) ||
-          amount <= 0
-        ) {
-
-          showError(
-            "Please enter a valid expense amount."
-          );
-
-          return;
-
-        }
-
-
-        if (!category) {
-
-          showError(
-            "Please select an expense category."
-          );
-
-          return;
-
-        }
-
-
-        if (!accountId) {
-
-          showError(
-            "Please select the account used for this expense."
-          );
-
-          return;
-
-        }
-
-
-        if (!date) {
-
-          showError(
-            "Please select an expense date."
-          );
-
-          return;
-
-        }
-
-
-        const account =
-          getAccount(
-            accountId
+        const itemCategory =
+          String(
+            item.category ||
+            ""
           );
 
 
-        if (!account) {
-
-          showError(
-            "Selected account was not found."
-          );
-
-          return;
-
-        }
-
-
-        /* =================================================
-           EDIT
-           ================================================= */
-
-        if (editingExpenseId) {
-
-          const transaction =
-            walletData.transactions.find(
-              item =>
-                String(item.id) ===
-                String(editingExpenseId)
-            );
-
-
-          if (!transaction) {
-
-            showError(
-              "Expense entry not found."
-            );
-
-            return;
-
-          }
-
-
-          const oldAmount =
-            Number(
-              transaction.amount || 0
-            );
-
-
-          const oldAccount =
-            getAccount(
-              transaction.accountId
-            );
-
-
-          /*
-            Reverse old expense first.
-          */
-
-          if (oldAccount) {
-
-            oldAccount.balance =
-              getBalance(
-                oldAccount
-              ) +
-              oldAmount;
-
-          }
-
-
-          /*
-            Check the new account.
-          */
-
-          const newAccount =
-            getAccount(
-              accountId
-            );
-
-
-          if (
-            !newAccount
-          ) {
-
-            showError(
-              "Selected account was not found."
-            );
-
-            /*
-              Restore old balance
-              because we already reversed it.
-            */
-
-            if (oldAccount) {
-
-              oldAccount.balance =
-                getBalance(
-                  oldAccount
-                ) -
-                oldAmount;
-
-            }
-
-            return;
-
-          }
-
-
-          const newBalance =
-            getBalance(
-              newAccount
-            );
-
-
-          if (
-            amount >
-            newBalance
-          ) {
-
-            /*
-              Put the old transaction
-              back exactly as it was.
-            */
-
-            if (oldAccount) {
-
-              oldAccount.balance =
-                getBalance(
-                  oldAccount
-                ) -
-                oldAmount;
-
-            }
-
-
-            showError(
-              `Insufficient balance. Available balance is ${money(newBalance)}.`
-            );
-
-            return;
-
-          }
-
-
-          /*
-            Apply new expense.
-          */
-
-          newAccount.balance =
-            newBalance -
-            amount;
-
-
-          transaction.amount =
-            amount;
-
-          transaction.category =
-            category;
-
-          transaction.accountId =
-            accountId;
-
-          transaction.date =
-            date;
-
-          transaction.description =
-            description ||
-            category;
-
-          transaction.note =
-            note;
-
-
-          saveData();
-
-          closeModal();
-
-          renderExpenses();
-
-          return;
-
-        }
-
-
-        /* =================================================
-           ADD NEW EXPENSE
-           ================================================= */
-
-        const currentBalance =
-          getBalance(
-            account
+        const itemAccount =
+          String(
+            item.accountId ||
+            ""
           );
 
 
-        if (
-          amount >
-          currentBalance
-        ) {
+        const matchesSearch =
+          !search ||
+          description.includes(search) ||
+          note.includes(search) ||
+          itemCategory.toLowerCase().includes(search);
 
-          showError(
-            `Insufficient balance. Available balance is ${money(currentBalance)}.`
-          );
 
-          return;
+        const matchesCategory =
+          !category ||
+          itemCategory === category;
 
+
+        const matchesAccount =
+          !accountId ||
+          itemAccount === accountId;
+
+
+        const matchesDate =
+          !selectedDate ||
+          String(item.date) === selectedDate;
+
+
+        return (
+          matchesSearch &&
+          matchesCategory &&
+          matchesAccount &&
+          matchesDate
+        );
+
+      });
+
+
+      expenses.sort((a, b) => {
+
+        const dateA =
+          new Date(
+            String(a.date || "") + "T00:00:00"
+          ).getTime() || 0;
+
+        const dateB =
+          new Date(
+            String(b.date || "") + "T00:00:00"
+          ).getTime() || 0;
+
+        if (dateB !== dateA) {
+          return dateB - dateA;
         }
 
+        return Number(b.createdAt || 0) -
+               Number(a.createdAt || 0);
 
-        let created = false;
-
-
-        if (
-          window.TamilandaWallet &&
-          typeof window.TamilandaWallet.addTransaction ===
-            "function"
-        ) {
-
-          const result =
-            window.TamilandaWallet.addTransaction({
-
-              type:
-                "expense",
-
-              amount:
-                amount,
-
-              accountId:
-                accountId,
-
-              category:
-                category,
-
-              description:
-                description ||
-                category,
-
-              note:
-                note,
-
-              date:
-                date
-
-            });
+      });
 
 
-          if (!result) {
-
-            showError(
-              "Expense could not be added. Please check the account balance."
-            );
-
-            return;
-
-          }
+      document.getElementById("expenseCount")
+        .textContent =
+        `${expenses.length} expense${expenses.length === 1 ? "" : "s"}`;
 
 
-          created = true;
+      if (!expenses.length) {
 
-        } else {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">💸</div>
+            <h3>No expenses found</h3>
+            <p>Add an expense or change your filters.</p>
+          </div>
+        `;
 
-          if (
-            !Array.isArray(
-              walletData.transactions
-            )
-          ) {
+        updateExpenseSummary();
 
-            walletData.transactions = [];
-
-          }
-
-
-          account.balance =
-            currentBalance -
-            amount;
-
-
-          walletData.transactions.unshift({
-
-            id:
-              "expense_" +
-              Date.now(),
-
-            type:
-              "expense",
-
-            amount:
-              amount,
-
-            accountId:
-              accountId,
-
-            category:
-              category,
-
-            description:
-              description ||
-              category,
-
-            note:
-              note,
-
-            date:
-              date,
-
-            createdAt:
-              new Date().toISOString()
-
-          });
-
-
-          saveData();
-
-          created = true;
-
-        }
-
-
-        if (created) {
-
-          closeModal();
-
-          renderExpenses();
-
-        }
+        return;
 
       }
-    );
 
 
-    /* =====================================================
-       EDIT / DELETE
-       ===================================================== */
-
-    expenseList.addEventListener(
-      "click",
-      function(event) {
-
-        const button =
-          event.target.closest(
-            "[data-action]"
-          );
+      list.innerHTML =
+        expenses.map(renderExpenseCard).join("");
 
 
-        if (!button) {
-          return;
-        }
+      updateExpenseSummary();
+
+    }
 
 
-        const action =
-          button.dataset.action;
+    /* ================================
+       EXPENSE CARD
+    ================================= */
+
+    function renderExpenseCard(item) {
+
+      const description =
+        item.description ||
+        item.title ||
+        item.name ||
+        "Expense";
 
 
-        const id =
-          button.dataset.id;
+      const category =
+        item.category ||
+        "Other";
 
 
-        walletData =
-          getData();
+      const accountName =
+        getAccountName(item.accountId);
 
+
+      const note =
+        item.note ||
+        item.notes ||
+        "";
+
+
+      let sourceText = "";
+
+
+      if (item.type === "emi_payment") {
+        sourceText = "EMI Payment";
+      } else if (item.type === "recurring_payment") {
+        sourceText = "Recurring Payment";
+      } else if (item.type === "money_to_give_payment") {
+        sourceText = "Money To Give";
+      } else {
+        sourceText = "Expense";
+      }
+
+
+      return `
+        <div class="transaction-card">
+
+          <div class="transaction-main">
+
+            <div class="transaction-icon expense-icon">
+              💸
+            </div>
+
+            <div class="transaction-info">
+
+              <h3>
+                ${escapeHtml(description)}
+              </h3>
+
+              <div class="transaction-meta">
+
+                <span>
+                  ${escapeHtml(category)}
+                </span>
+
+                <span>•</span>
+
+                <span>
+                  ${escapeHtml(accountName)}
+                </span>
+
+                <span>•</span>
+
+                <span>
+                  ${escapeHtml(formatDate(item.date))}
+                </span>
+
+              </div>
+
+              ${
+                note
+                  ? `<p class="transaction-note">
+                       ${escapeHtml(note)}
+                     </p>`
+                  : ""
+              }
+
+              ${
+                item.type !== "expense"
+                  ? `<small class="transaction-source">
+                       ${escapeHtml(sourceText)}
+                     </small>`
+                  : ""
+              }
+
+            </div>
+
+          </div>
+
+
+          <div class="transaction-right">
+
+            <strong class="expense-amount">
+              -${formatMoney(item.amount)}
+            </strong>
+
+
+            ${
+              item.type === "expense"
+                ? `
+                  <div class="transaction-actions">
+
+                    <button
+                      class="small-btn"
+                      onclick="editExpense('${item.id}')"
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      class="small-btn danger-btn"
+                      onclick="deleteExpense('${item.id}')"
+                    >
+                      Delete
+                    </button>
+
+                  </div>
+                `
+                : `
+                  <div class="transaction-actions">
+
+                    <button
+                      class="small-btn"
+                      onclick="openSourcePage('${item.type}')"
+                    >
+                      View
+                    </button>
+
+                  </div>
+                `
+            }
+
+          </div>
+
+        </div>
+      `;
+
+    }
+
+
+    /* ================================
+       OPEN MODAL
+    ================================= */
+
+    function openExpenseModal() {
+
+      editingExpenseId = null;
+
+      document.getElementById("expenseModalTitle")
+        .textContent = "Add Expense";
+
+
+      document.getElementById("expenseForm")
+        .reset();
+
+
+      document.getElementById("expenseId")
+        .value = "";
+
+
+      document.getElementById("expenseDate")
+        .value = todayStringLocal();
+
+
+      document.getElementById("expenseModal")
+        .classList.add("show");
+
+    }
+
+
+    function closeExpenseModal() {
+
+      document.getElementById("expenseModal")
+        .classList.remove("show");
+
+      editingExpenseId = null;
+
+    }
+
+
+    /* ================================
+       SAVE EXPENSE
+    ================================= */
+
+    function saveExpense(event) {
+
+      event.preventDefault();
+
+
+      const description =
+        document.getElementById("expenseDescription")
+          .value
+          .trim();
+
+
+      const amount =
+        Number(
+          document.getElementById("expenseAmount")
+            .value
+        );
+
+
+      const date =
+        document.getElementById("expenseDate")
+          .value;
+
+
+      const category =
+        document.getElementById("expenseCategory")
+          .value;
+
+
+      const accountId =
+        document.getElementById("expenseAccount")
+          .value;
+
+
+      const note =
+        document.getElementById("expenseNote")
+          .value
+          .trim();
+
+
+      if (!description) {
+        alert("Please enter expense description.");
+        return;
+      }
+
+
+      if (!amount || amount <= 0) {
+        alert("Please enter a valid amount.");
+        return;
+      }
+
+
+      if (!date) {
+        alert("Please select a date.");
+        return;
+      }
+
+
+      if (!category) {
+        alert("Please select a category.");
+        return;
+      }
+
+
+      if (!accountId) {
+        alert("Please select an account.");
+        return;
+      }
+
+
+      const data =
+        getWalletData();
+
+
+      const account =
+        getAccounts().find(
+          a => String(a.id) === String(accountId)
+        );
+
+
+      if (!account) {
+        alert("Selected account was not found.");
+        return;
+      }
+
+
+      /* ============================
+         EDIT EXISTING EXPENSE
+      ============================ */
+
+      if (editingExpenseId) {
 
         const transaction =
-          walletData.transactions.find(
-            item =>
-              String(item.id) ===
-              String(id)
+          getTransactions().find(
+            t => String(t.id) === String(editingExpenseId)
           );
 
 
         if (!transaction) {
-
-          alert(
-            "Expense entry not found."
-          );
-
+          alert("Expense not found.");
           return;
-
         }
 
 
-        if (
-          action ===
-          "edit"
-        ) {
-
-          openEditModal(
-            transaction
-          );
-
+        if (transaction.type !== "expense") {
+          alert("This transaction cannot be edited here.");
           return;
-
         }
 
 
+        const oldAmount =
+          Number(transaction.amount || 0);
+
+
+        const oldAccountId =
+          transaction.accountId;
+
+
+        const oldAccount =
+          getAccounts().find(
+            a => String(a.id) === String(oldAccountId)
+          );
+
+
+        if (!oldAccount) {
+          alert("Original account was not found.");
+          return;
+        }
+
+
+        /*
+          Restore old expense first.
+          Then apply new expense.
+        */
+
+        oldAccount.balance =
+          Number(oldAccount.balance || 0) +
+          oldAmount;
+
+
         if (
-          action ===
-          "delete"
+          String(oldAccountId) !==
+          String(accountId)
         ) {
 
-          const title =
-            transaction.description ||
-            transaction.category ||
-            "this expense";
+          if (
+            Number(account.balance || 0) <
+            amount
+          ) {
 
+            oldAccount.balance =
+              Number(oldAccount.balance || 0) -
+              oldAmount;
 
-          const confirmed =
-            confirm(
-              `Move "${title}" to Trash?\n\nThis expense will be removed from the active transaction list.`
+            alert(
+              "Insufficient balance in the selected account."
             );
 
+            return;
 
-          if (!confirmed) {
+          }
+
+        } else {
+
+          if (
+            Number(oldAccount.balance || 0) <
+            amount
+          ) {
+
+            oldAccount.balance =
+              Number(oldAccount.balance || 0) -
+              oldAmount;
+
+            alert(
+              "Insufficient balance for this expense."
+            );
+
+            return;
+
+          }
+
+        }
+
+
+        /*
+          Apply new expense.
+        */
+
+        account.balance =
+          Number(account.balance || 0) -
+          amount;
+
+
+        transaction.description =
+          description;
+
+        transaction.amount =
+          amount;
+
+        transaction.date =
+          date;
+
+        transaction.category =
+          category;
+
+        transaction.accountId =
+          accountId;
+
+        transaction.note =
+          note;
+
+        transaction.updatedAt =
+          Date.now();
+
+
+        if (window.TamilandaWallet?.save) {
+          window.TamilandaWallet.save();
+        } else {
+          localStorage.setItem(
+            "tamilanda_wallet_data",
+            JSON.stringify(data)
+          );
+        }
+
+
+        closeExpenseModal();
+
+        loadExpenseFilters();
+        renderExpenses();
+
+        return;
+
+      }
+
+
+      /* ============================
+         ADD NEW EXPENSE
+      ============================ */
+
+      if (
+        Number(account.balance || 0) <
+        amount
+      ) {
+
+        alert(
+          "Insufficient balance in the selected account."
+        );
+
+        return;
+
+      }
+
+
+      /*
+        Prefer centralized app.js helper.
+      */
+
+      if (
+        typeof window.TamilandaWallet?.addTransaction ===
+        "function"
+      ) {
+
+        try {
+
+          const result =
+            window.TamilandaWallet.addTransaction({
+              type: "expense",
+              description: description,
+              amount: amount,
+              date: date,
+              category: category,
+              accountId: accountId,
+              note: note,
+              source: "expense"
+            });
+
+
+          if (result === false) {
+            alert("Could not save expense.");
             return;
           }
 
 
-          /*
-            IMPORTANT:
-            Reverse account balance before
-            moving transaction to Trash.
+          closeExpenseModal();
 
-            app.js deleteRecord currently moves
-            the record but does not reverse the
-            ledger effect, so we handle the
-            balance reversal here.
-          */
+          loadExpenseFilters();
+          renderExpenses();
 
-          const account =
-            getAccount(
-              transaction.accountId
-            );
+          return;
 
+        } catch (error) {
 
-          if (account) {
-
-            account.balance =
-              getBalance(account) +
-              Number(
-                transaction.amount || 0
-              );
-
-          }
-
-
-          let deleted =
-            false;
-
-
-          if (
-            window.TamilandaWallet &&
-            typeof window.TamilandaWallet.moveToTrash ===
-              "function"
-          ) {
-
-            /*
-              Save the transaction to Trash
-              manually because the balance has
-              already been reversed.
-            */
-
-            window.TamilandaWallet.moveToTrash(
-              "transactions",
-              transaction
-            );
-
-
-            const index =
-              walletData.transactions.findIndex(
-                item =>
-                  String(item.id) ===
-                  String(id)
-              );
-
-
-            if (index !== -1) {
-
-              walletData.transactions.splice(
-                index,
-                1
-              );
-
-              saveData();
-
-              deleted = true;
-
-            }
-
-          } else {
-
-            const index =
-              walletData.transactions.findIndex(
-                item =>
-                  String(item.id) ===
-                  String(id)
-              );
-
-
-            if (index !== -1) {
-
-              const removed =
-                walletData.transactions.splice(
-                  index,
-                  1
-                )[0];
-
-
-              if (
-                !Array.isArray(
-                  walletData.trash
-                )
-              ) {
-
-                walletData.trash = [];
-
-              }
-
-
-              walletData.trash.unshift({
-
-                id:
-                  "trash_" +
-                  Date.now(),
-
-                originalId:
-                  removed.id,
-
-                type:
-                  "transactions",
-
-                data:
-                  JSON.parse(
-                    JSON.stringify(
-                      removed
-                    )
-                  ),
-
-                deletedAt:
-                  new Date().toISOString()
-
-              });
-
-
-              saveData();
-
-              deleted = true;
-
-            }
-
-          }
-
-
-          if (deleted) {
-
-            renderExpenses();
-
-          }
+          console.error(
+            "addTransaction error:",
+            error
+          );
 
         }
 
       }
-    );
 
 
-    /* =====================================================
-       OPEN / CLOSE EVENTS
-       ===================================================== */
+      /*
+        Fallback if app.js helper is unavailable.
+      */
 
-    document
-      .getElementById(
-        "addExpenseBtn"
-      )
-      .addEventListener(
-        "click",
-        openAddModal
+      account.balance =
+        Number(account.balance || 0) -
+        amount;
+
+
+      if (!Array.isArray(data.transactions)) {
+        data.transactions = [];
+      }
+
+
+      data.transactions.push({
+
+        id:
+          "txn_" +
+          Date.now() +
+          "_" +
+          Math.random()
+            .toString(36)
+            .slice(2, 8),
+
+        type: "expense",
+
+        description:
+          description,
+
+        amount:
+          amount,
+
+        date:
+          date,
+
+        category:
+          category,
+
+        accountId:
+          accountId,
+
+        note:
+          note,
+
+        source:
+          "expense",
+
+        createdAt:
+          Date.now()
+
+      });
+
+
+      localStorage.setItem(
+        "tamilanda_wallet_data",
+        JSON.stringify(data)
       );
 
 
-    document
-      .getElementById(
-        "closeModalBtn"
-      )
-      .addEventListener(
-        "click",
-        closeModal
-      );
+      closeExpenseModal();
+
+      loadExpenseFilters();
+      renderExpenses();
+
+    }
 
 
-    document
-      .getElementById(
-        "cancelModalBtn"
-      )
-      .addEventListener(
-        "click",
-        closeModal
-      );
+    /* ================================
+       EDIT EXPENSE
+    ================================= */
+
+    function editExpense(id) {
+
+      const transaction =
+        getTransactions().find(
+          t => String(t.id) === String(id)
+        );
 
 
-    expenseAccount.addEventListener(
-      "change",
-      updateAccountPreview
-    );
+      if (!transaction) {
+        alert("Expense not found.");
+        return;
+      }
 
 
-    searchInput.addEventListener(
-      "input",
-      renderExpenses
-    );
+      if (transaction.type !== "expense") {
+        alert(
+          "This payment is linked to another module. Please edit it from its original page."
+        );
+        return;
+      }
 
 
-    categoryFilter.addEventListener(
-      "change",
-      renderExpenses
-    );
+      editingExpenseId =
+        transaction.id;
 
 
-    modal.addEventListener(
-      "click",
-      function(event) {
+      document.getElementById("expenseModalTitle")
+        .textContent = "Edit Expense";
+
+
+      document.getElementById("expenseId")
+        .value = transaction.id;
+
+
+      document.getElementById("expenseDescription")
+        .value =
+        transaction.description ||
+        transaction.title ||
+        transaction.name ||
+        "";
+
+
+      document.getElementById("expenseAmount")
+        .value =
+        Number(transaction.amount || 0);
+
+
+      document.getElementById("expenseDate")
+        .value =
+        transaction.date ||
+        todayStringLocal();
+
+
+      document.getElementById("expenseCategory")
+        .value =
+        transaction.category ||
+        "";
+
+
+      document.getElementById("expenseAccount")
+        .value =
+        transaction.accountId ||
+        "";
+
+
+      document.getElementById("expenseNote")
+        .value =
+        transaction.note ||
+        transaction.notes ||
+        "";
+
+
+      document.getElementById("expenseModal")
+        .classList.add("show");
+
+    }
+
+
+    /* ================================
+       DELETE EXPENSE
+    ================================= */
+
+    function deleteExpense(id) {
+
+      const transaction =
+        getTransactions().find(
+          t => String(t.id) === String(id)
+        );
+
+
+      if (!transaction) {
+        alert("Expense not found.");
+        return;
+      }
+
+
+      if (transaction.type !== "expense") {
+        alert(
+          "This payment cannot be deleted from Expenses. Please delete it from its original module."
+        );
+        return;
+      }
+
+
+      const amount =
+        Number(transaction.amount || 0);
+
+
+      const accountId =
+        transaction.accountId;
+
+
+      const account =
+        getAccounts().find(
+          a => String(a.id) === String(accountId)
+        );
+
+
+      if (!account) {
+        alert(
+          "The account linked to this expense was not found."
+        );
+        return;
+      }
+
+
+      const confirmed =
+        confirm(
+          `Delete this expense of ${formatMoney(amount)}?\n\nThe amount will be added back to the account balance.`
+        );
+
+
+      if (!confirmed) {
+        return;
+      }
+
+
+      /*
+        IMPORTANT:
+        app.js is NOT being changed here.
+
+        We reverse the expense balance once,
+        then move the transaction to Trash.
+      */
+
+      const oldBalance =
+        Number(account.balance || 0);
+
+
+      try {
+
+        /*
+          Reverse expense.
+        */
+
+        account.balance =
+          oldBalance + amount;
+
+
+        /*
+          Use existing moveToTrash helper
+          if available.
+        */
 
         if (
-          event.target ===
-          modal
+          typeof window.TamilandaWallet?.moveToTrash ===
+          "function"
         ) {
 
-          closeModal();
+          const moved =
+            window.TamilandaWallet.moveToTrash(
+              "transactions",
+              transaction.id
+            );
+
+
+          if (moved === false) {
+
+            account.balance =
+              oldBalance;
+
+            alert(
+              "Could not move expense to Trash."
+            );
+
+            return;
+
+          }
+
+
+          /*
+            moveToTrash may save internally.
+            Save once more to ensure account
+            balance is persisted.
+          */
+
+          if (window.TamilandaWallet?.save) {
+            window.TamilandaWallet.save();
+          }
+
+
+          renderExpenses();
+
+          return;
 
         }
 
+
+        /*
+          Fallback:
+          manually move to trash.
+        */
+
+        const data =
+          getWalletData();
+
+
+        if (!Array.isArray(data.trash)) {
+          data.trash = [];
+        }
+
+
+        if (!Array.isArray(data.transactions)) {
+          data.transactions = [];
+        }
+
+
+        const index =
+          data.transactions.findIndex(
+            t =>
+              String(t.id) ===
+              String(transaction.id)
+          );
+
+
+        if (index === -1) {
+
+          account.balance =
+            oldBalance;
+
+          alert(
+            "Expense could not be found."
+          );
+
+          return;
+
+        }
+
+
+        const removed =
+          data.transactions.splice(
+            index,
+            1
+          )[0];
+
+
+        data.trash.push({
+
+          id:
+            "trash_" +
+            Date.now() +
+            "_" +
+            Math.random()
+              .toString(36)
+              .slice(2, 8),
+
+          collection:
+            "transactions",
+
+          recordId:
+            removed.id,
+
+          data:
+            removed,
+
+          deletedAt:
+            Date.now()
+
+        });
+
+
+        localStorage.setItem(
+          "tamilanda_wallet_data",
+          JSON.stringify(data)
+        );
+
+
+        renderExpenses();
+
+
+      } catch (error) {
+
+        console.error(
+          "Delete expense error:",
+          error
+        );
+
+
+        /*
+          Roll back balance if anything fails.
+        */
+
+        account.balance =
+          oldBalance;
+
+
+        if (window.TamilandaWallet?.save) {
+          window.TamilandaWallet.save();
+        }
+
+
+        alert(
+          "Could not delete this expense. Nothing was changed."
+        );
+
       }
-    );
+
+    }
+
+
+    /* ================================
+       CLEAR FILTERS
+    ================================= */
+
+    function clearExpenseFilters() {
+
+      document.getElementById("searchExpense")
+        .value = "";
+
+      document.getElementById("filterCategory")
+        .value = "";
+
+      document.getElementById("filterAccount")
+        .value = "";
+
+      document.getElementById("filterDate")
+        .value = "";
+
+
+      renderExpenses();
+
+    }
+
+
+    /* ================================
+       OPEN SOURCE PAGE
+    ================================= */
+
+    function openSourcePage(type) {
+
+      if (type === "emi_payment") {
+        window.location.href = "emi.html";
+        return;
+      }
+
+
+      if (type === "recurring_payment") {
+        window.location.href = "recurring.html";
+        return;
+      }
+
+
+      if (type === "money_to_give_payment") {
+        window.location.href = "give-money.html";
+        return;
+      }
+
+
+      window.location.href = "transactions.html";
+
+    }
+
+
+    /* ================================
+       INITIALIZE
+    ================================= */
+
+    function initializeExpensePage() {
+
+      loadExpenseFilters();
+
+      renderExpenses();
+
+    }
 
 
     document.addEventListener(
-      "keydown",
+      "DOMContentLoaded",
+      initializeExpensePage
+    );
+
+
+    /*
+      Refresh page when another tab/page
+      changes wallet data.
+    */
+
+    window.addEventListener(
+      "storage",
       function(event) {
 
         if (
           event.key ===
-          "Escape"
+          "tamilanda_wallet_data"
         ) {
 
-          closeModal();
+          loadExpenseFilters();
+          renderExpenses();
 
         }
 
@@ -2585,39 +1665,23 @@
     );
 
 
-    /* =====================================================
-       INITIAL LOAD
-       ===================================================== */
+    /*
+      Close modal when clicking outside.
+    */
 
-    loadCategories();
+    document.getElementById("expenseModal")
+      .addEventListener(
+        "click",
+        function(event) {
 
-    loadAccounts();
+          if (
+            event.target === this
+          ) {
+            closeExpenseModal();
+          }
 
-    expenseDate.value =
-      todayString();
-
-    renderExpenses();
-
-
-    /* =====================================================
-       REFRESH
-       ===================================================== */
-
-    window.addEventListener(
-      "pageshow",
-      function() {
-
-        walletData =
-          getData();
-
-        loadCategories();
-
-        loadAccounts();
-
-        renderExpenses();
-
-      }
-    );
+        }
+      );
 
   </script>
 
