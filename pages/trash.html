@@ -1,2078 +1,1577 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#09070d">
   <title>Trash - Tamilanda Wallet</title>
 
-  <link
-    rel="manifest"
-    href="../manifest.json"
-  >
-
-  <link
-    rel="icon"
-    type="image/png"
-    sizes="192x192"
-    href="../icons/icon-192.png"
-  >
-
-  <link
-    rel="apple-touch-icon"
-    href="../icons/icon-192.png"
-  >
-
-  <link
-    rel="stylesheet"
-    href="../css/style.css"
-  >
+  <link rel="stylesheet" href="../css/style.css">
 
   <style>
-
-    .trash-page {
-      padding-bottom: 110px;
+    * {
+      box-sizing: border-box;
     }
 
-    .trash-header {
+    body {
+      margin: 0;
+      padding-bottom: 90px;
+      background: #09070d;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    .page {
+      width: min(1100px, 100%);
+      margin: auto;
+      padding: 18px;
+    }
+
+    .topbar {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 12px;
-      margin-bottom: 22px;
+      margin-bottom: 18px;
     }
 
-    .back-button {
+    .topbar h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .topbar p {
+      margin: 5px 0 0;
+      color: #aaa;
+      font-size: 13px;
+    }
+
+    .back-btn {
+      border: 0;
+      background: #17131f;
+      color: #fff;
       width: 42px;
       height: 42px;
-      border: 0;
-      border-radius: 13px;
-      background: rgba(255,255,255,0.06);
-      color: inherit;
-      font-size: 24px;
+      border-radius: 12px;
+      font-size: 20px;
       cursor: pointer;
     }
 
-    .trash-header-text {
-      flex: 1;
-    }
-
-    .trash-header h1 {
-      margin: 0 0 4px;
-      font-size: 24px;
-    }
-
-    .trash-header p {
-      margin: 0;
-      font-size: 12px;
-      opacity: 0.5;
-    }
-
-    .trash-summary {
+    .summary-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 22px;
+      gap: 12px;
+      margin-bottom: 16px;
     }
 
     .summary-card {
+      background: #15111c;
+      border: 1px solid #282231;
+      border-radius: 16px;
       padding: 16px;
-      border-radius: 17px;
-      border: 1px solid rgba(255,255,255,0.07);
-      background: rgba(255,255,255,0.035);
-    }
-
-    .summary-icon {
-      font-size: 21px;
-      margin-bottom: 7px;
     }
 
     .summary-label {
-      font-size: 11px;
-      opacity: 0.5;
-      margin-bottom: 4px;
+      color: #999;
+      font-size: 12px;
+      margin-bottom: 7px;
     }
 
     .summary-value {
-      font-size: 19px;
-      font-weight: 800;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .toolbar {
+      background: #15111c;
+      border: 1px solid #282231;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .toolbar-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      border: 1px solid #302a3b;
+      background: #0f0c15;
+      color: #fff;
+      border-radius: 11px;
+      padding: 12px;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #6f4cff;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      margin-top: 12px;
+      padding-bottom: 3px;
+    }
+
+    .filter-btn {
+      flex: 0 0 auto;
+      border: 1px solid #302a3b;
+      background: #0f0c15;
+      color: #bbb;
+      padding: 9px 13px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .filter-btn.active {
+      background: #6f4cff;
+      border-color: #6f4cff;
+      color: #fff;
     }
 
     .action-row {
       display: flex;
-      gap: 9px;
-      margin-bottom: 22px;
+      gap: 10px;
+      margin-top: 12px;
     }
 
-    .action-button {
-      flex: 1;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.04);
-      color: inherit;
-      border-radius: 13px;
-      padding: 11px 9px;
-      font-size: 11px;
-      font-weight: 700;
+    .btn {
+      border: 0;
+      border-radius: 11px;
+      padding: 11px 14px;
       cursor: pointer;
+      color: #fff;
+      font-weight: 600;
     }
 
-    .action-button:active {
-      transform: scale(0.98);
+    .btn.restore-all {
+      background: #246b4a;
     }
 
-    .action-button.danger {
-      border-color: rgba(255,255,255,0.12);
-    }
-
-    .filter-bar {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 5px;
-      margin-bottom: 17px;
-    }
-
-    .filter-button {
-      flex: 0 0 auto;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.035);
-      color: inherit;
-      border-radius: 20px;
-      padding: 8px 13px;
-      font-size: 11px;
-      cursor: pointer;
-    }
-
-    .filter-button.active {
-      background: rgba(255,255,255,0.12);
-      border-color: rgba(255,255,255,0.18);
-    }
-
-    .section-title {
-      margin: 0 0 10px 3px;
-      font-size: 13px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      opacity: 0.5;
+    .btn.empty {
+      background: #8d3030;
     }
 
     .trash-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      display: grid;
+      gap: 12px;
     }
 
-    .trash-item {
+    .trash-card {
+      background: #15111c;
+      border: 1px solid #282231;
+      border-radius: 16px;
       padding: 15px;
-      border-radius: 17px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.035);
     }
 
-    .trash-item-top {
+    .trash-head {
       display: flex;
       align-items: flex-start;
+      justify-content: space-between;
       gap: 12px;
+    }
+
+    .trash-title {
+      display: flex;
+      gap: 11px;
+      align-items: center;
+      min-width: 0;
     }
 
     .trash-icon {
       width: 42px;
       height: 42px;
-      min-width: 42px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: grid;
+      place-items: center;
+      background: #211b2a;
       border-radius: 12px;
-      background: rgba(255,255,255,0.07);
-      font-size: 19px;
+      font-size: 20px;
+      flex: 0 0 auto;
     }
 
-    .trash-content {
-      flex: 1;
-      min-width: 0;
+    .trash-title h3 {
+      margin: 0;
+      font-size: 15px;
+      word-break: break-word;
     }
 
-    .trash-title {
-      font-size: 14px;
+    .trash-title p {
+      margin: 4px 0 0;
+      color: #999;
+      font-size: 12px;
+    }
+
+    .amount {
+      font-size: 15px;
       font-weight: 700;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
-    .trash-subtitle {
-      margin-top: 4px;
+    .meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 13px;
+    }
+
+    .tag {
+      background: #0e0b13;
+      border: 1px solid #2b2534;
+      color: #aaa;
+      padding: 6px 9px;
+      border-radius: 8px;
       font-size: 11px;
-      line-height: 1.5;
-      opacity: 0.5;
     }
 
-    .trash-amount {
-      margin-top: 6px;
-      font-size: 13px;
-      font-weight: 800;
+    .deleted-date {
+      color: #777;
+      font-size: 11px;
+      margin-top: 10px;
     }
 
-    .trash-actions {
+    .card-actions {
       display: flex;
       gap: 8px;
       margin-top: 13px;
-      padding-top: 12px;
-      border-top: 1px solid rgba(255,255,255,0.06);
     }
 
-    .item-button {
+    .small-btn {
       flex: 1;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.035);
-      color: inherit;
-      border-radius: 11px;
-      padding: 9px;
-      font-size: 11px;
-      font-weight: 700;
+      border: 0;
+      border-radius: 10px;
+      padding: 10px;
+      color: #fff;
       cursor: pointer;
+      font-weight: 600;
     }
 
-    .item-button:active {
-      transform: scale(0.98);
+    .restore-btn {
+      background: #246b4a;
+    }
+
+    .delete-btn {
+      background: #512326;
     }
 
     .empty-state {
-      padding: 38px 20px;
       text-align: center;
-      border-radius: 18px;
-      border: 1px dashed rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.02);
+      padding: 55px 20px;
+      background: #15111c;
+      border: 1px solid #282231;
+      border-radius: 16px;
+      color: #999;
     }
 
-    .empty-icon {
-      font-size: 36px;
-      margin-bottom: 10px;
+    .empty-state .emoji {
+      font-size: 42px;
+      margin-bottom: 12px;
     }
 
-    .empty-title {
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 5px;
+    .empty-state h3 {
+      color: #fff;
+      margin: 0 0 7px;
     }
 
-    .empty-text {
-      font-size: 12px;
-      line-height: 1.55;
-      opacity: 0.5;
-    }
-
-    .info-box {
-      margin-top: 22px;
-      padding: 13px;
+    .info {
+      margin-top: 16px;
+      padding: 14px;
+      background: #121019;
+      border: 1px solid #25202e;
       border-radius: 14px;
-      border: 1px dashed rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.025);
-      font-size: 11px;
+      color: #888;
+      font-size: 12px;
       line-height: 1.6;
-      opacity: 0.5;
     }
 
-    .trash-footer {
-      margin-top: 28px;
+    .bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 100;
+      height: 72px;
+      background: rgba(15, 12, 21, .97);
+      border-top: 1px solid #282231;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      backdrop-filter: blur(12px);
+    }
+
+    .bottom-nav a {
+      text-decoration: none;
+      color: #888;
       text-align: center;
       font-size: 11px;
-      line-height: 1.7;
-      opacity: 0.35;
     }
 
-    @media (max-width: 360px) {
+    .bottom-nav a span {
+      display: block;
+      font-size: 20px;
+      margin-bottom: 3px;
+    }
 
-      .trash-summary {
-        grid-template-columns: 1fr;
+    @media (min-width: 700px) {
+      .summary-grid {
+        grid-template-columns: repeat(2, 220px);
       }
 
+      .trash-list {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
-
   </style>
-
 </head>
-
 
 <body>
 
-  <div class="app-container">
+  <div class="page">
 
-    <main class="page-content trash-page">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="back-btn" onclick="goBack()">‹</button>
 
-
-      <div class="trash-header">
-
-        <button
-          class="back-button"
-          id="backButton"
-          aria-label="Go back"
-        >
-          ‹
-        </button>
-
-        <div class="trash-header-text">
-
-          <h1>
-            Trash
-          </h1>
-
-          <p>
-            Deleted records and recovery
-          </p>
-
+        <div>
+          <h1>🗑️ Trash</h1>
+          <p>Restore or permanently delete items</p>
         </div>
+      </div>
+    </div>
 
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="summary-label">Deleted Items</div>
+        <div class="summary-value" id="deletedCount">0</div>
       </div>
 
+      <div class="summary-card">
+        <div class="summary-label">Deleted Value</div>
+        <div class="summary-value" id="deletedValue">₹0</div>
+      </div>
+    </div>
 
-      <div class="trash-summary">
+    <div class="toolbar">
 
-        <div class="summary-card">
+      <div class="toolbar-row">
 
-          <div class="summary-icon">
-            🗑️
-          </div>
-
-          <div class="summary-label">
-            Deleted Items
-          </div>
-
-          <div
-            class="summary-value"
-            id="trashCount"
+        <div class="search">
+          <input
+            type="search"
+            id="searchInput"
+            placeholder="Search deleted items..."
+            oninput="render()"
           >
-            0
-          </div>
-
-        </div>
-
-
-        <div class="summary-card">
-
-          <div class="summary-icon">
-            💰
-          </div>
-
-          <div class="summary-label">
-            Deleted Value
-          </div>
-
-          <div
-            class="summary-value"
-            id="trashValue"
-          >
-            ₹0
-          </div>
-
         </div>
 
       </div>
 
+      <div class="filter-row">
 
-      <div class="action-row">
-
-        <button
-          class="action-button"
-          id="restoreAllButton"
-        >
-          ♻️ Restore All
-        </button>
-
-        <button
-          class="action-button danger"
-          id="emptyTrashButton"
-        >
-          🗑️ Empty Trash
-        </button>
-
-      </div>
-
-
-      <div class="filter-bar">
-
-        <button
-          class="filter-button active"
-          data-filter="all"
-        >
+        <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">
           All
         </button>
 
-        <button
-          class="filter-button"
-          data-filter="transaction"
-        >
+        <button class="filter-btn" data-filter="transactions" onclick="setFilter('transactions', this)">
           Transactions
         </button>
 
-        <button
-          class="filter-button"
-          data-filter="buyer"
-        >
+        <button class="filter-btn" data-filter="buyers" onclick="setFilter('buyers', this)">
           Buyers
         </button>
 
-        <button
-          class="filter-button"
-          data-filter="account"
-        >
+        <button class="filter-btn" data-filter="accounts" onclick="setFilter('accounts', this)">
           Accounts
         </button>
 
-        <button
-          class="filter-button"
-          data-filter="give"
-        >
-          Money To Give
+        <button class="filter-btn" data-filter="moneyToGive" onclick="setFilter('moneyToGive', this)">
+          Give
         </button>
 
-        <button
-          class="filter-button"
-          data-filter="emi"
-        >
+        <button class="filter-btn" data-filter="myEmis" onclick="setFilter('myEmis', this)">
           EMI
         </button>
 
-        <button
-          class="filter-button"
-          data-filter="recurring"
-        >
+        <button class="filter-btn" data-filter="recurringBills" onclick="setFilter('recurringBills', this)">
           Recurring
         </button>
 
       </div>
 
+      <div class="action-row">
 
-      <div class="section-title">
-        Deleted Items
-      </div>
+        <button class="btn restore-all" onclick="restoreAll()">
+          ↩ Restore All
+        </button>
 
-
-      <div
-        class="trash-list"
-        id="trashList"
-      ></div>
-
-
-      <div class="info-box">
-
-        ♻️ Deleted items can be restored from here.
-
-        <br><br>
-
-        ⚠️ "Empty Trash" permanently removes the deleted
-        records from this wallet.
+        <button class="btn empty" onclick="emptyTrash()">
+          🗑 Empty Trash
+        </button>
 
       </div>
 
+    </div>
 
-      <div class="trash-footer">
+    <div id="trashList" class="trash-list"></div>
 
-        TAMILANDA WALLET
-
-        <br>
-
-        Keep your financial records under control. 🔐
-
-      </div>
-
-    </main>
-
-
-    <nav class="bottom-nav">
-
-      <button
-        class="nav-item"
-        data-page="home"
-      >
-        <span class="nav-icon">
-          🏠
-        </span>
-        <span class="nav-label">
-          Home
-        </span>
-      </button>
-
-
-      <button
-        class="nav-item"
-        data-page="transactions"
-      >
-        <span class="nav-icon">
-          📋
-        </span>
-        <span class="nav-label">
-          Transactions
-        </span>
-      </button>
-
-
-      <button
-        class="nav-item"
-        data-page="buyers"
-      >
-        <span class="nav-icon">
-          👤
-        </span>
-        <span class="nav-label">
-          Buyers
-        </span>
-      </button>
-
-
-      <button
-        class="nav-item"
-        data-page="accounts"
-      >
-        <span class="nav-icon">
-          🏦
-        </span>
-        <span class="nav-label">
-          Accounts
-        </span>
-      </button>
-
-
-      <button
-        class="nav-item"
-        data-page="more"
-      >
-        <span class="nav-icon">
-          ☰
-        </span>
-        <span class="nav-label">
-          More
-        </span>
-      </button>
-
-    </nav>
+    <div class="info">
+      <strong style="color:#fff;">How Trash works</strong><br>
+      Restoring a deleted transaction also restores its financial effect on the
+      linked account. Transactions that require more balance than currently
+      available will remain safely in Trash until they can be restored.
+      Permanently deleted items cannot be recovered.
+    </div>
 
   </div>
 
+  <nav class="bottom-nav">
+
+    <a href="../index.html">
+      <span>⌂</span>
+      Home
+    </a>
+
+    <a href="transactions.html">
+      <span>↔</span>
+      Transactions
+    </a>
+
+    <a href="quick-add.html">
+      <span>＋</span>
+      Add
+    </a>
+
+    <a href="reports.html">
+      <span>▥</span>
+      Reports
+    </a>
+
+    <a href="more.html">
+      <span>☰</span>
+      More
+    </a>
+
+  </nav>
 
   <script src="../js/app.js"></script>
 
-
   <script>
 
-    document.addEventListener(
-      "DOMContentLoaded",
-      () => {
+    let walletData = null;
+    let currentFilter = "all";
 
-        /* =========================
-           LOAD DATA
-        ========================== */
+    /* --------------------------------
+       DATA
+    -------------------------------- */
 
-        let walletData = null;
+    function loadWalletData() {
 
+      try {
 
         if (
           window.TamilandaWallet &&
           typeof window.TamilandaWallet.getData === "function"
         ) {
-
-          walletData =
-            window.TamilandaWallet.getData();
-
+          walletData = window.TamilandaWallet.getData();
         }
 
-
-        if (!walletData) {
-
-          try {
-
-            walletData =
-              JSON.parse(
-                localStorage.getItem(
-                  "tamilanda_wallet_data"
-                )
-              ) || {};
-
-          } catch (error) {
-
-            walletData = {};
-
-          }
-
-        }
-
-
-        if (!Array.isArray(walletData.trash)) {
-
-          walletData.trash = [];
-
-        }
-
-
-        /* =========================
-           ELEMENTS
-        ========================== */
-
-        const trashList =
-          document.getElementById("trashList");
-
-        const trashCount =
-          document.getElementById("trashCount");
-
-        const trashValue =
-          document.getElementById("trashValue");
-
-        let currentFilter = "all";
-
-
-        /* =========================
-           COLLECTION MAP
-        ========================== */
-
-        function getCollectionName(item) {
-
-          if (!item) {
-            return "";
-          }
-
-
-          if (item.originalCollection) {
-
-            return item.originalCollection;
-
-          }
-
-
-          const map = {
-
-            transaction: "transactions",
-            transactions: "transactions",
-
-            buyer: "buyers",
-            buyers: "buyers",
-
-            account: "accounts",
-            accounts: "accounts",
-
-            give: "moneyToGive",
-            moneyToGive: "moneyToGive",
-
-            emi: "myEmis",
-            myEmis: "myEmis",
-
-            recurring: "recurringBills",
-            recurringBills: "recurringBills"
-
-          };
-
-
-          return map[item.type] || "";
-
-        }
-
-
-        function getFilterType(item) {
-
-          const collection =
-            getCollectionName(item);
-
-
-          const map = {
-
-            transactions: "transaction",
-            buyers: "buyer",
-            accounts: "account",
-            moneyToGive: "give",
-            myEmis: "emi",
-            recurringBills: "recurring"
-
-          };
-
-
-          return map[collection] || item.type || "";
-
-        }
-
-
-        /* =========================
-           HELPERS
-        ========================== */
-
-        function formatMoney(value) {
-
-          const amount =
-            Number(value) || 0;
-
-
-          if (
-            window.TamilandaWallet &&
-            typeof window.TamilandaWallet.formatMoney === "function"
-          ) {
-
-            return window.TamilandaWallet.formatMoney(amount);
-
-          }
-
-
-          return "₹" +
-            amount.toLocaleString(
-              "en-IN",
-              {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2
-              }
-            );
-
-        }
-
-
-        function escapeHtml(value) {
-
-          if (
-            value === null ||
-            value === undefined
-          ) {
-
-            return "";
-
-          }
-
-
-          return String(value)
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-
-        }
-
-
-        function getIcon(type) {
-
-          const icons = {
-
-            transaction: "📋",
-            transactions: "📋",
-
-            buyer: "👤",
-            buyers: "👤",
-
-            account: "🏦",
-            accounts: "🏦",
-
-            give: "🤝",
-            moneyToGive: "🤝",
-
-            emi: "📅",
-            myEmis: "📅",
-
-            recurring: "🔄",
-            recurringBills: "🔄"
-
-          };
-
-
-          return icons[type] || "🗑️";
-
-        }
-
-
-        function getTypeName(type) {
-
-          const names = {
-
-            transaction: "Transaction",
-            transactions: "Transaction",
-
-            buyer: "FF Buyer",
-            buyers: "FF Buyer",
-
-            account: "Account",
-            accounts: "Account",
-
-            give: "Money To Give",
-            moneyToGive: "Money To Give",
-
-            emi: "My EMI",
-            myEmis: "My EMI",
-
-            recurring: "Recurring Payment",
-            recurringBills: "Recurring Payment"
-
-          };
-
-
-          return names[type] || "Deleted Record";
-
-        }
-
-
-        function getItemTitle(item) {
-
-          if (item.title) {
-            return item.title;
-          }
-
-          if (item.name) {
-            return item.name;
-          }
-
-          if (item.personName) {
-            return item.personName;
-          }
-
-          if (item.description) {
-            return item.description;
-          }
-
-          if (item.category) {
-            return item.category;
-          }
-
-          return getTypeName(item.type);
-
-        }
-
-
-        function getItemAmount(item) {
-
-          if (item.amount !== undefined) {
-
-            return Number(item.amount) || 0;
-
-          }
-
-
-          if (item.totalAmount !== undefined) {
-
-            return Number(item.totalAmount) || 0;
-
-          }
-
-
-          if (item.balance !== undefined) {
-
-            return Number(item.balance) || 0;
-
-          }
-
-
-          return 0;
-
-        }
-
-
-        function getDeletedDate(item) {
-
-          const value =
-            item.deletedAt ||
-            item.deletedDate ||
-            "";
-
-
-          if (!value) {
-            return "Deleted record";
-          }
-
-
-          const date =
-            new Date(value);
-
-
-          if (isNaN(date.getTime())) {
-            return "Deleted record";
-          }
-
-
-          return date.toLocaleDateString(
-            "en-IN",
-            {
-              day: "2-digit",
-              month: "short",
-              year: "numeric"
-            }
+      } catch (error) {
+        console.warn("TamilandaWallet data load failed:", error);
+      }
+
+      if (!walletData) {
+
+        try {
+          walletData = JSON.parse(
+            localStorage.getItem("tamilanda_wallet_data") || "{}"
           );
-
+        } catch (error) {
+          walletData = {};
         }
 
+      }
 
-        function saveData() {
+      walletData.trash = Array.isArray(walletData.trash)
+        ? walletData.trash
+        : [];
 
-          try {
+      walletData.accounts = Array.isArray(walletData.accounts)
+        ? walletData.accounts
+        : [];
 
-            if (
-              window.TamilandaWallet &&
-              typeof window.TamilandaWallet.save === "function"
-            ) {
+      walletData.transactions = Array.isArray(walletData.transactions)
+        ? walletData.transactions
+        : [];
 
-              window.TamilandaWallet.save();
+      walletData.buyers = Array.isArray(walletData.buyers)
+        ? walletData.buyers
+        : [];
 
-              return true;
+      walletData.moneyToGive = Array.isArray(walletData.moneyToGive)
+        ? walletData.moneyToGive
+        : [];
 
-            }
+      walletData.myEmis = Array.isArray(walletData.myEmis)
+        ? walletData.myEmis
+        : [];
 
+      walletData.recurringBills = Array.isArray(walletData.recurringBills)
+        ? walletData.recurringBills
+        : [];
 
-            localStorage.setItem(
-              "tamilanda_wallet_data",
-              JSON.stringify(walletData)
-            );
-
-            return true;
-
-          } catch (error) {
-
-            console.error(
-              "Trash save failed:",
-              error
-            );
-
-            return false;
-
-          }
-
-        }
+      return walletData;
+    }
 
 
-        /* =========================
-           FIND RECORD
-        ========================== */
+    function saveData() {
 
-        function recordExists(
-          collectionName,
-          record
+      try {
+
+        if (
+          window.TamilandaWallet &&
+          typeof window.TamilandaWallet.save === "function"
         ) {
+          window.TamilandaWallet.save(walletData);
+          return;
+        }
+
+      } catch (error) {
+        console.warn("Wallet save failed:", error);
+      }
+
+      localStorage.setItem(
+        "tamilanda_wallet_data",
+        JSON.stringify(walletData)
+      );
+    }
+
+
+    /* --------------------------------
+       HELPERS
+    -------------------------------- */
+
+    function escapeHtml(value) {
+
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+
+    function formatMoney(value) {
+
+      const amount = Number(value || 0);
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.formatMoney === "function"
+      ) {
+        return window.TamilandaWallet.formatMoney(amount);
+      }
+
+      return "₹" + amount.toLocaleString("en-IN", {
+        maximumFractionDigits: 2
+      });
+    }
+
+
+    function getItemCollection(item) {
+
+      const value =
+        item.originalCollection ||
+        item.collection ||
+        item.type ||
+        "";
+
+      const map = {
+
+        transaction: "transactions",
+        transactions: "transactions",
+
+        buyer: "buyers",
+        buyers: "buyers",
+
+        account: "accounts",
+        accounts: "accounts",
+
+        give: "moneyToGive",
+        moneyToGive: "moneyToGive",
+
+        emi: "myEmis",
+        myEmis: "myEmis",
+
+        recurring: "recurringBills",
+        recurringBills: "recurringBills"
+
+      };
+
+      return map[value] || value;
+    }
+
+
+    function getOriginalData(item) {
+
+      if (item.data && typeof item.data === "object") {
+        return item.data;
+      }
+
+      if (item.record && typeof item.record === "object") {
+        return item.record;
+      }
+
+      if (item.item && typeof item.item === "object") {
+        return item.item;
+      }
+
+      return null;
+    }
+
+
+    function getItemId(item) {
+
+      const data = getOriginalData(item);
+
+      return (
+        item.recordId ||
+        item.originalId ||
+        item.itemId ||
+        (data && data.id) ||
+        null
+      );
+    }
+
+
+    function getItemTitle(item) {
+
+      const data = getOriginalData(item);
+      const collection = getItemCollection(item);
+
+      if (!data) {
+        return item.name || item.title || "Deleted Item";
+      }
+
+      if (collection === "transactions") {
+        return (
+          data.description ||
+          data.category ||
+          "Transaction"
+        );
+      }
+
+      if (collection === "buyers") {
+        return data.name || "Buyer";
+      }
+
+      if (collection === "accounts") {
+        return data.name || "Account";
+      }
+
+      if (collection === "moneyToGive") {
+        return data.personName || data.name || "Money To Give";
+      }
+
+      if (collection === "myEmis") {
+        return data.name || data.personName || "EMI";
+      }
+
+      if (collection === "recurringBills") {
+        return data.name || "Recurring Payment";
+      }
+
+      return data.name || data.title || "Deleted Item";
+    }
+
+
+    function getItemAmount(item) {
+
+      const data = getOriginalData(item);
+
+      if (!data) {
+        return Number(item.amount || 0);
+      }
+
+      return Number(
+        data.amount ??
+        data.totalAmount ??
+        data.total ??
+        0
+      );
+    }
+
+
+    function getDeletedDate(item) {
+
+      return (
+        item.deletedAt ||
+        item.deletedDate ||
+        item.date ||
+        ""
+      );
+    }
+
+
+    function formatDate(dateValue) {
+
+      if (!dateValue) return "Unknown date";
+
+      const date = new Date(dateValue);
+
+      if (Number.isNaN(date.getTime())) {
+        return String(dateValue);
+      }
+
+      return date.toLocaleString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+
+    function getIcon(collection) {
+
+      const icons = {
+        transactions: "↔️",
+        buyers: "👤",
+        accounts: "🏦",
+        moneyToGive: "💸",
+        myEmis: "💳",
+        recurringBills: "🔄"
+      };
+
+      return icons[collection] || "🗑️";
+    }
+
+
+    function getTypeName(collection) {
+
+      const names = {
+        transactions: "Transaction",
+        buyers: "Buyer",
+        accounts: "Account",
+        moneyToGive: "Money To Give",
+        myEmis: "My EMI",
+        recurringBills: "Recurring Payment"
+      };
+
+      return names[collection] || "Deleted Item";
+    }
+
+
+    /* --------------------------------
+       FILTER
+    -------------------------------- */
+
+    function setFilter(filter, button) {
+
+      currentFilter = filter;
+
+      document
+        .querySelectorAll(".filter-btn")
+        .forEach(btn => btn.classList.remove("active"));
+
+      if (button) {
+        button.classList.add("active");
+      }
+
+      render();
+    }
+
+
+    function getFilteredItems() {
+
+      const search =
+        String(
+          document.getElementById("searchInput").value || ""
+        )
+        .trim()
+        .toLowerCase();
+
+      return walletData.trash
+        .filter(item => {
+
+          const collection = getItemCollection(item);
 
           if (
-            !collectionName ||
-            !record ||
-            !Array.isArray(
-              walletData[collectionName]
-            )
+            currentFilter !== "all" &&
+            collection !== currentFilter
           ) {
-
             return false;
-
           }
 
+          if (!search) return true;
 
-          if (!record.id) {
+          const data = getOriginalData(item);
 
-            return false;
+          const searchable = [
+            getItemTitle(item),
+            getTypeName(collection),
+            data?.description,
+            data?.category,
+            data?.name,
+            data?.personName,
+            data?.phone,
+            data?.ffId,
+            data?.reason,
+            data?.note,
+            data?.notes,
+            data?.accountName
+          ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
 
-          }
+          return searchable.includes(search);
+        })
+        .sort((a, b) => {
 
+          const da = new Date(getDeletedDate(a)).getTime() || 0;
+          const db = new Date(getDeletedDate(b)).getTime() || 0;
 
-          return walletData[
-            collectionName
-          ].some(
-            existing =>
-              existing &&
-              existing.id === record.id
-          );
+          return db - da;
+        });
+    }
 
-        }
 
+    /* --------------------------------
+       SUMMARY
+    -------------------------------- */
 
-        /* =========================
-           RESTORE LEDGER
-        ========================== */
+    function updateSummary() {
 
-        function restoreTransactionLedger(
-          transaction
-        ) {
+      document.getElementById("deletedCount").textContent =
+        walletData.trash.length;
 
-          if (!transaction) {
+      const totalValue = walletData.trash.reduce(
+        (sum, item) => sum + getItemAmount(item),
+        0
+      );
 
-            return {
-              success: true
-            };
+      document.getElementById("deletedValue").textContent =
+        formatMoney(totalValue);
+    }
 
-          }
 
+    /* --------------------------------
+       RENDER
+    -------------------------------- */
 
-          const type =
-            transaction.type;
+    function render() {
 
+      loadWalletData();
+      updateSummary();
 
-          const amount =
-            Number(
-              transaction.amount
-            ) || 0;
+      const list = document.getElementById("trashList");
+      const items = getFilteredItems();
 
+      if (!items.length) {
 
-          if (
-            amount <= 0
-          ) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="emoji">🗑️</div>
+            <h3>Trash is empty</h3>
+            <div>No deleted items match this filter.</div>
+          </div>
+        `;
 
-            return {
-              success: true
-            };
+        return;
+      }
 
-          }
+      list.innerHTML = items.map(item => {
 
+        const collection = getItemCollection(item);
+        const title = getItemTitle(item);
+        const amount = getItemAmount(item);
+        const deletedDate = getDeletedDate(item);
 
-          /*
-           * Transfers are already represented
-           * by source/destination account changes.
-           * Do not change balances here.
-           */
+        return `
+          <div class="trash-card">
 
-          if (
-            type === "transfer"
-          ) {
+            <div class="trash-head">
 
-            return {
-              success: true
-            };
+              <div class="trash-title">
 
-          }
-
-
-          const accountId =
-            transaction.accountId ||
-            transaction.accountID;
-
-
-          if (!accountId) {
-
-            /*
-             * If there is no linked account,
-             * there is no balance to restore.
-             */
-
-            return {
-              success: true
-            };
-
-          }
-
-
-          const account =
-            walletData.accounts &&
-            walletData.accounts.find(
-              item =>
-                item &&
-                item.id === accountId
-            );
-
-
-          if (!account) {
-
-            return {
-              success: false,
-              message:
-                "Linked account was not found."
-            };
-
-          }
-
-
-          const currentBalance =
-            Number(account.balance) || 0;
-
-
-          /*
-           * Income was reduced when the
-           * income record was deleted.
-           * Restore = add it back.
-           */
-
-          if (
-            type === "income" ||
-            type === "buyer_payment" ||
-            type === "buyer_initial_payment"
-          ) {
-
-            account.balance =
-              currentBalance + amount;
-
-            return {
-              success: true
-            };
-
-          }
-
-
-          /*
-           * Expense was added back when the
-           * expense record was deleted.
-           * Restore = subtract it again.
-           */
-
-          if (
-            type === "expense" ||
-            type === "recurring_payment" ||
-            type === "emi_payment" ||
-            type === "money_to_give_payment"
-          ) {
-
-            if (
-              currentBalance < amount
-            ) {
-
-              return {
-                success: false,
-                message:
-                  "Not enough balance in the linked account to restore this expense."
-              };
-
-            }
-
-
-            account.balance =
-              currentBalance - amount;
-
-            return {
-              success: true
-            };
-
-          }
-
-
-          return {
-            success: true
-          };
-
-        }
-
-
-        /* =========================
-           RESTORE ONE ITEM
-        ========================== */
-
-        function restoreItem(index) {
-
-          const item =
-            walletData.trash[index];
-
-
-          if (!item) {
-
-            return {
-              success: false,
-              message: "Trash item not found."
-            };
-
-          }
-
-
-          const collectionName =
-            getCollectionName(item);
-
-
-          const original =
-            item.data;
-
-
-          if (
-            !collectionName ||
-            !original
-          ) {
-
-            return {
-              success: false,
-              message:
-                "This deleted item does not contain enough recovery information."
-            };
-
-          }
-
-
-          if (
-            !Array.isArray(
-              walletData[collectionName]
-            )
-          ) {
-
-            walletData[collectionName] = [];
-
-          }
-
-
-          /*
-           * If the record is already back in
-           * the active collection, simply remove
-           * the duplicate trash copy.
-           */
-
-          if (
-            recordExists(
-              collectionName,
-              original
-            )
-          ) {
-
-            walletData.trash.splice(
-              index,
-              1
-            );
-
-
-            return {
-              success: true,
-              alreadyRestored: true
-            };
-
-          }
-
-
-          /*
-           * Restore account records without
-           * changing their stored balance.
-           */
-
-          if (
-            collectionName === "accounts"
-          ) {
-
-            walletData.accounts.push(
-              original
-            );
-
-            walletData.trash.splice(
-              index,
-              1
-            );
-
-
-            return {
-              success: true
-            };
-
-          }
-
-
-          /*
-           * Restore transaction and its
-           * financial effect.
-           */
-
-          if (
-            collectionName === "transactions"
-          ) {
-
-            const ledgerResult =
-              restoreTransactionLedger(
-                original
-              );
-
-
-            if (
-              !ledgerResult.success
-            ) {
-
-              return ledgerResult;
-
-            }
-
-
-            walletData.transactions.push(
-              original
-            );
-
-            walletData.trash.splice(
-              index,
-              1
-            );
-
-
-            return {
-              success: true
-            };
-
-          }
-
-
-          /*
-           * Other collections do not directly
-           * change account balance when the
-           * parent record itself is restored.
-           */
-
-          walletData[
-            collectionName
-          ].push(
-            original
-          );
-
-
-          walletData.trash.splice(
-            index,
-            1
-          );
-
-
-          return {
-            success: true
-          };
-
-        }
-
-
-        /* =========================
-           SUMMARY
-        ========================== */
-
-        function updateSummary() {
-
-          const items =
-            Array.isArray(walletData.trash)
-              ? walletData.trash
-              : [];
-
-
-          const totalValue =
-            items.reduce(
-              (
-                sum,
-                item
-              ) =>
-                sum +
-                getItemAmount(item),
-              0
-            );
-
-
-          trashCount.textContent =
-            items.length;
-
-
-          trashValue.textContent =
-            formatMoney(
-              totalValue
-            );
-
-        }
-
-
-        /* =========================
-           RENDER
-        ========================== */
-
-        function render() {
-
-          updateSummary();
-
-
-          let items =
-            Array.isArray(walletData.trash)
-              ? [...walletData.trash]
-              : [];
-
-
-          if (
-            currentFilter !== "all"
-          ) {
-
-            items =
-              items.filter(
-                item =>
-                  getFilterType(item) ===
-                  currentFilter
-              );
-
-          }
-
-
-          items.sort(
-            (
-              first,
-              second
-            ) => {
-
-              const firstDate =
-                new Date(
-                  first.deletedAt ||
-                  first.deletedDate ||
-                  0
-                ).getTime();
-
-
-              const secondDate =
-                new Date(
-                  second.deletedAt ||
-                  second.deletedDate ||
-                  0
-                ).getTime();
-
-
-              return (
-                secondDate -
-                firstDate
-              );
-
-            }
-          );
-
-
-          if (
-            items.length === 0
-          ) {
-
-            trashList.innerHTML = `
-
-              <div class="empty-state">
-
-                <div class="empty-icon">
-                  🗑️
+                <div class="trash-icon">
+                  ${getIcon(collection)}
                 </div>
 
-                <div class="empty-title">
-                  Trash is empty
-                </div>
-
-                <div class="empty-text">
-                  Deleted records will appear here
-                  when something is moved to Trash.
+                <div>
+                  <h3>${escapeHtml(title)}</h3>
+                  <p>${escapeHtml(getTypeName(collection))}</p>
                 </div>
 
               </div>
 
-            `;
-
-            return;
-
-          }
-
-
-          trashList.innerHTML =
-            items
-              .map(
-                item => {
-
-                  const index =
-                    walletData.trash.indexOf(
-                      item
-                    );
-
-
-                  const amount =
-                    getItemAmount(item);
-
-
-                  const filterType =
-                    getFilterType(item);
-
-
-                  return `
-
-                    <div
-                      class="trash-item"
-                      data-index="${index}"
-                    >
-
-                      <div class="trash-item-top">
-
-                        <div class="trash-icon">
-                          ${getIcon(
-                            filterType
-                          )}
-                        </div>
-
-
-                        <div class="trash-content">
-
-                          <div class="trash-title">
-                            ${escapeHtml(
-                              getItemTitle(item)
-                            )}
-                          </div>
-
-
-                          <div class="trash-subtitle">
-
-                            ${escapeHtml(
-                              getTypeName(item.type)
-                            )}
-
-                            • Deleted:
-                            ${escapeHtml(
-                              getDeletedDate(item)
-                            )}
-
-                          </div>
-
-
-                          ${
-                            amount > 0
-                              ? `
-                                <div class="trash-amount">
-                                  ${escapeHtml(
-                                    formatMoney(amount)
-                                  )}
-                                </div>
-                              `
-                              : ""
-                          }
-
-                        </div>
-
-                      </div>
-
-
-                      <div class="trash-actions">
-
-                        <button
-                          class="item-button restore-button"
-                          data-index="${index}"
-                        >
-                          ♻️ Restore
-                        </button>
-
-
-                        <button
-                          class="item-button delete-button"
-                          data-index="${index}"
-                        >
-                          🗑️ Delete Permanently
-                        </button>
-
-                      </div>
-
-                    </div>
-
-                  `;
-
-                }
-              )
-              .join("");
-
-
-          /* =========================
-             RESTORE BUTTON
-          ========================== */
-
-          trashList
-            .querySelectorAll(
-              ".restore-button"
-            )
-            .forEach(
-              button => {
-
-                button.addEventListener(
-                  "click",
-                  () => {
-
-                    const index =
-                      Number(
-                        button.dataset.index
-                      );
-
-
-                    if (
-                      !walletData.trash[index]
-                    ) {
-
-                      return;
-
-                    }
-
-
-                    const confirmed =
-                      confirm(
-                        "Restore this item to your wallet?"
-                      );
-
-
-                    if (!confirmed) {
-
-                      return;
-
-                    }
-
-
-                    const result =
-                      restoreItem(index);
-
-
-                    if (
-                      !result.success
-                    ) {
-
-                      alert(
-                        result.message ||
-                        "Unable to restore this item."
-                      );
-
-                      return;
-
-                    }
-
-
-                    if (!saveData()) {
-
-                      alert(
-                        "Restore completed in memory, but saving failed. Please try again."
-                      );
-
-                      return;
-
-                    }
-
-
-                    render();
-
-
-                    alert(
-                      result.alreadyRestored
-                        ? "This item was already restored."
-                        : "Item restored successfully. ♻️"
-                    );
-
-                  }
-                );
-
+              ${
+                amount > 0
+                  ? `<div class="amount">${escapeHtml(formatMoney(amount))}</div>`
+                  : ""
               }
-            );
 
+            </div>
 
-          /* =========================
-             PERMANENT DELETE
-          ========================== */
+            <div class="meta">
 
-          trashList
-            .querySelectorAll(
-              ".delete-button"
-            )
-            .forEach(
-              button => {
+              <span class="tag">
+                ${escapeHtml(getTypeName(collection))}
+              </span>
 
-                button.addEventListener(
-                  "click",
-                  () => {
-
-                    const index =
-                      Number(
-                        button.dataset.index
-                      );
-
-
-                    if (
-                      !walletData.trash[index]
-                    ) {
-
-                      return;
-
-                    }
-
-
-                    const confirmed =
-                      confirm(
-                        "Permanently delete this item?\n\nThis cannot be undone."
-                      );
-
-
-                    if (!confirmed) {
-
-                      return;
-
-                    }
-
-
-                    walletData.trash.splice(
-                      index,
-                      1
-                    );
-
-
-                    if (!saveData()) {
-
-                      alert(
-                        "Unable to save the change."
-                      );
-
-                      return;
-
-                    }
-
-
-                    render();
-
-                  }
-                );
-
+              ${
+                getItemId(item)
+                  ? `<span class="tag">ID: ${escapeHtml(getItemId(item))}</span>`
+                  : ""
               }
-            );
 
+            </div>
+
+            <div class="deleted-date">
+              Deleted: ${escapeHtml(formatDate(deletedDate))}
+            </div>
+
+            <div class="card-actions">
+
+              <button
+                class="small-btn restore-btn"
+                onclick="restoreItem('${escapeHtml(String(item.id || getItemId(item) || ""))}')"
+              >
+                ↩ Restore
+              </button>
+
+              <button
+                class="small-btn delete-btn"
+                onclick="permanentDelete('${escapeHtml(String(item.id || getItemId(item) || ""))}')"
+              >
+                Delete Forever
+              </button>
+
+            </div>
+
+          </div>
+        `;
+
+      }).join("");
+    }
+
+
+    /* --------------------------------
+       FIND TRASH ITEM
+    -------------------------------- */
+
+    function findTrashIndex(identifier) {
+
+      return walletData.trash.findIndex(item => {
+
+        const trashId = String(item.id || "");
+
+        const recordId = String(getItemId(item) || "");
+
+        return (
+          trashId === String(identifier) ||
+          recordId === String(identifier)
+        );
+
+      });
+    }
+
+
+    /* --------------------------------
+       CHECK DUPLICATE
+    -------------------------------- */
+
+    function recordAlreadyExists(collection, record) {
+
+      if (!collection || !record || !record.id) {
+        return false;
+      }
+
+      if (!Array.isArray(walletData[collection])) {
+        return false;
+      }
+
+      return walletData[collection].some(
+        existing => String(existing.id) === String(record.id)
+      );
+    }
+
+
+    /* --------------------------------
+       RESTORE TRANSACTION LEDGER
+    -------------------------------- */
+
+    function restoreTransactionLedger(transaction) {
+
+      if (!transaction) {
+        return {
+          success: true,
+          changed: false
+        };
+      }
+
+      const type = transaction.type;
+
+      /*
+        Transfer transactions represent movement between
+        accounts. We do NOT change balances here because
+        transfer restoration must not double-apply balances.
+      */
+
+      if (type === "transfer") {
+
+        return {
+          success: true,
+          changed: false
+        };
+      }
+
+
+      const accountId =
+        transaction.accountId ||
+        transaction.account ||
+        transaction.fromAccountId;
+
+
+      if (!accountId) {
+
+        /*
+          No linked account means there is no balance to restore.
+        */
+
+        return {
+          success: true,
+          changed: false
+        };
+      }
+
+
+      const account = walletData.accounts.find(
+        acc => String(acc.id) === String(accountId)
+      );
+
+
+      if (!account) {
+
+        return {
+          success: false,
+          changed: false,
+          message:
+            "The linked account no longer exists. Restore the account first."
+        };
+      }
+
+
+      const amount = Number(transaction.amount || 0);
+
+
+      if (!Number.isFinite(amount) || amount <= 0) {
+
+        return {
+          success: true,
+          changed: false
+        };
+      }
+
+
+      /*
+        Income / buyer payments:
+        Deleted transaction had previously increased balance.
+        Restore = increase balance again.
+      */
+
+      const incomeTypes = [
+        "income",
+        "buyer_payment",
+        "buyer_initial_payment"
+      ];
+
+
+      if (incomeTypes.includes(type)) {
+
+        account.balance =
+          Number(account.balance || 0) + amount;
+
+        return {
+          success: true,
+          changed: true
+        };
+      }
+
+
+      /*
+        Expense / payment transactions:
+        Deleted transaction had previously decreased balance.
+        Restore = decrease balance again.
+      */
+
+      const expenseTypes = [
+        "expense",
+        "emi_payment",
+        "recurring_payment",
+        "money_to_give_payment"
+      ];
+
+
+      if (expenseTypes.includes(type)) {
+
+        const currentBalance =
+          Number(account.balance || 0);
+
+
+        if (currentBalance < amount) {
+
+          return {
+            success: false,
+            changed: false,
+            message:
+              `Not enough balance in "${account.name || "linked account"}" to restore this transaction.`
+          };
         }
 
 
+        account.balance =
+          currentBalance - amount;
+
+
+        return {
+          success: true,
+          changed: true
+        };
+      }
+
+
+      /*
+        Unknown transaction types are restored without
+        changing the account balance.
+      */
+
+      return {
+        success: true,
+        changed: false
+      };
+    }
+
+
+    /* --------------------------------
+       RESTORE SINGLE ITEM
+    -------------------------------- */
+
+    function restoreItem(identifier) {
+
+      loadWalletData();
+
+      const index = findTrashIndex(identifier);
+
+      if (index < 0) {
+
+        alert("This trash item was not found.");
+        render();
+        return;
+      }
+
+
+      const trashItem = walletData.trash[index];
+      const collection = getItemCollection(trashItem);
+      const original = getOriginalData(trashItem);
+
+
+      if (!collection || !original) {
+
+        alert("This deleted item cannot be restored because its original data is missing.");
+        return;
+      }
+
+
+      if (!Array.isArray(walletData[collection])) {
+
+        alert("The original collection is not available.");
+        return;
+      }
+
+
+      /*
+        Duplicate protection:
+        If the record already exists, remove only the trash copy.
+        Do NOT apply financial balance again.
+      */
+
+      if (recordAlreadyExists(collection, original)) {
+
+        if (
+          !confirm(
+            "This item already exists in your wallet.\n\nRemove the duplicate trash copy?"
+          )
+        ) {
+          return;
+        }
+
+        walletData.trash.splice(index, 1);
+        saveData();
         render();
 
-
-        /* =========================
-           FILTERS
-        ========================== */
-
-        document
-          .querySelectorAll(
-            ".filter-button"
-          )
-          .forEach(
-            button => {
-
-              button.addEventListener(
-                "click",
-                () => {
-
-                  document
-                    .querySelectorAll(
-                      ".filter-button"
-                    )
-                    .forEach(
-                      item =>
-                        item.classList.remove(
-                          "active"
-                        )
-                    );
-
-
-                  button.classList.add(
-                    "active"
-                  );
-
-
-                  currentFilter =
-                    button.dataset.filter;
-
-
-                  render();
-
-                }
-              );
-
-            }
-          );
-
-
-        /* =========================
-           RESTORE ALL
-        ========================== */
-
-        document
-          .getElementById(
-            "restoreAllButton"
-          )
-          .addEventListener(
-            "click",
-            () => {
-
-              if (
-                walletData.trash.length ===
-                0
-              ) {
-
-                alert(
-                  "Trash is already empty."
-                );
-
-                return;
-
-              }
-
-
-              const confirmed =
-                confirm(
-                  "Restore all deleted items?\n\nFinancial transaction balances will also be restored."
-                );
-
-
-              if (!confirmed) {
-
-                return;
-
-              }
-
-
-              let restoredCount = 0;
-
-              let failedCount = 0;
-
-              const failedMessages = [];
-
-
-              /*
-               * Always process a copy of the
-               * current trash list.
-               */
-
-              let index = 0;
-
-
-              while (
-                index <
-                walletData.trash.length
-              ) {
-
-                const item =
-                  walletData.trash[index];
-
-
-                const result =
-                  restoreItem(index);
-
-
-                if (
-                  result.success
-                ) {
-
-                  restoredCount++;
-
-                  /*
-                   * restoreItem() removes the
-                   * current item, therefore do
-                   * not increment index.
-                   */
-
-                  continue;
-
-                }
-
-
-                failedCount++;
-
-                failedMessages.push(
-                  getItemTitle(item) +
-                  ": " +
-                  (
-                    result.message ||
-                    "Restore failed"
-                  )
-                );
-
-
-                /*
-                 * Failed item stays in Trash.
-                 */
-
-                index++;
-
-              }
-
-
-              if (!saveData()) {
-
-                alert(
-                  "Restore operation completed, but saving failed. Please check Backup & Restore."
-                );
-
-                return;
-
-              }
-
-
-              render();
-
-
-              if (
-                failedCount === 0
-              ) {
-
-                alert(
-                  restoredCount +
-                  " item(s) restored successfully. ♻️"
-                );
-
-                return;
-
-              }
-
-
-              alert(
-                restoredCount +
-                " item(s) restored.\n" +
-                failedCount +
-                " item(s) remain in Trash because they could not be restored."
-              );
-
-            }
-          );
-
-
-        /* =========================
-           EMPTY TRASH
-        ========================== */
-
-        document
-          .getElementById(
-            "emptyTrashButton"
-          )
-          .addEventListener(
-            "click",
-            () => {
-
-              if (
-                walletData.trash.length ===
-                0
-              ) {
-
-                alert(
-                  "Trash is already empty."
-                );
-
-                return;
-
-              }
-
-
-              const confirmed =
-                confirm(
-                  "Permanently delete everything in Trash?\n\nThis cannot be undone."
-                );
-
-
-              if (!confirmed) {
-
-                return;
-
-              }
-
-
-              walletData.trash = [];
-
-
-              if (!saveData()) {
-
-                alert(
-                  "Unable to empty Trash."
-                );
-
-                return;
-
-              }
-
-
-              render();
-
-
-              alert(
-                "Trash emptied permanently."
-              );
-
-            }
-          );
-
-
-        /* =========================
-           BACK
-        ========================== */
-
-        document
-          .getElementById(
-            "backButton"
-          )
-          .addEventListener(
-            "click",
-            () => {
-
-              if (
-                document.referrer
-              ) {
-
-                history.back();
-
-              } else {
-
-                window.location.href =
-                  "./more.html";
-
-              }
-
-            }
-          );
-
-
-        /* =========================
-           BOTTOM NAV
-        ========================== */
-
-        document
-          .querySelectorAll(
-            ".bottom-nav .nav-item"
-          )
-          .forEach(
-            item => {
-
-              item.addEventListener(
-                "click",
-                () => {
-
-                  const page =
-                    item.dataset.page;
-
-
-                  if (
-                    page === "home"
-                  ) {
-
-                    window.location.href =
-                      "../index.html";
-
-                    return;
-
-                  }
-
-
-                  if (
-                    page === "transactions"
-                  ) {
-
-                    window.location.href =
-                      "./transactions.html";
-
-                    return;
-
-                  }
-
-
-                  if (
-                    page === "buyers"
-                  ) {
-
-                    window.location.href =
-                      "./buyers.html";
-
-                    return;
-
-                  }
-
-
-                  if (
-                    page === "accounts"
-                  ) {
-
-                    window.location.href =
-                      "./accounts.html";
-
-                    return;
-
-                  }
-
-
-                  if (
-                    page === "more"
-                  ) {
-
-                    window.location.href =
-                      "./more.html";
-
-                    return;
-
-                  }
-
-                }
-              );
-
-            }
-          );
-
+        alert("Duplicate trash copy removed.");
+        return;
       }
-    );
+
+
+      const confirmed = confirm(
+        `Restore "${getItemTitle(trashItem)}"?`
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+
+      /*
+        Restore financial ledger first.
+        If balance is insufficient, keep item in Trash.
+      */
+
+      let ledgerResult = {
+        success: true,
+        changed: false
+      };
+
+
+      if (collection === "transactions") {
+
+        ledgerResult =
+          restoreTransactionLedger(original);
+
+        if (!ledgerResult.success) {
+
+          alert(
+            ledgerResult.message ||
+            "Transaction could not be restored."
+          );
+
+          return;
+        }
+      }
+
+
+      /*
+        Add original record back.
+      */
+
+      walletData[collection].push(
+        JSON.parse(JSON.stringify(original))
+      );
+
+
+      /*
+        Remove from Trash only after successful restoration.
+      */
+
+      walletData.trash.splice(index, 1);
+
+      saveData();
+
+      render();
+
+      alert("Item restored successfully. ✅");
+    }
+
+
+    /* --------------------------------
+       RESTORE ALL
+    -------------------------------- */
+
+    function restoreAll() {
+
+      loadWalletData();
+
+      if (!walletData.trash.length) {
+
+        alert("Trash is already empty.");
+        return;
+      }
+
+
+      if (
+        !confirm(
+          `Restore all ${walletData.trash.length} deleted items?`
+        )
+      ) {
+        return;
+      }
+
+
+      /*
+        We work on a copy because failed items must remain
+        safely in Trash.
+      */
+
+      const pendingItems =
+        walletData.trash
+          .slice()
+          .sort((a, b) => {
+
+            /*
+              Non-transaction records first.
+              Transactions are restored after their
+              parent records are back.
+            */
+
+            const ca = getItemCollection(a);
+            const cb = getItemCollection(b);
+
+            if (ca === "transactions" && cb !== "transactions") {
+              return 1;
+            }
+
+            if (ca !== "transactions" && cb === "transactions") {
+              return -1;
+            }
+
+            return 0;
+          });
+
+
+      let restored = 0;
+      let skipped = 0;
+      let failed = 0;
+
+
+      for (const trashItem of pendingItems) {
+
+        const collection = getItemCollection(trashItem);
+        const original = getOriginalData(trashItem);
+
+
+        if (!collection || !original) {
+
+          failed++;
+          continue;
+        }
+
+
+        if (!Array.isArray(walletData[collection])) {
+
+          failed++;
+          continue;
+        }
+
+
+        /*
+          Duplicate already exists:
+          Remove trash copy without touching balance.
+        */
+
+        if (recordAlreadyExists(collection, original)) {
+
+          const index = findTrashIndex(
+            trashItem.id || getItemId(trashItem)
+          );
+
+          if (index >= 0) {
+            walletData.trash.splice(index, 1);
+            skipped++;
+          }
+
+          continue;
+        }
+
+
+        let ledgerResult = {
+          success: true,
+          changed: false
+        };
+
+
+        if (collection === "transactions") {
+
+          ledgerResult =
+            restoreTransactionLedger(original);
+
+          if (!ledgerResult.success) {
+
+            failed++;
+            continue;
+          }
+        }
+
+
+        walletData[collection].push(
+          JSON.parse(JSON.stringify(original))
+        );
+
+
+        const index = findTrashIndex(
+          trashItem.id || getItemId(trashItem)
+        );
+
+
+        if (index >= 0) {
+          walletData.trash.splice(index, 1);
+        }
+
+
+        restored++;
+      }
+
+
+      saveData();
+      render();
+
+
+      let message =
+        `Restore complete.\n\n` +
+        `Restored: ${restored}\n` +
+        `Already existed: ${skipped}\n` +
+        `Could not restore: ${failed}`;
+
+
+      if (failed > 0) {
+
+        message +=
+          `\n\nItems that could not be restored remain safely in Trash.`;
+      }
+
+
+      alert(message);
+    }
+
+
+    /* --------------------------------
+       PERMANENT DELETE
+    -------------------------------- */
+
+    function permanentDelete(identifier) {
+
+      loadWalletData();
+
+      const index = findTrashIndex(identifier);
+
+      if (index < 0) {
+
+        alert("Trash item not found.");
+        render();
+        return;
+      }
+
+
+      const item = walletData.trash[index];
+
+
+      if (
+        !confirm(
+          `Permanently delete "${getItemTitle(item)}"?\n\nThis cannot be undone.`
+        )
+      ) {
+        return;
+      }
+
+
+      /*
+        Permanent deletion ONLY removes the Trash copy.
+        It does not touch active records or balances.
+      */
+
+      walletData.trash.splice(index, 1);
+
+      saveData();
+      render();
+
+      alert("Item permanently deleted.");
+    }
+
+
+    /* --------------------------------
+       EMPTY TRASH
+    -------------------------------- */
+
+    function emptyTrash() {
+
+      loadWalletData();
+
+      if (!walletData.trash.length) {
+
+        alert("Trash is already empty.");
+        return;
+      }
+
+
+      if (
+        !confirm(
+          `Permanently delete all ${walletData.trash.length} items?\n\nThis cannot be undone.`
+        )
+      ) {
+        return;
+      }
+
+
+      /*
+        Empty Trash only clears deleted copies.
+        Active wallet data and account balances are untouched.
+      */
+
+      walletData.trash = [];
+
+      saveData();
+      render();
+
+      alert("Trash emptied permanently.");
+    }
+
+
+    /* --------------------------------
+       NAVIGATION
+    -------------------------------- */
+
+    function goBack() {
+
+      if (history.length > 1) {
+        history.back();
+      } else {
+        location.href = "../index.html";
+      }
+    }
+
+
+    /* --------------------------------
+       STORAGE SYNC
+    -------------------------------- */
+
+    window.addEventListener("storage", function(event) {
+
+      if (
+        event.key === "tamilanda_wallet_data"
+      ) {
+        render();
+      }
+
+    });
+
+
+    /* --------------------------------
+       INIT
+    -------------------------------- */
+
+    document.addEventListener("DOMContentLoaded", function() {
+
+      loadWalletData();
+      render();
+
+    });
 
   </script>
 
 </body>
-
 </html>
