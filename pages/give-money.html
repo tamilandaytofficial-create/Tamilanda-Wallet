@@ -2108,6 +2108,14 @@
       const paymentId =
         generateId();
 
+      /*
+        One permanent transaction id is shared by the payment
+        record and its expense transaction. This keeps the two
+        records strictly linked for future reconciliation.
+      */
+      const transactionId =
+        generateId();
+
 
       walletData.givePayments.push({
 
@@ -2132,6 +2140,9 @@
         source:
           "money_to_give_payment",
 
+        transactionId:
+          transactionId,
+
         createdAt:
           new Date().toISOString()
 
@@ -2146,7 +2157,7 @@
       walletData.transactions.push({
 
         id:
-          generateId(),
+          transactionId,
 
         type:
           "expense",
@@ -2181,6 +2192,9 @@
 
         paymentId:
           paymentId,
+
+        transactionId:
+          transactionId,
 
         createdAt:
           new Date().toISOString()
@@ -2220,8 +2234,10 @@
           walletData.transactions
             .filter(
               transaction =>
+                transaction.id !==
+                  transactionId &&
                 transaction.paymentId !==
-                paymentId
+                  paymentId
             );
 
 
