@@ -950,10 +950,20 @@ button:active {
 
     body {
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .app-header,
+    .main-content,
+    .dashboard-container {
+        width: 100%;
+        max-width: 720px;
     }
 
     #app {
+        width: 100%;
         max-width: 720px;
 
         box-shadow:
@@ -1015,4 +1025,255 @@ button:active {
         min-height: 70px;
     }
 
+}
+
+
+/* =========================================================
+   INDEX DASHBOARD COMPATIBILITY
+   Current index.html uses these class names.
+========================================================= */
+
+.dashboard-container {
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 18px 16px 110px;
+}
+
+.app-title {
+    color: var(--gold);
+    font-size: 17px;
+    line-height: 1;
+    letter-spacing: 1.4px;
+    font-weight: 900;
+}
+
+.app-subtitle {
+    display: block;
+    margin-top: 5px;
+    color: #ffffff;
+    font-size: 11px;
+    line-height: 1;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+.balance-amount {
+    position: relative;
+    z-index: 1;
+    margin-top: 7px;
+    color: #ffffff;
+    font-size: clamp(32px, 8vw, 44px);
+    line-height: 1.1;
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+
+.balance-note {
+    position: relative;
+    z-index: 1;
+    margin-top: 8px;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.income-text {
+    color: var(--green);
+}
+
+.expense-text {
+    color: var(--red);
+}
+
+.profit-text {
+    color: var(--gold);
+}
+
+.dashboard-section {
+    margin-top: 22px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.section-header h2 {
+    color: #ffffff;
+    font-size: 18px;
+    line-height: 1.2;
+    font-weight: 800;
+}
+
+.section-header p {
+    margin-top: 4px;
+    color: var(--text-muted);
+    font-size: 11px;
+}
+
+.quick-action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 82px;
+    padding: 10px 5px;
+    border-radius: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: #ffffff;
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+.quick-action:hover {
+    background: var(--surface-2);
+}
+
+.quick-action-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    margin-bottom: 7px;
+    border-radius: 11px;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.quick-action span:last-child {
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.overview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 9px;
+}
+
+.overview-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    padding: 15px;
+    border-radius: 15px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+}
+
+.overview-card .overview-icon {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 11px;
+    background: var(--surface-2);
+    font-size: 16px;
+}
+
+.overview-title {
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.overview-value {
+    margin-top: 4px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.account-preview,
+.transaction-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 51px;
+    background: transparent;
+    color: var(--text-muted);
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.bottom-nav-item span {
+    font-size: 20px;
+    line-height: 1;
+}
+
+.bottom-nav-item small {
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.bottom-nav-item.active {
+    color: var(--gold);
+}
+
+.bottom-nav-item.active span {
+    text-shadow:
+        0 0 18px rgba(255, 200, 87, 0.28);
+}
+
+@media (max-width: 420px) {
+    .dashboard-container {
+        padding-left: 13px;
+        padding-right: 13px;
+    }
+
+    .overview-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-action {
+        min-height: 76px;
+    }
+
+    .quick-action span:last-child {
+        font-size: 10px;
+    }
+
+    .balance-amount {
+        font-size: 32px;
+    }
+}
+
+@media (max-width: 350px) {
+    .app-title {
+        font-size: 15px;
+    }
+
+    .app-subtitle {
+        font-size: 9px;
+        letter-spacing: 2px;
+    }
+
+    .summary-value {
+        font-size: 17px;
+    }
+
+    .quick-actions {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .quick-action {
+        min-height: 70px;
+    }
 }
