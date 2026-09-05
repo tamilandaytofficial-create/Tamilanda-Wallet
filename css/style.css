@@ -1766,3 +1766,36 @@ nav.bottom-nav > a.active {
     scale: 1 !important;
     font-size: 10px !important;
 }
+
+
+/* =========================================================
+   TAMILANDA WALLET — DARK SELECT / DROPDOWN FIX
+   Prevent native <select> option lists from showing white.
+   ========================================================= */
+
+select,
+select:focus,
+select:active {
+    color-scheme: dark !important;
+    background-color: var(--bg-card, #15121d) !important;
+    color: var(--text-primary, #ffffff) !important;
+}
+
+select option,
+select optgroup {
+    background-color: #15121d !important;
+    color: #ffffff !important;
+}
+
+select option:checked,
+select option:hover,
+select option:focus {
+    background-color: #2a2238 !important;
+    color: #ffffff !important;
+}
+
+/* Keep dropdown controls consistent across every page */
+select {
+    -webkit-appearance: auto;
+    appearance: auto;
+}
