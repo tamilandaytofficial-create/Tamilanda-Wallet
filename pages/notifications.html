@@ -1,0 +1,1863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Notifications - Tamilanda Wallet</title>
+
+  <link
+    rel="manifest"
+    href="../manifest.json"
+  >
+
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="192x192"
+    href="../icons/icon-192.png"
+  >
+
+  <link
+    rel="apple-touch-icon"
+    href="../icons/icon-192.png"
+  >
+
+  <link
+    rel="stylesheet"
+    href="../css/style.css"
+  >
+
+  <style>
+
+    .notifications-page {
+      padding-bottom: 110px;
+    }
+
+
+    /* =========================
+       HEADER
+    ========================== */
+
+    .notifications-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+
+    .back-button {
+      width: 42px;
+      height: 42px;
+
+      border: 0;
+      border-radius: 13px;
+
+      background: rgba(255,255,255,0.06);
+      color: inherit;
+
+      font-size: 24px;
+
+      cursor: pointer;
+    }
+
+
+    .notifications-header-text {
+      flex: 1;
+    }
+
+
+    .notifications-header h1 {
+      margin: 0 0 4px;
+      font-size: 23px;
+    }
+
+
+    .notifications-header p {
+      margin: 0;
+      font-size: 12px;
+      opacity: 0.55;
+    }
+
+
+    /* =========================
+       SUMMARY
+    ========================== */
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+
+      margin-bottom: 24px;
+    }
+
+
+    .summary-card {
+      padding: 16px;
+
+      border-radius: 17px;
+
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.035);
+    }
+
+
+    .summary-icon {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+
+    .summary-label {
+      font-size: 11px;
+      opacity: 0.5;
+      margin-bottom: 4px;
+    }
+
+
+    .summary-value {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+
+    /* =========================
+       FILTERS
+    ========================== */
+
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+
+      overflow-x: auto;
+
+      padding-bottom: 5px;
+      margin-bottom: 18px;
+    }
+
+
+    .filter-button {
+      flex: 0 0 auto;
+
+      border: 1px solid rgba(255,255,255,0.08);
+
+      background: rgba(255,255,255,0.035);
+
+      color: inherit;
+
+      border-radius: 20px;
+
+      padding: 8px 13px;
+
+      font-size: 12px;
+
+      cursor: pointer;
+    }
+
+
+    .filter-button.active {
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.18);
+    }
+
+
+    /* =========================
+       SECTION
+    ========================== */
+
+    .section-title {
+      margin: 0 0 10px 3px;
+
+      font-size: 13px;
+      font-weight: 700;
+
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+
+      opacity: 0.5;
+    }
+
+
+    /* =========================
+       NOTIFICATION ITEM
+    ========================== */
+
+    .notification-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+
+    .notification-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+
+      padding: 15px;
+
+      border-radius: 17px;
+
+      border: 1px solid rgba(255,255,255,0.08);
+
+      background: rgba(255,255,255,0.035);
+    }
+
+
+    .notification-icon {
+      width: 43px;
+      height: 43px;
+
+      min-width: 43px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 13px;
+
+      background: rgba(255,255,255,0.07);
+
+      font-size: 20px;
+    }
+
+
+    .notification-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+
+    .notification-title {
+      font-size: 14px;
+      font-weight: 700;
+
+      margin-bottom: 4px;
+    }
+
+
+    .notification-description {
+      font-size: 12px;
+      line-height: 1.5;
+
+      opacity: 0.55;
+    }
+
+
+    .notification-amount {
+      margin-top: 7px;
+
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+
+    .notification-meta {
+      margin-top: 5px;
+
+      font-size: 11px;
+      opacity: 0.45;
+    }
+
+
+    .status-badge {
+      display: inline-flex;
+
+      padding: 5px 8px;
+
+      border-radius: 20px;
+
+      font-size: 10px;
+      font-weight: 700;
+
+      background: rgba(255,255,255,0.07);
+    }
+
+
+    /* =========================
+       EMPTY STATE
+    ========================== */
+
+    .empty-state {
+      text-align: center;
+
+      padding: 35px 20px;
+
+      border-radius: 18px;
+
+      border: 1px dashed rgba(255,255,255,0.1);
+
+      background: rgba(255,255,255,0.02);
+    }
+
+
+    .empty-icon {
+      font-size: 34px;
+      margin-bottom: 10px;
+    }
+
+
+    .empty-title {
+      font-size: 15px;
+      font-weight: 700;
+
+      margin-bottom: 5px;
+    }
+
+
+    .empty-text {
+      font-size: 12px;
+      line-height: 1.5;
+
+      opacity: 0.5;
+    }
+
+
+    /* =========================
+       FOOTER
+    ========================== */
+
+    .page-footer {
+      margin-top: 28px;
+
+      text-align: center;
+
+      font-size: 11px;
+      line-height: 1.6;
+
+      opacity: 0.35;
+    }
+
+
+    @media (max-width: 360px) {
+
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+  </style>
+</head>
+
+
+<body>
+
+  <div class="app-container">
+
+    <main class="page-content notifications-page">
+
+
+      <!-- =========================
+           HEADER
+      ========================== -->
+
+      <div class="notifications-header">
+
+        <button
+          class="back-button"
+          id="backButton"
+          aria-label="Go back"
+        >
+          ‹
+        </button>
+
+
+        <div class="notifications-header-text">
+
+          <h1>
+            Notifications
+          </h1>
+
+          <p>
+            Upcoming and overdue payments
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- =========================
+           SUMMARY
+      ========================== -->
+
+      <div class="summary-grid">
+
+
+        <div class="summary-card">
+
+          <div class="summary-icon">
+            🔴
+          </div>
+
+          <div class="summary-label">
+            Overdue
+          </div>
+
+          <div
+            class="summary-value"
+            id="overdueCount"
+          >
+            0
+          </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+          <div class="summary-icon">
+            🟡
+          </div>
+
+          <div class="summary-label">
+            Upcoming
+          </div>
+
+          <div
+            class="summary-value"
+            id="upcomingCount"
+          >
+            0
+          </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+          <div class="summary-icon">
+            📥
+          </div>
+
+          <div class="summary-label">
+            To Receive
+          </div>
+
+          <div
+            class="summary-value"
+            id="toReceive"
+          >
+            ₹0
+          </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+          <div class="summary-icon">
+            📤
+          </div>
+
+          <div class="summary-label">
+            To Pay
+          </div>
+
+          <div
+            class="summary-value"
+            id="toPay"
+          >
+            ₹0
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =========================
+           FILTERS
+      ========================== -->
+
+      <div class="filter-bar">
+
+        <button
+          class="filter-button active"
+          data-filter="all"
+        >
+          All
+        </button>
+
+        <button
+          class="filter-button"
+          data-filter="overdue"
+        >
+          Overdue
+        </button>
+
+        <button
+          class="filter-button"
+          data-filter="upcoming"
+        >
+          Upcoming
+        </button>
+
+        <button
+          class="filter-button"
+          data-filter="receive"
+        >
+          To Receive
+        </button>
+
+        <button
+          class="filter-button"
+          data-filter="pay"
+        >
+          To Pay
+        </button>
+
+      </div>
+
+
+      <!-- =========================
+           LIST
+      ========================== -->
+
+      <div class="section-title">
+        Payment Alerts
+      </div>
+
+
+      <div
+        class="notification-list"
+        id="notificationList"
+      ></div>
+
+
+      <!-- =========================
+           FOOTER
+      ========================== -->
+
+      <div class="page-footer">
+
+        TAMILANDA WALLET
+
+        <br>
+
+        Stay on top of your money. 🔔
+
+      </div>
+
+    </main>
+
+
+    <!-- =========================
+         BOTTOM NAVIGATION
+    ========================== -->
+
+    <nav class="bottom-nav">
+
+
+      <button
+        class="nav-item"
+        data-page="home"
+      >
+
+        <span class="nav-icon">
+          🏠
+        </span>
+
+        <span class="nav-label">
+          Home
+        </span>
+
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="transactions"
+      >
+
+        <span class="nav-icon">
+          📋
+        </span>
+
+        <span class="nav-label">
+          Transactions
+        </span>
+
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="buyers"
+      >
+
+        <span class="nav-icon">
+          👤
+        </span>
+
+        <span class="nav-label">
+          Buyers
+        </span>
+
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="accounts"
+      >
+
+        <span class="nav-icon">
+          🏦
+        </span>
+
+        <span class="nav-label">
+          Accounts
+        </span>
+
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="more"
+      >
+
+        <span class="nav-icon">
+          ☰
+        </span>
+
+        <span class="nav-label">
+          More
+        </span>
+
+      </button>
+
+    </nav>
+
+  </div>
+
+
+  <!-- =========================
+       APP JS
+  ========================== -->
+
+  <script src="../js/app.js"></script>
+
+
+  <script>
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      () => {
+
+
+        /* =========================
+           DATA
+        ========================== */
+
+        let walletData =
+          window.TamilandaWallet &&
+          window.TamilandaWallet.getData
+            ? window.TamilandaWallet.getData()
+            : null;
+
+
+        if (!walletData) {
+
+          try {
+
+            walletData = JSON.parse(
+              localStorage.getItem(
+                "tamilanda_wallet_data"
+              )
+            ) || {};
+
+          } catch (error) {
+
+            walletData = {};
+
+          }
+
+        }
+
+
+        const accounts =
+          Array.isArray(walletData.accounts)
+            ? walletData.accounts
+            : [];
+
+
+        const buyers =
+          Array.isArray(walletData.buyers)
+            ? walletData.buyers
+            : [];
+
+
+        const moneyToGive =
+          Array.isArray(walletData.moneyToGive)
+            ? walletData.moneyToGive
+            : [];
+
+
+        const myEmis =
+          Array.isArray(walletData.myEmis)
+            ? walletData.myEmis
+            : [];
+
+
+        const recurringBills =
+          Array.isArray(walletData.recurringBills)
+            ? walletData.recurringBills
+            : [];
+
+
+        const buyerPayments =
+          Array.isArray(walletData.buyerPayments)
+            ? walletData.buyerPayments
+            : [];
+
+
+        const givePayments =
+          Array.isArray(walletData.givePayments)
+            ? walletData.givePayments
+            : [];
+
+
+        const emiPayments =
+          Array.isArray(walletData.emiPayments)
+            ? walletData.emiPayments
+            : [];
+
+
+        const recurringPayments =
+          Array.isArray(walletData.recurringPayments)
+            ? walletData.recurringPayments
+            : [];
+
+
+        /* =========================
+           HELPERS
+        ========================== */
+
+        function money(value) {
+
+          const amount =
+            Number(value) || 0;
+
+          if (
+            window.TamilandaWallet &&
+            typeof window.TamilandaWallet.formatMoney
+              === "function"
+          ) {
+
+            return window.TamilandaWallet.formatMoney(
+              amount
+            );
+
+          }
+
+          return "₹" +
+            amount.toLocaleString("en-IN", {
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 2
+            });
+
+        }
+
+
+        function dateOnly(value) {
+
+          if (!value) {
+            return null;
+          }
+
+          const date =
+            new Date(value);
+
+          if (isNaN(date.getTime())) {
+            return null;
+          }
+
+          date.setHours(
+            0,
+            0,
+            0,
+            0
+          );
+
+          return date;
+
+        }
+
+
+        function today() {
+
+          const date =
+            new Date();
+
+          date.setHours(
+            0,
+            0,
+            0,
+            0
+          );
+
+          return date;
+
+        }
+
+
+        function daysBetween(
+          first,
+          second
+        ) {
+
+          const difference =
+            first.getTime() -
+            second.getTime();
+
+          return Math.round(
+            difference /
+            (1000 * 60 * 60 * 24)
+          );
+
+        }
+
+
+        function formatDate(value) {
+
+          const date =
+            dateOnly(value);
+
+          if (!date) {
+            return "No due date";
+          }
+
+          return date.toLocaleDateString(
+            "en-IN",
+            {
+              day: "2-digit",
+              month: "short",
+              year: "numeric"
+            }
+          );
+
+        }
+
+
+        function escapeHtml(value) {
+
+          if (
+            value === null ||
+            value === undefined
+          ) {
+
+            return "";
+
+          }
+
+          return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+        }
+
+
+        function getAccountName(accountId) {
+
+          const account =
+            accounts.find(
+              item =>
+                String(item.id) ===
+                String(accountId)
+            );
+
+          return account
+            ? account.name
+            : "";
+
+        }
+
+
+        /* =========================
+           BUILD ALERTS
+        ========================== */
+
+        const alerts = [];
+
+
+        /*
+         * FF Buyers
+         */
+
+        buyers.forEach(
+          buyer => {
+
+            const total =
+              Number(buyer.totalAmount) || 0;
+
+            const initial =
+              Number(buyer.initialPayment) || 0;
+
+            const received =
+              buyerPayments
+                .filter(
+                  payment =>
+                    String(payment.buyerId) ===
+                    String(buyer.id)
+                )
+                .reduce(
+                  (
+                    sum,
+                    payment
+                  ) =>
+                    sum +
+                    (
+                      Number(
+                        payment.amount
+                      ) || 0
+                    ),
+                  0
+                );
+
+            const paid =
+              initial +
+              received;
+
+            const remaining =
+              Math.max(
+                0,
+                total - paid
+              );
+
+
+            if (
+              remaining <= 0
+            ) {
+
+              return;
+
+            }
+
+
+            const dueDate =
+              buyer.nextDueDate ||
+              buyer.dueDate;
+
+
+            const due =
+              dateOnly(dueDate);
+
+
+            if (!due) {
+
+              return;
+
+            }
+
+
+            const dayDifference =
+              daysBetween(
+                due,
+                today()
+              );
+
+
+            alerts.push({
+
+              type: "receive",
+
+              source: "buyer",
+
+              id: buyer.id,
+
+              title:
+                buyer.name ||
+                "FF Buyer",
+
+              description:
+                buyer.phone
+                  ? "Buyer • " +
+                    buyer.phone
+                  : "FF Buyer payment",
+
+              amount:
+                remaining,
+
+              dueDate:
+                dueDate,
+
+              dayDifference:
+                dayDifference,
+
+              icon:
+                "👤",
+
+              link:
+                "buyers.html"
+
+            });
+
+          }
+        );
+
+
+        /*
+         * Money To Give
+         */
+
+        moneyToGive.forEach(
+          item => {
+
+            const total =
+              Number(item.totalAmount) ||
+              Number(item.amount) ||
+              0;
+
+
+            const paid =
+              givePayments
+                .filter(
+                  payment =>
+                    String(payment.giveId) ===
+                    String(item.id)
+                )
+                .reduce(
+                  (
+                    sum,
+                    payment
+                  ) =>
+                    sum +
+                    (
+                      Number(
+                        payment.amount
+                      ) || 0
+                    ),
+                  0
+                );
+
+
+            const alreadyPaid =
+              Number(
+                item.alreadyPaid
+              ) || 0;
+
+
+            const remaining =
+              Math.max(
+                0,
+                total -
+                alreadyPaid -
+                paid
+              );
+
+
+            if (
+              remaining <= 0
+            ) {
+
+              return;
+
+            }
+
+
+            const dueDate =
+              item.dueDate;
+
+
+            const due =
+              dateOnly(dueDate);
+
+
+            if (!due) {
+
+              return;
+
+            }
+
+
+            const dayDifference =
+              daysBetween(
+                due,
+                today()
+              );
+
+
+            alerts.push({
+
+              type: "pay",
+
+              source: "give",
+
+              id: item.id,
+
+              title:
+                item.personName ||
+                item.name ||
+                "Money To Give",
+
+              description:
+                item.reason ||
+                "Pending payment",
+
+              amount:
+                remaining,
+
+              dueDate:
+                dueDate,
+
+              dayDifference:
+                dayDifference,
+
+              icon:
+                "🤝",
+
+              link:
+                "give-money.html"
+
+            });
+
+          }
+        );
+
+
+        /*
+         * My EMI
+         */
+
+        myEmis.forEach(
+          emi => {
+
+            const total =
+              Number(
+                emi.monthlyPayment
+              ) ||
+              Number(
+                emi.emiAmount
+              ) ||
+              Number(
+                emi.amount
+              ) ||
+              0;
+
+
+            if (
+              total <= 0
+            ) {
+
+              return;
+
+            }
+
+
+            const dueDate =
+              emi.nextPaymentDate ||
+              emi.nextDueDate ||
+              emi.dueDate;
+
+
+            const due =
+              dateOnly(dueDate);
+
+
+            if (!due) {
+
+              return;
+
+            }
+
+
+            const dayDifference =
+              daysBetween(
+                due,
+                today()
+              );
+
+
+            alerts.push({
+
+              type: "pay",
+
+              source: "emi",
+
+              id: emi.id,
+
+              title:
+                emi.name ||
+                emi.title ||
+                "EMI Payment",
+
+              description:
+                emi.lender ||
+                emi.bankName ||
+                "Monthly EMI",
+
+              amount:
+                total,
+
+              dueDate:
+                dueDate,
+
+              dayDifference:
+                dayDifference,
+
+              icon:
+                "📅",
+
+              link:
+                "emi.html"
+
+            });
+
+          }
+        );
+
+
+        /*
+         * Recurring Bills
+         */
+
+        recurringBills.forEach(
+          bill => {
+
+            if (
+              bill.active === false
+            ) {
+
+              return;
+
+            }
+
+
+            const amount =
+              Number(
+                bill.amount
+              ) || 0;
+
+
+            if (
+              amount <= 0
+            ) {
+
+              return;
+
+            }
+
+
+            const dueDate =
+              bill.nextDueDate;
+
+
+            const due =
+              dateOnly(dueDate);
+
+
+            if (!due) {
+
+              return;
+
+            }
+
+
+            const dayDifference =
+              daysBetween(
+                due,
+                today()
+              );
+
+
+            alerts.push({
+
+              type: "pay",
+
+              source: "recurring",
+
+              id: bill.id,
+
+              title:
+                bill.name ||
+                "Recurring Payment",
+
+              description:
+                bill.category ||
+                "Recurring bill",
+
+              amount:
+                amount,
+
+              dueDate:
+                dueDate,
+
+              dayDifference:
+                dayDifference,
+
+              icon:
+                "🔄",
+
+              link:
+                "recurring.html"
+
+            });
+
+          }
+        );
+
+
+        /* =========================
+           SORT
+        ========================== */
+
+        alerts.sort(
+          (
+            first,
+            second
+          ) => {
+
+            if (
+              first.dayDifference <
+              second.dayDifference
+            ) {
+
+              return -1;
+
+            }
+
+            if (
+              first.dayDifference >
+              second.dayDifference
+            ) {
+
+              return 1;
+
+            }
+
+            return 0;
+
+          }
+        );
+
+
+        /* =========================
+           SUMMARY
+        ========================== */
+
+        const overdueAlerts =
+          alerts.filter(
+            item =>
+              item.dayDifference < 0
+          );
+
+
+        const upcomingAlerts =
+          alerts.filter(
+            item =>
+              item.dayDifference >= 0
+          );
+
+
+        const receiveAmount =
+          alerts
+            .filter(
+              item =>
+                item.type === "receive"
+            )
+            .reduce(
+              (
+                total,
+                item
+              ) =>
+                total +
+                item.amount,
+              0
+            );
+
+
+        const payAmount =
+          alerts
+            .filter(
+              item =>
+                item.type === "pay"
+            )
+            .reduce(
+              (
+                total,
+                item
+              ) =>
+                total +
+                item.amount,
+              0
+            );
+
+
+        document.getElementById(
+          "overdueCount"
+        ).textContent =
+          overdueAlerts.length;
+
+
+        document.getElementById(
+          "upcomingCount"
+        ).textContent =
+          upcomingAlerts.length;
+
+
+        document.getElementById(
+          "toReceive"
+        ).textContent =
+          money(receiveAmount);
+
+
+        document.getElementById(
+          "toPay"
+        ).textContent =
+          money(payAmount);
+
+
+        /* =========================
+           RENDER
+        ========================== */
+
+        const list =
+          document.getElementById(
+            "notificationList"
+          );
+
+
+        function getStatus(item) {
+
+          if (
+            item.dayDifference < 0
+          ) {
+
+            return {
+              text:
+                Math.abs(
+                  item.dayDifference
+                ) +
+                " day" +
+                (
+                  Math.abs(
+                    item.dayDifference
+                  ) === 1
+                    ? ""
+                    : "s"
+                ) +
+                " overdue",
+
+              badge:
+                "OVERDUE"
+
+            };
+
+          }
+
+
+          if (
+            item.dayDifference === 0
+          ) {
+
+            return {
+              text:
+                "Due today",
+
+              badge:
+                "TODAY"
+
+            };
+
+          }
+
+
+          return {
+            text:
+              "Due in " +
+              item.dayDifference +
+              " day" +
+              (
+                item.dayDifference === 1
+                  ? ""
+                  : "s"
+              ),
+
+            badge:
+              "UPCOMING"
+
+          };
+
+        }
+
+
+        function render(
+          filter = "all"
+        ) {
+
+          let filtered =
+            alerts;
+
+
+          if (
+            filter === "overdue"
+          ) {
+
+            filtered =
+              alerts.filter(
+                item =>
+                  item.dayDifference < 0
+              );
+
+          }
+
+
+          if (
+            filter === "upcoming"
+          ) {
+
+            filtered =
+              alerts.filter(
+                item =>
+                  item.dayDifference >= 0
+              );
+
+          }
+
+
+          if (
+            filter === "receive"
+          ) {
+
+            filtered =
+              alerts.filter(
+                item =>
+                  item.type === "receive"
+              );
+
+          }
+
+
+          if (
+            filter === "pay"
+          ) {
+
+            filtered =
+              alerts.filter(
+                item =>
+                  item.type === "pay"
+              );
+
+          }
+
+
+          if (
+            filtered.length === 0
+          ) {
+
+            list.innerHTML = `
+
+              <div class="empty-state">
+
+                <div class="empty-icon">
+                  🔔
+                </div>
+
+                <div class="empty-title">
+                  No payment alerts
+                </div>
+
+                <div class="empty-text">
+                  You don't have any matching
+                  upcoming or overdue payments.
+                </div>
+
+              </div>
+
+            `;
+
+            return;
+
+          }
+
+
+          list.innerHTML =
+            filtered
+              .map(
+                item => {
+
+                  const status =
+                    getStatus(item);
+
+
+                  const direction =
+                    item.type === "receive"
+                      ? "To Receive"
+                      : "To Pay";
+
+
+                  return `
+
+                    <div
+                      class="notification-item"
+                      data-link="${escapeHtml(
+                        item.link
+                      )}"
+                      style="cursor:pointer;"
+                    >
+
+                      <div class="notification-icon">
+                        ${item.icon}
+                      </div>
+
+
+                      <div class="notification-content">
+
+                        <div class="notification-title">
+                          ${escapeHtml(
+                            item.title
+                          )}
+                        </div>
+
+
+                        <div class="notification-description">
+                          ${escapeHtml(
+                            item.description
+                          )}
+                        </div>
+
+
+                        <div class="notification-amount">
+                          ${escapeHtml(
+                            money(item.amount)
+                          )}
+                        </div>
+
+
+                        <div class="notification-meta">
+                          ${direction}
+                          •
+                          Due:
+                          ${escapeHtml(
+                            formatDate(
+                              item.dueDate
+                            )
+                          )}
+                          •
+                          ${escapeHtml(
+                            status.text
+                          )}
+                        </div>
+
+                      </div>
+
+
+                      <div>
+                        <span class="status-badge">
+                          ${status.badge}
+                        </span>
+                      </div>
+
+                    </div>
+
+                  `;
+
+                }
+              )
+              .join("");
+
+
+          list
+            .querySelectorAll(
+              ".notification-item"
+            )
+            .forEach(
+              item => {
+
+                item.addEventListener(
+                  "click",
+                  () => {
+
+                    const link =
+                      item.dataset.link;
+
+                    if (link) {
+
+                      window.location.href =
+                        link;
+
+                    }
+
+                  }
+                );
+
+              }
+            );
+
+        }
+
+
+        render("all");
+
+
+        /* =========================
+           FILTER BUTTONS
+        ========================== */
+
+        document
+          .querySelectorAll(
+            ".filter-button"
+          )
+          .forEach(
+            button => {
+
+              button.addEventListener(
+                "click",
+                () => {
+
+                  document
+                    .querySelectorAll(
+                      ".filter-button"
+                    )
+                    .forEach(
+                      item =>
+                        item.classList
+                          .remove("active")
+                    );
+
+
+                  button.classList
+                    .add("active");
+
+
+                  render(
+                    button.dataset.filter
+                  );
+
+                }
+              );
+
+            }
+          );
+
+
+        /* =========================
+           BACK BUTTON
+        ========================== */
+
+        document
+          .getElementById("backButton")
+          .addEventListener(
+            "click",
+            () => {
+
+              if (
+                document.referrer
+              ) {
+
+                history.back();
+
+              } else {
+
+                window.location.href =
+                  "./more.html";
+
+              }
+
+            }
+          );
+
+
+        /* =========================
+           BOTTOM NAVIGATION
+        ========================== */
+
+        document
+          .querySelectorAll(
+            ".bottom-nav .nav-item"
+          )
+          .forEach(
+            item => {
+
+              item.addEventListener(
+                "click",
+                () => {
+
+                  const page =
+                    item.dataset.page;
+
+
+                  if (
+                    page === "home"
+                  ) {
+
+                    window.location.href =
+                      "../index.html";
+
+                    return;
+
+                  }
+
+
+                  if (
+                    page === "transactions"
+                  ) {
+
+                    window.location.href =
+                      "./transactions.html";
+
+                    return;
+
+                  }
+
+
+                  if (
+                    page === "buyers"
+                  ) {
+
+                    window.location.href =
+                      "./buyers.html";
+
+                    return;
+
+                  }
+
+
+                  if (
+                    page === "accounts"
+                  ) {
+
+                    window.location.href =
+                      "./accounts.html";
+
+                    return;
+
+                  }
+
+
+                  if (
+                    page === "more"
+                  ) {
+
+                    window.location.href =
+                      "./more.html";
+
+                    return;
+
+                  }
+
+                }
+              );
+
+            }
+          );
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
