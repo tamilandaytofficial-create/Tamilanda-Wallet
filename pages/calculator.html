@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="theme-color"
+    content="#09070d"
+  >
+
+  <title>Calculator - Tamilanda Wallet</title>
+
+  <link
+    rel="stylesheet"
+    href="../css/style.css"
+  >
+
+  <style>
+
+    /* =========================
+       CALCULATOR
+    ========================== */
+
+    .calculator-wrapper {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+
+    .calculator-card {
+      background: #15111d;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+    }
+
+
+    .calculator-display {
+      background: #09070d;
+      border-radius: 18px;
+      padding: 20px 16px;
+      margin-bottom: 16px;
+      min-height: 105px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      text-align: right;
+      overflow: hidden;
+    }
+
+
+    .calculator-expression {
+      min-height: 24px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.5);
+      word-break: break-all;
+    }
+
+
+    .calculator-result {
+      margin-top: 6px;
+      font-size: 34px;
+      font-weight: 700;
+      color: #ffc857;
+      word-break: break-all;
+      line-height: 1.15;
+    }
+
+
+    .calculator-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+
+    .calc-button {
+      border: 0;
+      border-radius: 16px;
+      min-height: 64px;
+      font-size: 20px;
+      font-weight: 600;
+      color: #ffffff;
+      background: #1c1725;
+      cursor: pointer;
+      transition:
+        transform 0.12s ease,
+        opacity 0.12s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+
+    .calc-button:active {
+      transform: scale(0.94);
+      opacity: 0.8;
+    }
+
+
+    .calc-button.operator {
+      color: #ffc857;
+    }
+
+
+    .calc-button.action {
+      color: #ff667a;
+    }
+
+
+    .calc-button.equals {
+      color: #09070d;
+      background: #ffc857;
+    }
+
+
+    .calc-button.zero {
+      grid-column: span 2;
+    }
+
+
+    .calculator-shortcuts {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+
+    .shortcut-button {
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 14px;
+      padding: 13px;
+      background: #1c1725;
+      color: #ffffff;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+
+    .shortcut-button span {
+      display: block;
+      margin-top: 4px;
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 11px;
+    }
+
+
+    .calculator-note {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+
+    @media (max-width: 420px) {
+
+      .calculator-card {
+        padding: 14px;
+      }
+
+
+      .calc-button {
+        min-height: 58px;
+        border-radius: 14px;
+      }
+
+
+      .calculator-result {
+        font-size: 30px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <!-- =========================
+       HEADER
+  ========================== -->
+
+  <header class="page-header">
+
+    <div class="page-header-left">
+
+      <button
+        type="button"
+        class="icon-button"
+        id="backButton"
+        aria-label="Go back"
+      >
+        ←
+      </button>
+
+
+      <div>
+
+        <h1>
+          Calculator
+        </h1>
+
+        <p>
+          Quick money calculations
+        </p>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- =========================
+       MAIN
+  ========================== -->
+
+  <main class="page-container">
+
+    <div class="calculator-wrapper">
+
+      <section class="calculator-card">
+
+
+        <!-- DISPLAY -->
+
+        <div class="calculator-display">
+
+          <div
+            class="calculator-expression"
+            id="expression"
+          >
+          </div>
+
+
+          <div
+            class="calculator-result"
+            id="display"
+          >
+            0
+          </div>
+
+        </div>
+
+
+        <!-- BUTTONS -->
+
+        <div class="calculator-buttons">
+
+
+          <button
+            type="button"
+            class="calc-button action"
+            data-action="clear"
+          >
+            AC
+          </button>
+
+
+          <button
+            type="button"
+            class="calc-button action"
+            data-action="backspace"
+          >
+            ⌫
+          </button>
+
+
+          <button
+            type="button"
+            class="calc-button operator"
+            data-action="percent"
+          >
+            %
+          </button>
+
+
+          <button
+            type="button"
+            class="calc-button operator"
+            data-operator="/"
+          >
+            ÷
+          </button>
+
+
+          <button
+            type="button"
+            class="calc-button"
+            data-number="7"
+          >
+            7
+          </button>
+
+
+          <button
+            type="button"
+            class="calc-button"
+            data-number="8"
+          >
+            8
+          </button>
+
+
+          <button
+            type="button"
+            class="calc-button"
+            data-number="9"
+          >
+            9
+          </button>
+
+
+          <button
+            type="button"
+            class="calc-button operator"
+            data-operator="*"
+          >
+            ×
+          </button>
+
+
+          <button
+            type="button"
+            class="calc-button"
+            data-number="4"
+          >
+            4
+          </button>
+
+
+          <button
+            type="button"
+            class="calc-button"
+            data-number="5"
+          >
+            5
+          </button>
+
+
+          <button
+            type="button"
+            class="calc-button"
+            data-number="6"
+          >
+            6
+          </button>
+
+
+          <button
+            type="button"
+            class="calc-button operator"
+            data-operator="-"
+          >
+            −
+          </button>
+
+
+          <button
+            type="button"
+            class="calc-button"
+            data-number="1"
+          >
+            1
+          </button>
+
+
+          <button
+            type="button"
+            class="calc-button"
+            data-number="2"
+          >
+            2
+          </button>
+
+
+          <button
+            type="button"
+            class="calc-button"
+            data-number="3"
+          >
+            3
+          </button>
+
+
+          <button
+            type="button"
+            class="calc-button operator"
+            data-operator="+"
+          >
+            +
+          </button>
+
+
+          <button
+            type="button"
+            class="calc-button zero"
+            data-number="0"
+          >
+            0
+          </button>
+
+
+          <button
+            type="button"
+            class="calc-button"
+            data-action="decimal"
+          >
+            .
+          </button>
+
+
+          <button
+            type="button"
+            class="calc-button equals"
+            data-action="equals"
+          >
+            =
+          </button>
+
+
+        </div>
+
+
+        <!-- QUICK SHORTCUTS -->
+
+        <div class="calculator-shortcuts">
+
+
+          <button
+            type="button"
+            class="shortcut-button"
+            data-shortcut="gst"
+          >
+            GST +18%
+            <span>
+              Add 18% GST
+            </span>
+          </button>
+
+
+          <button
+            type="button"
+            class="shortcut-button"
+            data-shortcut="removegst"
+          >
+            GST −18%
+            <span>
+              Remove 18% GST
+            </span>
+          </button>
+
+
+          <button
+            type="button"
+            class="shortcut-button"
+            data-shortcut="tenpercent"
+          >
+            +10%
+            <span>
+              Add 10%
+            </span>
+          </button>
+
+
+          <button
+            type="button"
+            class="shortcut-button"
+            data-shortcut="twentypercent"
+          >
+            +20%
+            <span>
+              Add 20%
+            </span>
+          </button>
+
+
+        </div>
+
+
+        <div class="calculator-note">
+          Calculations are temporary and are not saved as transactions.
+        </div>
+
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+  <!-- =========================
+       APP JS
+  ========================== -->
+
+  <script src="../js/app.js"></script>
+
+
+  <script>
+
+    let currentValue = "0";
+
+    let previousValue = null;
+
+    let currentOperator = null;
+
+    let waitingForNewValue = false;
+
+    let expressionText = "";
+
+
+    /* =========================
+       ELEMENTS
+    ========================== */
+
+    const display =
+      document.getElementById(
+        "display"
+      );
+
+
+    const expression =
+      document.getElementById(
+        "expression"
+      );
+
+
+    /* =========================
+       DISPLAY
+    ========================== */
+
+    function updateDisplay() {
+
+      display.textContent =
+        formatDisplayNumber(
+          currentValue
+        );
+
+
+      expression.textContent =
+        expressionText;
+
+    }
+
+
+    function formatDisplayNumber(
+      value
+    ) {
+
+      if (
+        value === "" ||
+        value === null ||
+        value === undefined
+      ) {
+
+        return "0";
+
+      }
+
+
+      const number =
+        Number(value);
+
+
+      if (
+        Number.isFinite(number)
+      ) {
+
+        if (
+          String(value).includes(".") &&
+          !String(value).endsWith(".")
+        ) {
+
+          return String(value);
+
+        }
+
+
+        return number.toLocaleString(
+          "en-IN",
+          {
+            maximumFractionDigits: 10
+          }
+        );
+
+      }
+
+
+      return String(value);
+
+    }
+
+
+    /* =========================
+       NUMBER
+    ========================== */
+
+    function inputNumber(
+      number
+    ) {
+
+      if (
+        currentValue === "Error"
+      ) {
+
+        clearCalculator();
+
+      }
+
+
+      if (
+        waitingForNewValue
+      ) {
+
+        currentValue =
+          number;
+
+        waitingForNewValue =
+          false;
+
+      } else {
+
+        if (
+          currentValue === "0"
+        ) {
+
+          currentValue =
+            number;
+
+        } else {
+
+          currentValue +=
+            number;
+
+        }
+
+      }
+
+
+      updateDisplay();
+
+    }
+
+
+    /* =========================
+       DECIMAL
+    ========================== */
+
+    function inputDecimal() {
+
+      if (
+        currentValue === "Error"
+      ) {
+
+        clearCalculator();
+
+      }
+
+
+      if (
+        waitingForNewValue
+      ) {
+
+        currentValue =
+          "0.";
+
+        waitingForNewValue =
+          false;
+
+        updateDisplay();
+
+        return;
+
+      }
+
+
+      if (
+        !currentValue.includes(".")
+      ) {
+
+        currentValue +=
+          ".";
+
+      }
+
+
+      updateDisplay();
+
+    }
+
+
+    /* =========================
+       OPERATOR
+    ========================== */
+
+    function inputOperator(
+      operator
+    ) {
+
+      if (
+        currentValue === "Error"
+      ) {
+
+        return;
+
+      }
+
+
+      const inputValue =
+        Number(
+          currentValue
+        );
+
+
+      if (
+        currentOperator &&
+        waitingForNewValue
+      ) {
+
+        currentOperator =
+          operator;
+
+        expressionText =
+          `${formatDisplayNumber(previousValue)} ${operatorSymbol(operator)}`;
+
+        updateDisplay();
+
+        return;
+
+      }
+
+
+      if (
+        previousValue === null
+      ) {
+
+        previousValue =
+          inputValue;
+
+      } else if (
+        currentOperator
+      ) {
+
+        const result =
+          calculate(
+            previousValue,
+            inputValue,
+            currentOperator
+          );
+
+
+        if (
+          result === null
+        ) {
+
+          showError();
+
+          return;
+
+        }
+
+
+        currentValue =
+          String(result);
+
+        previousValue =
+          result;
+
+      }
+
+
+      currentOperator =
+        operator;
+
+
+      waitingForNewValue =
+        true;
+
+
+      expressionText =
+        `${formatDisplayNumber(previousValue)} ${operatorSymbol(operator)}`;
+
+
+      updateDisplay();
+
+    }
+
+
+    /* =========================
+       CALCULATE
+    ========================== */
+
+    function calculate(
+      first,
+      second,
+      operator
+    ) {
+
+      if (
+        operator === "+"
+      ) {
+
+        return first + second;
+
+      }
+
+
+      if (
+        operator === "-"
+      ) {
+
+        return first - second;
+
+      }
+
+
+      if (
+        operator === "*"
+      ) {
+
+        return first * second;
+
+      }
+
+
+      if (
+        operator === "/"
+      ) {
+
+        if (
+          second === 0
+        ) {
+
+          return null;
+
+        }
+
+
+        return first / second;
+
+      }
+
+
+      return second;
+
+    }
+
+
+    /* =========================
+       EQUALS
+    ========================== */
+
+    function calculateResult() {
+
+      if (
+        currentOperator === null ||
+        previousValue === null
+      ) {
+
+        return;
+
+      }
+
+
+      const secondValue =
+        Number(
+          currentValue
+        );
+
+
+      const firstValue =
+        Number(
+          previousValue
+        );
+
+
+      const result =
+        calculate(
+          firstValue,
+          secondValue,
+          currentOperator
+        );
+
+
+      if (
+        result === null
+      ) {
+
+        showError();
+
+        return;
+
+      }
+
+
+      expressionText =
+        `${formatDisplayNumber(firstValue)} ${operatorSymbol(currentOperator)} ${formatDisplayNumber(secondValue)} =`;
+
+
+      currentValue =
+        String(result);
+
+
+      previousValue =
+        null;
+
+
+      currentOperator =
+        null;
+
+
+      waitingForNewValue =
+        true;
+
+
+      updateDisplay();
+
+    }
+
+
+    /* =========================
+       PERCENTAGE
+    ========================== */
+
+    function calculatePercent() {
+
+      if (
+        currentValue === "Error"
+      ) {
+
+        return;
+
+      }
+
+
+      const value =
+        Number(
+          currentValue
+        );
+
+
+      if (
+        !Number.isFinite(value)
+      ) {
+
+        return;
+
+      }
+
+
+      /*
+        If an operator is waiting,
+        calculate percentage from
+        the previous value.
+
+        Example:
+        500 + 10%
+        = 550
+      */
+
+      if (
+        previousValue !== null &&
+        currentOperator
+      ) {
+
+        currentValue =
+          String(
+            previousValue *
+            value /
+            100
+          );
+
+      } else {
+
+        currentValue =
+          String(
+            value / 100
+          );
+
+      }
+
+
+      updateDisplay();
+
+    }
+
+
+    /* =========================
+       BACKSPACE
+    ========================== */
+
+    function backspace() {
+
+      if (
+        waitingForNewValue
+      ) {
+
+        return;
+
+      }
+
+
+      if (
+        currentValue === "Error"
+      ) {
+
+        clearCalculator();
+
+        return;
+
+      }
+
+
+      if (
+        currentValue.length <= 1
+      ) {
+
+        currentValue =
+          "0";
+
+      } else {
+
+        currentValue =
+          currentValue.slice(
+            0,
+            -1
+          );
+
+      }
+
+
+      updateDisplay();
+
+    }
+
+
+    /* =========================
+       CLEAR
+    ========================== */
+
+    function clearCalculator() {
+
+      currentValue =
+        "0";
+
+
+      previousValue =
+        null;
+
+
+      currentOperator =
+        null;
+
+
+      waitingForNewValue =
+        false;
+
+
+      expressionText =
+        "";
+
+
+      updateDisplay();
+
+    }
+
+
+    /* =========================
+       ERROR
+    ========================== */
+
+    function showError() {
+
+      currentValue =
+        "Error";
+
+
+      previousValue =
+        null;
+
+
+      currentOperator =
+        null;
+
+
+      waitingForNewValue =
+        true;
+
+
+      expressionText =
+        "Cannot divide by zero";
+
+
+      updateDisplay();
+
+    }
+
+
+    /* =========================
+       OPERATOR SYMBOL
+    ========================== */
+
+    function operatorSymbol(
+      operator
+    ) {
+
+      if (
+        operator === "*"
+      ) {
+
+        return "×";
+
+      }
+
+
+      if (
+        operator === "/"
+      ) {
+
+        return "÷";
+
+      }
+
+
+      if (
+        operator === "-"
+      ) {
+
+        return "−";
+
+      }
+
+
+      return operator;
+
+    }
+
+
+    /* =========================
+       SHORTCUTS
+    ========================== */
+
+    function applyShortcut(
+      type
+    ) {
+
+      if (
+        currentValue === "Error"
+      ) {
+
+        return;
+
+      }
+
+
+      const value =
+        Number(
+          currentValue
+        );
+
+
+      if (
+        !Number.isFinite(value)
+      ) {
+
+        return;
+
+      }
+
+
+      let result =
+        value;
+
+
+      if (
+        type === "gst"
+      ) {
+
+        result =
+          value * 1.18;
+
+        expressionText =
+          `${formatDisplayNumber(value)} + 18% GST`;
+
+      }
+
+
+      if (
+        type === "removegst"
+      ) {
+
+        result =
+          value / 1.18;
+
+        expressionText =
+          `${formatDisplayNumber(value)} − 18% GST`;
+
+      }
+
+
+      if (
+        type === "tenpercent"
+      ) {
+
+        result =
+          value * 1.10;
+
+        expressionText =
+          `${formatDisplayNumber(value)} + 10%`;
+
+      }
+
+
+      if (
+        type === "twentypercent"
+      ) {
+
+        result =
+          value * 1.20;
+
+        expressionText =
+          `${formatDisplayNumber(value)} + 20%`;
+
+      }
+
+
+      currentValue =
+        String(result);
+
+
+      previousValue =
+        null;
+
+
+      currentOperator =
+        null;
+
+
+      waitingForNewValue =
+        true;
+
+
+      updateDisplay();
+
+    }
+
+
+    /* =========================
+       BUTTON EVENTS
+    ========================== */
+
+    document
+      .querySelectorAll(
+        ".calc-button"
+      )
+      .forEach(
+        button => {
+
+          button.addEventListener(
+            "click",
+            () => {
+
+              const number =
+                button.dataset.number;
+
+
+              const operator =
+                button.dataset.operator;
+
+
+              const action =
+                button.dataset.action;
+
+
+              if (
+                number !== undefined
+              ) {
+
+                inputNumber(
+                  number
+                );
+
+                return;
+
+              }
+
+
+              if (
+                operator
+              ) {
+
+                inputOperator(
+                  operator
+                );
+
+                return;
+
+              }
+
+
+              if (
+                action === "decimal"
+              ) {
+
+                inputDecimal();
+
+                return;
+
+              }
+
+
+              if (
+                action === "clear"
+              ) {
+
+                clearCalculator();
+
+                return;
+
+              }
+
+
+              if (
+                action === "backspace"
+              ) {
+
+                backspace();
+
+                return;
+
+              }
+
+
+              if (
+                action === "percent"
+              ) {
+
+                calculatePercent();
+
+                return;
+
+              }
+
+
+              if (
+                action === "equals"
+              ) {
+
+                calculateResult();
+
+                return;
+
+              }
+
+            }
+          );
+
+        }
+      );
+
+
+    /* =========================
+       SHORTCUT EVENTS
+    ========================== */
+
+    document
+      .querySelectorAll(
+        ".shortcut-button"
+      )
+      .forEach(
+        button => {
+
+          button.addEventListener(
+            "click",
+            () => {
+
+              applyShortcut(
+                button.dataset.shortcut
+              );
+
+            }
+          );
+
+        }
+      );
+
+
+    /* =========================
+       KEYBOARD SUPPORT
+    ========================== */
+
+    document.addEventListener(
+      "keydown",
+      event => {
+
+        const key =
+          event.key;
+
+
+        if (
+          key >= "0" &&
+          key <= "9"
+        ) {
+
+          inputNumber(
+            key
+          );
+
+          return;
+
+        }
+
+
+        if (
+          key === "."
+        ) {
+
+          inputDecimal();
+
+          return;
+
+        }
+
+
+        if (
+          ["+", "-", "*", "/"]
+            .includes(key)
+        ) {
+
+          inputOperator(
+            key
+          );
+
+          return;
+
+        }
+
+
+        if (
+          key === "%"
+        ) {
+
+          calculatePercent();
+
+          return;
+
+        }
+
+
+        if (
+          key === "Enter" ||
+          key === "="
+        ) {
+
+          event.preventDefault();
+
+          calculateResult();
+
+          return;
+
+        }
+
+
+        if (
+          key === "Backspace"
+        ) {
+
+          backspace();
+
+          return;
+
+        }
+
+
+        if (
+          key === "Escape"
+        ) {
+
+          clearCalculator();
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       BACK BUTTON
+    ========================== */
+
+    document
+      .getElementById(
+        "backButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+
+          window.location.href =
+            "../index.html";
+
+        }
+      );
+
+
+    /* =========================
+       INITIALIZE
+    ========================== */
+
+    updateDisplay();
+
+  </script>
+
+</body>
+
+</html>
