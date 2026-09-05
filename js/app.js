@@ -1213,6 +1213,279 @@ function addTransaction(transaction) {
 
 
 /* =========================================================
+   LEDGER RECONCILIATION / AUDIT
+   ========================================================= */
+
+/*
+  Non-destructive accounting audit.
+
+  This does NOT rewrite existing balances because the app can contain
+  opening balances that were entered manually before transactions existed.
+
+  Instead it checks the relationships that must always be true:
+  - payment records have matching transactions
+  - linked transaction amounts/accounts match
+  - transaction IDs are unique
+  - transaction accounts exist
+  - transfer entries have matching transferId pairs
+  - account balances are not negative
+*/
+
+function runLedgerAudit() {
+  const report = {
+    ok: true,
+    checkedAt: new Date().toISOString(),
+    issues: [],
+    counts: {
+      accounts: (walletData.accounts || []).length,
+      transactions: (walletData.transactions || []).length,
+      buyerPayments: (walletData.buyerPayments || []).length,
+      givePayments: (walletData.givePayments || []).length,
+      emiPayments: (walletData.emiPayments || []).length,
+      recurringPayments: (walletData.recurringPayments || []).length
+    }
+  };
+
+  const transactions = walletData.transactions || [];
+  const transactionMap = new Map();
+
+  transactions.forEach(transaction => {
+    const id = transaction && transaction.id;
+    if (!id) {
+      report.issues.push({
+        type: "transaction_missing_id",
+        message: "A transaction is missing its ID."
+      });
+      return;
+    }
+
+    const key = String(id);
+
+    if (transactionMap.has(key)) {
+      report.issues.push({
+        type: "duplicate_transaction_id",
+        transactionId: id,
+        message: "Duplicate transaction ID found."
+      });
+    } else {
+      transactionMap.set(key, transaction);
+    }
+
+    if (
+      isIncomeTransaction(transaction) ||
+      isExpenseTransaction(transaction)
+    ) {
+      if (!getAccountById(transaction.accountId)) {
+        report.issues.push({
+          type: "missing_account",
+          transactionId: id,
+          message: "Income/expense transaction points to a missing account."
+        });
+      }
+    }
+
+    if (
+      !Number.isFinite(Number(transaction.amount)) ||
+      Number(transaction.amount) <= 0
+    ) {
+      report.issues.push({
+        type: "invalid_transaction_amount",
+        transactionId: id,
+        message: "Transaction has an invalid amount."
+      });
+    }
+  });
+
+  function checkPaymentCollection(collectionName, transactionType, idField) {
+    (walletData[collectionName] || []).forEach(payment => {
+      const transactionId = payment && payment.transactionId;
+
+      if (!transactionId) {
+        report.issues.push({
+          type: "payment_missing_transaction",
+          collection: collectionName,
+          paymentId: payment?.id || null,
+          message: "Payment record is missing transactionId."
+        });
+        return;
+      }
+
+      const transaction = transactionMap.get(String(transactionId));
+
+      if (!transaction) {
+        report.issues.push({
+          type: "orphan_payment",
+          collection: collectionName,
+          paymentId: payment?.id || null,
+          transactionId,
+          message: "Payment record has no matching transaction."
+        });
+        return;
+      }
+
+      if (transaction.type !== transactionType) {
+        report.issues.push({
+          type: "transaction_type_mismatch",
+          collection: collectionName,
+          paymentId: payment?.id || null,
+          transactionId,
+          message: "Linked transaction type does not match payment type."
+        });
+      }
+
+      if (
+        Number(transaction.amount) !== Number(payment.amount)
+      ) {
+        report.issues.push({
+          type: "amount_mismatch",
+          collection: collectionName,
+          paymentId: payment?.id || null,
+          transactionId,
+          message: "Payment amount and transaction amount do not match."
+        });
+      }
+
+      if (
+        String(transaction.accountId || "") !==
+        String(payment.accountId || "")
+      ) {
+        report.issues.push({
+          type: "account_mismatch",
+          collection: collectionName,
+          paymentId: payment?.id || null,
+          transactionId,
+          message: "Payment account and transaction account do not match."
+        });
+      }
+
+      if (
+        idField &&
+        payment[idField] !== undefined &&
+        transaction[idField] !== undefined &&
+        String(payment[idField]) !== String(transaction[idField])
+      ) {
+        report.issues.push({
+          type: "link_mismatch",
+          collection: collectionName,
+          paymentId: payment?.id || null,
+          transactionId,
+          message: "Payment link field does not match transaction link field."
+        });
+      }
+    });
+  }
+
+  checkPaymentCollection(
+    "buyerPayments",
+    "buyer_payment",
+    "buyerId"
+  );
+
+  checkPaymentCollection(
+    "emiPayments",
+    "emi_payment",
+    "emiId"
+  );
+
+  checkPaymentCollection(
+    "recurringPayments",
+    "recurring_payment",
+    "billId"
+  );
+
+  checkPaymentCollection(
+    "givePayments",
+    "money_to_give_payment",
+    "giveId"
+  );
+
+  const transferGroups = new Map();
+
+  transactions
+    .filter(isTransferTransaction)
+    .forEach(transaction => {
+      const transferId = transaction.transferId;
+
+      if (!transferId) {
+        report.issues.push({
+          type: "transfer_missing_id",
+          transactionId: transaction.id,
+          message: "Transfer transaction is missing transferId."
+        });
+        return;
+      }
+
+      const key = String(transferId);
+
+      if (!transferGroups.has(key)) {
+        transferGroups.set(key, []);
+      }
+
+      transferGroups.get(key).push(transaction);
+    });
+
+  transferGroups.forEach((items, transferId) => {
+    const out = items.filter(
+      item => item.transferDirection === "out"
+    );
+
+    const incoming = items.filter(
+      item => item.transferDirection === "in"
+    );
+
+    if (out.length !== 1 || incoming.length !== 1) {
+      report.issues.push({
+        type: "transfer_pair_mismatch",
+        transferId,
+        message: "Transfer should have exactly one outgoing and one incoming ledger entry."
+      });
+      return;
+    }
+
+    if (
+      Number(out[0].amount) !==
+      Number(incoming[0].amount)
+    ) {
+      report.issues.push({
+        type: "transfer_amount_mismatch",
+        transferId,
+        message: "Transfer out and transfer in amounts do not match."
+      });
+    }
+
+    if (
+      String(out[0].fromAccountId || "") !==
+      String(incoming[0].fromAccountId || "") ||
+      String(out[0].toAccountId || "") !==
+      String(incoming[0].toAccountId || "")
+    ) {
+      report.issues.push({
+        type: "transfer_account_mismatch",
+        transferId,
+        message: "Transfer source/destination accounts do not match."
+      });
+    }
+  });
+
+  (walletData.accounts || []).forEach(account => {
+    const balance = getAccountBalance(account);
+
+    if (!Number.isFinite(balance)) {
+      report.issues.push({
+        type: "invalid_account_balance",
+        accountId: account.id,
+        message: "Account has an invalid balance."
+      });
+    }
+  });
+
+  report.ok = report.issues.length === 0;
+
+  return report;
+}
+
+
+/* =========================================================
    ACCOUNT
    ========================================================= */
 
@@ -2955,6 +3228,12 @@ window.TamilandaWallet = {
 
   isTransferTransaction:
     isTransferTransaction,
+
+
+  /* Ledger audit */
+
+  runLedgerAudit:
+    runLedgerAudit,
 
 
   /* Calculations */
