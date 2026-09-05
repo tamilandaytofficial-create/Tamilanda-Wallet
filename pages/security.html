@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Security - Tamilanda Wallet</title>
+
+  <link
+    rel="manifest"
+    href="../manifest.json"
+  >
+
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="192x192"
+    href="../icons/icon-192.png"
+  >
+
+  <link
+    rel="apple-touch-icon"
+    href="../icons/icon-192.png"
+  >
+
+  <link
+    rel="stylesheet"
+    href="../css/style.css"
+  >
+
+  <style>
+
+    .security-page {
+      padding-bottom: 110px;
+    }
+
+    .security-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .back-button {
+      width: 42px;
+      height: 42px;
+
+      border: 0;
+      border-radius: 13px;
+
+      background: rgba(255,255,255,0.06);
+      color: inherit;
+
+      font-size: 24px;
+
+      cursor: pointer;
+    }
+
+    .security-header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .security-card {
+      padding: 20px;
+
+      border-radius: 20px;
+
+      border: 1px solid rgba(255,255,255,0.08);
+
+      background: rgba(255,255,255,0.035);
+
+      margin-bottom: 15px;
+    }
+
+    .security-card-header {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+
+      margin-bottom: 15px;
+    }
+
+    .security-icon {
+      width: 46px;
+      height: 46px;
+
+      min-width: 46px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 14px;
+
+      background: rgba(255,255,255,0.07);
+
+      font-size: 22px;
+    }
+
+    .security-card-title {
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .security-card-subtitle {
+      margin-top: 3px;
+      font-size: 11px;
+      opacity: 0.5;
+    }
+
+    .security-description {
+      font-size: 12px;
+      line-height: 1.65;
+      opacity: 0.6;
+    }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 15px;
+
+      padding: 14px 0;
+
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .setting-info {
+      flex: 1;
+    }
+
+    .setting-title {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .setting-description {
+      margin-top: 3px;
+      font-size: 10px;
+      line-height: 1.5;
+      opacity: 0.45;
+    }
+
+    .toggle {
+      position: relative;
+
+      width: 48px;
+      height: 27px;
+
+      flex-shrink: 0;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+
+      cursor: pointer;
+
+      border-radius: 30px;
+
+      background: rgba(255,255,255,0.12);
+
+      transition: 0.2s;
+    }
+
+    .toggle-slider::before {
+      content: "";
+
+      position: absolute;
+
+      width: 21px;
+      height: 21px;
+
+      left: 3px;
+      top: 3px;
+
+      border-radius: 50%;
+
+      background: rgba(255,255,255,0.75);
+
+      transition: 0.2s;
+    }
+
+    .toggle input:checked + .toggle-slider::before {
+      transform: translateX(21px);
+    }
+
+    .pin-area {
+      display: none;
+      margin-top: 14px;
+    }
+
+    .pin-area.show {
+      display: block;
+    }
+
+    .input-group {
+      margin-bottom: 12px;
+    }
+
+    .input-label {
+      display: block;
+      margin-bottom: 6px;
+
+      font-size: 11px;
+
+      opacity: 0.55;
+    }
+
+    .security-input {
+      width: 100%;
+      box-sizing: border-box;
+
+      padding: 12px;
+
+      border-radius: 12px;
+
+      border: 1px solid rgba(255,255,255,0.08);
+
+      background: rgba(255,255,255,0.04);
+
+      color: inherit;
+
+      outline: none;
+
+      font-size: 15px;
+
+      letter-spacing: 3px;
+    }
+
+    .security-input:focus {
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    .save-pin-button {
+      width: 100%;
+
+      padding: 12px;
+
+      border: 0;
+      border-radius: 13px;
+
+      background: rgba(255,255,255,0.1);
+
+      color: inherit;
+
+      font-size: 12px;
+      font-weight: 700;
+
+      cursor: pointer;
+    }
+
+    .status-box {
+      display: none;
+
+      margin-top: 12px;
+
+      padding: 10px 12px;
+
+      border-radius: 12px;
+
+      background: rgba(255,255,255,0.06);
+
+      font-size: 11px;
+
+      text-align: center;
+
+      opacity: 0.7;
+    }
+
+    .status-box.show {
+      display: block;
+    }
+
+    .future-list {
+      margin: 12px 0 0;
+      padding-left: 20px;
+    }
+
+    .future-list li {
+      margin-bottom: 8px;
+
+      font-size: 12px;
+      line-height: 1.5;
+
+      opacity: 0.6;
+    }
+
+    .warning-box {
+      margin-top: 13px;
+
+      padding: 12px;
+
+      border-radius: 13px;
+
+      border: 1px dashed rgba(255,255,255,0.12);
+
+      background: rgba(255,255,255,0.025);
+
+      font-size: 11px;
+
+      line-height: 1.6;
+
+      opacity: 0.55;
+    }
+
+    .security-footer {
+      margin-top: 28px;
+
+      text-align: center;
+
+      font-size: 11px;
+
+      line-height: 1.7;
+
+      opacity: 0.35;
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+  <div class="app-container">
+
+    <main class="page-content security-page">
+
+
+      <!-- HEADER -->
+
+      <div class="security-header">
+
+        <button
+          class="back-button"
+          id="backButton"
+          aria-label="Go back"
+        >
+          ‹
+        </button>
+
+        <h1>
+          Security
+        </h1>
+
+      </div>
+
+
+      <!-- APP LOCK -->
+
+      <section class="security-card">
+
+        <div class="security-card-header">
+
+          <div class="security-icon">
+            🔒
+          </div>
+
+          <div>
+
+            <div class="security-card-title">
+              App Lock
+            </div>
+
+            <div class="security-card-subtitle">
+              Protect your wallet
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="security-description">
+
+          Add an extra layer of protection before opening
+          Tamilanda Wallet.
+
+        </div>
+
+
+        <div class="setting-row">
+
+          <div class="setting-info">
+
+            <div class="setting-title">
+              PIN Lock
+            </div>
+
+            <div class="setting-description">
+              Require a PIN when the wallet is opened.
+            </div>
+
+          </div>
+
+
+          <label class="toggle">
+
+            <input
+              type="checkbox"
+              id="pinToggle"
+            >
+
+            <span class="toggle-slider"></span>
+
+          </label>
+
+        </div>
+
+
+        <!-- PIN SETUP -->
+
+        <div
+          class="pin-area"
+          id="pinArea"
+        >
+
+          <div class="input-group">
+
+            <label
+              class="input-label"
+              for="pinInput"
+            >
+              New PIN
+            </label>
+
+            <input
+              type="password"
+              id="pinInput"
+              class="security-input"
+              inputmode="numeric"
+              maxlength="6"
+              placeholder="Enter 4-6 digit PIN"
+              autocomplete="new-password"
+            >
+
+          </div>
+
+
+          <div class="input-group">
+
+            <label
+              class="input-label"
+              for="confirmPinInput"
+            >
+              Confirm PIN
+            </label>
+
+            <input
+              type="password"
+              id="confirmPinInput"
+              class="security-input"
+              inputmode="numeric"
+              maxlength="6"
+              placeholder="Confirm PIN"
+              autocomplete="new-password"
+            >
+
+          </div>
+
+
+          <button
+            class="save-pin-button"
+            id="savePinButton"
+          >
+            Save PIN
+          </button>
+
+
+          <div
+            class="status-box"
+            id="pinStatus"
+          ></div>
+
+        </div>
+
+
+        <div class="warning-box">
+
+          ⚠️ Security foundation only:
+          full lock-screen enforcement and secure PIN storage
+          will be implemented in the next security stage.
+
+        </div>
+
+      </section>
+
+
+      <!-- BIOMETRIC -->
+
+      <section class="security-card">
+
+        <div class="security-card-header">
+
+          <div class="security-icon">
+            👆
+          </div>
+
+          <div>
+
+            <div class="security-card-title">
+              Biometric Unlock
+            </div>
+
+            <div class="security-card-subtitle">
+              Fingerprint / Face authentication
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="security-description">
+
+          Use your device's biometric authentication to
+          unlock Tamilanda Wallet quickly and securely.
+
+        </div>
+
+
+        <div class="setting-row">
+
+          <div class="setting-info">
+
+            <div class="setting-title">
+              Biometric Lock
+            </div>
+
+            <div class="setting-description">
+              Available after the security system is connected.
+            </div>
+
+          </div>
+
+
+          <label class="toggle">
+
+            <input
+              type="checkbox"
+              id="biometricToggle"
+              disabled
+            >
+
+            <span class="toggle-slider"></span>
+
+          </label>
+
+        </div>
+
+      </section>
+
+
+      <!-- BACKUP SECURITY -->
+
+      <section class="security-card">
+
+        <div class="security-card-header">
+
+          <div class="security-icon">
+            💾
+          </div>
+
+          <div>
+
+            <div class="security-card-title">
+              Backup Security
+            </div>
+
+            <div class="security-card-subtitle">
+              Protect your wallet backup
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="security-description">
+
+          Wallet backups may contain sensitive financial
+          information.
+
+        </div>
+
+
+        <ul class="future-list">
+
+          <li>
+            Encrypted backup
+          </li>
+
+          <li>
+            Backup password
+          </li>
+
+          <li>
+            Secure restore confirmation
+          </li>
+
+          <li>
+            Backup integrity verification
+          </li>
+
+        </ul>
+
+
+        <div class="status-box show">
+
+          🔐 Encrypted backup — Planned
+
+        </div>
+
+      </section>
+
+
+      <!-- SECURITY ROADMAP -->
+
+      <section class="security-card">
+
+        <div class="security-card-header">
+
+          <div class="security-icon">
+            🛡️
+          </div>
+
+          <div>
+
+            <div class="security-card-title">
+              Security Roadmap
+            </div>
+
+            <div class="security-card-subtitle">
+              Future protection features
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <ul class="future-list">
+
+          <li>
+            Secure PIN storage
+          </li>
+
+          <li>
+            Full app lock screen
+          </li>
+
+          <li>
+            Biometric unlock
+          </li>
+
+          <li>
+            Encrypted wallet backup
+          </li>
+
+          <li>
+            Secure restore
+          </li>
+
+          <li>
+            Automatic lock after inactivity
+          </li>
+
+        </ul>
+
+      </section>
+
+
+      <!-- FOOTER -->
+
+      <div class="security-footer">
+
+        TAMILANDA WALLET
+
+        <br>
+
+        Your money. Your control. 🔐
+
+      </div>
+
+    </main>
+
+
+    <!-- BOTTOM NAV -->
+
+    <nav class="bottom-nav">
+
+
+      <button
+        class="nav-item"
+        data-page="home"
+      >
+
+        <span class="nav-icon">
+          🏠
+        </span>
+
+        <span class="nav-label">
+          Home
+        </span>
+
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="transactions"
+      >
+
+        <span class="nav-icon">
+          📋
+        </span>
+
+        <span class="nav-label">
+          Transactions
+        </span>
+
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="buyers"
+      >
+
+        <span class="nav-icon">
+          👤
+        </span>
+
+        <span class="nav-label">
+          Buyers
+        </span>
+
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="accounts"
+      >
+
+        <span class="nav-icon">
+          🏦
+        </span>
+
+        <span class="nav-label">
+          Accounts
+        </span>
+
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="more"
+      >
+
+        <span class="nav-icon">
+          ☰
+        </span>
+
+        <span class="nav-label">
+          More
+        </span>
+
+      </button>
+
+    </nav>
+
+  </div>
+
+
+  <script src="../js/app.js"></script>
+
+
+  <script>
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      () => {
+
+
+        /* =========================
+           DATA
+        ========================== */
+
+        let walletData = null;
+
+
+        if (
+          window.TamilandaWallet &&
+          typeof
+            window.TamilandaWallet.getData ===
+            "function"
+        ) {
+
+          walletData =
+            window.TamilandaWallet.getData();
+
+        }
+
+
+        if (!walletData) {
+
+          try {
+
+            walletData =
+              JSON.parse(
+                localStorage.getItem(
+                  "tamilanda_wallet_data"
+                )
+              ) || {};
+
+          } catch (error) {
+
+            walletData = {};
+
+          }
+
+        }
+
+
+        if (!walletData.security) {
+
+          walletData.security = {
+
+            pinEnabled: false,
+
+            pinConfigured: false
+
+          };
+
+        }
+
+
+        /* =========================
+           ELEMENTS
+        ========================== */
+
+        const pinToggle =
+          document.getElementById(
+            "pinToggle"
+          );
+
+
+        const pinArea =
+          document.getElementById(
+            "pinArea"
+          );
+
+
+        const pinInput =
+          document.getElementById(
+            "pinInput"
+          );
+
+
+        const confirmPinInput =
+          document.getElementById(
+            "confirmPinInput"
+          );
+
+
+        const pinStatus =
+          document.getElementById(
+            "pinStatus"
+          );
+
+
+        /* =========================
+           LOAD STATE
+        ========================== */
+
+        pinToggle.checked =
+          walletData.security.pinEnabled ===
+          true;
+
+
+        updatePinArea();
+
+
+        /* =========================
+           PIN AREA
+        ========================== */
+
+        function updatePinArea() {
+
+          if (
+            pinToggle.checked
+          ) {
+
+            pinArea.classList.add(
+              "show"
+            );
+
+          } else {
+
+            pinArea.classList.remove(
+              "show"
+            );
+
+          }
+
+        }
+
+
+        /* =========================
+           TOGGLE
+        ========================== */
+
+        pinToggle.addEventListener(
+          "change",
+          () => {
+
+            if (
+              pinToggle.checked
+            ) {
+
+              pinArea.classList.add(
+                "show"
+              );
+
+              pinInput.focus();
+
+              return;
+
+            }
+
+
+            walletData.security.pinEnabled =
+              false;
+
+
+            saveData();
+
+
+            showStatus(
+              "PIN Lock disabled."
+            );
+
+          }
+        );
+
+
+        /* =========================
+           SAVE PIN
+        ========================== */
+
+        document
+          .getElementById(
+            "savePinButton"
+          )
+          .addEventListener(
+            "click",
+            () => {
+
+              const pin =
+                pinInput.value.trim();
+
+
+              const confirmPin =
+                confirmPinInput.value.trim();
+
+
+              if (
+                !/^\d{4,6}$/.test(pin)
+              ) {
+
+                showStatus(
+                  "PIN must contain 4 to 6 digits."
+                );
+
+                return;
+
+              }
+
+
+              if (
+                pin !== confirmPin
+              ) {
+
+                showStatus(
+                  "PINs do not match."
+                );
+
+                return;
+
+              }
+
+
+              /*
+               * IMPORTANT:
+               * This stage does NOT store
+               * the actual PIN.
+               */
+
+              walletData.security.pinEnabled =
+                true;
+
+
+              walletData.security.pinConfigured =
+                true;
+
+
+              saveData();
+
+
+              pinToggle.checked =
+                true;
+
+
+              pinInput.value =
+                "";
+
+              confirmPinInput.value =
+                "";
+
+
+              showStatus(
+                "PIN Lock enabled. Full secure lock will be connected later."
+              );
+
+            }
+          );
+
+
+        /* =========================
+           SAVE DATA
+        ========================== */
+
+        function saveData() {
+
+          try {
+
+            localStorage.setItem(
+              "tamilanda_wallet_data",
+              JSON.stringify(
+                walletData
+              )
+            );
+
+          } catch (error) {
+
+            console.error(
+              "Unable to save security settings:",
+              error
+            );
+
+          }
+
+
+          if (
+            window.TamilandaWallet &&
+            typeof
+              window.TamilandaWallet.save ===
+              "function"
+          ) {
+
+            window.TamilandaWallet.save();
+
+          }
+
+        }
+
+
+        /* =========================
+           STATUS
+        ========================== */
+
+        function showStatus(
+          message
+        ) {
+
+          pinStatus.textContent =
+            message;
+
+          pinStatus.classList.add(
+            "show"
+          );
+
+
+          setTimeout(
+            () => {
+
+              pinStatus.classList.remove(
+                "show"
+              );
+
+            },
+            3500
+          );
+
+        }
+
+
+        /* =========================
+           BACK
+        ========================== */
+
+        document
+          .getElementById(
+            "backButton"
+          )
+          .addEventListener(
+            "click",
+            () => {
+
+              if (
+                document.referrer
+              ) {
+
+                history.back();
+
+              } else {
+
+                window.location.href =
+                  "./privacy.html";
+
+              }
+
+            }
+          );
+
+
+        /* =========================
+           BOTTOM NAV
+        ========================== */
+
+        document
+          .querySelectorAll(
+            ".bottom-nav .nav-item"
+          )
+          .forEach(
+            item => {
+
+              item.addEventListener(
+                "click",
+                () => {
+
+                  const page =
+                    item.dataset.page;
+
+
+                  if (
+                    page === "home"
+                  ) {
+
+                    window.location.href =
+                      "../index.html";
+
+                    return;
+
+                  }
+
+
+                  if (
+                    page === "transactions"
+                  ) {
+
+                    window.location.href =
+                      "./transactions.html";
+
+                    return;
+
+                  }
+
+
+                  if (
+                    page === "buyers"
+                  ) {
+
+                    window.location.href =
+                      "./buyers.html";
+
+                    return;
+
+                  }
+
+
+                  if (
+                    page === "accounts"
+                  ) {
+
+                    window.location.href =
+                      "./accounts.html";
+
+                    return;
+
+                  }
+
+
+                  if (
+                    page === "more"
+                  ) {
+
+                    window.location.href =
+                      "./more.html";
+
+                    return;
+
+                  }
+
+                }
+              );
+
+            }
+          );
+
+      }
+    );
+
+  </script>
+
+</body>
+
+</html>
