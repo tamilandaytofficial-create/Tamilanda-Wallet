@@ -443,7 +443,14 @@ function markBillPaid(id) {
 
   const oldBalance = balance;
   const paymentId = generateId();
+  const transactionId = generateId();
 
+  /*
+    Accounting rule:
+    recurring payment updates the account balance directly.
+    Do NOT call addTransaction() here, otherwise the same
+    payment would be deducted twice.
+  */
   account.balance = oldBalance - amount;
 
   walletData.recurringPayments.push({
@@ -453,11 +460,12 @@ function markBillPaid(id) {
     accountId: bill.accountId,
     date: paymentDate,
     source: "recurring_payment",
+    transactionId,
     createdAt: new Date().toISOString()
   });
 
   walletData.transactions.push({
-    id: generateId(),
+    id: transactionId,
     type: "expense",
     category: bill.category || "Recurring Payment",
     amount,
@@ -468,6 +476,7 @@ function markBillPaid(id) {
     source: "recurring_payment",
     billId: id,
     paymentId,
+    transactionId,
     createdAt: new Date().toISOString()
   });
 
@@ -484,7 +493,11 @@ function markBillPaid(id) {
     walletData.recurringPayments =
       walletData.recurringPayments.filter(p => p.id !== paymentId);
     walletData.transactions =
-      walletData.transactions.filter(t => t.paymentId !== paymentId);
+      walletData.transactions.filter(
+        t =>
+          String(t.id) !== String(transactionId) &&
+          String(t.paymentId || "") !== String(paymentId)
+      );
     bill.nextDueDate = oldDueDate;
 
     alert("Payment could not be saved. Account balance was protected.");
