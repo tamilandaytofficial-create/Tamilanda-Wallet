@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Profile - Tamilanda Wallet</title>
+
+  <link
+    rel="manifest"
+    href="../manifest.json"
+  >
+
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="192x192"
+    href="../icons/icon-192.png"
+  >
+
+  <link
+    rel="apple-touch-icon"
+    href="../icons/icon-192.png"
+  >
+
+  <link
+    rel="stylesheet"
+    href="../css/style.css"
+  >
+
+  <style>
+
+    .profile-page {
+      padding-bottom: 110px;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .back-button {
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 13px;
+      background: rgba(255,255,255,0.06);
+      color: inherit;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .profile-header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .profile-card {
+      padding: 22px;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.035);
+      margin-bottom: 16px;
+    }
+
+    .profile-top {
+      text-align: center;
+      padding: 10px 0 18px;
+    }
+
+    .profile-avatar {
+      width: 82px;
+      height: 82px;
+      margin: 0 auto 14px;
+
+      border-radius: 50%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background: rgba(255,255,255,0.08);
+
+      font-size: 38px;
+    }
+
+    .profile-name {
+      font-size: 21px;
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+
+    .profile-subtitle {
+      font-size: 12px;
+      opacity: 0.5;
+    }
+
+    .field-group {
+      margin-bottom: 15px;
+    }
+
+    .field-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .field-label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 12px;
+      opacity: 0.55;
+    }
+
+    .profile-input {
+      width: 100%;
+      box-sizing: border-box;
+
+      border: 1px solid rgba(255,255,255,0.08);
+
+      background: rgba(255,255,255,0.04);
+
+      color: inherit;
+
+      border-radius: 13px;
+
+      padding: 12px 13px;
+
+      font-size: 13px;
+
+      outline: none;
+    }
+
+    .profile-input:focus {
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    .save-button {
+      width: 100%;
+
+      border: 0;
+
+      border-radius: 14px;
+
+      padding: 13px;
+
+      margin-top: 5px;
+
+      background: rgba(255,255,255,0.1);
+
+      color: inherit;
+
+      font-size: 13px;
+      font-weight: 700;
+
+      cursor: pointer;
+    }
+
+    .save-button:active {
+      transform: scale(0.98);
+    }
+
+    .menu-card {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .menu-item {
+      width: 100%;
+
+      display: flex;
+      align-items: center;
+      gap: 13px;
+
+      border: 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+
+      background: transparent;
+      color: inherit;
+
+      padding: 15px;
+
+      text-align: left;
+
+      cursor: pointer;
+    }
+
+    .menu-item:last-child {
+      border-bottom: 0;
+    }
+
+    .menu-item:active {
+      background: rgba(255,255,255,0.04);
+    }
+
+    .menu-icon {
+      width: 42px;
+      height: 42px;
+      min-width: 42px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 12px;
+
+      background: rgba(255,255,255,0.06);
+
+      font-size: 19px;
+    }
+
+    .menu-content {
+      flex: 1;
+    }
+
+    .menu-title {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .menu-description {
+      margin-top: 3px;
+      font-size: 10px;
+      opacity: 0.45;
+    }
+
+    .menu-arrow {
+      font-size: 19px;
+      opacity: 0.4;
+    }
+
+    .success-message {
+      display: none;
+
+      margin-top: 12px;
+
+      padding: 10px 12px;
+
+      border-radius: 12px;
+
+      background: rgba(255,255,255,0.06);
+
+      text-align: center;
+
+      font-size: 12px;
+
+      opacity: 0.75;
+    }
+
+    .profile-footer {
+      margin-top: 28px;
+      text-align: center;
+      font-size: 11px;
+      line-height: 1.7;
+      opacity: 0.35;
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+  <div class="app-container">
+
+    <main class="page-content profile-page">
+
+
+      <!-- HEADER -->
+
+      <div class="profile-header">
+
+        <button
+          class="back-button"
+          id="backButton"
+          aria-label="Go back"
+        >
+          ‹
+        </button>
+
+        <h1>
+          Profile
+        </h1>
+
+      </div>
+
+
+      <!-- PROFILE -->
+
+      <section class="profile-card">
+
+        <div class="profile-top">
+
+          <div class="profile-avatar">
+            👤
+          </div>
+
+          <div
+            class="profile-name"
+            id="profileName"
+          >
+            Wallet Owner
+          </div>
+
+          <div class="profile-subtitle">
+            Tamilanda Wallet
+          </div>
+
+        </div>
+
+
+        <div class="field-group">
+
+          <label
+            class="field-label"
+            for="nameInput"
+          >
+            Name
+          </label>
+
+          <input
+            type="text"
+            id="nameInput"
+            class="profile-input"
+            placeholder="Enter your name"
+            autocomplete="name"
+          >
+
+        </div>
+
+
+        <div class="field-group">
+
+          <label
+            class="field-label"
+            for="phoneInput"
+          >
+            Phone
+          </label>
+
+          <input
+            type="tel"
+            id="phoneInput"
+            class="profile-input"
+            placeholder="Enter phone number"
+            autocomplete="tel"
+          >
+
+        </div>
+
+
+        <div class="field-group">
+
+          <label
+            class="field-label"
+            for="emailInput"
+          >
+            Email
+          </label>
+
+          <input
+            type="email"
+            id="emailInput"
+            class="profile-input"
+            placeholder="Enter email"
+            autocomplete="email"
+          >
+
+        </div>
+
+
+        <button
+          class="save-button"
+          id="saveProfile"
+        >
+          Save Profile
+        </button>
+
+
+        <div
+          class="success-message"
+          id="successMessage"
+        >
+          Profile saved successfully ✓
+        </div>
+
+      </section>
+
+
+      <!-- WALLET INFO -->
+
+      <section class="profile-card">
+
+        <div class="field-group">
+
+          <label class="field-label">
+            Wallet Type
+          </label>
+
+          <div class="profile-input">
+            Personal + Business
+          </div>
+
+        </div>
+
+
+        <div class="field-group">
+
+          <label class="field-label">
+            Storage
+          </label>
+
+          <div class="profile-input">
+            Local Device
+          </div>
+
+        </div>
+
+
+        <div class="field-group">
+
+          <label class="field-label">
+            Currency
+          </label>
+
+          <div
+            class="profile-input"
+            id="currencyDisplay"
+          >
+            INR (₹)
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- MENU -->
+
+      <section class="profile-card menu-card">
+
+
+        <button
+          class="menu-item"
+          id="privacyButton"
+        >
+
+          <div class="menu-icon">
+            🔐
+          </div>
+
+          <div class="menu-content">
+
+            <div class="menu-title">
+              Privacy & Security
+            </div>
+
+            <div class="menu-description">
+              Manage wallet privacy information
+            </div>
+
+          </div>
+
+          <div class="menu-arrow">
+            ›
+          </div>
+
+        </button>
+
+
+        <button
+          class="menu-item"
+          id="aboutButton"
+        >
+
+          <div class="menu-icon">
+            ℹ️
+          </div>
+
+          <div class="menu-content">
+
+            <div class="menu-title">
+              About Tamilanda Wallet
+            </div>
+
+            <div class="menu-description">
+              App information and features
+            </div>
+
+          </div>
+
+          <div class="menu-arrow">
+            ›
+          </div>
+
+        </button>
+
+
+        <button
+          class="menu-item"
+          id="settingsButton"
+        >
+
+          <div class="menu-icon">
+            ⚙️
+          </div>
+
+          <div class="menu-content">
+
+            <div class="menu-title">
+              Settings
+            </div>
+
+            <div class="menu-description">
+              Backup, restore and wallet settings
+            </div>
+
+          </div>
+
+          <div class="menu-arrow">
+            ›
+          </div>
+
+        </button>
+
+      </section>
+
+
+      <!-- FOOTER -->
+
+      <div class="profile-footer">
+
+        TAMILANDA WALLET
+
+        <br>
+
+        Your money. Your control. 🔐
+
+      </div>
+
+    </main>
+
+
+    <!-- BOTTOM NAV -->
+
+    <nav class="bottom-nav">
+
+
+      <button
+        class="nav-item"
+        data-page="home"
+      >
+
+        <span class="nav-icon">
+          🏠
+        </span>
+
+        <span class="nav-label">
+          Home
+        </span>
+
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="transactions"
+      >
+
+        <span class="nav-icon">
+          📋
+        </span>
+
+        <span class="nav-label">
+          Transactions
+        </span>
+
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="buyers"
+      >
+
+        <span class="nav-icon">
+          👤
+        </span>
+
+        <span class="nav-label">
+          Buyers
+        </span>
+
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="accounts"
+      >
+
+        <span class="nav-icon">
+          🏦
+        </span>
+
+        <span class="nav-label">
+          Accounts
+        </span>
+
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="more"
+      >
+
+        <span class="nav-icon">
+          ☰
+        </span>
+
+        <span class="nav-label">
+          More
+        </span>
+
+      </button>
+
+    </nav>
+
+  </div>
+
+
+  <script src="../js/app.js"></script>
+
+
+  <script>
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      () => {
+
+
+        /* =========================
+           LOAD DATA
+        ========================== */
+
+        let walletData = null;
+
+
+        if (
+          window.TamilandaWallet &&
+          typeof
+            window.TamilandaWallet.getData ===
+            "function"
+        ) {
+
+          walletData =
+            window.TamilandaWallet.getData();
+
+        }
+
+
+        if (!walletData) {
+
+          try {
+
+            walletData =
+              JSON.parse(
+                localStorage.getItem(
+                  "tamilanda_wallet_data"
+                )
+              ) || {};
+
+          } catch (error) {
+
+            walletData = {};
+
+          }
+
+        }
+
+
+        if (!walletData.profile) {
+
+          walletData.profile = {
+
+            name: "",
+
+            phone: "",
+
+            email: ""
+
+          };
+
+        }
+
+
+        /* =========================
+           ELEMENTS
+        ========================== */
+
+        const nameInput =
+          document.getElementById(
+            "nameInput"
+          );
+
+
+        const phoneInput =
+          document.getElementById(
+            "phoneInput"
+          );
+
+
+        const emailInput =
+          document.getElementById(
+            "emailInput"
+          );
+
+
+        const profileName =
+          document.getElementById(
+            "profileName"
+          );
+
+
+        const successMessage =
+          document.getElementById(
+            "successMessage"
+          );
+
+
+        const currencyDisplay =
+          document.getElementById(
+            "currencyDisplay"
+          );
+
+
+        /* =========================
+           LOAD PROFILE
+        ========================== */
+
+        nameInput.value =
+          walletData.profile.name ||
+          "";
+
+
+        phoneInput.value =
+          walletData.profile.phone ||
+          "";
+
+
+        emailInput.value =
+          walletData.profile.email ||
+          "";
+
+
+        updateProfileName();
+
+
+        /* =========================
+           CURRENCY
+        ========================== */
+
+        if (
+          walletData.settings
+        ) {
+
+          const currency =
+            walletData.settings.currency ||
+            "INR";
+
+
+          const symbol =
+            walletData.settings.currencySymbol ||
+            "₹";
+
+
+          currencyDisplay.textContent =
+            currency +
+            " (" +
+            symbol +
+            ")";
+
+        }
+
+
+        /* =========================
+           PROFILE NAME
+        ========================== */
+
+        function updateProfileName() {
+
+          const name =
+            nameInput.value.trim();
+
+
+          profileName.textContent =
+            name ||
+            "Wallet Owner";
+
+        }
+
+
+        nameInput.addEventListener(
+          "input",
+          updateProfileName
+        );
+
+
+        /* =========================
+           SAVE PROFILE
+        ========================== */
+
+        document
+          .getElementById(
+            "saveProfile"
+          )
+          .addEventListener(
+            "click",
+            () => {
+
+              walletData.profile = {
+
+                name:
+                  nameInput.value.trim(),
+
+                phone:
+                  phoneInput.value.trim(),
+
+                email:
+                  emailInput.value.trim()
+
+              };
+
+
+              localStorage.setItem(
+                "tamilanda_wallet_data",
+                JSON.stringify(
+                  walletData
+                )
+              );
+
+
+              if (
+                window.TamilandaWallet &&
+                typeof
+                  window.TamilandaWallet.save ===
+                  "function"
+              ) {
+
+                window.TamilandaWallet.save();
+
+              }
+
+
+              updateProfileName();
+
+
+              successMessage.style.display =
+                "block";
+
+
+              setTimeout(
+                () => {
+
+                  successMessage.style.display =
+                    "none";
+
+                },
+                2500
+              );
+
+            }
+          );
+
+
+        /* =========================
+           MENU NAVIGATION
+        ========================== */
+
+        document
+          .getElementById(
+            "privacyButton"
+          )
+          .addEventListener(
+            "click",
+            () => {
+
+              window.location.href =
+                "./privacy.html";
+
+            }
+          );
+
+
+        document
+          .getElementById(
+            "aboutButton"
+          )
+          .addEventListener(
+            "click",
+            () => {
+
+              window.location.href =
+                "./about.html";
+
+            }
+          );
+
+
+        document
+          .getElementById(
+            "settingsButton"
+          )
+          .addEventListener(
+            "click",
+            () => {
+
+              window.location.href =
+                "./settings.html";
+
+            }
+          );
+
+
+        /* =========================
+           BACK
+        ========================== */
+
+        document
+          .getElementById(
+            "backButton"
+          )
+          .addEventListener(
+            "click",
+            () => {
+
+              if (
+                document.referrer
+              ) {
+
+                history.back();
+
+              } else {
+
+                window.location.href =
+                  "./more.html";
+
+              }
+
+            }
+          );
+
+
+        /* =========================
+           BOTTOM NAV
+        ========================== */
+
+        document
+          .querySelectorAll(
+            ".bottom-nav .nav-item"
+          )
+          .forEach(
+            item => {
+
+              item.addEventListener(
+                "click",
+                () => {
+
+                  const page =
+                    item.dataset.page;
+
+
+                  if (
+                    page === "home"
+                  ) {
+
+                    window.location.href =
+                      "../index.html";
+
+                    return;
+
+                  }
+
+
+                  if (
+                    page === "transactions"
+                  ) {
+
+                    window.location.href =
+                      "./transactions.html";
+
+                    return;
+
+                  }
+
+
+                  if (
+                    page === "buyers"
+                  ) {
+
+                    window.location.href =
+                      "./buyers.html";
+
+                    return;
+
+                  }
+
+
+                  if (
+                    page === "accounts"
+                  ) {
+
+                    window.location.href =
+                      "./accounts.html";
+
+                    return;
+
+                  }
+
+
+                  if (
+                    page === "more"
+                  ) {
+
+                    window.location.href =
+                      "./more.html";
+
+                    return;
+
+                  }
+
+                }
+              );
+
+            }
+          );
+
+      }
+    );
+
+  </script>
+
+</body>
+
+</html>
