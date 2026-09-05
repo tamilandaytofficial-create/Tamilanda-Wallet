@@ -1,1787 +1,1294 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Dashboard - Tamilanda Wallet</title>
 
-  <link
-    rel="manifest"
-    href="../manifest.json"
-  >
-
-  <link
-    rel="icon"
-    type="image/png"
-    sizes="192x192"
-    href="../icons/icon-192.png"
-  >
-
-  <link
-    rel="apple-touch-icon"
-    href="../icons/icon-192.png"
-  >
-
-  <link
-    rel="stylesheet"
-    href="../css/style.css"
-  >
+  <link rel="stylesheet" href="../css/style.css">
 
   <style>
-
-    .dashboard-page {
-      padding-bottom: 110px;
-    }
-
     .dashboard-header {
-      margin-bottom: 22px;
+      padding: 22px 16px 12px;
     }
 
     .dashboard-header h1 {
-      margin: 0 0 5px;
+      margin: 0;
       font-size: 25px;
     }
 
     .dashboard-header p {
-      margin: 0;
-      font-size: 12px;
-      opacity: 0.55;
+      margin: 5px 0 0;
+      font-size: 13px;
+      opacity: 0.62;
     }
 
     .balance-card {
+      margin: 8px 16px 14px;
       padding: 22px;
-      border-radius: 22px;
-      margin-bottom: 14px;
-
-      border: 1px solid rgba(255,255,255,0.08);
-
-      background:
-        linear-gradient(
-          135deg,
-          rgba(255,255,255,0.09),
-          rgba(255,255,255,0.025)
-        );
+      border-radius: 20px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
     }
 
-    .balance-label {
+    .balance-card small {
+      opacity: 0.6;
+      font-size: 12px;
+    }
+
+    .balance-card h2 {
+      margin: 7px 0 5px;
+      font-size: 30px;
+    }
+
+    .balance-card span {
       font-size: 12px;
       opacity: 0.55;
-      margin-bottom: 8px;
-    }
-
-    .balance-value {
-      font-size: 31px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
-
-    .balance-note {
-      margin-top: 8px;
-      font-size: 11px;
-      opacity: 0.45;
     }
 
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-bottom: 22px;
+      padding: 0 16px 14px;
     }
 
     .stat-card {
-      padding: 16px;
-      border-radius: 17px;
-
-      border: 1px solid rgba(255,255,255,0.07);
-
-      background: rgba(255,255,255,0.035);
-    }
-
-    .stat-icon {
-      font-size: 20px;
-      margin-bottom: 8px;
-    }
-
-    .stat-label {
-      font-size: 11px;
-      opacity: 0.5;
-      margin-bottom: 5px;
-    }
-
-    .stat-value {
-      font-size: 17px;
-      font-weight: 800;
-    }
-
-    .quick-actions {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 24px;
-    }
-
-    .quick-button {
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.035);
-      color: inherit;
-
-      border-radius: 17px;
       padding: 15px;
-
-      cursor: pointer;
-      text-align: left;
-
-      transition: 0.2s ease;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.08);
     }
 
-    .quick-button:hover {
-      background: rgba(255,255,255,0.07);
-      transform: translateY(-1px);
+    .stat-card small {
+      display: block;
+      font-size: 11px;
+      opacity: 0.6;
+      margin-bottom: 7px;
     }
 
-    .quick-button:active {
-      transform: scale(0.98);
+    .stat-card strong {
+      font-size: 17px;
     }
 
-    .quick-icon {
-      font-size: 21px;
-      margin-bottom: 8px;
+    .income {
+      color: #4ade80;
     }
 
-    .quick-title {
-      font-size: 13px;
-      font-weight: 700;
+    .expense {
+      color: #fb7185;
     }
 
-    .quick-description {
-      margin-top: 3px;
-      font-size: 10px;
-      opacity: 0.45;
+    .profit {
+      color: #60a5fa;
+    }
+
+    .section {
+      padding: 0 16px;
+      margin-bottom: 16px;
     }
 
     .section-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 9px;
     }
 
-    .section-title {
+    .section-header h3 {
       margin: 0;
-      font-size: 14px;
-      font-weight: 700;
+      font-size: 16px;
     }
 
-    .view-button {
+    .section-header button {
       border: 0;
       background: transparent;
       color: inherit;
-      font-size: 11px;
-      opacity: 0.55;
+      opacity: 0.65;
+      font-size: 12px;
       cursor: pointer;
     }
 
-    .list-card {
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .quick-button {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.055);
+      color: inherit;
+      border-radius: 13px;
+      padding: 12px 5px;
+      cursor: pointer;
+      min-height: 72px;
+    }
+
+    .quick-button .icon {
+      font-size: 22px;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .quick-button span {
+      font-size: 10px;
+      opacity: 0.75;
+    }
+
+    .money-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 9px;
+    }
+
+    .money-card {
+      border-radius: 14px;
+      padding: 13px 10px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .money-card small {
+      display: block;
+      font-size: 10px;
+      opacity: 0.58;
+      margin-bottom: 5px;
+    }
+
+    .money-card strong {
+      font-size: 13px;
+    }
+
+    .accounts-list,
+    .recent-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .account-row,
+    .recent-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 13px;
+      border-radius: 13px;
+      background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.07);
-      background: rgba(255,255,255,0.035);
-      border-radius: 18px;
-      overflow: hidden;
-      margin-bottom: 22px;
     }
 
-    .list-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px;
-
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .list-item:last-child {
-      border-bottom: 0;
-    }
-
-    .list-icon {
-      width: 40px;
-      height: 40px;
-      min-width: 40px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      border-radius: 12px;
-
-      background: rgba(255,255,255,0.07);
-
-      font-size: 18px;
-    }
-
-    .list-content {
-      flex: 1;
+    .account-left,
+    .recent-left {
       min-width: 0;
     }
 
-    .list-title {
+    .account-name,
+    .recent-title {
       font-size: 13px;
       font-weight: 700;
-
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
-    .list-subtitle {
+    .account-type,
+    .recent-meta {
       margin-top: 3px;
       font-size: 10px;
-      opacity: 0.45;
+      opacity: 0.55;
     }
 
-    .list-amount {
+    .account-balance,
+    .recent-amount {
+      white-space: nowrap;
       font-size: 13px;
       font-weight: 800;
-      text-align: right;
     }
 
-    .empty-state {
-      padding: 25px 15px;
+    .recent-amount.income {
+      color: #4ade80;
+    }
+
+    .recent-amount.expense {
+      color: #fb7185;
+    }
+
+    .recent-amount.transfer {
+      color: #60a5fa;
+    }
+
+    .empty-box {
       text-align: center;
+      padding: 22px 10px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.04);
+      opacity: 0.58;
       font-size: 12px;
-      opacity: 0.45;
     }
 
-    .alerts-card {
-      border: 1px solid rgba(255,255,255,0.07);
-      background: rgba(255,255,255,0.035);
-      border-radius: 18px;
-      overflow: hidden;
-      margin-bottom: 22px;
+    .net-worth-card {
+      padding: 17px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.08);
     }
 
-    .alert-row {
+    .net-row {
       display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px;
-
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-
-      cursor: pointer;
-    }
-
-    .alert-row:last-child {
-      border-bottom: 0;
-    }
-
-    .alert-icon {
-      width: 40px;
-      height: 40px;
-      min-width: 40px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      border-radius: 12px;
-
-      background: rgba(255,255,255,0.07);
-      font-size: 18px;
-    }
-
-    .alert-content {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .alert-title {
+      justify-content: space-between;
+      padding: 7px 0;
       font-size: 13px;
-      font-weight: 700;
     }
 
-    .alert-subtitle {
-      margin-top: 3px;
-      font-size: 10px;
-      opacity: 0.45;
+    .net-row.total {
+      margin-top: 5px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-weight: 800;
     }
 
-    .alert-arrow {
-      font-size: 18px;
-      opacity: 0.4;
+    .bottom-space {
+      height: 80px;
     }
-
-    .dashboard-footer {
-      text-align: center;
-      margin-top: 28px;
-      font-size: 11px;
-      line-height: 1.6;
-      opacity: 0.35;
-    }
-
-    @media (max-width: 360px) {
-
-      .stats-grid,
-      .quick-actions {
-        grid-template-columns: 1fr;
-      }
-
-    }
-
   </style>
-
 </head>
-
 
 <body>
 
-  <div class="app-container">
+  <!-- HEADER -->
+  <div class="dashboard-header">
+    <h1>📊 Dashboard</h1>
+    <p id="dashboardDate">Today</p>
+  </div>
 
-    <main class="page-content dashboard-page">
 
+  <!-- TOTAL BALANCE -->
+  <div class="balance-card">
 
-      <!-- =========================
-           HEADER
-      ========================== -->
+    <small>💰 Total Available Balance</small>
 
-      <div class="dashboard-header">
+    <h2 id="totalBalance">₹0</h2>
 
-        <h1>
-          Dashboard
-        </h1>
-
-        <p>
-          Your complete money overview
-        </p>
-
-      </div>
-
-
-      <!-- =========================
-           BALANCE
-      ========================== -->
-
-      <div class="balance-card">
-
-        <div class="balance-label">
-          Current Balance
-        </div>
-
-        <div
-          class="balance-value"
-          id="totalBalance"
-        >
-          ₹0
-        </div>
-
-        <div class="balance-note">
-          Total balance across your accounts
-        </div>
-
-      </div>
-
-
-      <!-- =========================
-           TODAY STATS
-      ========================== -->
-
-      <div class="stats-grid">
-
-
-        <div class="stat-card">
-
-          <div class="stat-icon">
-            📥
-          </div>
-
-          <div class="stat-label">
-            Today's Income
-          </div>
-
-          <div
-            class="stat-value"
-            id="todayIncome"
-          >
-            ₹0
-          </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-          <div class="stat-icon">
-            📤
-          </div>
-
-          <div class="stat-label">
-            Today's Expense
-          </div>
-
-          <div
-            class="stat-value"
-            id="todayExpense"
-          >
-            ₹0
-          </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-          <div class="stat-icon">
-            📊
-          </div>
-
-          <div class="stat-label">
-            Today's Profit
-          </div>
-
-          <div
-            class="stat-value"
-            id="todayProfit"
-          >
-            ₹0
-          </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-          <div class="stat-icon">
-            👤
-          </div>
-
-          <div class="stat-label">
-            Money To Receive
-          </div>
-
-          <div
-            class="stat-value"
-            id="moneyToReceive"
-          >
-            ₹0
-          </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-          <div class="stat-icon">
-            🤝
-          </div>
-
-          <div class="stat-label">
-            Money To Give
-          </div>
-
-          <div
-            class="stat-value"
-            id="moneyToGive"
-          >
-            ₹0
-          </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-          <div class="stat-icon">
-            📅
-          </div>
-
-          <div class="stat-label">
-            EMI To Pay
-          </div>
-
-          <div
-            class="stat-value"
-            id="emiToPay"
-          >
-            ₹0
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <!-- =========================
-           QUICK ACTIONS
-      ========================== -->
-
-      <div class="section-header">
-
-        <h2 class="section-title">
-          Quick Add
-        </h2>
-
-      </div>
-
-
-      <div class="quick-actions">
-
-
-        <button
-          class="quick-button"
-          id="addIncomeButton"
-        >
-
-          <div class="quick-icon">
-            ➕💰
-          </div>
-
-          <div class="quick-title">
-            Add Income
-          </div>
-
-          <div class="quick-description">
-            Record money received
-          </div>
-
-        </button>
-
-
-        <button
-          class="quick-button"
-          id="addExpenseButton"
-        >
-
-          <div class="quick-icon">
-            ➖💸
-          </div>
-
-          <div class="quick-title">
-            Add Expense
-          </div>
-
-          <div class="quick-description">
-            Record money spent
-          </div>
-
-        </button>
-
-
-        <button
-          class="quick-button"
-          id="addBuyerButton"
-        >
-
-          <div class="quick-icon">
-            👤➕
-          </div>
-
-          <div class="quick-title">
-            Add Buyer
-          </div>
-
-          <div class="quick-description">
-            Add FF buyer
-          </div>
-
-        </button>
-
-
-        <button
-          class="quick-button"
-          id="addEmiButton"
-        >
-
-          <div class="quick-icon">
-            📅➕
-          </div>
-
-          <div class="quick-title">
-            Add EMI
-          </div>
-
-          <div class="quick-description">
-            Add your EMI
-          </div>
-
-        </button>
-
-      </div>
-
-
-      <!-- =========================
-           PAYMENT ALERTS
-      ========================== -->
-
-      <div class="section-header">
-
-        <h2 class="section-title">
-          Payment Alerts
-        </h2>
-
-        <button
-          class="view-button"
-          id="viewNotifications"
-        >
-          View All
-        </button>
-
-      </div>
-
-
-      <div
-        class="alerts-card"
-        id="alertsList"
-      >
-
-        <div class="empty-state">
-          No payment alerts
-        </div>
-
-      </div>
-
-
-      <!-- =========================
-           ACCOUNTS
-      ========================== -->
-
-      <div class="section-header">
-
-        <h2 class="section-title">
-          Accounts
-        </h2>
-
-        <button
-          class="view-button"
-          id="viewAccounts"
-        >
-          View All
-        </button>
-
-      </div>
-
-
-      <div
-        class="list-card"
-        id="accountsList"
-      >
-
-        <div class="empty-state">
-          No accounts added yet
-        </div>
-
-      </div>
-
-
-      <!-- =========================
-           RECENT TRANSACTIONS
-      ========================== -->
-
-      <div class="section-header">
-
-        <h2 class="section-title">
-          Recent Transactions
-        </h2>
-
-        <button
-          class="view-button"
-          id="viewTransactions"
-        >
-          View All
-        </button>
-
-      </div>
-
-
-      <div
-        class="list-card"
-        id="transactionsList"
-      >
-
-        <div class="empty-state">
-          No transactions yet
-        </div>
-
-      </div>
-
-
-      <!-- =========================
-           FOOTER
-      ========================== -->
-
-      <div class="dashboard-footer">
-
-        TAMILANDA WALLET
-
-        <br>
-
-        Your money. Your control. 🔐
-
-      </div>
-
-    </main>
-
-
-    <!-- =========================
-         BOTTOM NAVIGATION
-    ========================== -->
-
-    <nav class="bottom-nav">
-
-
-      <button
-        class="nav-item active"
-        data-page="home"
-      >
-
-        <span class="nav-icon">
-          🏠
-        </span>
-
-        <span class="nav-label">
-          Home
-        </span>
-
-      </button>
-
-
-      <button
-        class="nav-item"
-        data-page="transactions"
-      >
-
-        <span class="nav-icon">
-          📋
-        </span>
-
-        <span class="nav-label">
-          Transactions
-        </span>
-
-      </button>
-
-
-      <button
-        class="nav-item"
-        data-page="buyers"
-      >
-
-        <span class="nav-icon">
-          👤
-        </span>
-
-        <span class="nav-label">
-          Buyers
-        </span>
-
-      </button>
-
-
-      <button
-        class="nav-item"
-        data-page="accounts"
-      >
-
-        <span class="nav-icon">
-          🏦
-        </span>
-
-        <span class="nav-label">
-          Accounts
-        </span>
-
-      </button>
-
-
-      <button
-        class="nav-item"
-        data-page="more"
-      >
-
-        <span class="nav-icon">
-          ☰
-        </span>
-
-        <span class="nav-label">
-          More
-        </span>
-
-      </button>
-
-    </nav>
+    <span>
+      Across all bank, cash, UPI & wallet accounts
+    </span>
 
   </div>
 
 
-  <!-- =========================
-       APP JS
-  ========================== -->
+  <!-- TODAY STATS -->
+  <div class="stats-grid">
+
+    <div class="stat-card">
+      <small>💚 Today Income</small>
+      <strong class="income" id="todayIncome">₹0</strong>
+    </div>
+
+    <div class="stat-card">
+      <small>❤️ Today Expense</small>
+      <strong class="expense" id="todayExpense">₹0</strong>
+    </div>
+
+    <div class="stat-card">
+      <small>📈 Today Profit</small>
+      <strong class="profit" id="todayProfit">₹0</strong>
+    </div>
+
+    <div class="stat-card">
+      <small>🏦 Accounts</small>
+      <strong id="accountCount">0</strong>
+    </div>
+
+  </div>
+
+
+  <!-- QUICK ACTIONS -->
+  <div class="section">
+
+    <div class="section-header">
+      <h3>⚡ Quick Actions</h3>
+    </div>
+
+    <div class="quick-grid">
+
+      <button class="quick-button" onclick="go('income.html')">
+        <span class="icon">💚</span>
+        <span>Income</span>
+      </button>
+
+      <button class="quick-button" onclick="go('expense.html')">
+        <span class="icon">💸</span>
+        <span>Expense</span>
+      </button>
+
+      <button class="quick-button" onclick="go('transfer.html')">
+        <span class="icon">🔄</span>
+        <span>Transfer</span>
+      </button>
+
+      <button class="quick-button" onclick="go('calculator.html')">
+        <span class="icon">🧮</span>
+        <span>Calculator</span>
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- RECEIVABLE / PAYABLE -->
+  <div class="section">
+
+    <div class="section-header">
+      <h3>💼 Money Overview</h3>
+    </div>
+
+    <div class="money-grid">
+
+      <div
+        class="money-card"
+        onclick="go('buyers.html')"
+        style="cursor:pointer;"
+      >
+        <small>👤 To Receive</small>
+        <strong id="moneyToReceive">₹0</strong>
+      </div>
+
+      <div
+        class="money-card"
+        onclick="go('give-money.html')"
+        style="cursor:pointer;"
+      >
+        <small>🤝 To Give</small>
+        <strong id="moneyToGive">₹0</strong>
+      </div>
+
+      <div
+        class="money-card"
+        onclick="go('emi.html')"
+        style="cursor:pointer;"
+      >
+        <small>🏦 EMI To Pay</small>
+        <strong id="emiToPay">₹0</strong>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ACCOUNTS -->
+  <div class="section">
+
+    <div class="section-header">
+
+      <h3>🏦 Accounts</h3>
+
+      <button onclick="go('accounts.html')">
+        View All →
+      </button>
+
+    </div>
+
+    <div id="accountsList" class="accounts-list"></div>
+
+  </div>
+
+
+  <!-- NET WORTH -->
+  <div class="section">
+
+    <div class="section-header">
+
+      <h3>📊 Net Worth</h3>
+
+      <button onclick="go('net-worth.html')">
+        Details →
+      </button>
+
+    </div>
+
+    <div class="net-worth-card">
+
+      <div class="net-row">
+        <span>Total Assets</span>
+        <strong id="totalAssets">₹0</strong>
+      </div>
+
+      <div class="net-row">
+        <span>Total Liabilities</span>
+        <strong id="totalLiabilities">₹0</strong>
+      </div>
+
+      <div class="net-row total">
+        <span>Net Worth</span>
+        <strong id="netWorth">₹0</strong>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- RECENT TRANSACTIONS -->
+  <div class="section">
+
+    <div class="section-header">
+
+      <h3>🧾 Recent Transactions</h3>
+
+      <button onclick="go('transactions.html')">
+        View All →
+      </button>
+
+    </div>
+
+    <div id="recentList" class="recent-list"></div>
+
+  </div>
+
+
+  <div class="bottom-space"></div>
+
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+
+    <button onclick="location.href='../index.html'">
+      🏠
+      <span>Home</span>
+    </button>
+
+    <button onclick="location.href='transactions.html'">
+      📒
+      <span>Transactions</span>
+    </button>
+
+    <button onclick="location.href='buyers.html'">
+      👤
+      <span>Buyers</span>
+    </button>
+
+    <button onclick="location.href='accounts.html'">
+      🏦
+      <span>Accounts</span>
+    </button>
+
+    <button onclick="location.href='more.html'">
+      ☰
+      <span>More</span>
+    </button>
+
+  </div>
+
 
   <script src="../js/app.js"></script>
 
-
   <script>
 
-    document.addEventListener(
-      "DOMContentLoaded",
-      () => {
+    function getData() {
 
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.getData === "function"
+      ) {
+        return window.TamilandaWallet.getData();
+      }
 
-        /* =========================
-           DATA
-        ========================== */
+      try {
 
-        let walletData = null;
+        return JSON.parse(
+          localStorage.getItem("tamilanda_wallet_data")
+        ) || {};
 
+      } catch (error) {
 
-        if (
-          window.TamilandaWallet &&
-          typeof window.TamilandaWallet.getData ===
-            "function"
-        ) {
-
-          walletData =
-            window.TamilandaWallet.getData();
-
-        }
-
-
-        if (!walletData) {
-
-          try {
-
-            walletData =
-              JSON.parse(
-                localStorage.getItem(
-                  "tamilanda_wallet_data"
-                )
-              ) || {};
-
-          } catch (error) {
-
-            walletData = {};
-
-          }
-
-        }
-
-
-        const accounts =
-          Array.isArray(walletData.accounts)
-            ? walletData.accounts
-            : [];
-
-
-        const transactions =
-          Array.isArray(walletData.transactions)
-            ? walletData.transactions
-            : [];
-
-
-        /* =========================
-           MONEY FORMAT
-        ========================== */
-
-        function formatMoney(value) {
-
-          const amount =
-            Number(value) || 0;
-
-
-          if (
-            window.TamilandaWallet &&
-            typeof
-              window.TamilandaWallet.formatMoney ===
-              "function"
-          ) {
-
-            return window.TamilandaWallet.formatMoney(
-              amount
-            );
-
-          }
-
-
-          return "₹" +
-            amount.toLocaleString(
-              "en-IN",
-              {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2
-              }
-            );
-
-        }
-
-
-        /* =========================
-           ACCOUNT BALANCE
-        ========================== */
-
-        let totalBalance = 0;
-
-
-        accounts.forEach(
-          account => {
-
-            totalBalance +=
-              Number(
-                account.balance
-              ) || 0;
-
-          }
-        );
-
-
-        document.getElementById(
-          "totalBalance"
-        ).textContent =
-          formatMoney(
-            totalBalance
-          );
-
-
-        /* =========================
-           TODAY
-        ========================== */
-
-        const today =
-          new Date();
-
-
-        const todayString =
-          today.toISOString()
-            .slice(0, 10);
-
-
-        let todayIncome = 0;
-
-        let todayExpense = 0;
-
-
-        transactions.forEach(
-          transaction => {
-
-            const date =
-              transaction.date ||
-              transaction.createdAt ||
-              "";
-
-
-            if (
-              String(date)
-                .slice(0, 10) !==
-              todayString
-            ) {
-
-              return;
-
-            }
-
-
-            const amount =
-              Number(
-                transaction.amount
-              ) || 0;
-
-
-            const type =
-              String(
-                transaction.type || ""
-              ).toLowerCase();
-
-
-            if (
-              type === "income"
-            ) {
-
-              todayIncome +=
-                amount;
-
-            }
-
-
-            if (
-              type === "expense"
-            ) {
-
-              todayExpense +=
-                amount;
-
-            }
-
-          }
-        );
-
-
-        document.getElementById(
-          "todayIncome"
-        ).textContent =
-          formatMoney(
-            todayIncome
-          );
-
-
-        document.getElementById(
-          "todayExpense"
-        ).textContent =
-          formatMoney(
-            todayExpense
-          );
-
-
-        document.getElementById(
-          "todayProfit"
-        ).textContent =
-          formatMoney(
-            todayIncome -
-            todayExpense
-          );
-
-
-        /* =========================
-           OTHER TOTALS
-        ========================== */
-
-        let moneyToReceive = 0;
-
-        let moneyToGive = 0;
-
-        let emiToPay = 0;
-
-
-        if (
-          window.TamilandaWallet
-        ) {
-
-          if (
-            typeof
-              window.TamilandaWallet
-                .calculateMoneyToReceive ===
-              "function"
-          ) {
-
-            moneyToReceive =
-              window.TamilandaWallet
-                .calculateMoneyToReceive();
-
-          }
-
-
-          if (
-            typeof
-              window.TamilandaWallet
-                .calculateMoneyToGive ===
-              "function"
-          ) {
-
-            moneyToGive =
-              window.TamilandaWallet
-                .calculateMoneyToGive();
-
-          }
-
-
-          if (
-            typeof
-              window.TamilandaWallet
-                .calculateEmiToPay ===
-              "function"
-          ) {
-
-            emiToPay =
-              window.TamilandaWallet
-                .calculateEmiToPay();
-
-          }
-
-        }
-
-
-        document.getElementById(
-          "moneyToReceive"
-        ).textContent =
-          formatMoney(
-            moneyToReceive
-          );
-
-
-        document.getElementById(
-          "moneyToGive"
-        ).textContent =
-          formatMoney(
-            moneyToGive
-          );
-
-
-        document.getElementById(
-          "emiToPay"
-        ).textContent =
-          formatMoney(
-            emiToPay
-          );
-
-
-        /* =========================
-           ACCOUNTS
-        ========================== */
-
-        const accountsList =
-          document.getElementById(
-            "accountsList"
-          );
-
-
-        if (
-          accounts.length === 0
-        ) {
-
-          accountsList.innerHTML = `
-
-            <div class="empty-state">
-              No accounts added yet
-            </div>
-
-          `;
-
-        } else {
-
-          accountsList.innerHTML =
-            accounts
-              .slice(0, 5)
-              .map(
-                account => {
-
-                  const balance =
-                    Number(
-                      account.balance
-                    ) || 0;
-
-
-                  return `
-
-                    <div class="list-item">
-
-                      <div class="list-icon">
-                        🏦
-                      </div>
-
-                      <div class="list-content">
-
-                        <div class="list-title">
-                          ${escapeHtml(
-                            account.name ||
-                            "Account"
-                          )}
-                        </div>
-
-                        <div class="list-subtitle">
-                          ${escapeHtml(
-                            account.type ||
-                            "Account"
-                          )}
-                        </div>
-
-                      </div>
-
-                      <div class="list-amount">
-                        ${escapeHtml(
-                          formatMoney(balance)
-                        )}
-                      </div>
-
-                    </div>
-
-                  `;
-
-                }
-              )
-              .join("");
-
-        }
-
-
-        /* =========================
-           RECENT TRANSACTIONS
-        ========================== */
-
-        const transactionsList =
-          document.getElementById(
-            "transactionsList"
-          );
-
-
-        const recentTransactions =
-          [...transactions]
-            .sort(
-              (
-                first,
-                second
-              ) => {
-
-                const firstDate =
-                  new Date(
-                    first.createdAt ||
-                    first.date ||
-                    0
-                  ).getTime();
-
-
-                const secondDate =
-                  new Date(
-                    second.createdAt ||
-                    second.date ||
-                    0
-                  ).getTime();
-
-
-                return (
-                  secondDate -
-                  firstDate
-                );
-
-              }
-            )
-            .slice(0, 5);
-
-
-        if (
-          recentTransactions.length === 0
-        ) {
-
-          transactionsList.innerHTML = `
-
-            <div class="empty-state">
-              No transactions yet
-            </div>
-
-          `;
-
-        } else {
-
-          transactionsList.innerHTML =
-            recentTransactions
-              .map(
-                transaction => {
-
-                  const type =
-                    String(
-                      transaction.type ||
-                      ""
-                    ).toLowerCase();
-
-
-                  const icon =
-                    type === "income"
-                      ? "💰"
-                      : "💸";
-
-
-                  const sign =
-                    type === "income"
-                      ? "+"
-                      : "-";
-
-
-                  const accountName =
-                    accounts.find(
-                      account =>
-                        String(
-                          account.id
-                        ) ===
-                        String(
-                          transaction.accountId
-                        )
-                    );
-
-
-                  return `
-
-                    <div class="list-item">
-
-                      <div class="list-icon">
-                        ${icon}
-                      </div>
-
-                      <div class="list-content">
-
-                        <div class="list-title">
-                          ${escapeHtml(
-                            transaction.category ||
-                            transaction.title ||
-                            type ||
-                            "Transaction"
-                          )}
-                        </div>
-
-                        <div class="list-subtitle">
-                          ${escapeHtml(
-                            accountName
-                              ? accountName.name
-                              : (
-                                  transaction.date ||
-                                  ""
-                                )
-                          )}
-                        </div>
-
-                      </div>
-
-                      <div class="list-amount">
-                        ${sign}${escapeHtml(
-                          formatMoney(
-                            Number(
-                              transaction.amount
-                            ) || 0
-                          )
-                        )}
-                      </div>
-
-                    </div>
-
-                  `;
-
-                }
-              )
-              .join("");
-
-        }
-
-
-        /* =========================
-           ESCAPE HTML
-        ========================== */
-
-        function escapeHtml(value) {
-
-          if (
-            value === null ||
-            value === undefined
-          ) {
-
-            return "";
-
-          }
-
-
-          return String(value)
-            .replace(
-              /&/g,
-              "&amp;"
-            )
-            .replace(
-              /</g,
-              "&lt;"
-            )
-            .replace(
-              />/g,
-              "&gt;"
-            )
-            .replace(
-              /"/g,
-              "&quot;"
-            )
-            .replace(
-              /'/g,
-              "&#039;"
-            );
-
-        }
-
-
-        /* =========================
-           PAYMENT ALERTS
-        ========================== */
-
-        const alertsList =
-          document.getElementById(
-            "alertsList"
-          );
-
-
-        let alertCount = 0;
-
-
-        if (
-          Array.isArray(
-            walletData.buyers
-          )
-        ) {
-
-          walletData.buyers.forEach(
-            buyer => {
-
-              const remaining =
-                Number(
-                  buyer.remainingAmount
-                ) || 0;
-
-
-              if (
-                remaining > 0 &&
-                buyer.dueDate
-              ) {
-
-                alertCount++;
-
-              }
-
-            }
-          );
-
-        }
-
-
-        if (
-          Array.isArray(
-            walletData.moneyToGive
-          )
-        ) {
-
-          walletData.moneyToGive.forEach(
-            item => {
-
-              const remaining =
-                Number(
-                  item.remainingAmount
-                ) || 0;
-
-
-              if (
-                remaining > 0 &&
-                item.dueDate
-              ) {
-
-                alertCount++;
-
-              }
-
-            }
-          );
-
-        }
-
-
-        if (
-          Array.isArray(
-            walletData.myEmis
-          )
-        ) {
-
-          walletData.myEmis.forEach(
-            emi => {
-
-              if (
-                emi.nextPaymentDate ||
-                emi.nextDueDate ||
-                emi.dueDate
-              ) {
-
-                alertCount++;
-
-              }
-
-            }
-          );
-
-        }
-
-
-        if (
-          Array.isArray(
-            walletData.recurringBills
-          )
-        ) {
-
-          walletData.recurringBills.forEach(
-            bill => {
-
-              if (
-                bill.active !== false &&
-                bill.nextDueDate
-              ) {
-
-                alertCount++;
-
-              }
-
-            }
-          );
-
-        }
-
-
-        if (
-          alertCount === 0
-        ) {
-
-          alertsList.innerHTML = `
-
-            <div class="empty-state">
-              No payment alerts
-            </div>
-
-          `;
-
-        } else {
-
-          alertsList.innerHTML = `
-
-            <div
-              class="alert-row"
-              id="openNotifications"
-            >
-
-              <div class="alert-icon">
-                🔔
-              </div>
-
-              <div class="alert-content">
-
-                <div class="alert-title">
-                  ${alertCount}
-                  payment alert${alertCount === 1 ? "" : "s"}
-                </div>
-
-                <div class="alert-subtitle">
-                  Tap to view upcoming and overdue payments
-                </div>
-
-              </div>
-
-              <div class="alert-arrow">
-                ›
-              </div>
-
-            </div>
-
-          `;
-
-
-          document
-            .getElementById(
-              "openNotifications"
-            )
-            .addEventListener(
-              "click",
-              () => {
-
-                window.location.href =
-                  "./notifications.html";
-
-              }
-            );
-
-        }
-
-
-        /* =========================
-           QUICK ACTIONS
-        ========================== */
-
-        document
-          .getElementById(
-            "addIncomeButton"
-          )
-          .addEventListener(
-            "click",
-            () => {
-
-              window.location.href =
-                "./income.html";
-
-            }
-          );
-
-
-        document
-          .getElementById(
-            "addExpenseButton"
-          )
-          .addEventListener(
-            "click",
-            () => {
-
-              window.location.href =
-                "./expense.html";
-
-            }
-          );
-
-
-        document
-          .getElementById(
-            "addBuyerButton"
-          )
-          .addEventListener(
-            "click",
-            () => {
-
-              window.location.href =
-                "./buyers.html";
-
-            }
-          );
-
-
-        document
-          .getElementById(
-            "addEmiButton"
-          )
-          .addEventListener(
-            "click",
-            () => {
-
-              window.location.href =
-                "./emi.html";
-
-            }
-          );
-
-
-        /* =========================
-           VIEW BUTTONS
-        ========================== */
-
-        document
-          .getElementById(
-            "viewNotifications"
-          )
-          .addEventListener(
-            "click",
-            () => {
-
-              window.location.href =
-                "./notifications.html";
-
-            }
-          );
-
-
-        document
-          .getElementById(
-            "viewAccounts"
-          )
-          .addEventListener(
-            "click",
-            () => {
-
-              window.location.href =
-                "./accounts.html";
-
-            }
-          );
-
-
-        document
-          .getElementById(
-            "viewTransactions"
-          )
-          .addEventListener(
-            "click",
-            () => {
-
-              window.location.href =
-                "./transactions.html";
-
-            }
-          );
-
-
-        /* =========================
-           BOTTOM NAV
-        ========================== */
-
-        document
-          .querySelectorAll(
-            ".bottom-nav .nav-item"
-          )
-          .forEach(
-            item => {
-
-              item.addEventListener(
-                "click",
-                () => {
-
-                  const page =
-                    item.dataset.page;
-
-
-                  if (
-                    page === "home"
-                  ) {
-
-                    window.location.href =
-                      "../index.html";
-
-                    return;
-
-                  }
-
-
-                  if (
-                    page === "transactions"
-                  ) {
-
-                    window.location.href =
-                      "./transactions.html";
-
-                    return;
-
-                  }
-
-
-                  if (
-                    page === "buyers"
-                  ) {
-
-                    window.location.href =
-                      "./buyers.html";
-
-                    return;
-
-                  }
-
-
-                  if (
-                    page === "accounts"
-                  ) {
-
-                    window.location.href =
-                      "./accounts.html";
-
-                    return;
-
-                  }
-
-
-                  if (
-                    page === "more"
-                  ) {
-
-                    window.location.href =
-                      "./more.html";
-
-                    return;
-
-                  }
-
-                }
-              );
-
-            }
-          );
+        return {};
 
       }
+
+    }
+
+
+    function money(value) {
+
+      value = Number(value) || 0;
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.formatMoney === "function"
+      ) {
+        return window.TamilandaWallet.formatMoney(value);
+      }
+
+      return "₹" + value.toLocaleString("en-IN");
+
+    }
+
+
+    function escapeHtml(text) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.escapeHtml === "function"
+      ) {
+        return window.TamilandaWallet.escapeHtml(String(text ?? ""));
+      }
+
+      return String(text ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    function today() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.todayString === "function"
+      ) {
+        return window.TamilandaWallet.todayString();
+      }
+
+      const d = new Date();
+
+      return [
+        d.getFullYear(),
+        String(d.getMonth() + 1).padStart(2, "0"),
+        String(d.getDate()).padStart(2, "0")
+      ].join("-");
+
+    }
+
+
+    function getDate(transaction) {
+
+      return (
+        transaction.date ||
+        transaction.transactionDate ||
+        transaction.paymentDate ||
+        transaction.createdAt ||
+        ""
+      );
+
+    }
+
+
+    function getDateOnly(value) {
+
+      if (!value) return "";
+
+      if (/^\d{4}-\d{2}-\d{2}$/.test(String(value))) {
+        return String(value);
+      }
+
+      const d = new Date(value);
+
+      if (isNaN(d.getTime())) {
+        return "";
+      }
+
+      return [
+        d.getFullYear(),
+        String(d.getMonth() + 1).padStart(2, "0"),
+        String(d.getDate()).padStart(2, "0")
+      ].join("-");
+
+    }
+
+
+    function typeOf(transaction) {
+
+      if (transaction.source) {
+
+        if (transaction.source === "buyer_payment") {
+          return "buyer_payment";
+        }
+
+        if (transaction.source === "buyer_initial_payment") {
+          return "buyer_initial_payment";
+        }
+
+        if (transaction.source === "emi_payment") {
+          return "emi_payment";
+        }
+
+        if (transaction.source === "money_to_give_payment") {
+          return "money_to_give_payment";
+        }
+
+        if (transaction.source === "recurring_payment") {
+          return "recurring_payment";
+        }
+
+      }
+
+      return transaction.type || "other";
+
+    }
+
+
+    function isIncome(transaction) {
+
+      const type = typeOf(transaction);
+
+      return (
+        type === "income" ||
+        type === "buyer_payment" ||
+        type === "buyer_initial_payment"
+      );
+
+    }
+
+
+    function isExpense(transaction) {
+
+      const type = typeOf(transaction);
+
+      return (
+        type === "expense" ||
+        type === "emi_payment" ||
+        type === "money_to_give_payment" ||
+        type === "recurring_payment"
+      );
+
+    }
+
+
+    function getAccountName(id) {
+
+      const data = getData();
+
+      const account =
+        (data.accounts || []).find(
+          a => String(a.id) === String(id)
+        );
+
+      return account
+        ? account.name
+        : "Unknown";
+
+    }
+
+
+    function calculateTodayIncome(data) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.calculateTodayIncome === "function"
+      ) {
+        return window.TamilandaWallet.calculateTodayIncome();
+      }
+
+      return (data.transactions || [])
+        .filter(t =>
+          getDateOnly(getDate(t)) === today() &&
+          isIncome(t)
+        )
+        .reduce(
+          (sum, t) => sum + (Number(t.amount) || 0),
+          0
+        );
+
+    }
+
+
+    function calculateTodayExpense(data) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.calculateTodayExpense === "function"
+      ) {
+        return window.TamilandaWallet.calculateTodayExpense();
+      }
+
+      return (data.transactions || [])
+        .filter(t =>
+          getDateOnly(getDate(t)) === today() &&
+          isExpense(t)
+        )
+        .reduce(
+          (sum, t) => sum + (Number(t.amount) || 0),
+          0
+        );
+
+    }
+
+
+    function calculateBalance(data) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.calculateTotalBalance === "function"
+      ) {
+        return window.TamilandaWallet.calculateTotalBalance();
+      }
+
+      return (data.accounts || [])
+        .reduce(
+          (sum, account) =>
+            sum + (Number(account.balance) || 0),
+          0
+        );
+
+    }
+
+
+    function calculateReceive(data) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.calculateMoneyToReceive === "function"
+      ) {
+        return window.TamilandaWallet.calculateMoneyToReceive();
+      }
+
+      return (data.buyers || [])
+        .reduce((sum, buyer) => {
+
+          const total =
+            Number(
+              buyer.totalAmount ??
+              buyer.amount ??
+              0
+            );
+
+          const initial =
+            Number(
+              buyer.initialPayment ??
+              buyer.paid ??
+              0
+            );
+
+          const payments =
+            (data.buyerPayments || [])
+              .filter(
+                p =>
+                  String(p.buyerId) === String(buyer.id)
+              )
+              .reduce(
+                (s, p) =>
+                  s + (Number(p.amount) || 0),
+                0
+              );
+
+          return Math.max(
+            0,
+            sum + total - initial - payments
+          );
+
+        }, 0);
+
+    }
+
+
+    function calculateGive(data) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.calculateMoneyToGive === "function"
+      ) {
+        return window.TamilandaWallet.calculateMoneyToGive();
+      }
+
+      return (data.moneyToGive || [])
+        .reduce((sum, item) => {
+
+          const total =
+            Number(
+              item.totalAmount ??
+              item.amount ??
+              0
+            );
+
+          const paid =
+            Number(
+              item.alreadyPaid ??
+              item.paid ??
+              0
+            );
+
+          const payments =
+            (data.givePayments || [])
+              .filter(
+                p =>
+                  String(p.giveId) === String(item.id)
+              )
+              .reduce(
+                (s, p) =>
+                  s + (Number(p.amount) || 0),
+                0
+              );
+
+          return sum +
+            Math.max(
+              0,
+              total - paid - payments
+            );
+
+        }, 0);
+
+    }
+
+
+    function calculateEmi(data) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.calculateEmiToPay === "function"
+      ) {
+        return window.TamilandaWallet.calculateEmiToPay();
+      }
+
+      return (data.myEmis || [])
+        .reduce((sum, item) => {
+
+          const total =
+            Number(
+              item.totalAmount ??
+              item.emiAmount ??
+              item.amount ??
+              0
+            );
+
+          const paid =
+            Number(
+              item.alreadyPaid ??
+              item.paid ??
+              0
+            );
+
+          const payments =
+            (data.emiPayments || [])
+              .filter(
+                p =>
+                  String(p.emiId) === String(item.id)
+              )
+              .reduce(
+                (s, p) =>
+                  s + (Number(p.amount) || 0),
+                0
+              );
+
+          return sum +
+            Math.max(
+              0,
+              total - paid - payments
+            );
+
+        }, 0);
+
+    }
+
+
+    function calculateAssets(data) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.calculateTotalAssets === "function"
+      ) {
+        return window.TamilandaWallet.calculateTotalAssets();
+      }
+
+      return calculateBalance(data) +
+        calculateReceive(data);
+
+    }
+
+
+    function calculateLiabilities(data) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.calculateTotalLiabilities === "function"
+      ) {
+        return window.TamilandaWallet.calculateTotalLiabilities();
+      }
+
+      return calculateGive(data) +
+        calculateEmi(data);
+
+    }
+
+
+    function calculateNetWorth(data) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.calculateNetWorth === "function"
+      ) {
+        return window.TamilandaWallet.calculateNetWorth();
+      }
+
+      return (
+        calculateAssets(data) -
+        calculateLiabilities(data)
+      );
+
+    }
+
+
+    function renderAccounts(data) {
+
+      const container =
+        document.getElementById("accountsList");
+
+      const accounts =
+        data.accounts || [];
+
+      document.getElementById("accountCount")
+        .textContent = accounts.length;
+
+
+      if (!accounts.length) {
+
+        container.innerHTML = `
+          <div class="empty-box">
+            🏦 No accounts added yet.<br>
+            Add your bank / cash / UPI account.
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      const sorted =
+        [...accounts]
+          .sort(
+            (a, b) =>
+              (Number(b.balance) || 0) -
+              (Number(a.balance) || 0)
+          )
+          .slice(0, 5);
+
+
+      container.innerHTML =
+        sorted.map(account => {
+
+          return `
+            <div class="account-row">
+
+              <div class="account-left">
+
+                <div class="account-name">
+                  ${escapeHtml(account.name || "Account")}
+                </div>
+
+                <div class="account-type">
+                  ${escapeHtml(account.type || "Other")}
+                </div>
+
+              </div>
+
+              <div class="account-balance">
+                ${money(account.balance)}
+              </div>
+
+            </div>
+          `;
+
+        }).join("");
+
+    }
+
+
+    function getTransactionTitle(transaction) {
+
+      return (
+        transaction.description ||
+        transaction.category ||
+        transaction.name ||
+        transaction.title ||
+        "Transaction"
+      );
+
+    }
+
+
+    function getTransactionTypeLabel(transaction) {
+
+      const type = typeOf(transaction);
+
+      const labels = {
+        income: "Income",
+        expense: "Expense",
+        transfer: "Transfer",
+        buyer_payment: "Buyer Payment",
+        buyer_initial_payment: "Buyer Initial",
+        emi_payment: "EMI Payment",
+        money_to_give_payment: "Money To Give",
+        recurring_payment: "Recurring"
+      };
+
+      return labels[type] || "Transaction";
+
+    }
+
+
+    function renderRecentTransactions(data) {
+
+      const container =
+        document.getElementById("recentList");
+
+      const transactions =
+        Array.isArray(data.transactions)
+          ? [...data.transactions]
+          : [];
+
+
+      transactions.sort((a, b) => {
+
+        const aTime =
+          new Date(getDate(a) || 0).getTime();
+
+        const bTime =
+          new Date(getDate(b) || 0).getTime();
+
+        return bTime - aTime;
+
+      });
+
+
+      const recent =
+        transactions.slice(0, 6);
+
+
+      if (!recent.length) {
+
+        container.innerHTML = `
+          <div class="empty-box">
+            🧾 No transactions yet.
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      container.innerHTML =
+        recent.map(transaction => {
+
+          const type =
+            typeOf(transaction);
+
+          const amount =
+            Number(transaction.amount) || 0;
+
+
+          let amountClass =
+            "transfer";
+
+          let prefix = "";
+
+
+          if (isIncome(transaction)) {
+
+            amountClass = "income";
+            prefix = "+";
+
+          } else if (isExpense(transaction)) {
+
+            amountClass = "expense";
+            prefix = "-";
+
+          }
+
+
+          let accountId =
+            transaction.accountId ||
+            transaction.paymentAccountId ||
+            transaction.receivedAccountId ||
+            transaction.paidFromAccountId;
+
+
+          let accountText =
+            accountId
+              ? getAccountName(accountId)
+              : "";
+
+
+          if (type === "transfer") {
+
+            const from =
+              getAccountName(
+                transaction.fromAccountId
+              );
+
+            const to =
+              getAccountName(
+                transaction.toAccountId
+              );
+
+            accountText =
+              `${from} → ${to}`;
+
+          }
+
+
+          return `
+            <div class="recent-row">
+
+              <div class="recent-left">
+
+                <div class="recent-title">
+                  ${escapeHtml(
+                    getTransactionTitle(transaction)
+                  )}
+                </div>
+
+                <div class="recent-meta">
+
+                  ${escapeHtml(
+                    getTransactionTypeLabel(transaction)
+                  )}
+
+                  ${
+                    accountText
+                      ? ` • ${escapeHtml(accountText)}`
+                      : ""
+                  }
+
+                </div>
+
+              </div>
+
+              <div class="recent-amount ${amountClass}">
+                ${prefix}${money(amount)}
+              </div>
+
+            </div>
+          `;
+
+        }).join("");
+
+    }
+
+
+    function updateDashboard() {
+
+      const data =
+        getData();
+
+
+      const balance =
+        calculateBalance(data);
+
+      const income =
+        calculateTodayIncome(data);
+
+      const expense =
+        calculateTodayExpense(data);
+
+      const profit =
+        income - expense;
+
+      const receive =
+        calculateReceive(data);
+
+      const give =
+        calculateGive(data);
+
+      const emi =
+        calculateEmi(data);
+
+      const assets =
+        calculateAssets(data);
+
+      const liabilities =
+        calculateLiabilities(data);
+
+      const netWorth =
+        calculateNetWorth(data);
+
+
+      document.getElementById("totalBalance")
+        .textContent =
+          money(balance);
+
+      document.getElementById("todayIncome")
+        .textContent =
+          money(income);
+
+      document.getElementById("todayExpense")
+        .textContent =
+          money(expense);
+
+      document.getElementById("todayProfit")
+        .textContent =
+          money(profit);
+
+      document.getElementById("moneyToReceive")
+        .textContent =
+          money(receive);
+
+      document.getElementById("moneyToGive")
+        .textContent =
+          money(give);
+
+      document.getElementById("emiToPay")
+        .textContent =
+          money(emi);
+
+      document.getElementById("totalAssets")
+        .textContent =
+          money(assets);
+
+      document.getElementById("totalLiabilities")
+        .textContent =
+          money(liabilities);
+
+      document.getElementById("netWorth")
+        .textContent =
+          money(netWorth);
+
+
+      const now =
+        new Date();
+
+      document.getElementById("dashboardDate")
+        .textContent =
+          now.toLocaleDateString(
+            "en-IN",
+            {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+              year: "numeric"
+            }
+          );
+
+
+      renderAccounts(data);
+
+      renderRecentTransactions(data);
+
+    }
+
+
+    function go(page) {
+
+      window.location.href =
+        page;
+
+    }
+
+
+    updateDashboard();
+
+
+    window.addEventListener(
+      "storage",
+      updateDashboard
     );
 
   </script>
 
 </body>
-
 </html>
