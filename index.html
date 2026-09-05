@@ -1,445 +1,682 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+  <meta charset="UTF-8">
 
-    <meta
-        name="theme-color"
-        content="#0b0810"
-    >
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-    <meta
-        name="description"
-        content="Tamilanda Wallet - Private personal money management"
-    >
+  <meta
+    name="theme-color"
+    content="#09070d"
+  >
 
-    <title>Tamilanda Wallet</title>
+  <meta
+    name="mobile-web-app-capable"
+    content="yes"
+  >
 
-    <link rel="stylesheet" href="css/style.css">
+  <meta
+    name="apple-mobile-web-app-capable"
+    content="yes"
+  >
+
+  <meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="black-translucent"
+  >
+
+  <meta
+    name="apple-mobile-web-app-title"
+    content="Tamilanda Wallet"
+  >
+
+  <meta
+    name="description"
+    content="Tamilanda Wallet - Private personal and business money management"
+  >
+
+  <title>Tamilanda Wallet</title>
+
+
+  <!-- =========================
+       PWA MANIFEST
+  ========================== -->
+
+  <link
+    rel="manifest"
+    href="./manifest.json"
+  >
+
+
+  <!-- =========================
+       APP ICON
+  ========================== -->
+
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="192x192"
+    href="./icons/icon-192.png"
+  >
+
+  <link
+    rel="apple-touch-icon"
+    href="./icons/icon-192.png"
+  >
+
+
+  <!-- =========================
+       STYLESHEET
+  ========================== -->
+
+  <link
+    rel="stylesheet"
+    href="./css/style.css"
+  >
+
 </head>
+
 
 <body>
 
-    <div id="app">
 
-        <!-- HEADER -->
-        <header class="app-header">
+  <!-- =========================
+       HEADER
+  ========================== -->
 
-            <div class="brand">
-                <div class="brand-icon">₹</div>
+  <header class="app-header">
 
-                <div>
-                    <h1>TAMILANDA</h1>
-                    <span>WALLET</span>
-                </div>
-            </div>
+    <div>
 
-            <button
-                class="icon-button"
-                id="settingsButton"
-                aria-label="Settings"
-            >
-                ⚙️
-            </button>
+      <div class="app-title">
+        TAMILANDA WALLET
+      </div>
 
-        </header>
-
-
-        <!-- MAIN CONTENT -->
-        <main class="main-content">
-
-            <!-- TOTAL BALANCE -->
-            <section class="balance-card">
-
-                <div class="balance-label">
-                    TOTAL BALANCE
-                </div>
-
-                <div
-                    class="total-balance"
-                    id="totalBalance"
-                >
-                    ₹0
-                </div>
-
-                <div class="balance-subtitle">
-                    Across all accounts
-                </div>
-
-            </section>
-
-
-            <!-- TODAY SUMMARY -->
-            <section class="section">
-
-                <div class="section-title">
-                    TODAY
-                </div>
-
-                <div class="summary-grid">
-
-                    <div class="summary-card income-card">
-
-                        <div class="summary-icon">
-                            ↗
-                        </div>
-
-                        <div class="summary-label">
-                            EARNED
-                        </div>
-
-                        <div
-                            class="summary-value"
-                            id="todayIncome"
-                        >
-                            ₹0
-                        </div>
-
-                    </div>
-
-
-                    <div class="summary-card expense-card">
-
-                        <div class="summary-icon">
-                            ↘
-                        </div>
-
-                        <div class="summary-label">
-                            SPENT
-                        </div>
-
-                        <div
-                            class="summary-value"
-                            id="todayExpense"
-                        >
-                            ₹0
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- TODAY PROFIT -->
-            <section class="profit-card">
-
-                <div>
-                    <div class="profit-label">
-                        TODAY'S PROFIT
-                    </div>
-
-                    <div
-                        class="profit-value"
-                        id="todayProfit"
-                    >
-                        ₹0
-                    </div>
-                </div>
-
-                <div class="profit-icon">
-                    💰
-                </div>
-
-            </section>
-
-
-            <!-- QUICK ACTIONS -->
-            <section class="section">
-
-                <div class="section-title">
-                    QUICK ACTIONS
-                </div>
-
-                <div class="quick-actions">
-
-                    <button
-                        class="action-button income-action"
-                        id="addIncomeButton"
-                    >
-                        <span class="action-icon">＋</span>
-                        <span>Income</span>
-                    </button>
-
-
-                    <button
-                        class="action-button expense-action"
-                        id="addExpenseButton"
-                    >
-                        <span class="action-icon">−</span>
-                        <span>Expense</span>
-                    </button>
-
-
-                    <button
-                        class="action-button buyer-action"
-                        id="addBuyerButton"
-                    >
-                        <span class="action-icon">👤</span>
-                        <span>Buyer</span>
-                    </button>
-
-
-                    <button
-                        class="action-button emi-action"
-                        id="addEmiButton"
-                    >
-                        <span class="action-icon">💳</span>
-                        <span>EMI</span>
-                    </button>
-
-                </div>
-
-            </section>
-
-
-            <!-- MONEY OVERVIEW -->
-            <section class="section">
-
-                <div class="section-title">
-                    MONEY OVERVIEW
-                </div>
-
-                <div class="overview-list">
-
-                    <div class="overview-item">
-
-                        <div class="overview-left">
-                            <span class="overview-icon">
-                                🟢
-                            </span>
-
-                            <div>
-                                <strong>
-                                    Money to Receive
-                                </strong>
-
-                                <small>
-                                    Buyer / other pending payments
-                                </small>
-                            </div>
-                        </div>
-
-                        <strong
-                            class="overview-amount receive"
-                            id="moneyToReceive"
-                        >
-                            ₹0
-                        </strong>
-
-                    </div>
-
-
-                    <div class="overview-item">
-
-                        <div class="overview-left">
-                            <span class="overview-icon">
-                                🔴
-                            </span>
-
-                            <div>
-                                <strong>
-                                    Money to Give
-                                </strong>
-
-                                <small>
-                                    Pending payments to others
-                                </small>
-                            </div>
-                        </div>
-
-                        <strong
-                            class="overview-amount give"
-                            id="moneyToGive"
-                        >
-                            ₹0
-                        </strong>
-
-                    </div>
-
-
-                    <div class="overview-item">
-
-                        <div class="overview-left">
-                            <span class="overview-icon">
-                                💳
-                            </span>
-
-                            <div>
-                                <strong>
-                                    EMI to Pay
-                                </strong>
-
-                                <small>
-                                    Upcoming EMI payments
-                                </small>
-                            </div>
-                        </div>
-
-                        <strong
-                            class="overview-amount emi"
-                            id="emiToPay"
-                        >
-                            ₹0
-                        </strong>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- ACCOUNTS -->
-            <section class="section">
-
-                <div class="section-heading-row">
-
-                    <div class="section-title">
-                        ACCOUNTS
-                    </div>
-
-                    <button
-                        class="text-button"
-                        id="viewAccountsButton"
-                    >
-                        View All →
-                    </button>
-
-                </div>
-
-
-                <div
-                    class="accounts-preview"
-                    id="accountsPreview"
-                >
-
-                    <div class="empty-state">
-                        <div class="empty-icon">
-                            🏦
-                        </div>
-
-                        <strong>
-                            No accounts added
-                        </strong>
-
-                        <small>
-                            Add your bank account or cash
-                        </small>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- RECENT TRANSACTIONS -->
-            <section class="section">
-
-                <div class="section-heading-row">
-
-                    <div class="section-title">
-                        RECENT TRANSACTIONS
-                    </div>
-
-                    <button
-                        class="text-button"
-                        id="viewTransactionsButton"
-                    >
-                        View All →
-                    </button>
-
-                </div>
-
-
-                <div
-                    class="transactions-preview"
-                    id="recentTransactions"
-                >
-
-                    <div class="empty-state">
-
-                        <div class="empty-icon">
-                            📜
-                        </div>
-
-                        <strong>
-                            No transactions yet
-                        </strong>
-
-                        <small>
-                            Your recent income and expenses will appear here
-                        </small>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-        </main>
-
-
-        <!-- BOTTOM NAVIGATION -->
-        <nav class="bottom-nav">
-
-            <button
-                class="nav-item active"
-                data-page="home"
-            >
-                <span>⌂</span>
-                <small>Home</small>
-            </button>
-
-
-            <button
-                class="nav-item"
-                data-page="transactions"
-            >
-                <span>▤</span>
-                <small>Transactions</small>
-            </button>
-
-
-            <button
-                class="nav-item"
-                data-page="buyers"
-            >
-                <span>♙</span>
-                <small>Buyers</small>
-            </button>
-
-
-            <button
-                class="nav-item"
-                data-page="accounts"
-            >
-                <span>▣</span>
-                <small>Accounts</small>
-            </button>
-
-
-            <button
-                class="nav-item"
-                data-page="more"
-            >
-                <span>•••</span>
-                <small>More</small>
-            </button>
-
-        </nav>
+      <div class="app-subtitle">
+        Personal & Business Finance
+      </div>
 
     </div>
 
 
-    <script src="js/app.js"></script>
+    <button
+      type="button"
+      class="icon-button"
+      id="settingsButton"
+      aria-label="Settings"
+    >
+      ⚙️
+    </button>
+
+  </header>
+
+
+  <!-- =========================
+       MAIN
+  ========================== -->
+
+  <main class="dashboard-container">
+
+
+    <!-- =========================
+         BALANCE CARD
+    ========================== -->
+
+    <section class="balance-card">
+
+      <div class="balance-label">
+        Total Available Balance
+      </div>
+
+
+      <div
+        class="balance-amount"
+        id="totalBalance"
+      >
+        ₹0
+      </div>
+
+
+      <div class="balance-note">
+        Across all your accounts
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         TODAY SUMMARY
+    ========================== -->
+
+    <section class="summary-grid">
+
+
+      <div class="summary-card">
+
+        <div class="summary-label">
+          Today Earned
+        </div>
+
+        <div
+          class="summary-value income-text"
+          id="todayIncome"
+        >
+          ₹0
+        </div>
+
+      </div>
+
+
+      <div class="summary-card">
+
+        <div class="summary-label">
+          Today Spent
+        </div>
+
+        <div
+          class="summary-value expense-text"
+          id="todayExpense"
+        >
+          ₹0
+        </div>
+
+      </div>
+
+
+      <div class="summary-card">
+
+        <div class="summary-label">
+          Today Profit
+        </div>
+
+        <div
+          class="summary-value profit-text"
+          id="todayProfit"
+        >
+          ₹0
+        </div>
+
+      </div>
+
+
+    </section>
+
+
+    <!-- =========================
+         QUICK ACTIONS
+    ========================== -->
+
+    <section class="dashboard-section">
+
+      <div class="section-header">
+
+        <div>
+
+          <h2>
+            Quick Actions
+          </h2>
+
+          <p>
+            Add money activity quickly
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="quick-actions">
+
+
+        <button
+          type="button"
+          class="quick-action"
+          id="addIncomeButton"
+        >
+
+          <span class="quick-action-icon">
+            💰
+          </span>
+
+          <span>
+            Income
+          </span>
+
+        </button>
+
+
+        <button
+          type="button"
+          class="quick-action"
+          id="addExpenseButton"
+        >
+
+          <span class="quick-action-icon">
+            💸
+          </span>
+
+          <span>
+            Expense
+          </span>
+
+        </button>
+
+
+        <button
+          type="button"
+          class="quick-action"
+          id="addBuyerButton"
+        >
+
+          <span class="quick-action-icon">
+            👤
+          </span>
+
+          <span>
+            Buyer
+          </span>
+
+        </button>
+
+
+        <button
+          type="button"
+          class="quick-action"
+          id="addEmiButton"
+        >
+
+          <span class="quick-action-icon">
+            🧾
+          </span>
+
+          <span>
+            EMI
+          </span>
+
+        </button>
+
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         MONEY OVERVIEW
+    ========================== -->
+
+    <section class="dashboard-section">
+
+      <div class="section-header">
+
+        <div>
+
+          <h2>
+            Money Overview
+          </h2>
+
+          <p>
+            Your upcoming money position
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="overview-grid">
+
+
+        <div class="overview-card">
+
+          <div class="overview-icon">
+            📥
+          </div>
+
+          <div>
+
+            <div class="overview-title">
+              Money To Receive
+            </div>
+
+            <div
+              class="overview-value"
+              id="moneyToReceive"
+            >
+              ₹0
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="overview-card">
+
+          <div class="overview-icon">
+            📤
+          </div>
+
+          <div>
+
+            <div class="overview-title">
+              Money To Give
+            </div>
+
+            <div
+              class="overview-value"
+              id="moneyToGive"
+            >
+              ₹0
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="overview-card">
+
+          <div class="overview-icon">
+            🧾
+          </div>
+
+          <div>
+
+            <div class="overview-title">
+              EMI To Pay
+            </div>
+
+            <div
+              class="overview-value"
+              id="emiToPay"
+            >
+              ₹0
+            </div>
+
+          </div>
+
+        </div>
+
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         ACCOUNTS
+    ========================== -->
+
+    <section class="dashboard-section">
+
+      <div class="section-header">
+
+        <div>
+
+          <h2>
+            Accounts
+          </h2>
+
+          <p>
+            Bank, cash, UPI and wallets
+          </p>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="text-button"
+          id="viewAccountsButton"
+        >
+          View All
+        </button>
+
+      </div>
+
+
+      <div
+        id="accountsPreview"
+        class="account-preview"
+      >
+
+        <div class="empty-state">
+
+          <div class="empty-icon">
+            🏦
+          </div>
+
+          <h3>
+            No accounts yet
+          </h3>
+
+          <p>
+            Add your first bank or cash account.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         RECENT TRANSACTIONS
+    ========================== -->
+
+    <section class="dashboard-section">
+
+      <div class="section-header">
+
+        <div>
+
+          <h2>
+            Recent Transactions
+          </h2>
+
+          <p>
+            Your latest money activity
+          </p>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="text-button"
+          id="viewTransactionsButton"
+        >
+          View All
+        </button>
+
+      </div>
+
+
+      <div
+        id="recentTransactions"
+        class="transaction-preview"
+      >
+
+        <div class="empty-state">
+
+          <div class="empty-icon">
+            💳
+          </div>
+
+          <h3>
+            No transactions yet
+          </h3>
+
+          <p>
+            Your recent transactions will appear here.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+  </main>
+
+
+  <!-- =========================
+       BOTTOM NAVIGATION
+  ========================== -->
+
+  <nav class="bottom-nav">
+
+
+    <button
+      type="button"
+      class="bottom-nav-item active"
+      data-page="home"
+    >
+
+      <span>
+        🏠
+      </span>
+
+      <small>
+        Home
+      </small>
+
+    </button>
+
+
+    <button
+      type="button"
+      class="bottom-nav-item"
+      data-page="transactions"
+    >
+
+      <span>
+        💳
+      </span>
+
+      <small>
+        Transactions
+      </small>
+
+    </button>
+
+
+    <button
+      type="button"
+      class="bottom-nav-item"
+      data-page="buyers"
+    >
+
+      <span>
+        👤
+      </span>
+
+      <small>
+        Buyers
+      </small>
+
+    </button>
+
+
+    <button
+      type="button"
+      class="bottom-nav-item"
+      data-page="accounts"
+    >
+
+      <span>
+        🏦
+      </span>
+
+      <small>
+        Accounts
+      </small>
+
+    </button>
+
+
+    <button
+      type="button"
+      class="bottom-nav-item"
+      data-page="more"
+    >
+
+      <span>
+        ☰
+      </span>
+
+      <small>
+        More
+      </small>
+
+    </button>
+
+
+  </nav>
+
+
+  <!-- =========================
+       APP JAVASCRIPT
+  ========================== -->
+
+  <script src="./js/app.js"></script>
+
+
+  <!-- =========================
+       SERVICE WORKER
+  ========================== -->
+
+  <script>
+
+    if (
+      "serviceWorker" in navigator
+    ) {
+
+      window.addEventListener(
+        "load",
+        () => {
+
+          navigator.serviceWorker
+            .register(
+              "./service-worker.js"
+            )
+            .then(
+              registration => {
+
+                console.log(
+                  "Tamilanda Wallet Service Worker registered:",
+                  registration.scope
+                );
+
+              }
+            )
+            .catch(
+              error => {
+
+                console.error(
+                  "Service Worker registration failed:",
+                  error
+                );
+
+              }
+            );
+
+        }
+      );
+
+    }
+
+  </script>
+
 
 </body>
+
 </html>
