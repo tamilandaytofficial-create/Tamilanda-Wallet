@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
@@ -32,118 +35,253 @@
   >
 
   <style>
+
     .more-page {
       padding-bottom: 110px;
     }
 
     .more-header {
-      margin-bottom: 24px;
+      margin-bottom: 22px;
     }
 
     .more-header h1 {
-      margin-bottom: 6px;
+      margin: 0 0 5px;
+      font-size: 25px;
     }
 
     .more-header p {
       margin: 0;
-      opacity: 0.65;
+      font-size: 12px;
+      opacity: 0.5;
     }
 
-    .more-section {
-      margin-bottom: 24px;
-    }
+    /* =========================
+       PROFILE CARD
+    ========================== */
 
-    .more-section-title {
-      margin: 0 0 10px 4px;
-      font-size: 13px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      opacity: 0.55;
-    }
-
-    .more-menu {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .more-item {
-      width: 100%;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(255, 255, 255, 0.035);
-      color: inherit;
-      border-radius: 16px;
-      padding: 15px;
-
+    .profile-card {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 13px;
 
-      text-align: left;
+      padding: 16px;
+      margin-bottom: 24px;
+
+      border-radius: 19px;
+
+      border: 1px solid rgba(255,255,255,0.08);
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(255,255,255,0.07),
+          rgba(255,255,255,0.025)
+        );
+
       cursor: pointer;
-
-      transition:
-        background 0.2s ease,
-        transform 0.2s ease;
     }
 
-    .more-item:hover {
-      background: rgba(255, 255, 255, 0.07);
-      transform: translateY(-1px);
-    }
-
-    .more-item:active {
-      transform: scale(0.98);
-    }
-
-    .more-icon {
-      width: 44px;
-      height: 44px;
-      min-width: 44px;
-
-      border-radius: 13px;
+    .profile-avatar {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
 
       display: flex;
       align-items: center;
       justify-content: center;
 
-      font-size: 21px;
+      border-radius: 15px;
 
-      background: rgba(255, 255, 255, 0.07);
+      background: rgba(255,255,255,0.09);
+
+      font-size: 23px;
     }
 
-    .more-content {
+    .profile-info {
       flex: 1;
       min-width: 0;
     }
 
-    .more-title {
-      margin-bottom: 3px;
+    .profile-name {
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 800;
+
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .more-description {
-      font-size: 12px;
-      line-height: 1.4;
-      opacity: 0.55;
-    }
+    .profile-subtitle {
+      margin-top: 4px;
 
-    .more-arrow {
-      font-size: 20px;
+      font-size: 11px;
+
       opacity: 0.45;
     }
 
-    .more-footer {
-      margin-top: 30px;
-      text-align: center;
-      font-size: 12px;
-      line-height: 1.6;
-      opacity: 0.4;
+    .profile-arrow {
+      font-size: 22px;
+      opacity: 0.35;
     }
+
+    /* =========================
+       SECTION
+    ========================== */
+
+    .more-section {
+      margin-bottom: 23px;
+    }
+
+    .section-title {
+      margin: 0 0 9px 4px;
+
+      font-size: 11px;
+      font-weight: 800;
+
+      letter-spacing: 1px;
+      text-transform: uppercase;
+
+      opacity: 0.42;
+    }
+
+    /* =========================
+       MENU
+    ========================== */
+
+    .menu-card {
+      overflow: hidden;
+
+      border-radius: 17px;
+
+      border: 1px solid rgba(255,255,255,0.07);
+
+      background: rgba(255,255,255,0.035);
+    }
+
+    .menu-item {
+      width: 100%;
+
+      display: flex;
+      align-items: center;
+
+      gap: 13px;
+
+      padding: 14px;
+
+      border: 0;
+
+      border-bottom:
+        1px solid
+        rgba(255,255,255,0.055);
+
+      background: transparent;
+
+      color: inherit;
+
+      text-align: left;
+
+      cursor: pointer;
+    }
+
+    .menu-item:last-child {
+      border-bottom: 0;
+    }
+
+    .menu-item:active {
+      background:
+        rgba(255,255,255,0.06);
+    }
+
+    .menu-icon {
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 12px;
+
+      background:
+        rgba(255,255,255,0.055);
+
+      font-size: 18px;
+    }
+
+    .menu-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .menu-title {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .menu-description {
+      margin-top: 3px;
+
+      font-size: 10px;
+
+      line-height: 1.4;
+
+      opacity: 0.42;
+    }
+
+    .menu-arrow {
+      font-size: 19px;
+      opacity: 0.25;
+    }
+
+    /* =========================
+       RIGHT SIDE
+    ========================== */
+
+    .menu-right {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .badge {
+      min-width: 20px;
+
+      padding: 4px 8px;
+
+      border-radius: 20px;
+
+      background:
+        rgba(255,255,255,0.08);
+
+      font-size: 9px;
+      font-weight: 800;
+
+      text-align: center;
+
+      opacity: 0.65;
+    }
+
+    /* =========================
+       FOOTER
+    ========================== */
+
+    .app-footer {
+      margin-top: 30px;
+
+      text-align: center;
+
+      font-size: 10px;
+
+      line-height: 1.7;
+
+      opacity: 0.3;
+    }
+
   </style>
+
 </head>
+
 
 <body>
 
@@ -151,17 +289,55 @@
 
     <main class="page-content more-page">
 
+
       <!-- =========================
            HEADER
       ========================== -->
 
       <div class="more-header">
 
-        <h1>More</h1>
+        <h1>
+          More
+        </h1>
 
         <p>
-          Manage your Tamilanda Wallet
+          Manage your wallet and app
         </p>
+
+      </div>
+
+
+      <!-- =========================
+           PROFILE
+      ========================== -->
+
+      <div
+        class="profile-card"
+        id="profileCard"
+      >
+
+        <div class="profile-avatar">
+          👤
+        </div>
+
+        <div class="profile-info">
+
+          <div
+            class="profile-name"
+            id="profileName"
+          >
+            My Wallet
+          </div>
+
+          <div class="profile-subtitle">
+            Personal profile & settings
+          </div>
+
+        </div>
+
+        <div class="profile-arrow">
+          ›
+        </div>
 
       </div>
 
@@ -172,126 +348,124 @@
 
       <section class="more-section">
 
-        <div class="more-section-title">
+        <div class="section-title">
           Money
         </div>
 
-        <div class="more-menu">
+        <div class="menu-card">
 
-          <!-- Income -->
+
           <button
-            class="more-item"
-            data-page="income.html"
+            class="menu-item"
+            data-page="income"
           >
 
-            <div class="more-icon">
+            <div class="menu-icon">
               💰
             </div>
 
-            <div class="more-content">
+            <div class="menu-content">
 
-              <div class="more-title">
+              <div class="menu-title">
                 Income
               </div>
 
-              <div class="more-description">
-                Add and manage your income
+              <div class="menu-description">
+                Add and manage money received
               </div>
 
             </div>
 
-            <div class="more-arrow">
+            <div class="menu-arrow">
               ›
             </div>
 
           </button>
 
 
-          <!-- Expenses -->
           <button
-            class="more-item"
-            data-page="expense.html"
+            class="menu-item"
+            data-page="expense"
           >
 
-            <div class="more-icon">
+            <div class="menu-icon">
               💸
             </div>
 
-            <div class="more-content">
+            <div class="menu-content">
 
-              <div class="more-title">
+              <div class="menu-title">
                 Expenses
               </div>
 
-              <div class="more-description">
+              <div class="menu-description">
                 Track your daily spending
               </div>
 
             </div>
 
-            <div class="more-arrow">
+            <div class="menu-arrow">
               ›
             </div>
 
           </button>
 
 
-          <!-- Accounts -->
           <button
-            class="more-item"
-            data-page="accounts.html"
+            class="menu-item"
+            data-page="accounts"
           >
 
-            <div class="more-icon">
+            <div class="menu-icon">
               🏦
             </div>
 
-            <div class="more-content">
+            <div class="menu-content">
 
-              <div class="more-title">
+              <div class="menu-title">
                 Accounts
               </div>
 
-              <div class="more-description">
-                Bank, cash, UPI and wallet accounts
+              <div class="menu-description">
+                Bank, cash, UPI and wallet balances
               </div>
 
             </div>
 
-            <div class="more-arrow">
+            <div class="menu-arrow">
               ›
             </div>
 
           </button>
 
 
-          <!-- Transactions -->
           <button
-            class="more-item"
-            data-page="transactions.html"
+            class="menu-item"
+            data-page="transactions"
           >
 
-            <div class="more-icon">
+            <div class="menu-icon">
               📋
             </div>
 
-            <div class="more-content">
+            <div class="menu-content">
 
-              <div class="more-title">
+              <div class="menu-title">
                 Transactions
               </div>
 
-              <div class="more-description">
-                View all your money movements
+              <div class="menu-description">
+                View your complete money history
               </div>
 
             </div>
 
-            <div class="more-arrow">
+            <div class="menu-arrow">
               ›
             </div>
 
           </button>
+
 
         </div>
 
@@ -304,126 +478,124 @@
 
       <section class="more-section">
 
-        <div class="more-section-title">
+        <div class="section-title">
           EMI & Receivables
         </div>
 
-        <div class="more-menu">
+        <div class="menu-card">
 
-          <!-- FF Buyers -->
+
           <button
-            class="more-item"
-            data-page="buyers.html"
+            class="menu-item"
+            data-page="buyers"
           >
 
-            <div class="more-icon">
+            <div class="menu-icon">
               👤
             </div>
 
-            <div class="more-content">
+            <div class="menu-content">
 
-              <div class="more-title">
+              <div class="menu-title">
                 FF Buyers
               </div>
 
-              <div class="more-description">
-                Manage buyers and pending payments
+              <div class="menu-description">
+                Buyer balances and EMI payments
               </div>
 
             </div>
 
-            <div class="more-arrow">
+            <div class="menu-arrow">
               ›
             </div>
 
           </button>
 
 
-          <!-- Money To Give -->
           <button
-            class="more-item"
-            data-page="give-money.html"
+            class="menu-item"
+            data-page="give-money"
           >
 
-            <div class="more-icon">
+            <div class="menu-icon">
               🤝
             </div>
 
-            <div class="more-content">
+            <div class="menu-content">
 
-              <div class="more-title">
+              <div class="menu-title">
                 Money To Give
               </div>
 
-              <div class="more-description">
-                Track money you need to pay others
+              <div class="menu-description">
+                Track money you need to pay
               </div>
 
             </div>
 
-            <div class="more-arrow">
+            <div class="menu-arrow">
               ›
             </div>
 
           </button>
 
 
-          <!-- My EMI -->
           <button
-            class="more-item"
-            data-page="emi.html"
+            class="menu-item"
+            data-page="emi"
           >
 
-            <div class="more-icon">
+            <div class="menu-icon">
               📅
             </div>
 
-            <div class="more-content">
+            <div class="menu-content">
 
-              <div class="more-title">
+              <div class="menu-title">
                 My EMI
               </div>
 
-              <div class="more-description">
-                Manage your loans and monthly EMIs
+              <div class="menu-description">
+                Bank, card, vehicle and loan EMI
               </div>
 
             </div>
 
-            <div class="more-arrow">
+            <div class="menu-arrow">
               ›
             </div>
 
           </button>
 
 
-          <!-- Recurring Payments -->
           <button
-            class="more-item"
-            data-page="recurring.html"
+            class="menu-item"
+            data-page="recurring"
           >
 
-            <div class="more-icon">
+            <div class="menu-icon">
               🔄
             </div>
 
-            <div class="more-content">
+            <div class="menu-content">
 
-              <div class="more-title">
+              <div class="menu-title">
                 Recurring Payments
               </div>
 
-              <div class="more-description">
-                Bills and payments that repeat
+              <div class="menu-description">
+                Bills and repeated payments
               </div>
 
             </div>
 
-            <div class="more-arrow">
+            <div class="menu-arrow">
               ›
             </div>
 
           </button>
+
 
         </div>
 
@@ -436,68 +608,107 @@
 
       <section class="more-section">
 
-        <div class="more-section-title">
+        <div class="section-title">
           Tools
         </div>
 
-        <div class="more-menu">
+        <div class="menu-card">
 
-          <!-- Reports -->
+
           <button
-            class="more-item"
-            data-page="reports.html"
+            class="menu-item"
+            data-page="reports"
           >
 
-            <div class="more-icon">
+            <div class="menu-icon">
               📊
             </div>
 
-            <div class="more-content">
+            <div class="menu-content">
 
-              <div class="more-title">
+              <div class="menu-title">
                 Reports
               </div>
 
-              <div class="more-description">
-                Analyse income, expenses and profit
+              <div class="menu-description">
+                Understand your income and spending
               </div>
 
             </div>
 
-            <div class="more-arrow">
+            <div class="menu-arrow">
               ›
             </div>
 
           </button>
 
 
-          <!-- Calculator -->
           <button
-            class="more-item"
-            data-page="calculator.html"
+            class="menu-item"
+            data-page="calculator"
           >
 
-            <div class="more-icon">
+            <div class="menu-icon">
               🧮
             </div>
 
-            <div class="more-content">
+            <div class="menu-content">
 
-              <div class="more-title">
+              <div class="menu-title">
                 Calculator
               </div>
 
-              <div class="more-description">
-                Quick calculations without leaving Wallet
+              <div class="menu-description">
+                Quick calculations without saving
               </div>
 
             </div>
 
-            <div class="more-arrow">
+            <div class="menu-arrow">
               ›
             </div>
 
           </button>
+
+
+          <button
+            class="menu-item"
+            data-page="notifications"
+          >
+
+            <div class="menu-icon">
+              🔔
+            </div>
+
+            <div class="menu-content">
+
+              <div class="menu-title">
+                Notifications
+              </div>
+
+              <div class="menu-description">
+                Due dates and wallet alerts
+              </div>
+
+            </div>
+
+            <div class="menu-right">
+
+              <span
+                class="badge"
+                id="notificationBadge"
+              >
+                VIEW
+              </span>
+
+              <span class="menu-arrow">
+                ›
+              </span>
+
+            </div>
+
+          </button>
+
 
         </div>
 
@@ -510,68 +721,163 @@
 
       <section class="more-section">
 
-        <div class="more-section-title">
+        <div class="section-title">
           App
         </div>
 
-        <div class="more-menu">
+        <div class="menu-card">
 
-          <!-- Settings -->
+
           <button
-            class="more-item"
-            data-page="settings.html"
+            class="menu-item"
+            data-page="trash"
           >
 
-            <div class="more-icon">
+            <div class="menu-icon">
+              🗑️
+            </div>
+
+            <div class="menu-content">
+
+              <div class="menu-title">
+                Trash
+              </div>
+
+              <div class="menu-description">
+                Restore or permanently delete records
+              </div>
+
+            </div>
+
+            <div class="menu-right">
+
+              <span
+                class="badge"
+                id="trashBadge"
+              >
+                0
+              </span>
+
+              <span class="menu-arrow">
+                ›
+              </span>
+
+            </div>
+
+          </button>
+
+
+          <button
+            class="menu-item"
+            data-page="settings"
+          >
+
+            <div class="menu-icon">
               ⚙️
             </div>
 
-            <div class="more-content">
+            <div class="menu-content">
 
-              <div class="more-title">
+              <div class="menu-title">
                 Settings
               </div>
 
-              <div class="more-description">
-                Backup, restore and wallet settings
+              <div class="menu-description">
+                Currency, backup and wallet settings
               </div>
 
             </div>
 
-            <div class="more-arrow">
+            <div class="menu-arrow">
               ›
             </div>
 
           </button>
 
 
-          <!-- Privacy & Security -->
           <button
-            class="more-item"
-            data-page="privacy.html"
+            class="menu-item"
+            data-page="security"
           >
 
-            <div class="more-icon">
+            <div class="menu-icon">
               🔐
             </div>
 
-            <div class="more-content">
+            <div class="menu-content">
 
-              <div class="more-title">
-                Privacy & Security
+              <div class="menu-title">
+                Security
               </div>
 
-              <div class="more-description">
-                Wallet privacy and security information
+              <div class="menu-description">
+                PIN, biometric and backup security
               </div>
 
             </div>
 
-            <div class="more-arrow">
+            <div class="menu-arrow">
               ›
             </div>
 
           </button>
+
+
+          <button
+            class="menu-item"
+            data-page="privacy"
+          >
+
+            <div class="menu-icon">
+              🛡️
+            </div>
+
+            <div class="menu-content">
+
+              <div class="menu-title">
+                Privacy & Security
+              </div>
+
+              <div class="menu-description">
+                How Tamilanda Wallet handles your data
+              </div>
+
+            </div>
+
+            <div class="menu-arrow">
+              ›
+            </div>
+
+          </button>
+
+
+          <button
+            class="menu-item"
+            data-page="about"
+          >
+
+            <div class="menu-icon">
+              ℹ️
+            </div>
+
+            <div class="menu-content">
+
+              <div class="menu-title">
+                About
+              </div>
+
+              <div class="menu-description">
+                App information and version
+              </div>
+
+            </div>
+
+            <div class="menu-arrow">
+              ›
+            </div>
+
+          </button>
+
 
         </div>
 
@@ -582,26 +888,33 @@
            FOOTER
       ========================== -->
 
-      <div class="more-footer">
+      <div class="app-footer">
 
-        TAMILANDA WALLET
+        <strong>
+          TAMILANDA WALLET
+        </strong>
 
         <br>
 
-        Your money. Your control. 🔐
+        Private • Local-first • Personal
+
+        <br>
+
+        Version 1.0.0
 
       </div>
+
 
     </main>
 
 
     <!-- =========================
-         BOTTOM NAVIGATION
+         BOTTOM NAV
     ========================== -->
 
     <nav class="bottom-nav">
 
-      <!-- Home -->
+
       <button
         class="nav-item"
         data-page="home"
@@ -618,7 +931,6 @@
       </button>
 
 
-      <!-- Transactions -->
       <button
         class="nav-item"
         data-page="transactions"
@@ -635,7 +947,6 @@
       </button>
 
 
-      <!-- Buyers -->
       <button
         class="nav-item"
         data-page="buyers"
@@ -652,7 +963,6 @@
       </button>
 
 
-      <!-- Accounts -->
       <button
         class="nav-item"
         data-page="accounts"
@@ -669,7 +979,6 @@
       </button>
 
 
-      <!-- More -->
       <button
         class="nav-item active"
         data-page="more"
@@ -685,107 +994,333 @@
 
       </button>
 
+
     </nav>
 
   </div>
 
 
   <!-- =========================
-       APP JAVASCRIPT
+       APP JS
   ========================== -->
 
   <script src="../js/app.js"></script>
 
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
 
-      /*
-       * More Menu Navigation
-       */
-
-      document
-        .querySelectorAll(".more-item")
-        .forEach((item) => {
-
-          item.addEventListener("click", () => {
-
-            const page = item.dataset.page;
-
-            if (!page) {
-              return;
-            }
-
-            window.location.href = page;
-
-          });
-
-        });
+    document.addEventListener(
+      "DOMContentLoaded",
+      function () {
 
 
-      /*
-       * Bottom Navigation
-       */
+        /* =========================
+           GET WALLET DATA
+        ========================== */
 
-      document
-        .querySelectorAll(".bottom-nav .nav-item")
-        .forEach((item) => {
-
-          item.addEventListener("click", () => {
-
-            const page = item.dataset.page;
+        let walletData = null;
 
 
-            if (page === "home") {
+        if (
+          window.TamilandaWallet &&
+          typeof
+            window.TamilandaWallet.getData ===
+            "function"
+        ) {
+
+          walletData =
+            window.TamilandaWallet.getData();
+
+        }
+
+
+        if (!walletData) {
+
+          try {
+
+            walletData =
+              JSON.parse(
+                localStorage.getItem(
+                  "tamilanda_wallet_data"
+                )
+              ) || {};
+
+          } catch (error) {
+
+            walletData = {};
+
+          }
+
+        }
+
+
+        /* =========================
+           PROFILE NAME
+        ========================== */
+
+        const profileName =
+          document.getElementById(
+            "profileName"
+          );
+
+
+        const savedName =
+          walletData.profile &&
+          walletData.profile.name
+            ? walletData.profile.name
+            : "";
+
+
+        profileName.textContent =
+          savedName ||
+          "My Wallet";
+
+
+        /* =========================
+           TRASH BADGE
+        ========================== */
+
+        const trashBadge =
+          document.getElementById(
+            "trashBadge"
+          );
+
+
+        const trashCount =
+          Array.isArray(
+            walletData.trash
+          )
+            ? walletData.trash.length
+            : 0;
+
+
+        trashBadge.textContent =
+          trashCount;
+
+
+        /* =========================
+           NOTIFICATION BADGE
+        ========================== */
+
+        const notificationBadge =
+          document.getElementById(
+            "notificationBadge"
+          );
+
+
+        notificationBadge.textContent =
+          "VIEW";
+
+
+        /* =========================
+           PROFILE
+        ========================== */
+
+        document
+          .getElementById(
+            "profileCard"
+          )
+          .addEventListener(
+            "click",
+            function () {
 
               window.location.href =
-                "../index.html";
+                "./profile.html";
 
-              return;
             }
+          );
 
 
-            if (page === "transactions") {
+        /* =========================
+           MENU NAVIGATION
+        ========================== */
 
-              window.location.href =
-                "./transactions.html";
+        document
+          .querySelectorAll(
+            ".menu-item[data-page]"
+          )
+          .forEach(
+            function (button) {
 
-              return;
+              button.addEventListener(
+                "click",
+                function () {
+
+                  const page =
+                    button.dataset.page;
+
+
+                  const pageMap = {
+
+                    income:
+                      "./income.html",
+
+                    expense:
+                      "./expense.html",
+
+                    accounts:
+                      "./accounts.html",
+
+                    transactions:
+                      "./transactions.html",
+
+                    buyers:
+                      "./buyers.html",
+
+                    "give-money":
+                      "./give-money.html",
+
+                    emi:
+                      "./emi.html",
+
+                    recurring:
+                      "./recurring.html",
+
+                    reports:
+                      "./reports.html",
+
+                    calculator:
+                      "./calculator.html",
+
+                    notifications:
+                      "./notifications.html",
+
+                    trash:
+                      "./trash.html",
+
+                    settings:
+                      "./settings.html",
+
+                    security:
+                      "./security.html",
+
+                    privacy:
+                      "./privacy.html",
+
+                    about:
+                      "./about.html"
+
+                  };
+
+
+                  if (
+                    pageMap[page]
+                  ) {
+
+                    window.location.href =
+                      pageMap[page];
+
+                  }
+
+                }
+              );
+
             }
+          );
 
 
-            if (page === "buyers") {
+        /* =========================
+           BOTTOM NAV
+        ========================== */
 
-              window.location.href =
-                "./buyers.html";
+        document
+          .querySelectorAll(
+            ".bottom-nav .nav-item"
+          )
+          .forEach(
+            function (item) {
 
-              return;
+              item.addEventListener(
+                "click",
+                function () {
+
+                  const page =
+                    item.dataset.page;
+
+
+                  const navMap = {
+
+                    home:
+                      "../index.html",
+
+                    transactions:
+                      "./transactions.html",
+
+                    buyers:
+                      "./buyers.html",
+
+                    accounts:
+                      "./accounts.html",
+
+                    more:
+                      "./more.html"
+
+                  };
+
+
+                  if (
+                    navMap[page]
+                  ) {
+
+                    window.location.href =
+                      navMap[page];
+
+                  }
+
+                }
+              );
+
             }
+          );
 
 
-            if (page === "accounts") {
+        /* =========================
+           UPDATE BADGES
+        ========================== */
 
-              window.location.href =
-                "./accounts.html";
+        window.addEventListener(
+          "walletDataUpdated",
+          function () {
 
-              return;
-            }
+            const updatedData =
+              window.TamilandaWallet &&
+              typeof
+                window.TamilandaWallet.getData ===
+                "function"
+                ? window.TamilandaWallet.getData()
+                : walletData;
 
 
-            if (page === "more") {
+            const updatedTrash =
+              Array.isArray(
+                updatedData.trash
+              )
+                ? updatedData.trash.length
+                : 0;
 
-              window.location.href =
-                "./more.html";
 
-              return;
-            }
+            trashBadge.textContent =
+              updatedTrash;
 
-          });
 
-        });
+            const updatedName =
+              updatedData.profile &&
+              updatedData.profile.name
+                ? updatedData.profile.name
+                : "My Wallet";
 
-    });
+
+            profileName.textContent =
+              updatedName;
+
+          }
+        );
+
+      }
+    );
+
   </script>
 
 </body>
+
 </html>
