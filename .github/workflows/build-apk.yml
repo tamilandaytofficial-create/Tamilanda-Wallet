@@ -2,9 +2,6 @@ name: Build Tamilanda Wallet APK
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 permissions:
   contents: read
@@ -17,7 +14,8 @@ jobs:
     env:
       PWA_MANIFEST_URL: https://tamilandaytofficial-create.github.io/Tamilanda-Wallet/manifest.json
       PWA_HOST: tamilandaytofficial-create.github.io
-      PWA_START_URL: /Tamilanda-Wallet/
+      PWA_START_URL: ./index.html
+
       PACKAGE_ID: com.tamilanda.wallet
       APP_NAME: Tamilanda Wallet
       LAUNCHER_NAME: Tamilanda
@@ -28,87 +26,108 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: "20"
-
-      - name: Setup Java
-        uses: actions/setup-java@v6
+      # -------------------------------------------------------
+      # Java 17
+      # -------------------------------------------------------
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "17"
 
-      - name: Show build environment
-        run: |
-          node --version
-          java -version
-          echo "JAVA_HOME=$JAVA_HOME"
-          echo "ANDROID_HOME=${ANDROID_HOME:-}"
-          echo "ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT:-}"
+      # -------------------------------------------------------
+      # Android SDK
+      # -------------------------------------------------------
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: ""
 
-      - name: Prepare Android SDK licenses
+      - name: Install Android build packages
+        shell: bash
+        run: |
+          set -e
+          yes | sdkmanager --licenses >/dev/null || true
+
+          sdkmanager \
+            "platform-tools" \
+            "platforms;android-35" \
+            "build-tools;35.0.0"
+
+      - name: Verify Java and Android SDK
         shell: bash
         run: |
           set -e
 
-          SDKMANAGER=""
+          java -version
+          javac -version
+          echo "JAVA_HOME=$JAVA_HOME"
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
 
-          if [ -x "${ANDROID_HOME:-}/cmdline-tools/latest/bin/sdkmanager" ]; then
-            SDKMANAGER="${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager"
-          elif [ -x "${ANDROID_SDK_ROOT:-}/cmdline-tools/latest/bin/sdkmanager" ]; then
-            SDKMANAGER="${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager"
-          else
-            SDKMANAGER="$(find "${ANDROID_HOME:-$HOME}" "${ANDROID_SDK_ROOT:-$HOME}" \
-              -type f -path '*/cmdline-tools/*/bin/sdkmanager' 2>/dev/null | head -n 1 || true)"
-          fi
+          test -x "$JAVA_HOME/bin/java"
+          test -x "$JAVA_HOME/bin/keytool"
+          test -x "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" || true
+          test -d "$ANDROID_HOME/platforms/android-35"
+          test -d "$ANDROID_HOME/build-tools/35.0.0"
 
-          if [ -n "$SDKMANAGER" ] && [ -x "$SDKMANAGER" ]; then
-            yes | "$SDKMANAGER" --licenses >/dev/null || true
-          else
-            echo "sdkmanager not found; Bubblewrap will use its own Android SDK setup."
-          fi
-
+      # -------------------------------------------------------
+      # Bubblewrap
+      #
+      # IMPORTANT:
+      # Bubblewrap asks interactively for JDK/SDK on its first
+      # run. The previous workflow failed there because the
+      # config was created AFTER "bubblewrap --version".
+      #
+      # We create ~/.bubblewrap/config.json BEFORE calling any
+      # Bubblewrap command.
+      # -------------------------------------------------------
       - name: Install Bubblewrap
         run: |
           npm install --global @bubblewrap/cli
 
-          bubblewrap --version
-
-      - name: Configure Bubblewrap paths
+      - name: Configure Bubblewrap before first command
         shell: bash
         run: |
           set -e
 
           mkdir -p "$HOME/.bubblewrap"
 
-          JDK_PATH="${JAVA_HOME}"
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
 
-          SDK_PATH="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
-
-          if [ -z "$SDK_PATH" ]; then
-            SDK_PATH="$(dirname "$(dirname "$(find "$HOME" -type f -path '*/cmdline-tools/*/bin/sdkmanager' 2>/dev/null | head -n 1)")")"
-          fi
-
-          cat > "$HOME/.bubblewrap/config.json" <<EOF
-          {
-            "jdkPath": "$JDK_PATH",
-            "androidSdkPath": "$SDK_PATH"
+          config = {
+              "jdkPath": os.environ["JAVA_HOME"],
+              "androidSdkPath": os.environ["ANDROID_HOME"],
           }
-          EOF
 
-          echo "Bubblewrap config:"
-          cat "$HOME/.bubblewrap/config.json"
+          path = Path.home() / ".bubblewrap" / "config.json"
+          path.write_text(
+              json.dumps(config, indent=2) + "\n",
+              encoding="utf-8"
+          )
 
-      - name: Generate Android signing credentials
+          print(path)
+          print(path.read_text())
+          PY
+
+          bubblewrap --version
+
+      # -------------------------------------------------------
+      # Temporary CI signing key
+      #
+      # This key is for this test build only.
+      # For permanent releases, use a persistent keystore via
+      # GitHub Secrets / protected storage.
+      # -------------------------------------------------------
+      - name: Create CI signing key
         shell: bash
         run: |
           set -e
 
-          # For a first test build, an ephemeral key is generated automatically.
-          # For a permanent/release build, add these GitHub Secrets later:
-          # BUBBLEWRAP_KEYSTORE_PASSWORD
-          # BUBBLEWRAP_KEY_PASSWORD
+          mkdir -p android
 
           if [ -n "${{ secrets.BUBBLEWRAP_KEYSTORE_PASSWORD }}" ]; then
             KEYSTORE_PASSWORD="${{ secrets.BUBBLEWRAP_KEYSTORE_PASSWORD }}"
@@ -122,32 +141,53 @@ jobs:
             KEY_PASSWORD="$(openssl rand -hex 24)"
           fi
 
-          {
-            echo "KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD"
-            echo "KEY_PASSWORD=$KEY_PASSWORD"
-          } >> "$GITHUB_ENV"
+          echo "::add-mask::$KEYSTORE_PASSWORD"
+          echo "::add-mask::$KEY_PASSWORD"
 
-      - name: Initialize Bubblewrap Android project
+          echo "BUBBLEWRAP_KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
+          echo "BUBBLEWRAP_KEY_PASSWORD=$KEY_PASSWORD" >> "$GITHUB_ENV"
+
+          keytool \
+            -genkeypair \
+            -v \
+            -keystore "$GITHUB_WORKSPACE/android/android-keystore" \
+            -alias "$KEY_ALIAS" \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storepass "$KEYSTORE_PASSWORD" \
+            -keypass "$KEY_PASSWORD" \
+            -dname "CN=Tamilanda Wallet, OU=Personal, O=Tamilanda, C=IN"
+
+          test -f "$GITHUB_WORKSPACE/android/android-keystore"
+
+      # -------------------------------------------------------
+      # Initialize TWA project.
+      #
+      # Bubblewrap's init command is interactive. We answer the
+      # prompts explicitly so the GitHub runner never waits for
+      # input.
+      # -------------------------------------------------------
+      - name: Initialize Bubblewrap project
         shell: bash
         run: |
           set -e
 
-          rm -rf android
-          mkdir -p android
+          rm -rf android/twa-project
+          mkdir -p android/twa-project
 
-          cat > /tmp/bubblewrap-init.expect <<'EXPECT'
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq expect
+
+          cat > /tmp/init-bubblewrap.expect <<'EXPECT'
           #!/usr/bin/expect -f
 
-          set timeout 600
+          set timeout 1200
 
           set manifest $env(PWA_MANIFEST_URL)
-          set output_dir $env(GITHUB_WORKSPACE)/android
-          set keystore_path $output_dir/android-keystore
-          set key_alias $env(KEY_ALIAS)
-          set keystore_password $env(KEYSTORE_PASSWORD)
-          set key_password $env(KEY_PASSWORD)
+          set output_dir "$env(GITHUB_WORKSPACE)/android/twa-project"
 
-          spawn bubblewrap init --manifest $manifest --directory $output_dir
+          spawn bubblewrap init --manifest=$manifest --directory=$output_dir
 
           expect {
             -re "(?i)host.*:" {
@@ -160,13 +200,13 @@ jobs:
               exp_continue
             }
 
-            -re "(?i)launcher name.*:" {
-              send -- "$env(LAUNCHER_NAME)\r"
+            -re "(?i)name.*:" {
+              send -- "$env(APP_NAME)\r"
               exp_continue
             }
 
-            -re "(?i)(app )?name.*:" {
-              send -- "$env(APP_NAME)\r"
+            -re "(?i)launcher name.*:" {
+              send -- "$env(LAUNCHER_NAME)\r"
               exp_continue
             }
 
@@ -200,48 +240,55 @@ jobs:
               exp_continue
             }
 
-            -re "(?i)(launcher )?icon url.*:" {
+            -re "(?i)icon.*url.*:" {
               send -- "https://tamilandaytofficial-create.github.io/Tamilanda-Wallet/icons/icon-512.png\r"
               exp_continue
             }
 
-            -re "(?i)maskable icon url.*:" {
+            -re "(?i)maskable icon.*url.*:" {
               send -- "https://tamilandaytofficial-create.github.io/Tamilanda-Wallet/icons/icon-512.png\r"
               exp_continue
             }
 
-            -re "(?i)monochrome icon url.*:" {
+            -re "(?i)monochrome icon.*url.*:" {
               send -- "\r"
               exp_continue
             }
 
-            -re "(?i)play billing" {
+            -re "(?i)shortcuts.*" {
+              send -- "\r"
+              exp_continue
+            }
+
+            -re "(?i)play billing.*" {
               send -- "n\r"
               exp_continue
             }
 
-            -re "(?i)location delegation" {
+            -re "(?i)location delegation.*" {
               send -- "n\r"
               exp_continue
             }
 
             -re "(?i)key path.*:" {
-              send -- "$keystore_path\r"
+              send -- "./android-keystore\r"
               exp_continue
             }
 
             -re "(?i)key alias.*:" {
-              send -- "$key_alias\r"
+              send -- "$env(KEY_ALIAS)\r"
               exp_continue
             }
 
-            -re "(?i)(create|generate).*signing key" {
-              send -- "y\r"
+            -re "(?i)do you want.*create.*key" {
+              # The keystore already exists, so this prompt normally
+              # does not appear. Refuse if it does.
+              send -- "n\r"
               exp_continue
             }
 
             -re "(?i)full name.*:" {
-              send -- "$env(APP_NAME)\r"
+              send -- "Tamilanda Wallet\r"
               exp_continue
             }
 
@@ -261,12 +308,12 @@ jobs:
             }
 
             -re "(?i)keystore password.*:" {
-              send -- "$keystore_password\r"
+              send -- "$env(BUBBLEWRAP_KEYSTORE_PASSWORD)\r"
               exp_continue
             }
 
             -re "(?i)key password.*:" {
-              send -- "$key_password\r"
+              send -- "$env(BUBBLEWRAP_KEY_PASSWORD)\r"
               exp_continue
             }
 
@@ -276,40 +323,36 @@ jobs:
             }
 
             timeout {
-              puts stderr "Timed out while answering Bubblewrap init."
+              puts stderr "Bubblewrap init timed out."
               exit 1
-            }
-
-            default {
-              send -- "\r"
-              exp_continue
             }
           }
           EXPECT
 
-          chmod +x /tmp/bubblewrap-init.expect
+          chmod +x /tmp/init-bubblewrap.expect
+          /tmp/init-bubblewrap.expect
 
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq expect
+          test -f android/twa-project/twa-manifest.json
+          test -f android/twa-project/gradlew
 
-          /tmp/bubblewrap-init.expect
-
-      - name: Patch generated TWA manifest
+      # -------------------------------------------------------
+      # Force exact app settings after init.
+      # -------------------------------------------------------
+      - name: Normalize TWA manifest
         shell: bash
+        working-directory: android/twa-project
         run: |
           set -e
-
-          test -f android/twa-manifest.json
 
           python3 - <<'PY'
           import json
           from pathlib import Path
 
-          path = Path("android/twa-manifest.json")
+          path = Path("twa-manifest.json")
           data = json.loads(path.read_text())
 
           data["host"] = "tamilandaytofficial-create.github.io"
-          data["startUrl"] = "/Tamilanda-Wallet/"
+          data["startUrl"] = "./index.html"
           data["name"] = "Tamilanda Wallet"
           data["launcherName"] = "Tamilanda"
           data["packageId"] = "com.tamilanda.wallet"
@@ -319,6 +362,10 @@ jobs:
           data["orientation"] = "portrait"
           data["themeColor"] = "#09070d"
           data["backgroundColor"] = "#09070d"
+
+          data["signingKey"]["path"] = str(
+              Path(path.parent / "../android-keystore").resolve()
+          )
           data["signingKey"]["alias"] = "tamilanda"
 
           path.write_text(
@@ -327,18 +374,32 @@ jobs:
           )
           PY
 
+          cat twa-manifest.json
+
+      # -------------------------------------------------------
+      # Doctor before build.
+      # -------------------------------------------------------
+      - name: Verify Bubblewrap toolchain
+        working-directory: android/twa-project
+        run: |
+          bubblewrap doctor
+
+      # -------------------------------------------------------
+      # Build
+      # -------------------------------------------------------
       - name: Build signed APK and AAB
-        shell: bash
-        working-directory: android
+        working-directory: android/twa-project
         env:
-          BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ env.KEYSTORE_PASSWORD }}
-          BUBBLEWRAP_KEY_PASSWORD: ${{ env.KEY_PASSWORD }}
+          BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ env.BUBBLEWRAP_KEYSTORE_PASSWORD }}
+          BUBBLEWRAP_KEY_PASSWORD: ${{ env.BUBBLEWRAP_KEY_PASSWORD }}
         run: |
           set -e
 
           bubblewrap build \
             --manifest="./twa-manifest.json" \
-            --skipPwaValidation
+            --skipPwaValidation \
+            --signingKeyPath="../android-keystore" \
+            --signingKeyAlias="tamilanda"
 
           test -f app-release-signed.apk
           test -f app-release-bundle.aab
@@ -347,43 +408,38 @@ jobs:
             app-release-signed.apk \
             app-release-bundle.aab
 
-      - name: Generate Digital Asset Links
-        shell: bash
-        working-directory: android
-        run: |
-          bubblewrap fingerprint generateAssetLinks \
-            --output="./assetlinks.json" \
-            --manifest="./twa-manifest.json" || true
-
-          if [ -f assetlinks.json ]; then
-            echo "Generated assetlinks.json"
-            cat assetlinks.json
-          else
-            echo "assetlinks.json was not generated."
-          fi
-
-      - name: Upload APK artifact
+      # -------------------------------------------------------
+      # Upload APK
+      # -------------------------------------------------------
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: tamilanda-wallet-apk
-          path: android/app-release-signed.apk
+          path: android/twa-project/app-release-signed.apk
           if-no-files-found: error
           retention-days: 30
 
-      - name: Upload AAB artifact
+      # -------------------------------------------------------
+      # Upload AAB
+      # -------------------------------------------------------
+      - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
           name: tamilanda-wallet-aab
-          path: android/app-release-bundle.aab
+          path: android/twa-project/app-release-bundle.aab
           if-no-files-found: error
           retention-days: 30
 
-      - name: Upload Android project/debug files
+      # -------------------------------------------------------
+      # Upload non-secret build metadata only.
+      # DO NOT upload the keystore.
+      # -------------------------------------------------------
+      - name: Upload TWA metadata
         uses: actions/upload-artifact@v4
         with:
-          name: tamilanda-wallet-android-files
+          name: tamilanda-wallet-twa-metadata
           path: |
-            android/twa-manifest.json
-            android/assetlinks.json
+            android/twa-project/twa-manifest.json
+            android/twa-project/assetlinks.json
           if-no-files-found: warn
           retention-days: 30
