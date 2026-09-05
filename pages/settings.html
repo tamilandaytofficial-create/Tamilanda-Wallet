@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="theme-color"
+    content="#09070d"
+  >
+
+  <title>Settings - Tamilanda Wallet</title>
+
+  <link
+    rel="stylesheet"
+    href="../css/style.css"
+  >
+
+  <style>
+
+    .settings-section {
+      margin-bottom: 18px;
+    }
+
+    .settings-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .settings-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 15px;
+      background: #15111d;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 17px;
+      color: #ffffff;
+      text-align: left;
+      box-sizing: border-box;
+    }
+
+    button.settings-item {
+      cursor: pointer;
+    }
+
+    .settings-icon {
+      width: 42px;
+      height: 42px;
+      min-width: 42px;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #1c1725;
+      font-size: 20px;
+    }
+
+    .settings-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .settings-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .settings-description {
+      margin-top: 4px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+      line-height: 1.4;
+    }
+
+    .settings-arrow {
+      font-size: 20px;
+      color: rgba(255, 255, 255, 0.35);
+    }
+
+    .settings-value {
+      font-size: 13px;
+      color: #ffc857;
+      font-weight: 600;
+      margin-right: 5px;
+    }
+
+    .danger-item .settings-icon {
+      color: #ff667a;
+    }
+
+    .danger-item .settings-title {
+      color: #ff667a;
+    }
+
+    .data-summary {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .data-stat {
+      background: #15111d;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 17px;
+      padding: 15px;
+    }
+
+    .data-stat-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #ffc857;
+    }
+
+    .data-stat-label {
+      margin-top: 5px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 9999;
+      padding: 15px;
+      box-sizing: border-box;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .settings-modal {
+      width: 100%;
+      max-width: 500px;
+      background: #15111d;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px 24px 18px 18px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .modal-close {
+      width: 38px;
+      height: 38px;
+      border: 0;
+      border-radius: 12px;
+      background: #1c1725;
+      color: #ffffff;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .settings-modal-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .full-width {
+      width: 100%;
+    }
+
+    .app-info-card {
+      text-align: center;
+      padding: 22px 15px;
+      background: #15111d;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 20px;
+    }
+
+    .app-logo-placeholder {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 12px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: #09070d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .app-logo-placeholder img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .app-info-name {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .app-info-version {
+      margin-top: 5px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    .backup-note {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 13px;
+      background: rgba(255, 200, 87, 0.08);
+      border: 1px solid rgba(255, 200, 87, 0.12);
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 420px) {
+
+      .data-stat-value {
+        font-size: 19px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <!-- =========================
+       HEADER
+  ========================== -->
+
+  <header class="page-header">
+
+    <div class="page-header-left">
+
+      <button
+        type="button"
+        class="icon-button"
+        id="backButton"
+        aria-label="Go back"
+      >
+        ←
+      </button>
+
+      <div>
+
+        <h1>
+          Settings
+        </h1>
+
+        <p>
+          Manage your Tamilanda Wallet
+        </p>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- =========================
+       MAIN
+  ========================== -->
+
+  <main class="page-container">
+
+
+    <!-- =========================
+         DATA SUMMARY
+    ========================== -->
+
+    <section class="settings-section">
+
+      <div class="section-header">
+
+        <div>
+
+          <h2>
+            Wallet Data
+          </h2>
+
+          <p>
+            Current records stored on this device
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="data-summary">
+
+        <div class="data-stat">
+
+          <div
+            class="data-stat-value"
+            id="accountCount"
+          >
+            0
+          </div>
+
+          <div class="data-stat-label">
+            Accounts
+          </div>
+
+        </div>
+
+
+        <div class="data-stat">
+
+          <div
+            class="data-stat-value"
+            id="transactionCount"
+          >
+            0
+          </div>
+
+          <div class="data-stat-label">
+            Transactions
+          </div>
+
+        </div>
+
+
+        <div class="data-stat">
+
+          <div
+            class="data-stat-value"
+            id="buyerCount"
+          >
+            0
+          </div>
+
+          <div class="data-stat-label">
+            Buyers
+          </div>
+
+        </div>
+
+
+        <div class="data-stat">
+
+          <div
+            class="data-stat-value"
+            id="emiCount"
+          >
+            0
+          </div>
+
+          <div class="data-stat-label">
+            EMIs
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         PREFERENCES
+    ========================== -->
+
+    <section class="settings-section">
+
+      <div class="section-header">
+
+        <div>
+
+          <h2>
+            Preferences
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <div class="settings-list">
+
+
+        <button
+          type="button"
+          class="settings-item"
+          id="currencyButton"
+        >
+
+          <div class="settings-icon">
+            💰
+          </div>
+
+          <div class="settings-info">
+
+            <div class="settings-title">
+              Currency
+            </div>
+
+            <div class="settings-description">
+              Currency used throughout the wallet
+            </div>
+
+          </div>
+
+          <div
+            class="settings-value"
+            id="currencyValue"
+          >
+            INR ₹
+          </div>
+
+          <div class="settings-arrow">
+            ›
+          </div>
+
+        </button>
+
+
+        <button
+          type="button"
+          class="settings-item"
+          id="calculatorButton"
+        >
+
+          <div class="settings-icon">
+            🧮
+          </div>
+
+          <div class="settings-info">
+
+            <div class="settings-title">
+              Calculator
+            </div>
+
+            <div class="settings-description">
+              Open quick financial calculator
+            </div>
+
+          </div>
+
+          <div class="settings-arrow">
+            ›
+          </div>
+
+        </button>
+
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         DATA MANAGEMENT
+    ========================== -->
+
+    <section class="settings-section">
+
+      <div class="section-header">
+
+        <div>
+
+          <h2>
+            Data Management
+          </h2>
+
+          <p>
+            Backup and manage your wallet data
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="settings-list">
+
+
+        <button
+          type="button"
+          class="settings-item"
+          id="backupButton"
+        >
+
+          <div class="settings-icon">
+            💾
+          </div>
+
+          <div class="settings-info">
+
+            <div class="settings-title">
+              Backup Wallet
+            </div>
+
+            <div class="settings-description">
+              Download a backup of your current wallet data
+            </div>
+
+          </div>
+
+          <div class="settings-arrow">
+            ›
+          </div>
+
+        </button>
+
+
+        <button
+          type="button"
+          class="settings-item"
+          id="restoreButton"
+        >
+
+          <div class="settings-icon">
+            ♻️
+          </div>
+
+          <div class="settings-info">
+
+            <div class="settings-title">
+              Restore Wallet
+            </div>
+
+            <div class="settings-description">
+              Restore wallet data from a backup file
+            </div>
+
+          </div>
+
+          <div class="settings-arrow">
+            ›
+          </div>
+
+        </button>
+
+
+        <button
+          type="button"
+          class="settings-item"
+          id="reportsButton"
+        >
+
+          <div class="settings-icon">
+            📊
+          </div>
+
+          <div class="settings-info">
+
+            <div class="settings-title">
+              Reports
+            </div>
+
+            <div class="settings-description">
+              View income, expense and financial reports
+            </div>
+
+          </div>
+
+          <div class="settings-arrow">
+            ›
+          </div>
+
+        </button>
+
+
+      </div>
+
+
+      <div class="backup-note">
+
+        💡 <strong>Important:</strong>
+        Keep your backup file in a safe place.
+        Your current wallet data is stored locally on this device.
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         DANGER ZONE
+    ========================== -->
+
+    <section class="settings-section">
+
+      <div class="section-header">
+
+        <div>
+
+          <h2>
+            Danger Zone
+          </h2>
+
+          <p>
+            Be careful with these actions
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="settings-list">
+
+
+        <button
+          type="button"
+          class="settings-item danger-item"
+          id="clearDataButton"
+        >
+
+          <div class="settings-icon">
+            🗑️
+          </div>
+
+          <div class="settings-info">
+
+            <div class="settings-title">
+              Clear All Wallet Data
+            </div>
+
+            <div class="settings-description">
+              Permanently remove accounts, transactions, buyers and EMI records from this device
+            </div>
+
+          </div>
+
+          <div class="settings-arrow">
+            ›
+          </div>
+
+        </button>
+
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         APP INFO
+    ========================== -->
+
+    <section class="settings-section">
+
+      <div class="app-info-card">
+
+        <div class="app-logo-placeholder">
+
+          <img
+            src="../icons/icon-192.png"
+            alt="Tamilanda Wallet"
+            onerror="this.style.display='none';"
+          >
+
+        </div>
+
+
+        <div class="app-info-name">
+          TAMILANDA WALLET
+        </div>
+
+
+        <div class="app-info-version">
+          Version 1.0.0
+        </div>
+
+      </div>
+
+    </section>
+
+
+  </main>
+
+
+  <!-- =========================
+       CURRENCY MODAL
+  ========================== -->
+
+  <div
+    class="modal-overlay"
+    id="currencyModal"
+  >
+
+    <div class="settings-modal">
+
+      <div class="modal-header">
+
+        <h2>
+          Currency
+        </h2>
+
+        <button
+          type="button"
+          class="modal-close"
+          id="closeCurrencyModal"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="currencySelect">
+          Select Currency
+        </label>
+
+        <select id="currencySelect">
+
+          <option value="INR">
+            Indian Rupee — ₹
+          </option>
+
+          <option value="USD">
+            US Dollar — $
+          </option>
+
+          <option value="EUR">
+            Euro — €
+          </option>
+
+          <option value="GBP">
+            British Pound — £
+          </option>
+
+          <option value="AED">
+            UAE Dirham — د.إ
+          </option>
+
+          <option value="SAR">
+            Saudi Riyal — ﷼
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="settings-modal-buttons">
+
+        <button
+          type="button"
+          class="secondary-button"
+          id="cancelCurrencyButton"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          class="primary-button"
+          id="saveCurrencyButton"
+        >
+          Save
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       HIDDEN FILE INPUT
+  ========================== -->
+
+  <input
+    type="file"
+    id="restoreFileInput"
+    accept=".json,application/json"
+    style="display:none;"
+  >
+
+
+  <!-- =========================
+       APP JS
+  ========================== -->
+
+  <script src="../js/app.js"></script>
+
+
+  <script>
+
+    let walletData = null;
+
+
+    /* =========================
+       HELPERS
+    ========================== */
+
+    function getWalletData() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.getData === "function"
+      ) {
+
+        return window.TamilandaWallet.getData();
+
+      }
+
+      return null;
+
+    }
+
+
+    function saveWalletData() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.save === "function"
+      ) {
+
+        window.TamilandaWallet.save();
+
+        return true;
+
+      }
+
+      return false;
+
+    }
+
+
+    /* =========================
+       UPDATE SUMMARY
+    ========================== */
+
+    function updateDataSummary() {
+
+      walletData =
+        getWalletData();
+
+
+      if (!walletData) {
+        return;
+      }
+
+
+      document.getElementById(
+        "accountCount"
+      ).textContent =
+        (
+          walletData.accounts ||
+          []
+        ).length;
+
+
+      document.getElementById(
+        "transactionCount"
+      ).textContent =
+        (
+          walletData.transactions ||
+          []
+        ).length;
+
+
+      document.getElementById(
+        "buyerCount"
+      ).textContent =
+        (
+          walletData.buyers ||
+          []
+        ).length;
+
+
+      document.getElementById(
+        "emiCount"
+      ).textContent =
+        (
+          walletData.myEmis ||
+          []
+        ).length;
+
+
+      updateCurrencyDisplay();
+
+    }
+
+
+    /* =========================
+       CURRENCY
+    ========================== */
+
+    const currencySymbols = {
+
+      INR: "₹",
+
+      USD: "$",
+
+      EUR: "€",
+
+      GBP: "£",
+
+      AED: "د.إ",
+
+      SAR: "﷼"
+
+    };
+
+
+    function updateCurrencyDisplay() {
+
+      const currency =
+        walletData.settings?.currency ||
+        "INR";
+
+
+      const symbol =
+        walletData.settings?.currencySymbol ||
+        currencySymbols[currency] ||
+        "₹";
+
+
+      document.getElementById(
+        "currencyValue"
+      ).textContent =
+        `${currency} ${symbol}`;
+
+    }
+
+
+    function openCurrencyModal() {
+
+      const currency =
+        walletData.settings?.currency ||
+        "INR";
+
+
+      document.getElementById(
+        "currencySelect"
+      ).value =
+        currency;
+
+
+      document.getElementById(
+        "currencyModal"
+      ).classList.add(
+        "active"
+      );
+
+    }
+
+
+    function closeCurrencyModal() {
+
+      document.getElementById(
+        "currencyModal"
+      ).classList.remove(
+        "active"
+      );
+
+    }
+
+
+    function saveCurrency() {
+
+      const currency =
+        document.getElementById(
+          "currencySelect"
+        ).value;
+
+
+      const symbol =
+        currencySymbols[
+          currency
+        ] || "₹";
+
+
+      if (!walletData.settings) {
+
+        walletData.settings = {};
+
+      }
+
+
+      walletData.settings.currency =
+        currency;
+
+
+      walletData.settings.currencySymbol =
+        symbol;
+
+
+      saveWalletData();
+
+
+      updateCurrencyDisplay();
+
+      closeCurrencyModal();
+
+      alert(
+        "Currency updated successfully."
+      );
+
+    }
+
+
+    /* =========================
+       BACKUP
+    ========================== */
+
+    function createBackup() {
+
+      walletData =
+        getWalletData();
+
+
+      if (!walletData) {
+
+        alert(
+          "Wallet data could not be loaded."
+        );
+
+        return;
+
+      }
+
+
+      const backupData = {
+
+        appName:
+          "Tamilanda Wallet",
+
+        version:
+          "1.0.0",
+
+        exportedAt:
+          new Date().toISOString(),
+
+        data:
+          walletData
+
+      };
+
+
+      const json =
+        JSON.stringify(
+          backupData,
+          null,
+          2
+        );
+
+
+      const blob =
+        new Blob(
+          [json],
+          {
+            type:
+              "application/json"
+          }
+        );
+
+
+      const url =
+        URL.createObjectURL(
+          blob
+        );
+
+
+      const link =
+        document.createElement(
+          "a"
+        );
+
+
+      const date =
+        new Date()
+          .toISOString()
+          .slice(
+            0,
+            10
+          );
+
+
+      link.href =
+        url;
+
+
+      link.download =
+        `tamilanda-wallet-backup-${date}.json`;
+
+
+      document.body.appendChild(
+        link
+      );
+
+
+      link.click();
+
+
+      link.remove();
+
+
+      URL.revokeObjectURL(
+        url
+      );
+
+
+      alert(
+        "Backup created successfully."
+      );
+
+    }
+
+
+    /* =========================
+       RESTORE
+    ========================== */
+
+    function openRestore() {
+
+      const confirmed =
+        confirm(
+          "Restore will replace your current wallet data. Continue?"
+        );
+
+
+      if (!confirmed) {
+        return;
+      }
+
+
+      document.getElementById(
+        "restoreFileInput"
+      ).click();
+
+    }
+
+
+    function restoreBackup(
+      event
+    ) {
+
+      const file =
+        event.target.files[0];
+
+
+      if (!file) {
+        return;
+      }
+
+
+      const reader =
+        new FileReader();
+
+
+      reader.onload =
+        function () {
+
+          try {
+
+            const backup =
+              JSON.parse(
+                reader.result
+              );
+
+
+            if (
+              !backup ||
+              !backup.data
+            ) {
+
+              throw new Error(
+                "Invalid backup file."
+              );
+
+            }
+
+
+            if (
+              !Array.isArray(
+                backup.data.accounts
+              )
+            ) {
+
+              throw new Error(
+                "Invalid wallet backup."
+              );
+
+            }
+
+
+            const finalConfirm =
+              confirm(
+                "This will replace all current wallet data with the backup. Are you sure?"
+              );
+
+
+            if (!finalConfirm) {
+
+              event.target.value =
+                "";
+
+              return;
+
+            }
+
+
+            localStorage.setItem(
+              "tamilanda_wallet_data",
+              JSON.stringify(
+                backup.data
+              )
+            );
+
+
+            alert(
+              "Wallet restored successfully. The page will reload."
+            );
+
+
+            window.location.reload();
+
+          } catch (error) {
+
+            console.error(
+              error
+            );
+
+
+            alert(
+              "Could not restore this backup. Please select a valid Tamilanda Wallet backup file."
+            );
+
+          }
+
+
+          event.target.value =
+            "";
+
+        };
+
+
+      reader.readAsText(
+        file
+      );
+
+    }
+
+
+    /* =========================
+       CLEAR DATA
+    ========================== */
+
+    function clearAllData() {
+
+      const firstConfirm =
+        confirm(
+          "⚠️ This will delete ALL Tamilanda Wallet data from this device.\n\nContinue?"
+        );
+
+
+      if (!firstConfirm) {
+        return;
+      }
+
+
+      const secondConfirm =
+        prompt(
+          'Type DELETE to permanently clear all wallet data.'
+        );
+
+
+      if (
+        secondConfirm !==
+        "DELETE"
+      ) {
+
+        alert(
+          "Cancelled. Your wallet data is safe."
+        );
+
+        return;
+
+      }
+
+
+      localStorage.removeItem(
+        "tamilanda_wallet_data"
+      );
+
+
+      alert(
+        "All wallet data has been cleared."
+      );
+
+
+      window.location.href =
+        "../index.html";
+
+    }
+
+
+    /* =========================
+       EVENTS
+    ========================== */
+
+    document
+      .getElementById(
+        "backButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+
+          window.location.href =
+            "../index.html";
+
+        }
+      );
+
+
+    document
+      .getElementById(
+        "currencyButton"
+      )
+      .addEventListener(
+        "click",
+        openCurrencyModal
+      );
+
+
+    document
+      .getElementById(
+        "closeCurrencyModal"
+      )
+      .addEventListener(
+        "click",
+        closeCurrencyModal
+      );
+
+
+    document
+      .getElementById(
+        "cancelCurrencyButton"
+      )
+      .addEventListener(
+        "click",
+        closeCurrencyModal
+      );
+
+
+    document
+      .getElementById(
+        "saveCurrencyButton"
+      )
+      .addEventListener(
+        "click",
+        saveCurrency
+      );
+
+
+    document
+      .getElementById(
+        "calculatorButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+
+          window.location.href =
+            "./calculator.html";
+
+        }
+      );
+
+
+    document
+      .getElementById(
+        "reportsButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+
+          window.location.href =
+            "./reports.html";
+
+        }
+      );
+
+
+    document
+      .getElementById(
+        "backupButton"
+      )
+      .addEventListener(
+        "click",
+        createBackup
+      );
+
+
+    document
+      .getElementById(
+        "restoreButton"
+      )
+      .addEventListener(
+        "click",
+        openRestore
+      );
+
+
+    document
+      .getElementById(
+        "restoreFileInput"
+      )
+      .addEventListener(
+        "change",
+        restoreBackup
+      );
+
+
+    document
+      .getElementById(
+        "clearDataButton"
+      )
+      .addEventListener(
+        "click",
+        clearAllData
+      );
+
+
+    document
+      .getElementById(
+        "currencyModal"
+      )
+      .addEventListener(
+        "click",
+        event => {
+
+          if (
+            event.target.id ===
+            "currencyModal"
+          ) {
+
+            closeCurrencyModal();
+
+          }
+
+        }
+      );
+
+
+    /* =========================
+       INITIALIZE
+    ========================== */
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      () => {
+
+        walletData =
+          getWalletData();
+
+        updateDataSummary();
+
+      }
+    );
+
+  </script>
+
+
+</body>
+
+</html>
