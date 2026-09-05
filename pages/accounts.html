@@ -1,1369 +1,1931 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <meta
-        name="theme-color"
-        content="#09070d"
-    >
-
-    <title>Accounts | Tamilanda Wallet</title>
-
-    <link rel="stylesheet" href="../css/style.css">
-
-    <style>
-
-        .page {
-            width: 100%;
-            max-width: 720px;
-            margin: 0 auto;
-            padding: 18px 16px 40px;
-        }
-
-        .page-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .back-button {
-            width: 42px;
-            height: 42px;
-            border-radius: 13px;
-            background: var(--surface);
-            color: #fff;
-            border: 1px solid var(--border);
-            font-size: 20px;
-        }
-
-        .page-title h1 {
-            color: var(--gold);
-            font-size: 23px;
-            font-weight: 900;
-        }
-
-        .page-title p {
-            margin-top: 3px;
-            color: var(--text-muted);
-            font-size: 11px;
-        }
-
-        .total-card {
-            padding: 21px;
-            margin-bottom: 18px;
-            border-radius: 21px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    rgba(255, 200, 87, 0.12),
-                    rgba(155, 109, 255, 0.07)
-                );
-
-            border: 1px solid rgba(255, 200, 87, 0.15);
-        }
-
-        .total-label {
-            color: var(--text-muted);
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 1.2px;
-        }
-
-        .total-value {
-            margin-top: 5px;
-            color: #fff;
-            font-size: 31px;
-            font-weight: 900;
-        }
-
-        .add-account-button {
-            width: 100%;
-            min-height: 53px;
-            margin-bottom: 18px;
-
-            border-radius: 15px;
-
-            background: var(--gold);
-            color: #171006;
-
-            font-size: 14px;
-            font-weight: 900;
-        }
-
-        .section-title {
-            margin-bottom: 10px;
-            color: var(--text-muted);
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 1.4px;
-        }
-
-        .accounts-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .account-card {
-            padding: 17px;
-            border-radius: 17px;
-
-            background: var(--surface);
-
-            border: 1px solid var(--border);
-        }
-
-        .account-top {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .account-icon-large {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            width: 46px;
-            height: 46px;
-
-            flex: 0 0 auto;
-
-            border-radius: 14px;
-
-            background: rgba(255, 200, 87, 0.10);
-
-            font-size: 21px;
-        }
-
-        .account-info {
-            min-width: 0;
-            flex: 1;
-        }
-
-        .account-name-large {
-            font-size: 15px;
-            font-weight: 800;
-
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .account-type-large {
-            margin-top: 4px;
-            color: var(--text-muted);
-            font-size: 10px;
-        }
-
-        .account-balance-large {
-            margin-top: 15px;
-
-            color: var(--gold);
-
-            font-size: 23px;
-            font-weight: 900;
-        }
-
-        .account-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 13px;
-        }
-
-        .small-action {
-            min-height: 38px;
-            padding: 0 14px;
-
-            border-radius: 11px;
-
-            background: var(--surface-2);
-
-            color: #fff;
-
-            border: 1px solid var(--border);
-
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        .small-action.delete {
-            color: var(--red);
-        }
-
-        .empty-accounts {
-            padding: 35px 20px;
-            text-align: center;
-
-            border-radius: 18px;
-
-            background: var(--surface);
-
-            border: 1px dashed rgba(255, 255, 255, 0.10);
-        }
-
-        .empty-accounts .icon {
-            font-size: 30px;
-            margin-bottom: 10px;
-        }
-
-        .empty-accounts strong {
-            display: block;
-            font-size: 14px;
-        }
-
-        .empty-accounts p {
-            margin-top: 5px;
-            color: var(--text-muted);
-            font-size: 11px;
-        }
-
-        /* MODAL */
-
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 200;
-
-            display: none;
-            align-items: flex-end;
-            justify-content: center;
-
-            padding: 15px;
-
-            background: rgba(0, 0, 0, 0.70);
-
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-        }
-
-        .modal-overlay.show {
-            display: flex;
-        }
-
-        .modal {
-            width: 100%;
-            max-width: 520px;
-            max-height: 90vh;
-            overflow-y: auto;
-
-            padding: 20px;
-
-            border-radius: 23px 23px 18px 18px;
-
-            background: #15111d;
-
-            border: 1px solid var(--border);
-
-            box-shadow:
-                0 -15px 50px rgba(0, 0, 0, 0.35);
-        }
-
-        .modal-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            margin-bottom: 18px;
-        }
-
-        .modal-header h2 {
-            color: var(--gold);
-            font-size: 19px;
-            font-weight: 900;
-        }
-
-        .close-button {
-            width: 38px;
-            height: 38px;
-
-            border-radius: 12px;
-
-            background: var(--surface-2);
-
-            color: #fff;
-
-            font-size: 19px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 7px;
-
-            color: #d6d1dc;
-
-            font-size: 10px;
-            font-weight: 800;
-
-            letter-spacing: 0.5px;
-        }
-
-        .form-input,
-        .form-select {
-            width: 100%;
-
-            padding: 14px 15px;
-
-            border-radius: 13px;
-
-            border: 1px solid var(--border);
-
-            outline: none;
-
-            background: var(--surface-2);
-
-            color: #fff;
-
-            font-size: 14px;
-        }
-
-        .form-input:focus,
-        .form-select:focus {
-            border-color: rgba(255, 200, 87, 0.45);
-        }
-
-        .form-select option {
-            background: #15111d;
-            color: #fff;
-        }
-
-        .modal-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 18px;
-        }
-
-        .modal-save {
-            min-height: 50px;
-
-            border-radius: 14px;
-
-            background: var(--gold);
-            color: #171006;
-
-            font-weight: 900;
-        }
-
-        .modal-cancel {
-            min-height: 50px;
-
-            border-radius: 14px;
-
-            background: transparent;
-            color: var(--text-secondary);
-
-            border: 1px solid var(--border);
-
-            font-weight: 700;
-        }
-
-        .form-error {
-            display: none;
-
-            margin-bottom: 13px;
-            padding: 12px;
-
-            border-radius: 12px;
-
-            background: rgba(255, 102, 122, 0.10);
-
-            border: 1px solid rgba(255, 102, 122, 0.18);
-
-            color: var(--red);
-
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        @media (min-width: 600px) {
-
-            .modal-overlay {
-                align-items: center;
-            }
-
-            .modal {
-                border-radius: 23px;
-            }
-        }
-
-    </style>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  >
+
+  <meta name="theme-color" content="#09070d">
+
+  <title>Accounts - Tamilanda Wallet</title>
+
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/style.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #09070d;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    .page {
+      max-width: 600px;
+      margin: auto;
+      padding: 18px 15px 100px;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .title-box h1 {
+      margin: 0;
+      font-size: 23px;
+    }
+
+    .title-box p {
+      margin: 5px 0 0;
+      color: #98959f;
+      font-size: 13px;
+    }
+
+    .add-btn {
+      border: 0;
+      border-radius: 13px;
+      padding: 11px 14px;
+      background: #7b4dff;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .summary {
+      background: linear-gradient(
+        145deg,
+        rgba(123, 77, 255, 0.18),
+        rgba(255,255,255,0.035)
+      );
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .summary-label {
+      color: #a6a2ad;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .summary-value {
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .summary-bottom {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .summary-mini {
+      flex: 1;
+      padding: 11px;
+      border-radius: 13px;
+      background: rgba(255,255,255,0.045);
+    }
+
+    .summary-mini span {
+      display: block;
+      color: #92909a;
+      font-size: 11px;
+      margin-bottom: 5px;
+    }
+
+    .summary-mini strong {
+      font-size: 14px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 9px;
+      margin-bottom: 16px;
+    }
+
+    .search {
+      flex: 1;
+    }
+
+    .filter {
+      width: 125px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 13px;
+      border-radius: 13px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #111017;
+      color: #fff;
+      outline: none;
+      font-size: 14px;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: rgba(123,77,255,0.7);
+    }
+
+    select option {
+      background: #111017;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 18px 2px 10px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .section-title span {
+      color: #88858f;
+      font-size: 12px;
+    }
+
+    .account-list {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .account-card {
+      background: #111017;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .account-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .account-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .account-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: rgba(123,77,255,0.13);
+      border: 1px solid rgba(123,77,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .account-name {
+      font-size: 15px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .account-type {
+      color: #8e8b95;
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    .account-balance {
+      font-size: 16px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .account-note {
+      margin-top: 13px;
+      color: #85828d;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .account-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .action-btn {
+      flex: 1;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.04);
+      color: #d7d4dc;
+      border-radius: 11px;
+      padding: 9px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .action-btn.transfer {
+      color: #bca4ff;
+    }
+
+    .action-btn.delete {
+      color: #ff9696;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 38px 15px;
+      color: #8f8b96;
+      background: #111017;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 18px;
+    }
+
+    .empty-icon {
+      font-size: 35px;
+      margin-bottom: 10px;
+    }
+
+    .empty strong {
+      display: block;
+      color: #d5d2da;
+      margin-bottom: 6px;
+    }
+
+    .empty p {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    /* MODAL */
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 2000;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 600px;
+      background: #111017;
+      border-radius: 24px 24px 0 0;
+      padding: 20px 17px 28px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 19px;
+    }
+
+    .close-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 11px;
+      border: 0;
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .field {
+      margin-bottom: 15px;
+    }
+
+    .field label {
+      display: block;
+      color: #c7c4cc;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 7px;
+    }
+
+    .save-btn {
+      width: 100%;
+      padding: 14px;
+      border: 0;
+      border-radius: 14px;
+      background: #7b4dff;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+
+    .cancel-btn {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      background: transparent;
+      color: #aaa7b0;
+      font-weight: 600;
+      margin-top: 9px;
+      cursor: pointer;
+    }
+
+    .error {
+      display: none;
+      padding: 11px;
+      border-radius: 12px;
+      background: rgba(255,70,70,0.08);
+      border: 1px solid rgba(255,70,70,0.16);
+      color: #ff9d9d;
+      font-size: 12px;
+      margin-bottom: 13px;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 8px calc(10px + env(safe-area-inset-bottom));
+      background: rgba(9,7,13,0.96);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(255,255,255,0.07);
+      z-index: 1000;
+    }
+
+    .nav-item {
+      flex: 1;
+      text-align: center;
+      color: #8f8b96;
+      text-decoration: none;
+      font-size: 11px;
+      padding: 5px 0;
+    }
+
+    .nav-icon {
+      display: block;
+      font-size: 19px;
+      margin-bottom: 3px;
+    }
+
+    .nav-item.active {
+      color: #bca4ff;
+    }
+
+    @media (max-width: 380px) {
+      .page {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .summary-bottom {
+        flex-direction: column;
+      }
+
+      .filter {
+        width: 110px;
+      }
+
+      .account-balance {
+        font-size: 14px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<main class="page">
+  <main class="page">
 
-    <!-- HEADER -->
+    <!-- TOP -->
+    <div class="top-bar">
 
-    <div class="page-header">
+      <div class="title-box">
+        <h1>Accounts</h1>
+        <p>Manage your money accounts</p>
+      </div>
 
-        <button
-            type="button"
-            class="back-button"
-            id="backButton"
-        >
-            ←
-        </button>
-
-        <div class="page-title">
-
-            <h1>ACCOUNTS</h1>
-
-            <p>
-                Manage your banks, cash & UPI
-            </p>
-
-        </div>
+      <button
+        class="add-btn"
+        id="addAccountBtn"
+        type="button"
+      >
+        + Add
+      </button>
 
     </div>
 
 
-    <!-- TOTAL -->
+    <!-- SUMMARY -->
+    <section class="summary">
 
-    <section class="total-card">
+      <div class="summary-label">
+        Total Available Balance
+      </div>
 
-        <div class="total-label">
-            TOTAL AVAILABLE BALANCE
+      <div
+        class="summary-value"
+        id="totalBalance"
+      >
+        ₹0.00
+      </div>
+
+      <div class="summary-bottom">
+
+        <div class="summary-mini">
+          <span>Accounts</span>
+          <strong id="accountCount">0</strong>
         </div>
 
-        <div
-            class="total-value"
-            id="totalBalance"
-        >
-            ₹0
+        <div class="summary-mini">
+          <span>Positive Balance</span>
+          <strong id="positiveBalance">₹0.00</strong>
         </div>
+
+      </div>
 
     </section>
 
 
-    <!-- ADD -->
+    <!-- TOOLBAR -->
+    <div class="toolbar">
 
-    <button
-        type="button"
-        class="add-account-button"
-        id="openAddButton"
-    >
-        ＋ ADD ACCOUNT
-    </button>
+      <div class="search">
+        <input
+          type="search"
+          id="searchInput"
+          placeholder="Search accounts..."
+          autocomplete="off"
+        >
+      </div>
+
+      <div class="filter">
+        <select id="typeFilter">
+          <option value="all">All</option>
+          <option value="Bank">Bank</option>
+          <option value="Cash">Cash</option>
+          <option value="UPI">UPI</option>
+          <option value="Wallet">Wallet</option>
+          <option value="Credit Card">Credit Card</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+    </div>
+
+
+    <!-- SECTION -->
+    <div class="section-title">
+      <h2>Your Accounts</h2>
+      <span id="visibleCount">0 accounts</span>
+    </div>
 
 
     <!-- ACCOUNT LIST -->
+    <div
+      class="account-list"
+      id="accountList"
+    ></div>
 
-    <div class="section-title">
-        YOUR ACCOUNTS
-    </div>
-
-    <section
-        class="accounts-list"
-        id="accountsList"
-    ></section>
-
-</main>
+  </main>
 
 
-<!-- ADD / EDIT MODAL -->
+  <!-- ADD / EDIT MODAL -->
+  <div
+    class="modal"
+    id="accountModal"
+  >
 
-<div
-    class="modal-overlay"
-    id="modalOverlay"
->
+    <div class="modal-box">
 
-    <div class="modal">
+      <div class="modal-header">
 
-        <div class="modal-header">
+        <h2 id="modalTitle">
+          Add Account
+        </h2>
 
-            <h2 id="modalTitle">
-                ADD ACCOUNT
-            </h2>
-
-            <button
-                type="button"
-                class="close-button"
-                id="closeModalButton"
-            >
-                ×
-            </button>
-
-        </div>
-
-
-        <div
-            class="form-error"
-            id="formError"
+        <button
+          class="close-btn"
+          id="closeModalBtn"
+          type="button"
         >
-            Please fill the required fields.
-        </div>
+          ×
+        </button>
+
+      </div>
 
 
-        <div class="form-group">
-
-            <label
-                class="form-label"
-                for="accountName"
-            >
-                ACCOUNT NAME
-            </label>
-
-            <input
-                type="text"
-                id="accountName"
-                class="form-input"
-                placeholder="Example: HDFC Bank"
-                autocomplete="off"
-            >
-
-        </div>
+      <div
+        class="error"
+        id="formError"
+      ></div>
 
 
-        <div class="form-group">
+      <form id="accountForm">
 
-            <label
-                class="form-label"
-                for="accountType"
-            >
-                ACCOUNT TYPE
-            </label>
+        <div class="field">
 
-            <select
-                id="accountType"
-                class="form-select"
-            >
+          <label for="accountName">
+            Account Name
+          </label>
 
-                <option value="BANK">
-                    🏦 Bank Account
-                </option>
-
-                <option value="CASH">
-                    💵 Cash
-                </option>
-
-                <option value="UPI">
-                    📱 UPI
-                </option>
-
-                <option value="WALLET">
-                    👛 Wallet
-                </option>
-
-                <option value="OTHER">
-                    📦 Other
-                </option>
-
-            </select>
+          <input
+            type="text"
+            id="accountName"
+            maxlength="60"
+            placeholder="Example: HDFC Bank"
+            required
+          >
 
         </div>
 
 
-        <div class="form-group">
+        <div class="field">
 
-            <label
-                class="form-label"
-                for="openingBalance"
-            >
-                OPENING BALANCE
-            </label>
+          <label for="accountType">
+            Account Type
+          </label>
 
-            <input
-                type="number"
-                id="openingBalance"
-                class="form-input"
-                placeholder="0"
-                min="0"
-                step="0.01"
-                inputmode="decimal"
-            >
+          <select id="accountType">
+
+            <option value="Bank">
+              Bank
+            </option>
+
+            <option value="Cash">
+              Cash
+            </option>
+
+            <option value="UPI">
+              UPI
+            </option>
+
+            <option value="Wallet">
+              Wallet
+            </option>
+
+            <option value="Credit Card">
+              Credit Card
+            </option>
+
+            <option value="Other">
+              Other
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="field">
+
+          <label for="accountBalance">
+            Current Balance
+          </label>
+
+          <input
+            type="number"
+            id="accountBalance"
+            min="0"
+            step="0.01"
+            inputmode="decimal"
+            placeholder="0.00"
+          >
 
         </div>
 
 
-        <div class="modal-buttons">
+        <div class="field">
 
-            <button
-                type="button"
-                class="modal-cancel"
-                id="cancelButton"
-            >
-                CANCEL
-            </button>
+          <label for="accountNote">
+            Note
+          </label>
 
-            <button
-                type="button"
-                class="modal-save"
-                id="saveButton"
-            >
-                SAVE ACCOUNT
-            </button>
+          <input
+            type="text"
+            id="accountNote"
+            maxlength="200"
+            placeholder="Optional note"
+          >
 
         </div>
+
+
+        <button
+          type="submit"
+          class="save-btn"
+          id="saveAccountBtn"
+        >
+          Save Account
+        </button>
+
+
+        <button
+          type="button"
+          class="cancel-btn"
+          id="cancelModalBtn"
+        >
+          Cancel
+        </button>
+
+      </form>
 
     </div>
 
-</div>
+  </div>
 
 
-<script src="../js/app.js"></script>
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
 
-<script>
+    <a
+      href="../index.html"
+      class="nav-item"
+    >
+      <span class="nav-icon">⌂</span>
+      Home
+    </a>
 
-"use strict";
+    <a
+      href="transactions.html"
+      class="nav-item"
+    >
+      <span class="nav-icon">▤</span>
+      Transactions
+    </a>
+
+    <a
+      href="buyers.html"
+      class="nav-item"
+    >
+      <span class="nav-icon">👥</span>
+      Buyers
+    </a>
+
+    <a
+      href="accounts.html"
+      class="nav-item active"
+    >
+      <span class="nav-icon">🏦</span>
+      Accounts
+    </a>
+
+    <a
+      href="more.html"
+      class="nav-item"
+    >
+      <span class="nav-icon">☰</span>
+      More
+    </a>
+
+  </nav>
 
 
-/* =========================================
-   ELEMENTS
-========================================= */
+  <script src="../js/app.js"></script>
 
-const modalOverlay =
-    document.getElementById(
-        "modalOverlay"
-    );
 
-const modalTitle =
-    document.getElementById(
-        "modalTitle"
-    );
+  <script>
+    "use strict";
 
-const accountName =
-    document.getElementById(
-        "accountName"
-    );
 
-const accountType =
-    document.getElementById(
-        "accountType"
-    );
+    /* =====================================================
+       ELEMENTS
+       ===================================================== */
 
-const openingBalance =
-    document.getElementById(
-        "openingBalance"
-    );
+    const accountList =
+      document.getElementById(
+        "accountList"
+      );
 
-const accountsList =
-    document.getElementById(
-        "accountsList"
-    );
-
-const totalBalance =
-    document.getElementById(
+    const totalBalance =
+      document.getElementById(
         "totalBalance"
-    );
+      );
 
-const formError =
-    document.getElementById(
+    const accountCount =
+      document.getElementById(
+        "accountCount"
+      );
+
+    const positiveBalance =
+      document.getElementById(
+        "positiveBalance"
+      );
+
+    const visibleCount =
+      document.getElementById(
+        "visibleCount"
+      );
+
+    const searchInput =
+      document.getElementById(
+        "searchInput"
+      );
+
+    const typeFilter =
+      document.getElementById(
+        "typeFilter"
+      );
+
+    const modal =
+      document.getElementById(
+        "accountModal"
+      );
+
+    const modalTitle =
+      document.getElementById(
+        "modalTitle"
+      );
+
+    const accountForm =
+      document.getElementById(
+        "accountForm"
+      );
+
+    const accountName =
+      document.getElementById(
+        "accountName"
+      );
+
+    const accountType =
+      document.getElementById(
+        "accountType"
+      );
+
+    const accountBalance =
+      document.getElementById(
+        "accountBalance"
+      );
+
+    const accountNote =
+      document.getElementById(
+        "accountNote"
+      );
+
+    const formError =
+      document.getElementById(
         "formError"
-    );
-
-const openAddButton =
-    document.getElementById(
-        "openAddButton"
-    );
-
-const closeModalButton =
-    document.getElementById(
-        "closeModalButton"
-    );
-
-const cancelButton =
-    document.getElementById(
-        "cancelButton"
-    );
-
-const saveButton =
-    document.getElementById(
-        "saveButton"
-    );
-
-const backButton =
-    document.getElementById(
-        "backButton"
-    );
+      );
 
 
-let editingAccountId = null;
+    let walletData = null;
+
+    let editingAccountId = null;
 
 
-/* =========================================
-   ACCOUNT ICON
-========================================= */
+    /* =====================================================
+       DATA
+       ===================================================== */
 
-function getAccountIcon(type) {
+    function getData() {
 
-    switch (
-        String(type || "")
-            .toUpperCase()
-    ) {
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.getData === "function"
+      ) {
 
-        case "BANK":
-            return "🏦";
+        return window.TamilandaWallet.getData();
 
-        case "CASH":
-            return "💵";
-
-        case "UPI":
-            return "📱";
-
-        case "WALLET":
-            return "👛";
-
-        default:
-            return "📦";
-    }
-}
+      }
 
 
-/* =========================================
-   OPEN MODAL
-========================================= */
+      try {
 
-function openModal(account = null) {
+        return JSON.parse(
+          localStorage.getItem(
+            "tamilanda_wallet_data"
+          )
+        ) || {
+          accounts: []
+        };
 
-    formError.style.display =
-        "none";
+      } catch (error) {
 
+        return {
+          accounts: []
+        };
 
-    if (account) {
+      }
 
-        editingAccountId =
-            account.id;
-
-        modalTitle.textContent =
-            "EDIT ACCOUNT";
-
-        accountName.value =
-            account.name || "";
-
-        accountType.value =
-            account.type || "BANK";
-
-        openingBalance.value =
-            Number(
-                account.openingBalance ||
-                account.balance ||
-                0
-            );
-
-        saveButton.textContent =
-            "UPDATE ACCOUNT";
-
-    } else {
-
-        editingAccountId =
-            null;
-
-        modalTitle.textContent =
-            "ADD ACCOUNT";
-
-        accountName.value =
-            "";
-
-        accountType.value =
-            "BANK";
-
-        openingBalance.value =
-            "";
-
-        saveButton.textContent =
-            "SAVE ACCOUNT";
     }
 
 
-    modalOverlay.classList.add(
-        "show"
-    );
+    function saveData() {
 
-    setTimeout(
-        () => accountName.focus(),
-        100
-    );
-}
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.save === "function"
+      ) {
 
+        window.TamilandaWallet.save();
 
-/* =========================================
-   CLOSE MODAL
-========================================= */
+      } else {
 
-function closeModal() {
+        localStorage.setItem(
+          "tamilanda_wallet_data",
+          JSON.stringify(walletData)
+        );
 
-    modalOverlay.classList.remove(
-        "show"
-    );
+      }
 
-    editingAccountId =
-        null;
-}
-
-
-/* =========================================
-   RENDER ACCOUNTS
-========================================= */
-
-function renderAccounts() {
-
-    const wallet =
-        window.TamilandaWallet;
-
-    if (!wallet) {
-        return;
     }
 
 
-    const data =
-        wallet.getData();
+    function money(value) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.formatMoney === "function"
+      ) {
+
+        return window.TamilandaWallet.formatMoney(
+          Number(value || 0)
+        );
+
+      }
 
 
-    const accounts =
-        data.accounts || [];
+      return (
+        "₹" +
+        Number(value || 0)
+          .toLocaleString(
+            "en-IN",
+            {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            }
+          )
+      );
+
+    }
 
 
-    const total =
+    function getBalance(account) {
+
+      return Number(
+        account.balance ??
+        account.currentBalance ??
+        0
+      );
+
+    }
+
+
+    function getName(account) {
+
+      return (
+        account.name ||
+        account.accountName ||
+        account.title ||
+        "Unnamed Account"
+      );
+
+    }
+
+
+    function iconForType(type) {
+
+      const icons = {
+
+        "Bank": "🏦",
+
+        "Cash": "💵",
+
+        "UPI": "📱",
+
+        "Wallet": "👛",
+
+        "Credit Card": "💳",
+
+        "Other": "💰"
+
+      };
+
+      return icons[type] || "💰";
+
+    }
+
+
+    /* =====================================================
+       SUMMARY
+       ===================================================== */
+
+    function renderSummary(accounts) {
+
+      const total =
         accounts.reduce(
-            (
-                sum,
-                account
-            ) => {
-
-                return (
-                    sum +
-                    Number(
-                        account.balance || 0
-                    )
-                );
-
-            },
-            0
+          (sum, account) =>
+            sum + getBalance(account),
+          0
         );
 
 
-    totalBalance.textContent =
-        wallet.formatMoney(total);
+      const positive =
+        accounts.reduce(
+          (sum, account) => {
+
+            const balance =
+              getBalance(account);
+
+            return (
+              sum +
+              (balance > 0
+                ? balance
+                : 0)
+            );
+
+          },
+          0
+        );
 
 
-    if (accounts.length === 0) {
+      totalBalance.textContent =
+        money(total);
 
-        accountsList.innerHTML = `
-            <div class="empty-accounts">
+      positiveBalance.textContent =
+        money(positive);
 
-                <div class="icon">
-                    🏦
-                </div>
+      accountCount.textContent =
+        accounts.length;
 
-                <strong>
-                    No accounts added
-                </strong>
+    }
 
-                <p>
-                    Add your bank account,
-                    cash or UPI balance.
-                </p>
 
+    /* =====================================================
+       FILTER
+       ===================================================== */
+
+    function getFilteredAccounts() {
+
+      walletData = getData();
+
+      const accounts =
+        Array.isArray(
+          walletData.accounts
+        )
+          ? walletData.accounts
+          : [];
+
+
+      const search =
+        searchInput.value
+          .trim()
+          .toLowerCase();
+
+
+      const type =
+        typeFilter.value;
+
+
+      return accounts.filter(
+        account => {
+
+          const name =
+            getName(account)
+              .toLowerCase();
+
+          const accountTypeValue =
+            String(
+              account.type ||
+              "Other"
+            );
+
+
+          const matchesSearch =
+            !search ||
+            name.includes(search) ||
+            accountTypeValue
+              .toLowerCase()
+              .includes(search);
+
+
+          const matchesType =
+            type === "all" ||
+            accountTypeValue === type;
+
+
+          return (
+            matchesSearch &&
+            matchesType
+          );
+
+        }
+      );
+
+    }
+
+
+    /* =====================================================
+       RENDER
+       ===================================================== */
+
+    function renderAccounts() {
+
+      walletData = getData();
+
+      const allAccounts =
+        Array.isArray(
+          walletData.accounts
+        )
+          ? walletData.accounts
+          : [];
+
+
+      const accounts =
+        getFilteredAccounts();
+
+
+      renderSummary(
+        allAccounts
+      );
+
+
+      visibleCount.textContent =
+        `${accounts.length} ${
+          accounts.length === 1
+            ? "account"
+            : "accounts"
+        }`;
+
+
+      if (
+        allAccounts.length === 0
+      ) {
+
+        accountList.innerHTML = `
+          <div class="empty">
+
+            <div class="empty-icon">
+              🏦
             </div>
+
+            <strong>
+              No accounts yet
+            </strong>
+
+            <p>
+              Add your bank, cash, UPI or wallet
+              account to start managing your balance.
+            </p>
+
+          </div>
         `;
 
         return;
+
+      }
+
+
+      if (
+        accounts.length === 0
+      ) {
+
+        accountList.innerHTML = `
+          <div class="empty">
+
+            <div class="empty-icon">
+              🔎
+            </div>
+
+            <strong>
+              No matching accounts
+            </strong>
+
+            <p>
+              Try another search or filter.
+            </p>
+
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      accountList.innerHTML =
+        accounts
+          .map(account => {
+
+            const id =
+              String(account.id);
+
+            const name =
+              getName(account);
+
+            const type =
+              account.type ||
+              "Other";
+
+            const balance =
+              getBalance(account);
+
+            const note =
+              account.note ||
+              "";
+
+
+            return `
+              <div
+                class="account-card"
+                data-id="${escapeHtml(id)}"
+              >
+
+                <div class="account-top">
+
+                  <div class="account-info">
+
+                    <div class="account-icon">
+                      ${iconForType(type)}
+                    </div>
+
+                    <div>
+
+                      <div class="account-name">
+                        ${escapeHtml(name)}
+                      </div>
+
+                      <div class="account-type">
+                        ${escapeHtml(type)}
+                      </div>
+
+                    </div>
+
+                  </div>
+
+
+                  <div class="account-balance">
+                    ${escapeHtml(
+                      money(balance)
+                    )}
+                  </div>
+
+                </div>
+
+
+                ${
+                  note
+                    ? `
+                      <div class="account-note">
+                        ${escapeHtml(note)}
+                      </div>
+                    `
+                    : ""
+                }
+
+
+                <div class="account-actions">
+
+                  <button
+                    type="button"
+                    class="action-btn transfer"
+                    data-action="transfer"
+                    data-id="${escapeHtml(id)}"
+                  >
+                    ⇄ Transfer
+                  </button>
+
+                  <button
+                    type="button"
+                    class="action-btn"
+                    data-action="edit"
+                    data-id="${escapeHtml(id)}"
+                  >
+                    ✎ Edit
+                  </button>
+
+                  <button
+                    type="button"
+                    class="action-btn delete"
+                    data-action="delete"
+                    data-id="${escapeHtml(id)}"
+                  >
+                    🗑 Delete
+                  </button>
+
+                </div>
+
+              </div>
+            `;
+
+          })
+          .join("");
+
     }
 
 
-    accountsList.innerHTML =
-        accounts.map(
-            account => {
+    function escapeHtml(value) {
 
-                return `
-                    <article class="account-card">
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.escapeHtml === "function"
+      ) {
 
-                        <div class="account-top">
+        return window.TamilandaWallet.escapeHtml(
+          value
+        );
 
-                            <div class="account-icon-large">
-                                ${getAccountIcon(
-                                    account.type
-                                )}
-                            </div>
-
-                            <div class="account-info">
-
-                                <div class="account-name-large">
-                                    ${wallet.getData
-                                        ? escapeHtml(
-                                            account.name
-                                        )
-                                        : account.name}
-                                </div>
-
-                                <div class="account-type-large">
-                                    ${escapeHtml(
-                                        account.type ||
-                                        "ACCOUNT"
-                                    )}
-                                </div>
-
-                            </div>
-
-                        </div>
+      }
 
 
-                        <div class="account-balance-large">
-                            ${wallet.formatMoney(
-                                account.balance || 0
-                            )}
-                        </div>
+      return String(value ?? "")
+        .replace(
+          /&/g,
+          "&amp;"
+        )
+        .replace(
+          /</g,
+          "&lt;"
+        )
+        .replace(
+          />/g,
+          "&gt;"
+        )
+        .replace(
+          /"/g,
+          "&quot;"
+        )
+        .replace(
+          /'/g,
+          "&#039;"
+        );
 
-
-                        <div class="account-actions">
-
-                            <button
-                                type="button"
-                                class="small-action"
-                                data-edit-account="${account.id}"
-                            >
-                                ✏️ Edit
-                            </button>
-
-                            <button
-                                type="button"
-                                class="small-action delete"
-                                data-delete-account="${account.id}"
-                            >
-                                🗑️ Delete
-                            </button>
-
-                        </div>
-
-                    </article>
-                `;
-
-            }
-        ).join("");
-
-
-    attachAccountActions();
-}
-
-
-/* =========================================
-   ESCAPE HTML
-========================================= */
-
-function escapeHtml(value) {
-
-    if (
-        value === null ||
-        value === undefined
-    ) {
-        return "";
     }
 
-    return String(value)
-        .replaceAll(
-            "&",
-            "&amp;"
-        )
-        .replaceAll(
-            "<",
-            "&lt;"
-        )
-        .replaceAll(
-            ">",
-            "&gt;"
-        )
-        .replaceAll(
-            '"',
-            "&quot;"
-        )
-        .replaceAll(
-            "'",
-            "&#039;"
-        );
-}
+
+    /* =====================================================
+       MODAL
+       ===================================================== */
+
+    function openAddModal() {
+
+      editingAccountId = null;
+
+      modalTitle.textContent =
+        "Add Account";
+
+      accountForm.reset();
+
+      accountType.value =
+        "Bank";
+
+      accountBalance.value =
+        "0";
+
+      formError.style.display =
+        "none";
+
+      modal.classList.add(
+        "show"
+      );
+
+      setTimeout(
+        () => accountName.focus(),
+        100
+      );
+
+    }
 
 
-/* =========================================
-   ACCOUNT ACTIONS
-========================================= */
+    function openEditModal(account) {
 
-function attachAccountActions() {
-
-    document
-        .querySelectorAll(
-            "[data-edit-account]"
-        )
-        .forEach(
-            button => {
-
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        const id =
-                            button.dataset
-                                .editAccount;
+      if (!account) {
+        return;
+      }
 
 
-                        const account =
-                            window
-                                .TamilandaWallet
-                                .getData()
-                                .accounts
-                                .find(
-                                    item =>
-                                        String(
-                                            item.id
-                                        ) ===
-                                        String(id)
-                                );
+      editingAccountId =
+        String(account.id);
 
 
-                        if (account) {
-                            openModal(
-                                account
-                            );
-                        }
-
-                    }
-                );
-
-            }
-        );
+      modalTitle.textContent =
+        "Edit Account";
 
 
-    document
-        .querySelectorAll(
-            "[data-delete-account]"
-        )
-        .forEach(
-            button => {
-
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        deleteAccount(
-                            button.dataset
-                                .deleteAccount
-                        );
-
-                    }
-                );
-
-            }
-        );
-}
+      accountName.value =
+        getName(account);
 
 
-/* =========================================
-   DELETE ACCOUNT
-========================================= */
-
-function deleteAccount(id) {
-
-    const wallet =
-        window.TamilandaWallet;
+      accountType.value =
+        account.type ||
+        "Other";
 
 
-    const data =
-        wallet.getData();
+      accountBalance.value =
+        getBalance(account);
 
 
-    const account =
-        data.accounts.find(
-            item =>
+      accountNote.value =
+        account.note ||
+        "";
+
+
+      formError.style.display =
+        "none";
+
+
+      modal.classList.add(
+        "show"
+      );
+
+    }
+
+
+    function closeModal() {
+
+      modal.classList.remove(
+        "show"
+      );
+
+      editingAccountId = null;
+
+    }
+
+
+    function showFormError(message) {
+
+      formError.textContent =
+        message;
+
+      formError.style.display =
+        "block";
+
+    }
+
+
+    /* =====================================================
+       SAVE ACCOUNT
+       ===================================================== */
+
+    accountForm.addEventListener(
+      "submit",
+      function(event) {
+
+        event.preventDefault();
+
+
+        walletData = getData();
+
+
+        if (
+          !Array.isArray(
+            walletData.accounts
+          )
+        ) {
+
+          walletData.accounts = [];
+
+        }
+
+
+        const name =
+          accountName.value
+            .trim();
+
+
+        const type =
+          accountType.value;
+
+
+        const balance =
+          Number(
+            accountBalance.value
+          );
+
+
+        const note =
+          accountNote.value
+            .trim();
+
+
+        if (!name) {
+
+          showFormError(
+            "Please enter an account name."
+          );
+
+          return;
+
+        }
+
+
+        if (
+          !Number.isFinite(balance) ||
+          balance < 0
+        ) {
+
+          showFormError(
+            "Please enter a valid balance."
+          );
+
+          return;
+
+        }
+
+
+        /* EDIT */
+
+        if (editingAccountId) {
+
+          const account =
+            walletData.accounts.find(
+              item =>
                 String(item.id) ===
-                String(id)
-        );
+                String(editingAccountId)
+            );
 
 
-    if (!account) {
-        return;
-    }
+          if (!account) {
+
+            showFormError(
+              "Account not found."
+            );
+
+            return;
+
+          }
 
 
-    const hasTransactions =
-        data.transactions.some(
-            transaction =>
-                String(
-                    transaction.accountId
-                ) === String(id)
-        );
+          account.name =
+            name;
+
+          account.type =
+            type;
+
+          account.balance =
+            balance;
+
+          account.note =
+            note;
 
 
-    if (hasTransactions) {
+          saveData();
 
-        alert(
-            "This account has transactions.\n\nDelete or move those transactions first."
-        );
+          closeModal();
 
-        return;
-    }
+          renderAccounts();
 
+          return;
 
-    const confirmed =
-        confirm(
-            `Delete "${account.name}"?`
-        );
+        }
 
 
-    if (!confirmed) {
-        return;
-    }
+        /* ADD */
+
+        if (
+          window.TamilandaWallet &&
+          typeof window.TamilandaWallet.addAccount === "function"
+        ) {
+
+          const created =
+            window.TamilandaWallet.addAccount({
+
+              name: name,
+
+              type: type,
+
+              balance: balance,
+
+              note: note
+
+            });
 
 
-    data.accounts =
-        data.accounts.filter(
-            item =>
-                String(item.id) !==
-                String(id)
-        );
+          if (!created) {
+
+            showFormError(
+              "Could not create account."
+            );
+
+            return;
+
+          }
+
+        } else {
+
+          walletData.accounts.push({
+
+            id:
+              "account_" +
+              Date.now(),
+
+            name:
+              name,
+
+            type:
+              type,
+
+            balance:
+              balance,
+
+            note:
+              note,
+
+            createdAt:
+              new Date().toISOString()
+
+          });
 
 
-    wallet.save();
+          saveData();
 
-    renderAccounts();
-
-    wallet.updateDashboard();
-}
+        }
 
 
-/* =========================================
-   SAVE ACCOUNT
-========================================= */
+        closeModal();
 
-function saveAccount() {
+        renderAccounts();
 
-    const wallet =
-        window.TamilandaWallet;
+      }
+    );
 
 
-    const data =
-        wallet.getData();
+    /* =====================================================
+       ACCOUNT ACTIONS
+       ===================================================== */
+
+    accountList.addEventListener(
+      "click",
+      function(event) {
+
+        const button =
+          event.target.closest(
+            "[data-action]"
+          );
 
 
-    const name =
-        accountName.value.trim();
+        if (!button) {
+          return;
+        }
 
 
-    const type =
-        accountType.value;
+        const action =
+          button.dataset.action;
 
 
-    const amount =
-        Number(
-            openingBalance.value
-        );
+        const id =
+          button.dataset.id;
 
 
-    if (!name) {
+        walletData =
+          getData();
 
-        formError.textContent =
-            "Please enter an account name.";
-
-        formError.style.display =
-            "block";
-
-        accountName.focus();
-
-        return;
-    }
-
-
-    if (
-        Number.isNaN(amount) ||
-        amount < 0
-    ) {
-
-        formError.textContent =
-            "Please enter a valid opening balance.";
-
-        formError.style.display =
-            "block";
-
-        openingBalance.focus();
-
-        return;
-    }
-
-
-    /* EDIT */
-
-    if (editingAccountId) {
 
         const account =
-            data.accounts.find(
-                item =>
-                    String(item.id) ===
-                    String(editingAccountId)
-            );
+          walletData.accounts.find(
+            item =>
+              String(item.id) ===
+              String(id)
+          );
 
 
         if (!account) {
 
-            formError.textContent =
-                "Account not found.";
+          alert(
+            "Account not found."
+          );
 
-            formError.style.display =
-                "block";
+          return;
 
-            return;
         }
 
 
-        const oldOpening =
-            Number(
-                account.openingBalance || 0
-            );
+        /* TRANSFER */
+
+        if (
+          action ===
+          "transfer"
+        ) {
+
+          window.location.href =
+            `transfer.html?from=${encodeURIComponent(id)}`;
+
+          return;
+
+        }
 
 
-        const difference =
-            amount -
-            oldOpening;
+        /* EDIT */
+
+        if (
+          action ===
+          "edit"
+        ) {
+
+          openEditModal(
+            account
+          );
+
+          return;
+
+        }
 
 
-        account.name =
-            name;
+        /* DELETE */
 
-        account.type =
-            type;
+        if (
+          action ===
+          "delete"
+        ) {
 
-        account.openingBalance =
-            amount;
-
-
-        /*
-         * Adjust current balance
-         * by the opening balance change.
-         */
-
-        account.balance =
-            Number(
-                account.balance || 0
-            ) +
-            difference;
+          const name =
+            getName(account);
 
 
-        wallet.save();
+          const balance =
+            getBalance(account);
+
+
+          const message =
+            balance > 0
+              ? `${name} has ${money(balance)} balance.\n\nAre you sure you want to move this account to Trash?`
+              : `Are you sure you want to move "${name}" to Trash?`;
+
+
+          if (
+            !confirm(message)
+          ) {
+
+            return;
+
+          }
+
+
+          let deleted =
+            false;
+
+
+          if (
+            window.TamilandaWallet &&
+            typeof window.TamilandaWallet.deleteRecord === "function"
+          ) {
+
+            deleted =
+              window.TamilandaWallet.deleteRecord(
+                "accounts",
+                id
+              );
+
+          } else {
+
+            const index =
+              walletData.accounts.findIndex(
+                item =>
+                  String(item.id) ===
+                  String(id)
+              );
+
+
+            if (index !== -1) {
+
+              const removed =
+                walletData.accounts.splice(
+                  index,
+                  1
+                )[0];
+
+
+              if (
+                !Array.isArray(
+                  walletData.trash
+                )
+              ) {
+
+                walletData.trash = [];
+
+              }
+
+
+              walletData.trash.unshift({
+
+                id:
+                  "trash_" +
+                  Date.now(),
+
+                originalId:
+                  removed.id,
+
+                type:
+                  "accounts",
+
+                data:
+                  JSON.parse(
+                    JSON.stringify(
+                      removed
+                    )
+                  ),
+
+                deletedAt:
+                  new Date().toISOString()
+
+              });
+
+
+              saveData();
+
+              deleted = true;
+
+            }
+
+          }
+
+
+          if (deleted) {
+
+            renderAccounts();
+
+          }
+
+        }
+
+      }
+    );
+
+
+    /* =====================================================
+       OPEN / CLOSE
+       ===================================================== */
+
+    document
+      .getElementById(
+        "addAccountBtn"
+      )
+      .addEventListener(
+        "click",
+        openAddModal
+      );
+
+
+    document
+      .getElementById(
+        "closeModalBtn"
+      )
+      .addEventListener(
+        "click",
+        closeModal
+      );
+
+
+    document
+      .getElementById(
+        "cancelModalBtn"
+      )
+      .addEventListener(
+        "click",
+        closeModal
+      );
+
+
+    modal.addEventListener(
+      "click",
+      function(event) {
+
+        if (
+          event.target ===
+          modal
+        ) {
+
+          closeModal();
+
+        }
+
+      }
+    );
+
+
+    /* =====================================================
+       SEARCH / FILTER
+       ===================================================== */
+
+    searchInput.addEventListener(
+      "input",
+      renderAccounts
+    );
+
+
+    typeFilter.addEventListener(
+      "change",
+      renderAccounts
+    );
+
+
+    /* =====================================================
+       KEYBOARD
+       ===================================================== */
+
+    document.addEventListener(
+      "keydown",
+      function(event) {
+
+        if (
+          event.key ===
+          "Escape"
+        ) {
+
+          closeModal();
+
+        }
+
+      }
+    );
+
+
+    /* =====================================================
+       TRANSFER PAGE SUPPORT
+       ===================================================== */
+
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
+
+
+    const fromAccountId =
+      params.get("from");
+
+
+    /*
+      If user came from an account's
+      Transfer button, pass the account
+      ID to transfer.html.
+    */
+
+    if (fromAccountId) {
+
+      /*
+        Nothing else needed here.
+        transfer.html reads the query.
+      */
 
     }
 
-    /* ADD */
 
-    else {
-
-        wallet.addAccount({
-
-            name:
-                name,
-
-            type:
-                type,
-
-            openingBalance:
-                amount,
-
-            balance:
-                amount
-
-        });
-
-    }
-
-
-    closeModal();
+    /* =====================================================
+       INITIAL LOAD
+       ===================================================== */
 
     renderAccounts();
 
-    wallet.updateDashboard();
-}
 
+    /* =====================================================
+       REFRESH WHEN PAGE RETURNS
+       ===================================================== */
 
-/* =========================================
-   EVENTS
-========================================= */
+    window.addEventListener(
+      "pageshow",
+      function() {
 
-openAddButton.addEventListener(
-    "click",
-    () => openModal()
-);
-
-
-closeModalButton.addEventListener(
-    "click",
-    closeModal
-);
-
-
-cancelButton.addEventListener(
-    "click",
-    closeModal
-);
-
-
-saveButton.addEventListener(
-    "click",
-    saveAccount
-);
-
-
-modalOverlay.addEventListener(
-    "click",
-    event => {
-
-        if (
-            event.target ===
-            modalOverlay
-        ) {
-
-            closeModal();
-        }
-
-    }
-);
-
-
-backButton.addEventListener(
-    "click",
-    () => {
-
-        if (
-            document.referrer &&
-            document.referrer !==
-            window.location.href
-        ) {
-
-            history.back();
-
-        } else {
-
-            window.location.href =
-                "../index.html";
-        }
-
-    }
-);
-
-
-/* =========================================
-   INITIALIZE
-========================================= */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+        walletData =
+          getData();
 
         renderAccounts();
 
-    }
-);
+      }
+    );
 
-</script>
+  </script>
 
 </body>
 </html>
