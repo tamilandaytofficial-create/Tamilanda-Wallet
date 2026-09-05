@@ -1468,129 +1468,88 @@ textarea.input {
     }
 }
 
-/* =========================================================
-   FINAL BOTTOM NAV FIX
-   Keep navigation size identical before/during/after tap.
-   ========================================================= */
-.bottom-nav,
-.bottom-nav button,
-.bottom-nav a,
-.bottom-nav .nav-item,
-.bottom-nav .bottom-nav-item {
-    box-sizing: border-box !important;
-}
-
-.bottom-nav button,
-.bottom-nav a,
-.bottom-nav .nav-item,
-.bottom-nav .bottom-nav-item {
-    width: 100% !important;
-    height: 51px !important;
-    min-height: 51px !important;
-    max-height: 51px !important;
-    padding: 5px 4px !important;
-    margin: 0 !important;
-    flex: 1 1 0 !important;
-    transform: none !important;
-    scale: 1 !important;
-    font-size: 10px !important;
-    line-height: 1 !important;
-    overflow: hidden !important;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-}
-
-.bottom-nav button:active,
-.bottom-nav a:active,
-.bottom-nav .nav-item:active,
-.bottom-nav .bottom-nav-item:active,
-.bottom-nav button:focus,
-.bottom-nav a:focus,
-.bottom-nav .nav-item:focus,
-.bottom-nav .bottom-nav-item:focus {
-    transform: none !important;
-    scale: 1 !important;
-    outline: none !important;
-}
-
-.bottom-nav button > span,
-.bottom-nav a > span,
-.bottom-nav .nav-icon,
-.bottom-nav .nav-label {
-    display: block !important;
-    width: auto !important;
-    height: auto !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    line-height: 1 !important;
-    transform: none !important;
-    scale: 1 !important;
-}
-
-.bottom-nav button > span:first-child,
-.bottom-nav a > span:first-child,
-.bottom-nav .nav-icon {
-    font-size: 20px !important;
-}
-
-.bottom-nav .nav-label,
-.bottom-nav button > span:last-child,
-.bottom-nav a > span:last-child {
-    font-size: 10px !important;
-    font-weight: 700 !important;
-}
-
-.bottom-nav button.active,
-.bottom-nav a.active,
-.bottom-nav .nav-item.active,
-.bottom-nav .bottom-nav-item.active {
-    transform: none !important;
-    scale: 1 !important;
-}
 
 /* =========================================================
-   TAMILANDA WALLET - BOTTOM NAV FINAL LOCK
-   Prevent navigation buttons from resizing/enlarging on tap.
+   BOTTOM NAV — FINAL CONSISTENT SIZE
+   Bare-button pages and .bottom-nav-item pages must match.
    ========================================================= */
 .bottom-nav {
-    height: 76px !important;
-    min-height: 76px !important;
-    max-height: 76px !important;
-    padding: 8px 8px 8px 8px !important;
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    align-items: stretch !important;
+    height: 69px !important;
+    min-height: 69px !important;
+    max-height: 69px !important;
+    padding: 6px 8px !important;
     box-sizing: border-box !important;
-    overflow: hidden !important;
 }
 
 .bottom-nav > button,
 .bottom-nav > a,
 .bottom-nav > .nav-item,
 .bottom-nav > .bottom-nav-item {
-    position: relative !important;
     display: flex !important;
-    width: 20% !important;
-    height: 60px !important;
+    flex: 1 1 0 !important;
+    width: auto !important;
+    height: 57px !important;
     min-width: 0 !important;
-    min-height: 60px !important;
-    max-height: 60px !important;
-    flex: 0 0 20% !important;
-    box-sizing: border-box !important;
+    min-height: 57px !important;
+    max-height: 57px !important;
     margin: 0 !important;
-    padding: 5px 2px !important;
+    padding: 4px 2px !important;
+    box-sizing: border-box !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 3px !important;
     border: 0 !important;
     border-radius: 0 !important;
     background: transparent !important;
     color: var(--text-muted) !important;
-    font-size: 10px !important;
-    line-height: 1 !important;
+    font-size: 20px !important;
+    line-height: 20px !important;
     font-weight: 700 !important;
     transform: none !important;
     scale: 1 !important;
-    transition: color 0.2s ease, background 0.2s ease !important;
+    transition: color 0.2s ease !important;
     appearance: none !important;
     -webkit-appearance: none !important;
-    -webkit-text-size-adjust: 100% !important;
-    text-size-adjust: 100% !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Icon span when a page uses <span>icon</span><span>label</span> */
+.bottom-nav > button > span:first-child,
+.bottom-nav > a > span:first-child,
+.bottom-nav > .nav-item > span:first-child,
+.bottom-nav > .bottom-nav-item > span:first-child,
+.bottom-nav .nav-icon {
+    display: block !important;
+    width: auto !important;
+    height: 20px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 20px !important;
+    line-height: 20px !important;
+    transform: none !important;
+    scale: 1 !important;
+}
+
+/* Label is ALWAYS small, including pages with bare-button emoji text. */
+.bottom-nav > button > span:last-child,
+.bottom-nav > a > span:last-child,
+.bottom-nav > .nav-item > span:last-child,
+.bottom-nav > .bottom-nav-item > span:last-child,
+.bottom-nav .nav-label {
+    display: block !important;
+    width: auto !important;
+    height: 12px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 10px !important;
+    line-height: 12px !important;
+    font-weight: 700 !important;
+    transform: none !important;
+    scale: 1 !important;
 }
 
 .bottom-nav > button:active,
@@ -1604,69 +1563,29 @@ textarea.input {
 .bottom-nav > button:focus-visible,
 .bottom-nav > a:focus-visible,
 .bottom-nav > .nav-item:focus-visible,
-.bottom-nav > .bottom-nav-item:focus-visible {
-    width: 20% !important;
-    height: 60px !important;
-    min-height: 60px !important;
-    max-height: 60px !important;
-    flex: 0 0 20% !important;
-    padding: 5px 2px !important;
+.bottom-nav > .bottom-nav-item:focus-visible,
+.bottom-nav > button.active,
+.bottom-nav > a.active,
+.bottom-nav > .nav-item.active,
+.bottom-nav > .bottom-nav-item.active {
+    width: auto !important;
+    height: 57px !important;
+    min-height: 57px !important;
+    max-height: 57px !important;
+    flex: 1 1 0 !important;
     margin: 0 !important;
+    padding: 4px 2px !important;
     transform: none !important;
     scale: 1 !important;
-    font-size: 10px !important;
-    outline: none !important;
-    box-shadow: none !important;
-}
-
-.bottom-nav > button > span,
-.bottom-nav > a > span,
-.bottom-nav > .nav-item > span,
-.bottom-nav > .bottom-nav-item > span,
-.bottom-nav > button .nav-icon,
-.bottom-nav > a .nav-icon {
-    display: block !important;
-    position: static !important;
-    width: auto !important;
-    height: auto !important;
-    min-width: 0 !important;
-    min-height: 0 !important;
-    max-width: 100% !important;
-    max-height: 24px !important;
-    margin: 0 !important;
-    padding: 0 !important;
     font-size: 20px !important;
     line-height: 20px !important;
-    transform: none !important;
-    scale: 1 !important;
-    transition: none !important;
-}
-
-.bottom-nav > button > span:last-child,
-.bottom-nav > a > span:last-child,
-.bottom-nav > .nav-item > span:last-child,
-.bottom-nav > .bottom-nav-item > span:last-child,
-.bottom-nav > button .nav-label,
-.bottom-nav > a .nav-label {
-    margin-top: 3px !important;
-    font-size: 10px !important;
-    line-height: 12px !important;
-    font-weight: 700 !important;
-    transform: none !important;
-    scale: 1 !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 .bottom-nav > button.active,
 .bottom-nav > a.active,
 .bottom-nav > .nav-item.active,
 .bottom-nav > .bottom-nav-item.active {
-    width: 20% !important;
-    height: 60px !important;
-    min-height: 60px !important;
-    max-height: 60px !important;
-    flex: 0 0 20% !important;
-    transform: none !important;
-    scale: 1 !important;
-    font-size: 10px !important;
-    background: transparent !important;
+    color: var(--gold) !important;
 }
