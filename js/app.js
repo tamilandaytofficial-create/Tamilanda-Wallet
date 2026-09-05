@@ -1,14 +1,16 @@
 /* =========================================================
    TAMILANDA WALLET
-   Core Application Engine
+   Main Application Logic
    ========================================================= */
+
+"use strict";
 
 
 /* =========================================================
    STORAGE
    ========================================================= */
 
-const STORAGE_KEY = "tamilanda_wallet_data";
+const WALLET_STORAGE_KEY = "tamilanda_wallet_data";
 
 
 /* =========================================================
@@ -93,273 +95,35 @@ const DEFAULT_WALLET_DATA = {
 
 
 /* =========================================================
-   DEEP CLONE
+   GLOBAL WALLET DATA
    ========================================================= */
 
-function cloneDefaultData() {
-
-  return JSON.parse(
-    JSON.stringify(
-      DEFAULT_WALLET_DATA
-    )
-  );
-
-}
-
-
-/* =========================================================
-   MERGE DATA SAFELY
-   ========================================================= */
-
-function normalizeWalletData(data) {
-
-  const defaults =
-    cloneDefaultData();
-
-
-  const source =
-    data &&
-    typeof data === "object"
-      ? data
-      : {};
-
-
-  const merged = {
-
-    ...defaults,
-
-    ...source
-
-  };
-
-
-  merged.categories = {
-
-    ...defaults.categories,
-
-    ...(source.categories || {})
-
-  };
-
-
-  merged.settings = {
-
-    ...defaults.settings,
-
-    ...(source.settings || {})
-
-  };
-
-
-  merged.profile = {
-
-    ...defaults.profile,
-
-    ...(source.profile || {})
-
-  };
-
-
-  merged.security = {
-
-    ...defaults.security,
-
-    ...(source.security || {})
-
-  };
-
-
-  const arrayKeys = [
-
-    "accounts",
-
-    "transactions",
-
-    "buyers",
-
-    "buyerPayments",
-
-    "moneyToGive",
-
-    "givePayments",
-
-    "myEmis",
-
-    "emiPayments",
-
-    "recurringBills",
-
-    "recurringPayments",
-
-    "trash"
-
-  ];
-
-
-  arrayKeys.forEach(
-    key => {
-
-      if (
-        !Array.isArray(
-          merged[key]
-        )
-      ) {
-
-        merged[key] = [];
-
-      }
-
-    }
-  );
-
-
-  return merged;
-
-}
-
-
-/* =========================================================
-   LOAD
-   ========================================================= */
-
-function loadWalletData() {
-
-  try {
-
-    const saved =
-      localStorage.getItem(
-        STORAGE_KEY
-      );
-
-
-    if (!saved) {
-
-      const fresh =
-        cloneDefaultData();
-
-
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(fresh)
-      );
-
-
-      return fresh;
-
-    }
-
-
-    const parsed =
-      JSON.parse(saved);
-
-
-    const normalized =
-      normalizeWalletData(
-        parsed
-      );
-
-
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(normalized)
-    );
-
-
-    return normalized;
-
-  } catch (error) {
-
-    console.error(
-      "Tamilanda Wallet load error:",
-      error
-    );
-
-
-    return cloneDefaultData();
-
-  }
-
-}
-
-
-/* =========================================================
-   GLOBAL DATA
-   ========================================================= */
-
-let walletData =
-  loadWalletData();
-
-
-/* =========================================================
-   SAVE
-   ========================================================= */
-
-function saveWalletData(
-  data = walletData
-) {
-
-  walletData =
-    normalizeWalletData(
-      data
-    );
-
-
-  try {
-
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(
-        walletData
-      )
-    );
-
-
-    window.dispatchEvent(
-      new CustomEvent(
-        "walletDataUpdated"
-      )
-    );
-
-
-    return true;
-
-  } catch (error) {
-
-    console.error(
-      "Tamilanda Wallet save error:",
-      error
-    );
-
-
-    return false;
-
-  }
-
-}
+let walletData = loadWalletData();
 
 
 /* =========================================================
    BASIC HELPERS
    ========================================================= */
 
-function generateId(
-  prefix = "id"
-) {
+function deepClone(value) {
+
+  return JSON.parse(
+    JSON.stringify(value)
+  );
+
+}
+
+
+function generateId(prefix = "id") {
 
   return (
-
     prefix +
-
     "_" +
-
-    Date.now().toString(36) +
-
+    Date.now() +
     "_" +
-
     Math.random()
       .toString(36)
-      .substring(2, 8)
-
+      .slice(2, 9)
   );
 
 }
@@ -367,132 +131,51 @@ function generateId(
 
 function todayString() {
 
-  const date =
-    new Date();
+  const date = new Date();
 
-
-  const year =
-    date.getFullYear();
-
+  const year = date.getFullYear();
 
   const month =
-    String(
-      date.getMonth() + 1
-    ).padStart(2, "0");
-
+    String(date.getMonth() + 1)
+      .padStart(2, "0");
 
   const day =
-    String(
-      date.getDate()
-    ).padStart(2, "0");
-
+    String(date.getDate())
+      .padStart(2, "0");
 
   return `${year}-${month}-${day}`;
 
 }
 
 
-function formatMoney(
-  value
-) {
+function escapeHtml(value) {
 
-  const amount =
-    Number(value) || 0;
-
-
-  const symbol =
-    walletData.settings &&
-    walletData.settings.currencySymbol
-      ? walletData.settings.currencySymbol
-      : "₹";
-
-
-  return (
-
-    symbol +
-
-    amount.toLocaleString(
-      "en-IN",
-      {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2
-      }
-    )
-
-  );
-
-}
-
-
-function escapeHtml(
-  value
-) {
-
-  if (
-    value === null ||
-    value === undefined
-  ) {
-
+  if (value === null || value === undefined) {
     return "";
-
   }
-
 
   return String(value)
-
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-
-    .replace(
-      /</g,
-      "&lt;"
-    )
-
-    .replace(
-      />/g,
-      "&gt;"
-    )
-
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-
-    .replace(
-      /'/g,
-      "&#039;"
-    );
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 
 }
 
 
-function formatDisplayDate(
-  value
-) {
+function formatDisplayDate(dateString) {
 
-  if (!value) {
-
-    return "-";
-
+  if (!dateString) {
+    return "—";
   }
-
 
   const date =
-    new Date(value);
+    new Date(dateString + "T00:00:00");
 
-
-  if (
-    Number.isNaN(
-      date.getTime()
-    )
-  ) {
-
-    return String(value);
-
+  if (Number.isNaN(date.getTime())) {
+    return dateString;
   }
-
 
   return date.toLocaleDateString(
     "en-IN",
@@ -506,24 +189,220 @@ function formatDisplayDate(
 }
 
 
-/* =========================================================
-   NUMBER HELPERS
-   ========================================================= */
+function formatMoney(value) {
 
-function numberValue(
-  value
-) {
+  const amount =
+    Number(value || 0);
 
-  return Number(value) || 0;
+  const symbol =
+    walletData?.settings?.currencySymbol ||
+    "₹";
+
+  return (
+    symbol +
+    amount.toLocaleString(
+      "en-IN",
+      {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }
+    )
+  );
 
 }
 
 
-function getAccountById(
-  accountId
-) {
+/* =========================================================
+   LOAD / SAVE
+   ========================================================= */
 
-  return walletData.accounts.find(
+function loadWalletData() {
+
+  try {
+
+    const saved =
+      localStorage.getItem(
+        WALLET_STORAGE_KEY
+      );
+
+    if (!saved) {
+
+      const fresh =
+        deepClone(DEFAULT_WALLET_DATA);
+
+      localStorage.setItem(
+        WALLET_STORAGE_KEY,
+        JSON.stringify(fresh)
+      );
+
+      return fresh;
+    }
+
+    const parsed =
+      JSON.parse(saved);
+
+    return normalizeWalletData(parsed);
+
+  } catch (error) {
+
+    console.error(
+      "Wallet data load error:",
+      error
+    );
+
+    return deepClone(
+      DEFAULT_WALLET_DATA
+    );
+
+  }
+
+}
+
+
+function saveWalletData() {
+
+  try {
+
+    walletData =
+      normalizeWalletData(walletData);
+
+    localStorage.setItem(
+      WALLET_STORAGE_KEY,
+      JSON.stringify(walletData)
+    );
+
+    return true;
+
+  } catch (error) {
+
+    console.error(
+      "Wallet save error:",
+      error
+    );
+
+    return false;
+
+  }
+
+}
+
+
+/* =========================================================
+   NORMALIZE DATA
+   ========================================================= */
+
+function normalizeWalletData(data) {
+
+  const base =
+    deepClone(DEFAULT_WALLET_DATA);
+
+  const source =
+    data && typeof data === "object"
+      ? data
+      : {};
+
+
+  const result = {
+
+    ...base,
+
+    ...source,
+
+    categories: {
+
+      ...base.categories,
+
+      ...(source.categories || {})
+
+    },
+
+    settings: {
+
+      ...base.settings,
+
+      ...(source.settings || {})
+
+    },
+
+    profile: {
+
+      ...base.profile,
+
+      ...(source.profile || {})
+
+    },
+
+    security: {
+
+      ...base.security,
+
+      ...(source.security || {})
+
+    }
+
+  };
+
+
+  const arrayKeys = [
+
+    "accounts",
+    "transactions",
+    "buyers",
+    "buyerPayments",
+    "moneyToGive",
+    "givePayments",
+    "myEmis",
+    "emiPayments",
+    "recurringBills",
+    "recurringPayments",
+    "trash"
+
+  ];
+
+
+  arrayKeys.forEach(key => {
+
+    if (!Array.isArray(result[key])) {
+      result[key] = [];
+    }
+
+  });
+
+
+  if (!Array.isArray(result.categories.income)) {
+
+    result.categories.income =
+      deepClone(
+        base.categories.income
+      );
+
+  }
+
+
+  if (!Array.isArray(result.categories.expense)) {
+
+    result.categories.expense =
+      deepClone(
+        base.categories.expense
+      );
+
+  }
+
+
+  return result;
+
+}
+
+
+/* =========================================================
+   ACCOUNT HELPERS
+   ========================================================= */
+
+function getAccountById(accountId) {
+
+  return (
+    walletData.accounts || []
+  ).find(
     account =>
       String(account.id) ===
       String(accountId)
@@ -532,228 +411,199 @@ function getAccountById(
 }
 
 
-function getTransactionById(
-  transactionId
-) {
+function getAccountName(account) {
 
-  return walletData.transactions.find(
-    transaction =>
-      String(transaction.id) ===
-      String(transactionId)
+  if (!account) {
+    return "Unknown Account";
+  }
+
+  return (
+    account.name ||
+    account.accountName ||
+    account.title ||
+    "Unnamed Account"
   );
 
 }
 
 
-/* =========================================================
-   ACCOUNT BALANCE
-   ========================================================= */
+function getAccountBalance(account) {
 
-function calculateTotalBalance() {
+  if (!account) {
+    return 0;
+  }
 
-  return walletData.accounts.reduce(
-    (
-      total,
-      account
-    ) => {
-
-      return (
-        total +
-        numberValue(
-          account.balance
-        )
-      );
-
-    },
+  return Number(
+    account.balance ??
+    account.currentBalance ??
     0
   );
 
 }
 
 
+function setAccountBalance(
+  account,
+  balance
+) {
+
+  if (!account) {
+    return;
+  }
+
+  account.balance =
+    Number(balance || 0);
+
+  /*
+    Keep currentBalance synchronized
+    if an older account object uses it.
+  */
+
+  if (
+    Object.prototype.hasOwnProperty.call(
+      account,
+      "currentBalance"
+    )
+  ) {
+
+    account.currentBalance =
+      Number(balance || 0);
+
+  }
+
+}
+
+
 /* =========================================================
-   TODAY INCOME
+   BALANCE CALCULATIONS
    ========================================================= */
+
+function calculateTotalBalance() {
+
+  return (
+    walletData.accounts || []
+  ).reduce(
+    (total, account) =>
+      total +
+      getAccountBalance(account),
+    0
+  );
+
+}
+
 
 function calculateTodayIncome() {
 
   const today =
     todayString();
 
+  return (
+    walletData.transactions || []
+  )
+    .filter(transaction => {
 
-  return walletData.transactions.reduce(
-    (
-      total,
-      transaction
-    ) => {
+      return (
+        transaction.date === today &&
+        (
+          transaction.type === "income" ||
+          transaction.type === "buyer_payment"
+        )
+      );
 
-      if (
-        transaction.type ===
-        "income" &&
-        transaction.date ===
-        today
-      ) {
-
-        return (
-          total +
-          numberValue(
-            transaction.amount
-          )
-        );
-
-      }
-
-
-      return total;
-
-    },
-    0
-  );
+    })
+    .reduce(
+      (total, transaction) =>
+        total +
+        Number(transaction.amount || 0),
+      0
+    );
 
 }
 
-
-/* =========================================================
-   TODAY EXPENSE
-   ========================================================= */
 
 function calculateTodayExpense() {
 
   const today =
     todayString();
 
+  return (
+    walletData.transactions || []
+  )
+    .filter(transaction => {
 
-  return walletData.transactions.reduce(
-    (
-      total,
-      transaction
-    ) => {
+      return (
+        transaction.date === today &&
+        (
+          transaction.type === "expense" ||
+          transaction.type === "recurring_payment" ||
+          transaction.type === "emi_payment"
+        )
+      );
 
-      if (
-        transaction.type ===
-        "expense" &&
-        transaction.date ===
-        today
-      ) {
-
-        return (
-          total +
-          numberValue(
-            transaction.amount
-          )
-        );
-
-      }
-
-
-      return total;
-
-    },
-    0
-  );
+    })
+    .reduce(
+      (total, transaction) =>
+        total +
+        Number(transaction.amount || 0),
+      0
+    );
 
 }
 
-
-/* =========================================================
-   TODAY PROFIT
-   ========================================================= */
 
 function calculateTodayProfit() {
 
   return (
-
     calculateTodayIncome() -
-
     calculateTodayExpense()
-
   );
 
 }
 
 
 /* =========================================================
-   BUYER RECEIVABLE
+   RECEIVABLE / LIABILITY CALCULATIONS
    ========================================================= */
 
-function getBuyerReceived(
-  buyerId
-) {
-
-  const buyer =
-    walletData.buyers.find(
-      item =>
-        String(item.id) ===
-        String(buyerId)
-    );
-
+function getBuyerRemaining(buyer) {
 
   if (!buyer) {
-
     return 0;
-
   }
 
-
-  const initial =
-    numberValue(
-      buyer.initialPayment
+  const total =
+    Number(
+      buyer.totalAmount ??
+      buyer.amount ??
+      0
     );
 
+  const initial =
+    Number(
+      buyer.initialPayment ??
+      buyer.initialPaid ??
+      buyer.paid ??
+      0
+    );
 
   const payments =
-    walletData.buyerPayments
-      .filter(
-        payment =>
-          String(
-            payment.buyerId
-          ) ===
-          String(buyerId)
+    (
+      walletData.buyerPayments || []
+    )
+      .filter(payment =>
+        String(payment.buyerId) ===
+        String(buyer.id)
       )
       .reduce(
-        (
-          total,
-          payment
-        ) =>
-          total +
-          numberValue(
-            payment.amount
-          ),
+        (sum, payment) =>
+          sum +
+          Number(payment.amount || 0),
         0
       );
 
-
-  return (
-    initial +
-    payments
-  );
-
-}
-
-
-function getBuyerRemaining(
-  buyer
-) {
-
-  if (!buyer) {
-
-    return 0;
-
-  }
-
-
-  const total =
-    numberValue(
-      buyer.totalAmount
-    );
-
-
   return Math.max(
     0,
-    total -
-    getBuyerReceived(
-      buyer.id
-    )
+    total - initial - payments
   );
 
 }
@@ -761,111 +611,56 @@ function getBuyerRemaining(
 
 function calculateMoneyToReceive() {
 
-  return walletData.buyers.reduce(
-    (
-      total,
-      buyer
-    ) => {
-
-      return (
-        total +
-        getBuyerRemaining(
-          buyer
-        )
-      );
-
-    },
+  return (
+    walletData.buyers || []
+  ).reduce(
+    (total, buyer) =>
+      total +
+      getBuyerRemaining(buyer),
     0
   );
 
 }
 
 
-/* =========================================================
-   MONEY TO GIVE
-   ========================================================= */
+function getGiveRemaining(record) {
 
-function getGivePaid(
-  giveId
-) {
-
-  const item =
-    walletData.moneyToGive.find(
-      record =>
-        String(record.id) ===
-        String(giveId)
-    );
-
-
-  if (!item) {
-
+  if (!record) {
     return 0;
-
   }
 
-
-  const initial =
-    numberValue(
-      item.alreadyPaid ??
-      item.paid ??
-      item.initialPayment
+  const total =
+    Number(
+      record.totalAmount ??
+      record.amount ??
+      0
     );
 
+  const alreadyPaid =
+    Number(
+      record.alreadyPaid ??
+      record.paid ??
+      0
+    );
 
   const payments =
-    walletData.givePayments
-      .filter(
-        payment =>
-          String(
-            payment.giveId
-          ) ===
-          String(giveId)
+    (
+      walletData.givePayments || []
+    )
+      .filter(payment =>
+        String(payment.giveId) ===
+        String(record.id)
       )
       .reduce(
-        (
-          total,
-          payment
-        ) =>
-          total +
-          numberValue(
-            payment.amount
-          ),
+        (sum, payment) =>
+          sum +
+          Number(payment.amount || 0),
         0
       );
 
-
-  return (
-    initial +
-    payments
-  );
-
-}
-
-
-function getGiveRemaining(
-  item
-) {
-
-  if (!item) {
-
-    return 0;
-
-  }
-
-
-  const total =
-    numberValue(
-      item.totalAmount ??
-      item.amount
-    );
-
-
   return Math.max(
     0,
-    total -
-    getGivePaid(
-      item.id
-    )
+    total - alreadyPaid - payments
   );
 
 }
@@ -873,115 +668,57 @@ function getGiveRemaining(
 
 function calculateMoneyToGive() {
 
-  return walletData.moneyToGive.reduce(
-    (
-      total,
-      item
-    ) => {
-
-      return (
-        total +
-        getGiveRemaining(
-          item
-        )
-      );
-
-    },
+  return (
+    walletData.moneyToGive || []
+  ).reduce(
+    (total, record) =>
+      total +
+      getGiveRemaining(record),
     0
   );
 
 }
 
 
-/* =========================================================
-   OWN EMI
-   ========================================================= */
-
-function getEmiPaid(
-  emiId
-) {
-
-  const emi =
-    walletData.myEmis.find(
-      item =>
-        String(item.id) ===
-        String(emiId)
-    );
-
+function getEmiRemaining(emi) {
 
   if (!emi) {
-
     return 0;
-
   }
 
-
-  const initial =
-    numberValue(
-      emi.alreadyPaid ??
-      emi.paid ??
-      emi.initialPayment
+  const total =
+    Number(
+      emi.totalAmount ??
+      emi.amount ??
+      emi.loanAmount ??
+      0
     );
 
+  const directPaid =
+    Number(
+      emi.paidAmount ??
+      emi.paid ??
+      0
+    );
 
   const payments =
-    walletData.emiPayments
-      .filter(
-        payment =>
-          String(
-            payment.emiId
-          ) ===
-          String(emiId)
+    (
+      walletData.emiPayments || []
+    )
+      .filter(payment =>
+        String(payment.emiId) ===
+        String(emi.id)
       )
       .reduce(
-        (
-          total,
-          payment
-        ) =>
-          total +
-          numberValue(
-            payment.amount
-          ),
+        (sum, payment) =>
+          sum +
+          Number(payment.amount || 0),
         0
       );
 
-
-  return (
-    initial +
-    payments
-  );
-
-}
-
-
-function getEmiRemaining(
-  emi
-) {
-
-  if (!emi) {
-
-    return 0;
-
-  }
-
-
-  const total =
-    numberValue(
-      emi.totalAmount ??
-      emi.total ??
-      emi.amount
-    );
-
-
-  const paid =
-    getEmiPaid(
-      emi.id
-    );
-
-
   return Math.max(
     0,
-    total - paid
+    total - directPaid - payments
   );
 
 }
@@ -989,20 +726,12 @@ function getEmiRemaining(
 
 function calculateEmiToPay() {
 
-  return walletData.myEmis.reduce(
-    (
-      total,
-      emi
-    ) => {
-
-      return (
-        total +
-        getEmiRemaining(
-          emi
-        )
-      );
-
-    },
+  return (
+    walletData.myEmis || []
+  ).reduce(
+    (total, emi) =>
+      total +
+      getEmiRemaining(emi),
     0
   );
 
@@ -1010,17 +739,20 @@ function calculateEmiToPay() {
 
 
 /* =========================================================
-   NET WORTH
+   ASSETS / LIABILITIES / NET WORTH
    ========================================================= */
 
 function calculateTotalAssets() {
 
+  const accountBalance =
+    calculateTotalBalance();
+
+  const receivable =
+    calculateMoneyToReceive();
+
   return (
-
-    calculateTotalBalance() +
-
-    calculateMoneyToReceive()
-
+    accountBalance +
+    receivable
   );
 
 }
@@ -1028,12 +760,15 @@ function calculateTotalAssets() {
 
 function calculateTotalLiabilities() {
 
+  const moneyToGive =
+    calculateMoneyToGive();
+
+  const emiToPay =
+    calculateEmiToPay();
+
   return (
-
-    calculateMoneyToGive() +
-
-    calculateEmiToPay()
-
+    moneyToGive +
+    emiToPay
   );
 
 }
@@ -1042,233 +777,122 @@ function calculateTotalLiabilities() {
 function calculateNetWorth() {
 
   return (
-
     calculateTotalAssets() -
-
     calculateTotalLiabilities()
-
   );
 
 }
 
 
 /* =========================================================
-   TRASH
+   TRANSACTION HELPERS
    ========================================================= */
 
-function moveToTrash(
-  type,
-  data,
-  meta = {}
-) {
-
-  if (!data) {
-
-    return false;
-
-  }
-
-
-  walletData.trash.push({
-
-    id:
-      generateId("trash"),
-
-    type,
-
-    deletedAt:
-      new Date().toISOString(),
-
-    title:
-      meta.title ||
-      data.name ||
-      data.title ||
-      data.category ||
-      type,
-
-    amount:
-      numberValue(
-        meta.amount ??
-        data.amount ??
-        data.totalAmount
-      ),
-
-    data:
-      JSON.parse(
-        JSON.stringify(data)
-      ),
-
-    meta
-
-  });
-
-
-  saveWalletData();
-
-
-  return true;
-
-}
-
-
-function restoreFromTrash(
-  trashId
-) {
-
-  const index =
-    walletData.trash.findIndex(
-      item =>
-        String(item.id) ===
-        String(trashId)
-    );
-
-
-  if (index === -1) {
-
-    return false;
-
-  }
-
-
-  const item =
-    walletData.trash[index];
-
-
-  const destinationMap = {
-
-    transaction:
-      "transactions",
-
-    buyer:
-      "buyers",
-
-    account:
-      "accounts",
-
-    give:
-      "moneyToGive",
-
-    emi:
-      "myEmis",
-
-    recurring:
-      "recurringBills"
-
-  };
-
-
-  const destination =
-    destinationMap[
-      item.type
-    ];
-
-
-  if (
-    !destination ||
-    !item.data
-  ) {
-
-    return false;
-
-  }
-
-
-  if (
-    !Array.isArray(
-      walletData[destination]
-    )
-  ) {
-
-    walletData[destination] = [];
-
-  }
-
-
-  walletData[destination].push(
-    item.data
-  );
-
-
-  walletData.trash.splice(
-    index,
-    1
-  );
-
-
-  saveWalletData();
-
-
-  return true;
-
-}
-
-
-/* =========================================================
-   TRANSACTION ENGINE
-   ========================================================= */
-
-function addTransaction(
-  transaction
-) {
+function addTransaction(transaction) {
 
   if (!transaction) {
-
-    return null;
-
+    return false;
   }
 
-
   const amount =
-    numberValue(
-      transaction.amount
-    );
+    Number(transaction.amount || 0);
 
+  if (
+    !Number.isFinite(amount) ||
+    amount <= 0
+  ) {
 
-  if (amount <= 0) {
-
-    return null;
+    return false;
 
   }
 
 
   const type =
-    transaction.type ===
-    "expense"
-      ? "expense"
-      : "income";
+    transaction.type;
 
 
-  const accountId =
-    transaction.accountId ||
-    null;
+  const account =
+    getAccountById(
+      transaction.accountId
+    );
 
 
-  const date =
-    transaction.date ||
-    todayString();
+  /*
+    Income increases account balance.
+  */
+
+  if (
+    type === "income" &&
+    account
+  ) {
+
+    setAccountBalance(
+      account,
+      getAccountBalance(account) +
+      amount
+    );
+
+  }
 
 
-  const record = {
+  /*
+    Expense decreases account balance.
+  */
+
+  if (
+    type === "expense" &&
+    account
+  ) {
+
+    if (
+      amount >
+      getAccountBalance(account)
+    ) {
+
+      return false;
+
+    }
+
+
+    setAccountBalance(
+      account,
+      getAccountBalance(account) -
+      amount
+    );
+
+  }
+
+
+  const newTransaction = {
 
     id:
       transaction.id ||
       generateId("txn"),
 
-    type,
+    type: type || "other",
 
-    amount,
+    amount: amount,
+
+    accountId:
+      transaction.accountId ||
+      null,
 
     category:
       transaction.category ||
-      "Other",
+      "",
+
+    description:
+      transaction.description ||
+      transaction.note ||
+      "",
 
     note:
       transaction.note ||
       "",
 
-    accountId,
-
-    date,
+    date:
+      transaction.date ||
+      todayString(),
 
     createdAt:
       transaction.createdAt ||
@@ -1277,107 +901,81 @@ function addTransaction(
   };
 
 
-  walletData.transactions.push(
-    record
-  );
-
-
   /*
-   * Account balance
-   */
+    Preserve additional fields.
+  */
 
-  if (accountId) {
+  Object.keys(transaction)
+    .forEach(key => {
 
-    const account =
-      getAccountById(
-        accountId
-      );
+      if (
+        newTransaction[key] ===
+        undefined
+      ) {
 
-
-    if (account) {
-
-      if (type === "income") {
-
-        account.balance =
-          numberValue(
-            account.balance
-          ) +
-          amount;
-
-      } else {
-
-        account.balance =
-          numberValue(
-            account.balance
-          ) -
-          amount;
+        newTransaction[key] =
+          transaction[key];
 
       }
 
-    }
+    });
 
-  }
+
+  walletData.transactions.unshift(
+    newTransaction
+  );
 
 
   saveWalletData();
 
-
   updateDashboard();
 
-
-  return record;
+  return newTransaction;
 
 }
 
 
 /* =========================================================
-   ADD ACCOUNT
+   ACCOUNT
    ========================================================= */
 
-function addAccount(
-  account
-) {
+function addAccount(account) {
 
   if (!account) {
+    return false;
+  }
 
-    return null;
+  const name =
+    String(
+      account.name ||
+      account.accountName ||
+      ""
+    ).trim();
 
+
+  if (!name) {
+    return false;
   }
 
 
-  const openingBalance =
-    numberValue(
-      account.openingBalance ??
-      account.balance
-    );
-
-
-  const record = {
+  const newAccount = {
 
     id:
       account.id ||
-      generateId("acc"),
+      generateId("account"),
 
-    name:
-      account.name ||
-      "Account",
+    name: name,
 
     type:
       account.type ||
       "Bank",
 
-    bankName:
-      account.bankName ||
-      "",
-
-    accountNumber:
-      account.accountNumber ||
-      "",
-
     balance:
-      openingBalance,
-
-    openingBalance,
+      Number(
+        account.balance ||
+        account.currentBalance ||
+        0
+      ),
 
     note:
       account.note ||
@@ -1391,45 +989,233 @@ function addAccount(
 
 
   walletData.accounts.push(
-    record
+    newAccount
   );
 
 
   saveWalletData();
 
-
   updateDashboard();
 
-
-  return record;
+  return newAccount;
 
 }
 
 
 /* =========================================================
-   ADD BUYER
+   TRANSFER BETWEEN ACCOUNTS
    ========================================================= */
 
-function addBuyer(
-  buyer
+function transferBetweenAccounts(
+  fromAccountId,
+  toAccountId,
+  amount,
+  note = "",
+  date = todayString()
 ) {
 
-  if (!buyer) {
+  const fromAccount =
+    getAccountById(
+      fromAccountId
+    );
 
-    return null;
+  const toAccount =
+    getAccountById(
+      toAccountId
+    );
+
+
+  const transferAmount =
+    Number(amount);
+
+
+  if (!fromAccount || !toAccount) {
+
+    console.error(
+      "Transfer failed: account not found."
+    );
+
+    return false;
 
   }
 
 
-  const record = {
+  if (
+    String(fromAccount.id) ===
+    String(toAccount.id)
+  ) {
+
+    console.error(
+      "Transfer failed: same account."
+    );
+
+    return false;
+
+  }
+
+
+  if (
+    !Number.isFinite(
+      transferAmount
+    ) ||
+    transferAmount <= 0
+  ) {
+
+    return false;
+
+  }
+
+
+  const sourceBalance =
+    getAccountBalance(
+      fromAccount
+    );
+
+
+  if (
+    transferAmount >
+    sourceBalance
+  ) {
+
+    console.error(
+      "Transfer failed: insufficient balance."
+    );
+
+    return false;
+
+  }
+
+
+  /*
+    Remove from source account.
+  */
+
+  setAccountBalance(
+    fromAccount,
+    sourceBalance -
+    transferAmount
+  );
+
+
+  /*
+    Add to destination account.
+  */
+
+  setAccountBalance(
+    toAccount,
+    getAccountBalance(toAccount) +
+    transferAmount
+  );
+
+
+  /*
+    IMPORTANT:
+    Transfer is NOT income.
+    Transfer is NOT expense.
+  */
+
+  const transferId =
+    generateId("transfer");
+
+
+  const baseTransaction = {
+
+    id: transferId,
+
+    type: "transfer",
+
+    amount: transferAmount,
+
+    fromAccountId:
+      fromAccount.id,
+
+    toAccountId:
+      toAccount.id,
+
+    accountId:
+      fromAccount.id,
+
+    date:
+      date || todayString(),
+
+    note:
+      note || "",
+
+    description:
+      note ||
+      `Transfer from ${getAccountName(fromAccount)} to ${getAccountName(toAccount)}`,
+
+    createdAt:
+      new Date().toISOString()
+
+  };
+
+
+  walletData.transactions.unshift({
+
+    ...baseTransaction,
+
+    transferDirection:
+      "out"
+
+  });
+
+
+  walletData.transactions.unshift({
+
+    ...baseTransaction,
+
+    id:
+      generateId("transfer"),
+
+    accountId:
+      toAccount.id,
+
+    transferDirection:
+      "in"
+
+  });
+
+
+  saveWalletData();
+
+  updateDashboard();
+
+  return true;
+
+}
+
+
+/* =========================================================
+   BUYERS
+   ========================================================= */
+
+function addBuyer(buyer) {
+
+  if (!buyer) {
+    return false;
+  }
+
+  const name =
+    String(
+      buyer.name ||
+      buyer.buyerName ||
+      ""
+    ).trim();
+
+
+  if (!name) {
+    return false;
+  }
+
+
+  const newBuyer = {
 
     id:
       buyer.id ||
       generateId("buyer"),
 
-    name:
-      buyer.name ||
-      "",
+    name: name,
 
     phone:
       buyer.phone ||
@@ -1437,17 +1223,20 @@ function addBuyer(
 
     ffId:
       buyer.ffId ||
-      buyer.accountId ||
+      buyer.ffID ||
       "",
 
     totalAmount:
-      numberValue(
-        buyer.totalAmount
+      Number(
+        buyer.totalAmount ||
+        buyer.amount ||
+        0
       ),
 
     initialPayment:
-      numberValue(
-        buyer.initialPayment
+      Number(
+        buyer.initialPayment ||
+        0
       ),
 
     emiDuration:
@@ -1470,166 +1259,15 @@ function addBuyer(
 
 
   walletData.buyers.push(
-    record
+    newBuyer
   );
 
 
   saveWalletData();
 
-
-  return record;
-
-}
-
-
-/* =========================================================
-   BANK TRANSFER
-   ========================================================= */
-
-function transferBetweenAccounts(
-  fromAccountId,
-  toAccountId,
-  amount,
-  note = ""
-) {
-
-  const transferAmount =
-    numberValue(amount);
-
-
-  if (
-    transferAmount <= 0 ||
-    !fromAccountId ||
-    !toAccountId ||
-    String(fromAccountId) ===
-      String(toAccountId)
-  ) {
-
-    return false;
-
-  }
-
-
-  const from =
-    getAccountById(
-      fromAccountId
-    );
-
-
-  const to =
-    getAccountById(
-      toAccountId
-    );
-
-
-  if (!from || !to) {
-
-    return false;
-
-  }
-
-
-  if (
-    numberValue(
-      from.balance
-    ) <
-    transferAmount
-  ) {
-
-    return false;
-
-  }
-
-
-  from.balance =
-    numberValue(
-      from.balance
-    ) -
-    transferAmount;
-
-
-  to.balance =
-    numberValue(
-      to.balance
-    ) +
-    transferAmount;
-
-
-  const transferId =
-    generateId("transfer");
-
-
-  walletData.transactions.push({
-
-    id:
-      transferId +
-
-      "_out",
-
-    type:
-      "transfer",
-
-    direction:
-      "out",
-
-    amount:
-      transferAmount,
-
-    accountId:
-      fromAccountId,
-
-    transferId,
-
-    note,
-
-    date:
-      todayString(),
-
-    createdAt:
-      new Date().toISOString()
-
-  });
-
-
-  walletData.transactions.push({
-
-    id:
-      transferId +
-
-      "_in",
-
-    type:
-      "transfer",
-
-    direction:
-      "in",
-
-    amount:
-      transferAmount,
-
-    accountId:
-      toAccountId,
-
-    transferId,
-
-    note,
-
-    date:
-      todayString(),
-
-    createdAt:
-      new Date().toISOString()
-
-  });
-
-
-  saveWalletData();
-
-
   updateDashboard();
 
-
-  return true;
+  return newBuyer;
 
 }
 
@@ -1642,22 +1280,9 @@ function addBuyerPayment(
   buyerId,
   amount,
   accountId,
-  note = "",
-  date = todayString()
+  date = todayString(),
+  note = ""
 ) {
-
-  const paymentAmount =
-    numberValue(amount);
-
-
-  if (
-    paymentAmount <= 0
-  ) {
-
-    return false;
-
-  }
-
 
   const buyer =
     walletData.buyers.find(
@@ -1667,7 +1292,25 @@ function addBuyerPayment(
     );
 
 
-  if (!buyer) {
+  const account =
+    getAccountById(
+      accountId
+    );
+
+
+  const paymentAmount =
+    Number(amount);
+
+
+  if (!buyer || !account) {
+    return false;
+  }
+
+
+  if (
+    !Number.isFinite(paymentAmount) ||
+    paymentAmount <= 0
+  ) {
 
     return false;
 
@@ -1690,71 +1333,81 @@ function addBuyerPayment(
   }
 
 
-  const account =
-    getAccountById(
-      accountId
-    );
+  /*
+    Buyer pays us.
+    Therefore account balance increases.
+  */
+
+  setAccountBalance(
+    account,
+    getAccountBalance(account) +
+    paymentAmount
+  );
 
 
-  if (!account) {
-
-    return false;
-
-  }
-
-
-  walletData.buyerPayments.push({
+  const payment = {
 
     id:
-      generateId("buyerpay"),
+      generateId("buyer_payment"),
 
-    buyerId,
+    buyerId:
+      buyer.id,
 
     amount:
       paymentAmount,
 
-    accountId,
+    accountId:
+      account.id,
 
-    note,
+    date:
+      date || todayString(),
 
-    date,
+    note:
+      note || "",
 
     createdAt:
       new Date().toISOString()
 
-  });
+  };
 
 
-  account.balance =
-    numberValue(
-      account.balance
-    ) +
-    paymentAmount;
+  walletData.buyerPayments.unshift(
+    payment
+  );
 
 
-  walletData.transactions.push({
+  /*
+    Buyer payment is income.
+  */
+
+  walletData.transactions.unshift({
 
     id:
       generateId("txn"),
 
     type:
-      "income",
+      "buyer_payment",
 
     amount:
       paymentAmount,
 
+    accountId:
+      account.id,
+
+    buyerId:
+      buyer.id,
+
     category:
-      "FF EMI Payment",
+      "FF Account Sale",
+
+    description:
+      `Payment received from ${buyer.name}`,
 
     note:
-      note ||
-      `Payment from ${buyer.name}`,
+      note || "",
 
-    accountId,
-
-    buyerId,
-
-    date,
+    date:
+      date || todayString(),
 
     createdAt:
       new Date().toISOString()
@@ -1764,9 +1417,50 @@ function addBuyerPayment(
 
   saveWalletData();
 
-
   updateDashboard();
 
+  return payment;
+
+}
+
+
+/* =========================================================
+   GENERIC TRASH
+   ========================================================= */
+
+function moveToTrash(
+  type,
+  data
+) {
+
+  if (!data) {
+    return false;
+  }
+
+
+  walletData.trash.unshift({
+
+    id:
+      generateId("trash"),
+
+    originalId:
+      data.id || null,
+
+    type:
+      type || "unknown",
+
+    data:
+      deepClone(data),
+
+    deletedAt:
+      new Date().toISOString()
+
+  });
+
+
+  saveWalletData();
+
+  updateDashboard();
 
   return true;
 
@@ -1774,42 +1468,19 @@ function addBuyerPayment(
 
 
 /* =========================================================
-   GENERIC DELETE
+   DELETE RECORD
    ========================================================= */
 
 function deleteRecord(
-  type,
-  id
+  collectionName,
+  recordId
 ) {
 
-  const map = {
-
-    transaction:
-      "transactions",
-
-    buyer:
-      "buyers",
-
-    account:
-      "accounts",
-
-    give:
-      "moneyToGive",
-
-    emi:
-      "myEmis",
-
-    recurring:
-      "recurringBills"
-
-  };
-
-
-  const key =
-    map[type];
-
-
-  if (!key) {
+  if (
+    !Array.isArray(
+      walletData[collectionName]
+    )
+  ) {
 
     return false;
 
@@ -1817,31 +1488,33 @@ function deleteRecord(
 
 
   const index =
-    walletData[key].findIndex(
+    walletData[collectionName].findIndex(
       item =>
         String(item.id) ===
-        String(id)
+        String(recordId)
     );
 
 
   if (index === -1) {
-
     return false;
-
   }
 
 
-  const item =
-    walletData[key][index];
+  const record =
+    walletData[
+      collectionName
+    ][index];
 
 
   moveToTrash(
-    type,
-    item
+    collectionName,
+    record
   );
 
 
-  walletData[key].splice(
+  walletData[
+    collectionName
+  ].splice(
     index,
     1
   );
@@ -1849,6 +1522,150 @@ function deleteRecord(
 
   saveWalletData();
 
+  updateDashboard();
+
+  return true;
+
+}
+
+
+/* =========================================================
+   RESTORE FROM TRASH
+   ========================================================= */
+
+function restoreFromTrash(
+  trashId
+) {
+
+  const index =
+    walletData.trash.findIndex(
+      item =>
+        String(item.id) ===
+        String(trashId)
+    );
+
+
+  if (index === -1) {
+    return false;
+  }
+
+
+  const trashItem =
+    walletData.trash[index];
+
+
+  if (
+    !trashItem.data ||
+    !trashItem.type
+  ) {
+
+    return false;
+
+  }
+
+
+  const collection =
+    trashItem.type;
+
+
+  if (
+    !Array.isArray(
+      walletData[collection]
+    )
+  ) {
+
+    return false;
+
+  }
+
+
+  /*
+    Avoid duplicate restoration.
+  */
+
+  const alreadyExists =
+    walletData[collection].some(
+      item =>
+        String(item.id) ===
+        String(
+          trashItem.data.id
+        )
+    );
+
+
+  if (!alreadyExists) {
+
+    walletData[collection].push(
+      deepClone(
+        trashItem.data
+      )
+    );
+
+  }
+
+
+  walletData.trash.splice(
+    index,
+    1
+  );
+
+
+  saveWalletData();
+
+  updateDashboard();
+
+  return true;
+
+}
+
+
+/* =========================================================
+   RESTORE ALL
+   ========================================================= */
+
+function restoreAllFromTrash() {
+
+  const trashItems =
+    [...walletData.trash];
+
+
+  trashItems.reverse()
+    .forEach(item => {
+
+      if (
+        item.data &&
+        item.type &&
+        Array.isArray(
+          walletData[item.type]
+        )
+      ) {
+
+        const exists =
+          walletData[item.type].some(
+            record =>
+              String(record.id) ===
+              String(item.data.id)
+          );
+
+
+        if (!exists) {
+
+          walletData[item.type].push(
+            deepClone(item.data)
+          );
+
+        }
+
+      }
+
+    });
+
+
+  walletData.trash = [];
+
+  saveWalletData();
+
+  updateDashboard();
 
   return true;
 
@@ -1861,81 +1678,115 @@ function deleteRecord(
 
 function updateDashboard() {
 
-  const balance =
-    calculateTotalBalance();
+  /*
+    Dashboard elements are optional because
+    app.js is shared by every page.
+  */
 
-
-  const income =
-    calculateTodayIncome();
-
-
-  const expense =
-    calculateTodayExpense();
-
-
-  const profit =
-    calculateTodayProfit();
-
-
-  const receive =
-    calculateMoneyToReceive();
-
-
-  const give =
-    calculateMoneyToGive();
-
-
-  const emi =
-    calculateEmiToPay();
-
-
-  const elements = {
-
-    totalBalance:
-      balance,
-
-    todayIncome:
-      income,
-
-    todayExpense:
-      expense,
-
-    todayProfit:
-      profit,
-
-    moneyToReceive:
-      receive,
-
-    moneyToGive:
-      give,
-
-    emiToPay:
-      emi
-
-  };
-
-
-  Object.keys(elements)
-    .forEach(
-      id => {
-
-        const element =
-          document.getElementById(
-            id
-          );
-
-
-        if (element) {
-
-          element.textContent =
-            formatMoney(
-              elements[id]
-            );
-
-        }
-
-      }
+  const totalBalanceElement =
+    document.getElementById(
+      "totalBalance"
     );
+
+  const todayIncomeElement =
+    document.getElementById(
+      "todayIncome"
+    );
+
+  const todayExpenseElement =
+    document.getElementById(
+      "todayExpense"
+    );
+
+  const todayProfitElement =
+    document.getElementById(
+      "todayProfit"
+    );
+
+  const moneyToReceiveElement =
+    document.getElementById(
+      "moneyToReceive"
+    );
+
+  const moneyToGiveElement =
+    document.getElementById(
+      "moneyToGive"
+    );
+
+  const emiToPayElement =
+    document.getElementById(
+      "emiToPay"
+    );
+
+
+  if (totalBalanceElement) {
+
+    totalBalanceElement.textContent =
+      formatMoney(
+        calculateTotalBalance()
+      );
+
+  }
+
+
+  if (todayIncomeElement) {
+
+    todayIncomeElement.textContent =
+      formatMoney(
+        calculateTodayIncome()
+      );
+
+  }
+
+
+  if (todayExpenseElement) {
+
+    todayExpenseElement.textContent =
+      formatMoney(
+        calculateTodayExpense()
+      );
+
+  }
+
+
+  if (todayProfitElement) {
+
+    todayProfitElement.textContent =
+      formatMoney(
+        calculateTodayProfit()
+      );
+
+  }
+
+
+  if (moneyToReceiveElement) {
+
+    moneyToReceiveElement.textContent =
+      formatMoney(
+        calculateMoneyToReceive()
+      );
+
+  }
+
+
+  if (moneyToGiveElement) {
+
+    moneyToGiveElement.textContent =
+      formatMoney(
+        calculateMoneyToGive()
+      );
+
+  }
+
+
+  if (emiToPayElement) {
+
+    emiToPayElement.textContent =
+      formatMoney(
+        calculateEmiToPay()
+      );
+
+  }
 
 
   renderAccountsPreview();
@@ -1958,25 +1809,20 @@ function renderAccountsPreview() {
 
 
   if (!container) {
-
     return;
-
   }
 
 
-  if (
-    walletData.accounts.length ===
-    0
-  ) {
+  const accounts =
+    walletData.accounts || [];
+
+
+  if (accounts.length === 0) {
 
     container.innerHTML = `
-
       <div class="empty-state">
-
         No accounts added yet.
-
       </div>
-
     `;
 
     return;
@@ -1985,41 +1831,39 @@ function renderAccountsPreview() {
 
 
   container.innerHTML =
-    walletData.accounts
+    accounts
       .slice(0, 5)
-      .map(
-        account => `
+      .map(account => {
 
-          <div class="list-item">
+        return `
+          <div class="account-preview-item">
 
             <div>
-
               <strong>
                 ${escapeHtml(
-                  account.name
+                  getAccountName(account)
                 )}
               </strong>
 
-              <div class="muted">
+              <small>
                 ${escapeHtml(
-                  account.type
+                  account.type || "Account"
                 )}
-              </div>
-
+              </small>
             </div>
 
             <strong>
               ${escapeHtml(
                 formatMoney(
-                  account.balance
+                  getAccountBalance(account)
                 )
               )}
             </strong>
 
           </div>
+        `;
 
-        `
-      )
+      })
       .join("");
 
 }
@@ -2038,46 +1882,20 @@ function renderRecentTransactions() {
 
 
   if (!container) {
-
     return;
-
   }
 
 
   const transactions =
-    [...walletData.transactions]
-      .sort(
-        (
-          a,
-          b
-        ) =>
-          new Date(
-            b.createdAt ||
-            b.date ||
-            0
-          ) -
-          new Date(
-            a.createdAt ||
-            a.date ||
-            0
-          )
-      )
-      .slice(0, 5);
+    walletData.transactions || [];
 
 
-  if (
-    transactions.length ===
-    0
-  ) {
+  if (transactions.length === 0) {
 
     container.innerHTML = `
-
       <div class="empty-state">
-
         No transactions yet.
-
       </div>
-
     `;
 
     return;
@@ -2087,100 +1905,94 @@ function renderRecentTransactions() {
 
   container.innerHTML =
     transactions
-      .map(
-        transaction => {
+      .slice(0, 8)
+      .map(transaction => {
 
-          const sign =
-            transaction.type ===
-            "expense"
-              ? "-"
-              : transaction.type ===
-                "income"
-                ? "+"
-                : "";
+        let sign = "";
+
+        if (
+          transaction.type ===
+            "income" ||
+          transaction.type ===
+            "buyer_payment"
+        ) {
+
+          sign = "+";
+
+        } else if (
+          transaction.type ===
+          "expense"
+        ) {
+
+          sign = "-";
+
+        }
 
 
-          return `
+        let title =
+          transaction.description ||
+          transaction.category ||
+          "Transaction";
 
-            <div class="list-item">
 
-              <div>
+        if (
+          transaction.type ===
+          "transfer"
+        ) {
 
-                <strong>
-                  ${escapeHtml(
-                    transaction.category ||
-                    transaction.type
-                  )}
-                </strong>
+          title =
+            transaction.description ||
+            "Account Transfer";
 
-                <div class="muted">
-                  ${escapeHtml(
-                    formatDisplayDate(
-                      transaction.date
-                    )
-                  )}
-                </div>
+        }
 
-              </div>
+
+        return `
+          <div class="transaction-preview-item">
+
+            <div>
 
               <strong>
-                ${sign}
+                ${escapeHtml(title)}
+              </strong>
+
+              <small>
                 ${escapeHtml(
-                  formatMoney(
-                    transaction.amount
+                  formatDisplayDate(
+                    transaction.date
                   )
                 )}
-              </strong>
+              </small>
 
             </div>
 
-          `;
+            <strong>
+              ${sign}${escapeHtml(
+                formatMoney(
+                  transaction.amount
+                )
+              )}
+            </strong>
 
-        }
-      )
+          </div>
+        `;
+
+      })
       .join("");
 
 }
 
 
 /* =========================================================
-   NAVIGATION
+   PAGE NAVIGATION
    ========================================================= */
 
-function setupNavigation() {
-
-  document
-    .querySelectorAll(
-      "[data-page]"
-    )
-    .forEach(
-      element => {
-
-        element.addEventListener(
-          "click",
-          () => {
-
-            handleNavigation(
-              element.dataset.page
-            );
-
-          }
-        );
-
-      }
-    );
-
-}
-
-
-function handleNavigation(
-  page
-) {
+function goToPage(page) {
 
   const pageMap = {
 
     home:
-      "index.html",
+      "../index.html",
 
     dashboard:
       "pages/dashboard.html",
@@ -2194,17 +2006,23 @@ function handleNavigation(
     accounts:
       "pages/accounts.html",
 
+    transfer:
+      "pages/transfer.html",
+
     transactions:
       "pages/transactions.html",
 
     buyers:
       "pages/buyers.html",
 
-    "give-money":
+    giveMoney:
       "pages/give-money.html",
 
     emi:
       "pages/emi.html",
+
+    recurring:
+      "pages/recurring.html",
 
     reports:
       "pages/reports.html",
@@ -2212,14 +2030,17 @@ function handleNavigation(
     calculator:
       "pages/calculator.html",
 
+    notifications:
+      "pages/notifications.html",
+
     settings:
       "pages/settings.html",
 
-    recurring:
-      "pages/recurring.html",
+    security:
+      "pages/security.html",
 
-    more:
-      "pages/more.html",
+    profile:
+      "pages/profile.html",
 
     privacy:
       "pages/privacy.html",
@@ -2227,288 +2048,40 @@ function handleNavigation(
     about:
       "pages/about.html",
 
-    notifications:
-      "pages/notifications.html",
-
-    profile:
-      "pages/profile.html",
-
-    security:
-      "pages/security.html",
+    more:
+      "pages/more.html",
 
     trash:
-      "pages/trash.html"
+      "pages/trash.html",
+
+    netWorth:
+      "pages/net-worth.html",
+
+    search:
+      "pages/search.html",
+
+    backup:
+      "pages/backup.html",
+
+    attachments:
+      "pages/attachments.html",
+
+    export:
+      "pages/export.html",
+
+    quickAdd:
+      "pages/quick-add.html",
+
+    calendar:
+      "pages/calendar.html"
 
   };
 
 
-  const target =
-    pageMap[page];
-
-
-  if (!target) {
-
-    showComingSoon(
-      page
-    );
-
-    return;
-
-  }
-
-
-  const currentPath =
-    window.location.pathname;
-
-
-  /*
-   * Root pages
-   */
-
-  if (
-    currentPath.endsWith(
-      "/index.html"
-    ) ||
-    currentPath.endsWith("/")
-  ) {
+  if (pageMap[page]) {
 
     window.location.href =
-      target;
-
-    return;
-
-  }
-
-
-  /*
-   * Pages inside /pages/
-   */
-
-  if (
-    currentPath.includes(
-      "/pages/"
-    )
-  ) {
-
-    if (
-      target.startsWith(
-        "pages/"
-      )
-    ) {
-
-      window.location.href =
-        target.replace(
-          "pages/",
-          "./"
-        );
-
-    } else {
-
-      window.location.href =
-        "../" +
-        target;
-
-    }
-
-    return;
-
-  }
-
-
-  window.location.href =
-    target;
-
-}
-
-
-/* =========================================================
-   NAV ACTIVE STATE
-   ========================================================= */
-
-function activateNavigation() {
-
-  const current =
-    window.location.pathname;
-
-
-  document
-    .querySelectorAll(
-      ".nav-item[data-page]"
-    )
-    .forEach(
-      item => {
-
-        const page =
-          item.dataset.page;
-
-
-        let match = false;
-
-
-        if (
-          page === "home" &&
-          (
-            current.endsWith(
-              "/index.html"
-            ) ||
-            current.endsWith("/")
-          )
-        ) {
-
-          match = true;
-
-        }
-
-
-        if (
-          page === "transactions" &&
-          current.includes(
-            "transactions.html"
-          )
-        ) {
-
-          match = true;
-
-        }
-
-
-        if (
-          page === "buyers" &&
-          current.includes(
-            "buyers.html"
-          )
-        ) {
-
-          match = true;
-
-        }
-
-
-        if (
-          page === "accounts" &&
-          current.includes(
-            "accounts.html"
-          )
-        ) {
-
-          match = true;
-
-        }
-
-
-        if (
-          page === "more" &&
-          current.includes(
-            "more.html"
-          )
-        ) {
-
-          match = true;
-
-        }
-
-
-        item.classList.toggle(
-          "active",
-          match
-        );
-
-      }
-    );
-
-}
-
-
-/* =========================================================
-   QUICK ACTIONS
-   ========================================================= */
-
-function setupQuickActions() {
-
-  const incomeButton =
-    document.getElementById(
-      "addIncomeButton"
-    );
-
-
-  if (incomeButton) {
-
-    incomeButton.addEventListener(
-      "click",
-      () => {
-
-        handleNavigation(
-          "income"
-        );
-
-      }
-    );
-
-  }
-
-
-  const expenseButton =
-    document.getElementById(
-      "addExpenseButton"
-    );
-
-
-  if (expenseButton) {
-
-    expenseButton.addEventListener(
-      "click",
-      () => {
-
-        handleNavigation(
-          "expense"
-        );
-
-      }
-    );
-
-  }
-
-
-  const buyerButton =
-    document.getElementById(
-      "addBuyerButton"
-    );
-
-
-  if (buyerButton) {
-
-    buyerButton.addEventListener(
-      "click",
-      () => {
-
-        handleNavigation(
-          "buyers"
-        );
-
-      }
-    );
-
-  }
-
-
-  const emiButton =
-    document.getElementById(
-      "addEmiButton"
-    );
-
-
-  if (emiButton) {
-
-    emiButton.addEventListener(
-      "click",
-      () => {
-
-        handleNavigation(
-          "emi"
-        );
-
-      }
-    );
+      pageMap[page];
 
   }
 
@@ -2516,102 +2089,140 @@ function setupQuickActions() {
 
 
 /* =========================================================
-   OTHER BUTTONS
+   GLOBAL OBJECT
    ========================================================= */
 
-function setupOtherButtons() {
+window.TamilandaWallet = {
 
-  const settingsButton =
-    document.getElementById(
-      "settingsButton"
-    );
+  /* Data */
 
+  getData: () =>
+    walletData,
 
-  if (settingsButton) {
-
-    settingsButton.addEventListener(
-      "click",
-      () => {
-
-        handleNavigation(
-          "settings"
-        );
-
-      }
-    );
-
-  }
+  save:
+    saveWalletData,
 
 
-  const accountsButton =
-    document.getElementById(
-      "viewAccountsButton"
-    );
+  /* Helpers */
+
+  formatMoney:
+    formatMoney,
+
+  todayString:
+    todayString,
+
+  generateId:
+    generateId,
+
+  escapeHtml:
+    escapeHtml,
+
+  formatDisplayDate:
+    formatDisplayDate,
 
 
-  if (accountsButton) {
+  /* Calculations */
 
-    accountsButton.addEventListener(
-      "click",
-      () => {
+  calculateTotalBalance:
+    calculateTotalBalance,
 
-        handleNavigation(
-          "accounts"
-        );
+  calculateTodayIncome:
+    calculateTodayIncome,
 
-      }
-    );
+  calculateTodayExpense:
+    calculateTodayExpense,
 
-  }
+  calculateTodayProfit:
+    calculateTodayProfit,
+
+  calculateMoneyToReceive:
+    calculateMoneyToReceive,
+
+  calculateMoneyToGive:
+    calculateMoneyToGive,
+
+  calculateEmiToPay:
+    calculateEmiToPay,
+
+  calculateTotalAssets:
+    calculateTotalAssets,
+
+  calculateTotalLiabilities:
+    calculateTotalLiabilities,
+
+  calculateNetWorth:
+    calculateNetWorth,
 
 
-  const transactionsButton =
-    document.getElementById(
-      "viewTransactionsButton"
-    );
+  /* Remaining */
+
+  getBuyerRemaining:
+    getBuyerRemaining,
+
+  getGiveRemaining:
+    getGiveRemaining,
+
+  getEmiRemaining:
+    getEmiRemaining,
 
 
-  if (transactionsButton) {
+  /* Records */
 
-    transactionsButton.addEventListener(
-      "click",
-      () => {
+  addTransaction:
+    addTransaction,
 
-        handleNavigation(
-          "transactions"
-        );
+  addAccount:
+    addAccount,
 
-      }
-    );
+  addBuyer:
+    addBuyer,
 
-  }
+  addBuyerPayment:
+    addBuyerPayment,
 
-}
+
+  /* Transfer */
+
+  transferBetweenAccounts:
+    transferBetweenAccounts,
+
+
+  /* Trash */
+
+  moveToTrash:
+    moveToTrash,
+
+  deleteRecord:
+    deleteRecord,
+
+  restoreFromTrash:
+    restoreFromTrash,
+
+  restoreAllFromTrash:
+    restoreAllFromTrash,
+
+
+  /* Dashboard */
+
+  updateDashboard:
+    updateDashboard,
+
+
+  /* Navigation */
+
+  goToPage:
+    goToPage
+
+};
 
 
 /* =========================================================
-   COMING SOON
+   AUTO DASHBOARD UPDATE
    ========================================================= */
 
-function showComingSoon(
-  feature
-) {
-
-  alert(
-    feature +
-    " is coming soon."
-  );
-
-}
-
-
-/* =========================================================
-   DATA UPDATE LISTENER
-   ========================================================= */
-
-window.addEventListener(
-  "walletDataUpdated",
-  () => {
+document.addEventListener(
+  "DOMContentLoaded",
+  function () {
 
     updateDashboard();
 
@@ -2620,115 +2231,29 @@ window.addEventListener(
 
 
 /* =========================================================
-   INITIALIZE
+   STORAGE EVENT
    ========================================================= */
 
-function initializeWallet() {
+window.addEventListener(
+  "storage",
+  function (event) {
 
-  walletData =
-    normalizeWalletData(
-      walletData
-    );
+    if (
+      event.key ===
+      WALLET_STORAGE_KEY
+    ) {
 
+      walletData =
+        loadWalletData();
 
-  setupNavigation();
+      updateDashboard();
 
-  setupQuickActions();
+    }
 
-  setupOtherButtons();
-
-  activateNavigation();
-
-  updateDashboard();
-
-}
+  }
+);
 
 
 /* =========================================================
-   PUBLIC API
+   END OF APP.JS
    ========================================================= */
-
-window.TamilandaWallet = {
-
-  getData: () =>
-    walletData,
-
-  save: () =>
-    saveWalletData(),
-
-  updateDashboard,
-
-  addTransaction,
-
-  addAccount,
-
-  addBuyer,
-
-  addBuyerPayment,
-
-  transferBetweenAccounts,
-
-  deleteRecord,
-
-  moveToTrash,
-
-  restoreFromTrash,
-
-  formatMoney,
-
-  todayString,
-
-  generateId,
-
-  escapeHtml,
-
-  formatDisplayDate,
-
-  calculateTotalBalance,
-
-  calculateTodayIncome,
-
-  calculateTodayExpense,
-
-  calculateTodayProfit,
-
-  calculateMoneyToReceive,
-
-  calculateMoneyToGive,
-
-  calculateEmiToPay,
-
-  calculateTotalAssets,
-
-  calculateTotalLiabilities,
-
-  calculateNetWorth,
-
-  getBuyerRemaining,
-
-  getGiveRemaining,
-
-  getEmiRemaining
-
-};
-
-
-/* =========================================================
-   START
-   ========================================================= */
-
-if (
-  document.readyState ===
-  "loading"
-) {
-
-  document.addEventListener(
-    "DOMContentLoaded",
-    initializeWallet
-  );
-
-} else {
-
-  initializeWallet();
-
-}
