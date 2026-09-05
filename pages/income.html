@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#09070d"
+    >
+
+    <title>Add Income | Tamilanda Wallet</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        .form-page {
+            width: 100%;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 18px 16px 40px;
+        }
+
+        .form-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .back-button {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            background: var(--surface);
+            color: #fff;
+            border: 1px solid var(--border);
+            font-size: 20px;
+        }
+
+        .form-title h1 {
+            font-size: 22px;
+            color: var(--green);
+            font-weight: 900;
+        }
+
+        .form-title p {
+            margin-top: 3px;
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        .income-form-card {
+            padding: 20px;
+            border-radius: 22px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+        }
+
+        .amount-box {
+            padding: 20px;
+            border-radius: 18px;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(85, 217, 139, 0.10),
+                    rgba(85, 217, 139, 0.025)
+                );
+            border: 1px solid rgba(85, 217, 139, 0.16);
+            margin-bottom: 20px;
+        }
+
+        .amount-label {
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+        }
+
+        .amount-input-wrap {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-top: 8px;
+        }
+
+        .amount-symbol {
+            color: var(--green);
+            font-size: 28px;
+            font-weight: 900;
+        }
+
+        .amount-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #fff;
+            font-size: 34px;
+            font-weight: 900;
+        }
+
+        .amount-input::placeholder {
+            color: #4f4a55;
+        }
+
+        .form-group {
+            margin-bottom: 17px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 7px;
+            color: #d6d1dc;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 14px 15px;
+            border-radius: 13px;
+            border: 1px solid var(--border);
+            outline: none;
+            background: var(--surface-2);
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            border-color: rgba(85, 217, 139, 0.45);
+        }
+
+        .form-select option {
+            background: #15111d;
+            color: #fff;
+        }
+
+        .form-textarea {
+            min-height: 105px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 11px;
+        }
+
+        .save-income-button {
+            width: 100%;
+            min-height: 54px;
+            margin-top: 5px;
+            border-radius: 15px;
+            background: var(--green);
+            color: #07150d;
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        .clear-button {
+            width: 100%;
+            min-height: 48px;
+            margin-top: 10px;
+            border-radius: 15px;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .success-message {
+            display: none;
+            margin-bottom: 15px;
+            padding: 13px 15px;
+            border-radius: 13px;
+            background: rgba(85, 217, 139, 0.10);
+            border: 1px solid rgba(85, 217, 139, 0.18);
+            color: var(--green);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .error-message {
+            display: none;
+            margin-bottom: 15px;
+            padding: 13px 15px;
+            border-radius: 13px;
+            background: rgba(255, 102, 122, 0.10);
+            border: 1px solid rgba(255, 102, 122, 0.18);
+            color: var(--red);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        @media (max-width: 420px) {
+
+            .form-page {
+                padding-left: 13px;
+                padding-right: 13px;
+            }
+
+            .income-form-card {
+                padding: 16px;
+            }
+
+            .amount-input {
+                font-size: 30px;
+            }
+        }
+
+        @media (max-width: 350px) {
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="form-page">
+
+        <!-- HEADER -->
+        <div class="form-header">
+
+            <button
+                type="button"
+                class="back-button"
+                id="backButton"
+            >
+                ←
+            </button>
+
+            <div class="form-title">
+
+                <h1>ADD INCOME</h1>
+
+                <p>
+                    Record money you received
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- FORM CARD -->
+        <section class="income-form-card">
+
+            <div
+                class="success-message"
+                id="successMessage"
+            >
+                Income saved successfully. ✅
+            </div>
+
+
+            <div
+                class="error-message"
+                id="errorMessage"
+            >
+                Please enter a valid amount.
+            </div>
+
+
+            <!-- AMOUNT -->
+            <div class="amount-box">
+
+                <div class="amount-label">
+                    AMOUNT
+                </div>
+
+                <div class="amount-input-wrap">
+
+                    <span class="amount-symbol">
+                        ₹
+                    </span>
+
+                    <input
+                        type="number"
+                        id="incomeAmount"
+                        class="amount-input"
+                        placeholder="0"
+                        min="0"
+                        step="0.01"
+                        inputmode="decimal"
+                        autocomplete="off"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- SOURCE -->
+            <div class="form-group">
+
+                <label
+                    class="form-label"
+                    for="incomeSource"
+                >
+                    INCOME SOURCE
+                </label>
+
+                <input
+                    type="text"
+                    id="incomeSource"
+                    class="form-input"
+                    placeholder="Example: FF Account Sale"
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <!-- CATEGORY -->
+            <div class="form-group">
+
+                <label
+                    class="form-label"
+                    for="incomeCategory"
+                >
+                    CATEGORY
+                </label>
+
+                <select
+                    id="incomeCategory"
+                    class="form-select"
+                >
+
+                    <option value="FF Account Sale">
+                        FF Account Sale
+                    </option>
+
+                    <option value="Business">
+                        Business
+                    </option>
+
+                    <option value="Salary">
+                        Salary
+                    </option>
+
+                    <option value="Other Income">
+                        Other Income
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- ACCOUNT -->
+            <div class="form-group">
+
+                <label
+                    class="form-label"
+                    for="incomeAccount"
+                >
+                    RECEIVED IN
+                </label>
+
+                <select
+                    id="incomeAccount"
+                    class="form-select"
+                >
+
+                    <option value="">
+                        Select Account
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- DATE + TIME -->
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label
+                        class="form-label"
+                        for="incomeDate"
+                    >
+                        DATE
+                    </label>
+
+                    <input
+                        type="date"
+                        id="incomeDate"
+                        class="form-input"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label
+                        class="form-label"
+                        for="incomeTime"
+                    >
+                        TIME
+                    </label>
+
+                    <input
+                        type="time"
+                        id="incomeTime"
+                        class="form-input"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- NOTE -->
+            <div class="form-group">
+
+                <label
+                    class="form-label"
+                    for="incomeNote"
+                >
+                    NOTE
+                </label>
+
+                <textarea
+                    id="incomeNote"
+                    class="form-textarea"
+                    placeholder="Optional note..."
+                ></textarea>
+
+            </div>
+
+
+            <!-- SAVE -->
+            <button
+                type="button"
+                class="save-income-button"
+                id="saveIncomeButton"
+            >
+                SAVE INCOME
+            </button>
+
+
+            <!-- CLEAR -->
+            <button
+                type="button"
+                class="clear-button"
+                id="clearIncomeButton"
+            >
+                CLEAR
+            </button>
+
+        </section>
+
+    </main>
+
+
+    <script src="../js/app.js"></script>
+
+    <script>
+
+        "use strict";
+
+
+        /* =========================================
+           ELEMENTS
+        ========================================= */
+
+        const amountInput =
+            document.getElementById("incomeAmount");
+
+        const sourceInput =
+            document.getElementById("incomeSource");
+
+        const categoryInput =
+            document.getElementById("incomeCategory");
+
+        const accountInput =
+            document.getElementById("incomeAccount");
+
+        const dateInput =
+            document.getElementById("incomeDate");
+
+        const timeInput =
+            document.getElementById("incomeTime");
+
+        const noteInput =
+            document.getElementById("incomeNote");
+
+        const saveButton =
+            document.getElementById("saveIncomeButton");
+
+        const clearButton =
+            document.getElementById("clearIncomeButton");
+
+        const backButton =
+            document.getElementById("backButton");
+
+        const successMessage =
+            document.getElementById("successMessage");
+
+        const errorMessage =
+            document.getElementById("errorMessage");
+
+
+        /* =========================================
+           DEFAULT DATE / TIME
+        ========================================= */
+
+        function setDefaultDateTime() {
+
+            const now = new Date();
+
+            const year =
+                now.getFullYear();
+
+            const month =
+                String(
+                    now.getMonth() + 1
+                ).padStart(2, "0");
+
+            const day =
+                String(
+                    now.getDate()
+                ).padStart(2, "0");
+
+            const hours =
+                String(
+                    now.getHours()
+                ).padStart(2, "0");
+
+            const minutes =
+                String(
+                    now.getMinutes()
+                ).padStart(2, "0");
+
+
+            dateInput.value =
+                `${year}-${month}-${day}`;
+
+            timeInput.value =
+                `${hours}:${minutes}`;
+        }
+
+
+        /* =========================================
+           LOAD ACCOUNTS
+        ========================================= */
+
+        function loadAccounts() {
+
+            const data =
+                window.TamilandaWallet?.getData();
+
+            if (!data) {
+                return;
+            }
+
+
+            accountInput.innerHTML = `
+                <option value="">
+                    Select Account
+                </option>
+            `;
+
+
+            data.accounts.forEach(account => {
+
+                const option =
+                    document.createElement("option");
+
+                option.value =
+                    account.id;
+
+                option.textContent =
+                    `${account.name} — ₹${Number(
+                        account.balance || 0
+                    ).toLocaleString("en-IN")}`;
+
+                accountInput.appendChild(
+                    option
+                );
+
+            });
+        }
+
+
+        /* =========================================
+           CLEAR FORM
+        ========================================= */
+
+        function clearForm() {
+
+            amountInput.value = "";
+
+            sourceInput.value = "";
+
+            categoryInput.value =
+                "FF Account Sale";
+
+            accountInput.value = "";
+
+            noteInput.value = "";
+
+            successMessage.style.display =
+                "none";
+
+            errorMessage.style.display =
+                "none";
+
+            setDefaultDateTime();
+
+            amountInput.focus();
+        }
+
+
+        /* =========================================
+           SAVE INCOME
+        ========================================= */
+
+        function saveIncome() {
+
+            const amount =
+                Number(
+                    amountInput.value
+                );
+
+
+            if (
+                !amount ||
+                amount <= 0
+            ) {
+
+                errorMessage.textContent =
+                    "Please enter a valid income amount.";
+
+                errorMessage.style.display =
+                    "block";
+
+                successMessage.style.display =
+                    "none";
+
+                amountInput.focus();
+
+                return;
+            }
+
+
+            const source =
+                sourceInput.value.trim();
+
+
+            const category =
+                categoryInput.value;
+
+
+            const accountId =
+                accountInput.value;
+
+
+            const selectedAccount =
+                window.TamilandaWallet
+                    ?.getData()
+                    ?.accounts
+                    ?.find(
+                        account =>
+                            String(account.id) ===
+                            String(accountId)
+                    );
+
+
+            const accountName =
+                selectedAccount
+                    ? selectedAccount.name
+                    : "";
+
+
+            const transaction =
+                window.TamilandaWallet
+                    ?.addTransaction({
+
+                        type: "income",
+
+                        amount: amount,
+
+                        title:
+                            source ||
+                            category,
+
+                        category:
+                            category,
+
+                        accountId:
+                            accountId,
+
+                        accountName:
+                            accountName,
+
+                        date:
+                            dateInput.value,
+
+                        description:
+                            noteInput.value.trim()
+                    });
+
+
+            if (!transaction) {
+
+                errorMessage.textContent =
+                    "Unable to save income.";
+
+                errorMessage.style.display =
+                    "block";
+
+                return;
+            }
+
+
+            /*
+             * Update selected account balance.
+             */
+
+            if (selectedAccount) {
+
+                selectedAccount.balance =
+                    Number(
+                        selectedAccount.balance || 0
+                    ) + amount;
+
+                window.TamilandaWallet.save();
+            }
+
+
+            successMessage.textContent =
+                `${window.TamilandaWallet.formatMoney(amount)} income saved successfully. ✅`;
+
+            successMessage.style.display =
+                "block";
+
+            errorMessage.style.display =
+                "none";
+
+
+            /*
+             * Refresh account options
+             * with the updated balance.
+             */
+
+            loadAccounts();
+
+
+            /*
+             * Keep the saved date/time,
+             * but clear amount/source/note
+             * for another quick entry.
+             */
+
+            amountInput.value = "";
+
+            sourceInput.value = "";
+
+            noteInput.value = "";
+
+            amountInput.focus();
+        }
+
+
+        /* =========================================
+           EVENTS
+        ========================================= */
+
+        saveButton.addEventListener(
+            "click",
+            saveIncome
+        );
+
+
+        clearButton.addEventListener(
+            "click",
+            clearForm
+        );
+
+
+        backButton.addEventListener(
+            "click",
+            () => {
+
+                if (
+                    document.referrer &&
+                    document.referrer !==
+                    window.location.href
+                ) {
+
+                    history.back();
+
+                } else {
+
+                    window.location.href =
+                        "../index.html";
+                }
+            }
+        );
+
+
+        amountInput.addEventListener(
+            "input",
+            () => {
+
+                errorMessage.style.display =
+                    "none";
+            }
+        );
+
+
+        /* =========================================
+           INITIALIZE
+        ========================================= */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                setDefaultDateTime();
+
+                loadAccounts();
+
+                amountInput.focus();
+            }
+        );
+
+    </script>
+
+</body>
+</html>
