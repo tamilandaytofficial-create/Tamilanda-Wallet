@@ -1,0 +1,31 @@
+{
+  "name": "Tamilanda Wallet",
+  "short_name": "Tamilanda",
+  "description": "Private personal and business money management wallet.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#09070d",
+  "theme_color": "#09070d",
+  "orientation": "portrait",
+  "scope": "./",
+  "lang": "en-IN",
+  "dir": "ltr",
+  "categories": [
+    "finance",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
