@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  >
+
+  <meta name="theme-color" content="#09070d">
+
+  <title>Transfer - Tamilanda Wallet</title>
+
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/style.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #09070d;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+    }
+
+    .transfer-page {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 18px 16px 100px;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .back-btn {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .top-title h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .top-title p {
+      margin: 4px 0 0;
+      color: #9d9aa5;
+      font-size: 13px;
+    }
+
+    .transfer-icon {
+      width: 58px;
+      height: 58px;
+      margin: 10px auto 16px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      background: rgba(130, 90, 255, 0.14);
+      border: 1px solid rgba(130, 90, 255, 0.25);
+    }
+
+    .intro {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .intro h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .intro p {
+      margin: 7px 0 0;
+      color: #98959f;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .card {
+      background: #111017;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .field {
+      margin-bottom: 17px;
+    }
+
+    .field:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+      color: #c9c6cf;
+      font-weight: 600;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 14px;
+      outline: none;
+      background: #0b0a0f;
+      color: #fff;
+      padding: 14px;
+      font-size: 15px;
+      font-family: inherit;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(150, 110, 255, 0.7);
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    select option {
+      background: #111017;
+      color: #fff;
+    }
+
+    .balance-box {
+      margin-top: 8px;
+      padding: 13px 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.035);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .balance-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .balance-label {
+      color: #9996a0;
+      font-size: 12px;
+    }
+
+    .balance-value {
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .arrow-box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: -4px 0 10px;
+    }
+
+    .arrow {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(130, 90, 255, 0.12);
+      border: 1px solid rgba(130, 90, 255, 0.25);
+      color: #bba5ff;
+      font-size: 20px;
+    }
+
+    .preview-card {
+      background: linear-gradient(
+        145deg,
+        rgba(130, 90, 255, 0.13),
+        rgba(255,255,255,0.03)
+      );
+      border: 1px solid rgba(130, 90, 255, 0.18);
+    }
+
+    .preview-title {
+      margin-bottom: 14px;
+      color: #aaa6b1;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+    }
+
+    .preview-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      gap: 12px;
+    }
+
+    .preview-row span:first-child {
+      color: #9b98a2;
+      font-size: 13px;
+    }
+
+    .preview-row span:last-child {
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: right;
+      word-break: break-word;
+    }
+
+    .info-box {
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(70, 170, 255, 0.08);
+      border: 1px solid rgba(70, 170, 255, 0.15);
+      color: #b8dfff;
+      font-size: 12px;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      border: none;
+      border-radius: 16px;
+      padding: 15px;
+      background: linear-gradient(135deg, #7b4dff, #9d6cff);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(123, 77, 255, 0.2);
+    }
+
+    .submit-btn:active {
+      transform: scale(0.98);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .error-message {
+      display: none;
+      margin-bottom: 14px;
+      padding: 13px;
+      border-radius: 13px;
+      background: rgba(255, 70, 70, 0.08);
+      border: 1px solid rgba(255, 70, 70, 0.18);
+      color: #ff9b9b;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .success-message {
+      display: none;
+      margin-bottom: 14px;
+      padding: 13px;
+      border-radius: 13px;
+      background: rgba(70, 220, 130, 0.08);
+      border: 1px solid rgba(70, 220, 130, 0.18);
+      color: #8ff0b3;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .empty-accounts {
+      text-align: center;
+      padding: 24px 10px;
+      color: #9996a0;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 8px calc(10px + env(safe-area-inset-bottom));
+      background: rgba(9,7,13,0.96);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(255,255,255,0.07);
+      z-index: 1000;
+    }
+
+    .nav-item {
+      flex: 1;
+      text-align: center;
+      color: #8f8b96;
+      text-decoration: none;
+      font-size: 11px;
+      padding: 5px 0;
+    }
+
+    .nav-item .nav-icon {
+      display: block;
+      font-size: 19px;
+      margin-bottom: 3px;
+    }
+
+    .nav-item.active {
+      color: #bca4ff;
+    }
+
+    @media (max-width: 380px) {
+      .transfer-page {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .card {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="transfer-page">
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <button class="back-btn" id="backButton" type="button">←</button>
+
+      <div class="top-title">
+        <h1>Transfer Money</h1>
+        <p>Move money between your accounts</p>
+      </div>
+    </div>
+
+    <!-- INTRO -->
+    <div class="intro">
+      <div class="transfer-icon">⇄</div>
+
+      <h2>Account Transfer</h2>
+
+      <p>
+        Transfer money from one Tamilanda Wallet account
+        to another account.
+      </p>
+    </div>
+
+    <!-- MESSAGE -->
+    <div class="error-message" id="errorMessage"></div>
+    <div class="success-message" id="successMessage"></div>
+
+    <!-- FORM -->
+    <form id="transferForm">
+
+      <div class="card">
+
+        <!-- FROM ACCOUNT -->
+        <div class="field">
+
+          <label for="fromAccount">
+            From Account
+          </label>
+
+          <select id="fromAccount" required>
+            <option value="">Select source account</option>
+          </select>
+
+          <div class="balance-box" id="fromBalanceBox">
+            <div class="balance-row">
+              <span class="balance-label">
+                Available Balance
+              </span>
+
+              <span class="balance-value" id="fromBalance">
+                ₹0
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ARROW -->
+        <div class="arrow-box">
+          <div class="arrow">↓</div>
+        </div>
+
+        <!-- TO ACCOUNT -->
+        <div class="field">
+
+          <label for="toAccount">
+            To Account
+          </label>
+
+          <select id="toAccount" required>
+            <option value="">Select destination account</option>
+          </select>
+
+          <div class="balance-box" id="toBalanceBox">
+            <div class="balance-row">
+              <span class="balance-label">
+                Current Balance
+              </span>
+
+              <span class="balance-value" id="toBalance">
+                ₹0
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- AMOUNT -->
+        <div class="field">
+
+          <label for="transferAmount">
+            Amount
+          </label>
+
+          <input
+            type="number"
+            id="transferAmount"
+            min="0.01"
+            step="0.01"
+            inputmode="decimal"
+            placeholder="Enter amount"
+            required
+          >
+
+        </div>
+
+        <!-- DATE -->
+        <div class="field">
+
+          <label for="transferDate">
+            Transfer Date
+          </label>
+
+          <input
+            type="date"
+            id="transferDate"
+            required
+          >
+
+        </div>
+
+        <!-- NOTE -->
+        <div class="field">
+
+          <label for="transferNote">
+            Note
+          </label>
+
+          <textarea
+            id="transferNote"
+            maxlength="300"
+            placeholder="Example: Bank to UPI transfer"
+          ></textarea>
+
+        </div>
+
+      </div>
+
+      <!-- PREVIEW -->
+      <div class="card preview-card">
+
+        <div class="preview-title">
+          Transfer Preview
+        </div>
+
+        <div class="preview-row">
+          <span>From</span>
+          <span id="previewFrom">—</span>
+        </div>
+
+        <div class="preview-row">
+          <span>To</span>
+          <span id="previewTo">—</span>
+        </div>
+
+        <div class="preview-row">
+          <span>Amount</span>
+          <span id="previewAmount">₹0</span>
+        </div>
+
+        <div class="preview-row">
+          <span>After Transfer</span>
+          <span id="previewAfter">—</span>
+        </div>
+
+      </div>
+
+      <!-- INFO -->
+      <div class="info-box">
+        💡 <strong>Important:</strong>
+        This is an internal account transfer.
+        It will <strong>NOT</strong> be counted as Income or Expense.
+        Only the balances of the two selected accounts will change.
+      </div>
+
+      <button
+        type="submit"
+        class="submit-btn"
+        id="transferButton"
+      >
+        ⇄ Transfer Money
+      </button>
+
+    </form>
+
+  </main>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+
+    <a href="../index.html" class="nav-item">
+      <span class="nav-icon">⌂</span>
+      Home
+    </a>
+
+    <a href="transactions.html" class="nav-item">
+      <span class="nav-icon">▤</span>
+      Transactions
+    </a>
+
+    <a href="buyers.html" class="nav-item">
+      <span class="nav-icon">👥</span>
+      Buyers
+    </a>
+
+    <a href="accounts.html" class="nav-item active">
+      <span class="nav-icon">🏦</span>
+      Accounts
+    </a>
+
+    <a href="more.html" class="nav-item">
+      <span class="nav-icon">☰</span>
+      More
+    </a>
+
+  </nav>
+
+  <script src="../js/app.js"></script>
+
+  <script>
+    const fromAccount = document.getElementById("fromAccount");
+    const toAccount = document.getElementById("toAccount");
+    const amountInput = document.getElementById("transferAmount");
+    const dateInput = document.getElementById("transferDate");
+    const noteInput = document.getElementById("transferNote");
+
+    const fromBalance = document.getElementById("fromBalance");
+    const toBalance = document.getElementById("toBalance");
+
+    const previewFrom = document.getElementById("previewFrom");
+    const previewTo = document.getElementById("previewTo");
+    const previewAmount = document.getElementById("previewAmount");
+    const previewAfter = document.getElementById("previewAfter");
+
+    const errorMessage = document.getElementById("errorMessage");
+    const successMessage = document.getElementById("successMessage");
+    const transferButton = document.getElementById("transferButton");
+
+    let walletData = null;
+
+    /* -----------------------------------------
+       HELPERS
+    ----------------------------------------- */
+
+    function getWalletData() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.getData === "function"
+      ) {
+        return window.TamilandaWallet.getData();
+      }
+
+      try {
+        return JSON.parse(
+          localStorage.getItem("tamilanda_wallet_data")
+        ) || {
+          accounts: []
+        };
+      } catch (error) {
+        return {
+          accounts: []
+        };
+      }
+    }
+
+
+    function saveWalletData() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.save === "function"
+      ) {
+        window.TamilandaWallet.save();
+        return;
+      }
+
+      localStorage.setItem(
+        "tamilanda_wallet_data",
+        JSON.stringify(walletData)
+      );
+    }
+
+
+    function money(value) {
+
+      const amount = Number(value || 0);
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.formatMoney === "function"
+      ) {
+        return window.TamilandaWallet.formatMoney(amount);
+      }
+
+      return "₹" + amount.toLocaleString("en-IN", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+
+    function todayString() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.todayString === "function"
+      ) {
+        return window.TamilandaWallet.todayString();
+      }
+
+      const date = new Date();
+
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+
+      return `${year}-${month}-${day}`;
+    }
+
+
+    function showError(message) {
+
+      errorMessage.textContent = message;
+      errorMessage.style.display = "block";
+
+      successMessage.style.display = "none";
+    }
+
+
+    function showSuccess(message) {
+
+      successMessage.textContent = message;
+      successMessage.style.display = "block";
+
+      errorMessage.style.display = "none";
+    }
+
+
+    function clearMessages() {
+
+      errorMessage.style.display = "none";
+      successMessage.style.display = "none";
+    }
+
+
+    function findAccount(id) {
+
+      return (walletData.accounts || []).find(
+        account => String(account.id) === String(id)
+      );
+    }
+
+
+    function getAccountName(account) {
+
+      if (!account) {
+        return "—";
+      }
+
+      return (
+        account.name ||
+        account.accountName ||
+        account.title ||
+        "Unnamed Account"
+      );
+    }
+
+
+    function getAccountBalance(account) {
+
+      if (!account) {
+        return 0;
+      }
+
+      return Number(
+        account.balance ??
+        account.currentBalance ??
+        0
+      );
+    }
+
+
+    /* -----------------------------------------
+       LOAD ACCOUNTS
+    ----------------------------------------- */
+
+    function loadAccounts() {
+
+      walletData = getWalletData();
+
+      if (!walletData.accounts) {
+        walletData.accounts = [];
+      }
+
+      fromAccount.innerHTML =
+        '<option value="">Select source account</option>';
+
+      toAccount.innerHTML =
+        '<option value="">Select destination account</option>';
+
+
+      if (walletData.accounts.length === 0) {
+
+        fromAccount.innerHTML =
+          '<option value="">No accounts available</option>';
+
+        toAccount.innerHTML =
+          '<option value="">No accounts available</option>';
+
+        transferButton.disabled = true;
+
+        return;
+      }
+
+
+      walletData.accounts.forEach(account => {
+
+        const id = account.id;
+
+        const name = getAccountName(account);
+
+        const balance = getAccountBalance(account);
+
+        const optionText =
+          `${name} — ${money(balance)}`;
+
+
+        const fromOption =
+          document.createElement("option");
+
+        fromOption.value = id;
+        fromOption.textContent = optionText;
+
+        fromAccount.appendChild(fromOption);
+
+
+        const toOption =
+          document.createElement("option");
+
+        toOption.value = id;
+        toOption.textContent = optionText;
+
+        toAccount.appendChild(toOption);
+
+      });
+
+
+      transferButton.disabled = false;
+
+      updatePreview();
+    }
+
+
+    /* -----------------------------------------
+       UPDATE BALANCES / PREVIEW
+    ----------------------------------------- */
+
+    function updatePreview() {
+
+      walletData = getWalletData();
+
+      const from = findAccount(fromAccount.value);
+      const to = findAccount(toAccount.value);
+
+      const amount =
+        Number(amountInput.value || 0);
+
+
+      if (from) {
+
+        fromBalance.textContent =
+          money(getAccountBalance(from));
+
+        previewFrom.textContent =
+          getAccountName(from);
+
+      } else {
+
+        fromBalance.textContent = money(0);
+
+        previewFrom.textContent = "—";
+      }
+
+
+      if (to) {
+
+        toBalance.textContent =
+          money(getAccountBalance(to));
+
+        previewTo.textContent =
+          getAccountName(to);
+
+      } else {
+
+        toBalance.textContent = money(0);
+
+        previewTo.textContent = "—";
+      }
+
+
+      previewAmount.textContent =
+        money(amount);
+
+
+      if (from && amount > 0) {
+
+        const afterBalance =
+          getAccountBalance(from) - amount;
+
+        previewAfter.textContent =
+          money(afterBalance);
+
+      } else {
+
+        previewAfter.textContent = "—";
+      }
+    }
+
+
+    /* -----------------------------------------
+       EVENTS
+    ----------------------------------------- */
+
+    fromAccount.addEventListener(
+      "change",
+      updatePreview
+    );
+
+    toAccount.addEventListener(
+      "change",
+      updatePreview
+    );
+
+    amountInput.addEventListener(
+      "input",
+      updatePreview
+    );
+
+
+    dateInput.value = todayString();
+
+
+    document
+      .getElementById("backButton")
+      .addEventListener("click", function () {
+
+        if (document.referrer) {
+          history.back();
+        } else {
+          window.location.href = "accounts.html";
+        }
+
+      });
+
+
+    /* -----------------------------------------
+       TRANSFER SUBMIT
+    ----------------------------------------- */
+
+    document
+      .getElementById("transferForm")
+      .addEventListener("submit", function (event) {
+
+        event.preventDefault();
+
+        clearMessages();
+
+        walletData = getWalletData();
+
+
+        const fromId =
+          fromAccount.value;
+
+        const toId =
+          toAccount.value;
+
+        const amount =
+          Number(amountInput.value);
+
+        const date =
+          dateInput.value;
+
+        const note =
+          noteInput.value.trim();
+
+
+        /* VALIDATION */
+
+        if (!fromId) {
+          showError("Please select the source account.");
+          return;
+        }
+
+
+        if (!toId) {
+          showError("Please select the destination account.");
+          return;
+        }
+
+
+        if (String(fromId) === String(toId)) {
+          showError(
+            "From Account and To Account cannot be the same."
+          );
+          return;
+        }
+
+
+        if (!Number.isFinite(amount) || amount <= 0) {
+          showError(
+            "Please enter a valid transfer amount."
+          );
+          return;
+        }
+
+
+        if (!date) {
+          showError(
+            "Please select the transfer date."
+          );
+          return;
+        }
+
+
+        const from =
+          findAccount(fromId);
+
+        const to =
+          findAccount(toId);
+
+
+        if (!from || !to) {
+          showError(
+            "Selected account could not be found."
+          );
+          return;
+        }
+
+
+        const sourceBalance =
+          getAccountBalance(from);
+
+
+        if (amount > sourceBalance) {
+
+          showError(
+            `Insufficient balance. Available balance is ${money(sourceBalance)}.`
+          );
+
+          return;
+        }
+
+
+        /* -------------------------------------
+           USE APP.JS TRANSFER FUNCTION
+        ------------------------------------- */
+
+        transferButton.disabled = true;
+        transferButton.textContent =
+          "Transferring...";
+
+
+        try {
+
+          if (
+            window.TamilandaWallet &&
+            typeof window.TamilandaWallet.transferBetweenAccounts === "function"
+          ) {
+
+            const result =
+              window.TamilandaWallet.transferBetweenAccounts(
+                fromId,
+                toId,
+                amount,
+                note,
+                date
+              );
+
+
+            if (result === false) {
+
+              showError(
+                "Transfer could not be completed."
+              );
+
+              transferButton.disabled = false;
+              transferButton.textContent =
+                "⇄ Transfer Money";
+
+              return;
+            }
+
+
+          } else {
+
+            /*
+              FALLBACK
+
+              This is only used if app.js
+              transfer function is unavailable.
+            */
+
+            from.balance =
+              sourceBalance - amount;
+
+            to.balance =
+              getAccountBalance(to) + amount;
+
+
+            if (!walletData.transactions) {
+              walletData.transactions = [];
+            }
+
+
+            const transferId =
+              "transfer_" +
+              Date.now() +
+              "_" +
+              Math.random()
+                .toString(36)
+                .slice(2, 8);
+
+
+            walletData.transactions.push({
+
+              id: transferId,
+
+              type: "transfer",
+
+              amount: amount,
+
+              fromAccountId: fromId,
+
+              toAccountId: toId,
+
+              accountId: fromId,
+
+              date: date,
+
+              note: note,
+
+              description:
+                note ||
+                `Transfer from ${getAccountName(from)} to ${getAccountName(to)}`,
+
+              createdAt:
+                new Date().toISOString()
+
+            });
+
+
+            saveWalletData();
+          }
+
+
+          /* SUCCESS */
+
+          showSuccess(
+            `${money(amount)} transferred successfully from ${getAccountName(from)} to ${getAccountName(to)}.`
+          );
+
+
+          /*
+             Refresh all account information
+          */
+
+          walletData = getWalletData();
+
+          loadAccounts();
+
+
+          /*
+             Keep destination/source selection
+             visible for a moment.
+          */
+
+          fromAccount.value = fromId;
+          toAccount.value = toId;
+
+          amountInput.value = "";
+          noteInput.value = "";
+
+          updatePreview();
+
+
+          setTimeout(function () {
+
+            window.location.href =
+              "accounts.html";
+
+          }, 900);
+
+
+        } catch (error) {
+
+          console.error(
+            "Transfer Error:",
+            error
+          );
+
+          showError(
+            "Something went wrong while transferring money."
+          );
+
+        } finally {
+
+          transferButton.disabled = false;
+
+          transferButton.textContent =
+            "⇄ Transfer Money";
+
+        }
+
+      });
+
+
+    /* -----------------------------------------
+       INITIAL LOAD
+    ----------------------------------------- */
+
+    loadAccounts();
+
+  </script>
+
+</body>
+</html>
