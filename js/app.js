@@ -3779,3 +3779,279 @@ window.addEventListener(
 
 
 })(window, document);
+
+
+/* =========================================================
+   TAMILANDA WALLET — CANONICAL BOTTOM NAVIGATION
+   One structure for every page.
+   This fixes page-to-page font/size/markup differences.
+========================================================= */
+
+function getCurrentPageKey() {
+
+  const path =
+    window.location.pathname
+      .replace(/\/+$/, "");
+
+  const file =
+    path.split("/").pop() || "index.html";
+
+  const fileMap = {
+    "index.html": "home",
+    "dashboard.html": "dashboard",
+    "income.html": "income",
+    "expense.html": "expense",
+    "accounts.html": "accounts",
+    "transfer.html": "transfer",
+    "transactions.html": "transactions",
+    "buyers.html": "buyers",
+    "give-money.html": "giveMoney",
+    "emi.html": "emi",
+    "recurring.html": "recurring",
+    "reports.html": "reports",
+    "calculator.html": "calculator",
+    "notifications.html": "notifications",
+    "settings.html": "settings",
+    "security.html": "security",
+    "profile.html": "profile",
+    "privacy.html": "privacy",
+    "about.html": "about",
+    "more.html": "more",
+    "trash.html": "trash",
+    "net-worth.html": "netWorth",
+    "search.html": "search",
+    "backup.html": "backup",
+    "attachments.html": "attachments",
+    "export.html": "export",
+    "quick-add.html": "quickAdd",
+    "calendar.html": "calendar"
+  };
+
+  return fileMap[file] || "";
+}
+
+
+function normalizeBottomNavigation() {
+
+  const nav =
+    document.querySelector(
+      "nav.bottom-nav, .bottom-nav"
+    );
+
+  if (!nav) {
+    return;
+  }
+
+  const items = [
+    {
+      page: "home",
+      icon: "🏠",
+      label: "Home"
+    },
+    {
+      page: "transactions",
+      icon: "📋",
+      label: "Transactions"
+    },
+    {
+      page: "buyers",
+      icon: "👤",
+      label: "Buyers"
+    },
+    {
+      page: "accounts",
+      icon: "🏦",
+      label: "Accounts"
+    },
+    {
+      page: "more",
+      icon: "☰",
+      label: "More"
+    }
+  ];
+
+  const currentPage =
+    getCurrentPageKey();
+
+  /*
+   * Rebuild only the five shared navigation
+   * controls. Page content is untouched.
+   */
+
+  nav.innerHTML =
+    items
+      .map(item => {
+
+        const active =
+          currentPage === item.page
+            ? " active"
+            : "";
+
+        return `
+          <button
+            type="button"
+            class="nav-item${active}"
+            data-page="${item.page}"
+            aria-label="${item.label}"
+          >
+            <span class="nav-icon">${item.icon}</span>
+            <span class="nav-label">${item.label}</span>
+          </button>
+        `;
+
+      })
+      .join("");
+
+  /*
+   * Inline hard lock:
+   * page-specific CSS cannot make one item larger.
+   */
+
+  nav.style.display = "flex";
+  nav.style.flexDirection = "row";
+  nav.style.alignItems = "stretch";
+  nav.style.justifyContent = "center";
+  nav.style.gap = "0";
+  nav.style.boxSizing = "border-box";
+
+  nav
+    .querySelectorAll(":scope > button")
+    .forEach(button => {
+
+      button.style.boxSizing = "border-box";
+      button.style.width = "20%";
+      button.style.minWidth = "20%";
+      button.style.maxWidth = "20%";
+      button.style.flex = "0 0 20%";
+
+      button.style.height = "60px";
+      button.style.minHeight = "60px";
+      button.style.maxHeight = "60px";
+
+      button.style.margin = "0";
+      button.style.padding = "4px 2px";
+      button.style.border = "0";
+      button.style.borderRadius = "0";
+
+      button.style.display = "flex";
+      button.style.flexDirection = "column";
+      button.style.alignItems = "center";
+      button.style.justifyContent = "center";
+      button.style.gap = "3px";
+
+      button.style.background = "transparent";
+      button.style.fontFamily =
+        'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+      button.style.fontSize = "10px";
+      button.style.lineHeight = "12px";
+      button.style.fontWeight = "700";
+      button.style.transform = "none";
+      button.style.scale = "1";
+      button.style.appearance = "none";
+      button.style.webkitAppearance = "none";
+      button.style.touchAction = "manipulation";
+
+      const icon =
+        button.querySelector(".nav-icon");
+
+      const label =
+        button.querySelector(".nav-label");
+
+      if (icon) {
+        icon.style.display = "block";
+        icon.style.width = "auto";
+        icon.style.height = "20px";
+        icon.style.margin = "0";
+        icon.style.padding = "0";
+        icon.style.fontSize = "20px";
+        icon.style.lineHeight = "20px";
+        icon.style.transform = "none";
+        icon.style.scale = "1";
+      }
+
+      if (label) {
+        label.style.display = "block";
+        label.style.width = "auto";
+        label.style.height = "12px";
+        label.style.margin = "0";
+        label.style.padding = "0";
+        label.style.fontSize = "10px";
+        label.style.lineHeight = "12px";
+        label.style.fontWeight = "700";
+        label.style.whiteSpace = "nowrap";
+        label.style.transform = "none";
+        label.style.scale = "1";
+      }
+
+    });
+
+}
+
+
+function installCanonicalNavigationHandler() {
+
+  document.addEventListener(
+    "click",
+    function(event) {
+
+      const button =
+        event.target.closest(
+          ".bottom-nav [data-page]"
+        );
+
+      if (!button) {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const page =
+        button.getAttribute("data-page");
+
+      if (page) {
+        goToPage(page);
+      }
+
+    },
+    true
+  );
+
+}
+
+
+/*
+ * Run immediately when possible and again after DOM
+ * construction. A short second pass also handles pages
+ * that build navigation dynamically.
+ */
+
+if (
+  document.readyState === "loading"
+) {
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+      normalizeBottomNavigation();
+      installCanonicalNavigationHandler();
+
+      setTimeout(
+        normalizeBottomNavigation,
+        0
+      );
+
+    },
+    {
+      once: true
+    }
+  );
+
+} else {
+
+  normalizeBottomNavigation();
+  installCanonicalNavigationHandler();
+
+}
+
