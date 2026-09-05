@@ -2,17 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Money To Give - Tamilanda Wallet</title>
 
-  <link
-    rel="stylesheet"
-    href="../css/style.css"
-  >
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/style.css">
+
+  <meta name="theme-color" content="#09070d">
 </head>
 
 <body>
@@ -20,460 +17,275 @@
   <!-- =========================
        HEADER
   ========================== -->
-  <header class="page-header">
 
-    <div class="page-header-left">
+  <header class="app-header">
 
-      <button
-        type="button"
-        class="icon-button"
-        id="backButton"
-        aria-label="Go back"
-      >
-        ←
-      </button>
-
-      <div>
-        <h1>Money To Give</h1>
-        <p>Money you have to pay others</p>
-      </div>
-
+    <div>
+      <h1>Money To Give</h1>
+      <p>Track money you have to pay others</p>
     </div>
 
     <button
-      type="button"
-      class="primary-button"
-      id="addGiveButton"
+      class="icon-button"
+      onclick="goBack()"
     >
-      + Add
+      ←
     </button>
 
   </header>
 
 
   <!-- =========================
-       MAIN CONTENT
+       SUMMARY
   ========================== -->
-  <main class="page-container">
 
+  <section class="summary-grid">
 
-    <!-- =========================
-         SUMMARY
-    ========================== -->
-    <section class="summary-grid">
+    <div class="summary-card">
+      <span>Total People</span>
+      <strong id="totalPeople">0</strong>
+    </div>
 
-      <div class="summary-card">
+    <div class="summary-card">
+      <span>Total To Give</span>
+      <strong id="totalToGive">₹0.00</strong>
+    </div>
 
-        <span class="summary-label">
-          People
-        </span>
+    <div class="summary-card">
+      <span>Pending</span>
+      <strong id="pendingPeople">0</strong>
+    </div>
 
-        <strong id="totalPeople">
-          0
-        </strong>
+    <div class="summary-card">
+      <span>Completed</span>
+      <strong id="completedPeople">0</strong>
+    </div>
 
-      </div>
-
-
-      <div class="summary-card expense-card">
-
-        <span class="summary-label">
-          Total Owed
-        </span>
-
-        <strong id="totalOwed">
-          ₹0
-        </strong>
-
-      </div>
-
-
-      <div class="summary-card income-card">
-
-        <span class="summary-label">
-          Remaining
-        </span>
-
-        <strong id="totalRemaining">
-          ₹0
-        </strong>
-
-      </div>
-
-    </section>
-
-
-    <!-- =========================
-         SEARCH & FILTER
-    ========================== -->
-    <section class="card">
-
-      <div class="section-header">
-
-        <div>
-          <h2>Find</h2>
-          <p>Search and filter payments</p>
-        </div>
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label for="searchInput">
-          Search
-        </label>
-
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Name, reason..."
-          autocomplete="off"
-        >
-
-      </div>
-
-
-      <div class="form-row">
-
-        <div class="form-group">
-
-          <label for="statusFilter">
-            Status
-          </label>
-
-          <select id="statusFilter">
-
-            <option value="all">
-              All
-            </option>
-
-            <option value="pending">
-              Pending
-            </option>
-
-            <option value="overdue">
-              Overdue
-            </option>
-
-            <option value="completed">
-              Completed
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="sortFilter">
-            Sort
-          </label>
-
-          <select id="sortFilter">
-
-            <option value="newest">
-              Newest
-            </option>
-
-            <option value="oldest">
-              Oldest
-            </option>
-
-            <option value="highest">
-              Highest Amount
-            </option>
-
-            <option value="remaining">
-              Highest Remaining
-            </option>
-
-            <option value="due">
-              Due Date
-            </option>
-
-            <option value="name">
-              Name A-Z
-            </option>
-
-          </select>
-
-        </div>
-
-      </div>
-
-
-      <button
-        type="button"
-        class="secondary-button full-width"
-        id="clearFiltersButton"
-      >
-        Clear Filters
-      </button>
-
-    </section>
-
-
-    <!-- =========================
-         MONEY TO GIVE LIST
-    ========================== -->
-    <section class="card">
-
-      <div class="section-header">
-
-        <div>
-
-          <h2>Payment List</h2>
-
-          <p id="giveCount">
-            0 records
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <div
-        id="giveList"
-        class="transaction-list"
-      >
-        <!-- Records appear here -->
-      </div>
-
-    </section>
-
-  </main>
+  </section>
 
 
   <!-- =========================
-       ADD / EDIT MODAL
+       ADD BUTTON
   ========================== -->
-  <div
-    class="modal-overlay"
-    id="giveModal"
+
+  <section class="page-actions">
+
+    <button
+      class="primary-button"
+      onclick="openGiveForm()"
+    >
+      + Add Money To Give
+    </button>
+
+  </section>
+
+
+  <!-- =========================
+       SEARCH / FILTER
+  ========================== -->
+
+  <section class="card">
+
+    <input
+      type="search"
+      id="searchInput"
+      class="input"
+      placeholder="🔎 Search person or reason..."
+      oninput="renderGiveList()"
+    >
+
+    <select
+      id="statusFilter"
+      class="input"
+      onchange="renderGiveList()"
+    >
+
+      <option value="all">All</option>
+      <option value="pending">Pending</option>
+      <option value="completed">Completed</option>
+      <option value="overdue">Overdue</option>
+
+    </select>
+
+  </section>
+
+
+  <!-- =========================
+       FORM
+  ========================== -->
+
+  <section
+    class="card"
+    id="giveFormCard"
     style="display:none;"
   >
 
-    <div class="modal">
+    <div class="section-title">
 
-      <div class="modal-header">
+      <h2 id="formTitle">
+        Add Money To Give
+      </h2>
 
-        <div>
-
-          <h2 id="modalTitle">
-            Add Money To Give
-          </h2>
-
-          <p>
-            Enter the amount you need to pay
-          </p>
-
-        </div>
-
-
-        <button
-          type="button"
-          class="icon-button"
-          id="closeGiveModal"
-        >
-          ×
-        </button>
-
-      </div>
-
-
-      <form id="giveForm">
-
-        <input
-          type="hidden"
-          id="giveId"
-        >
-
-
-        <!-- Person -->
-
-        <div class="form-group">
-
-          <label for="personName">
-            Person Name
-          </label>
-
-          <input
-            type="text"
-            id="personName"
-            placeholder="Enter person's name"
-            required
-          >
-
-        </div>
-
-
-        <!-- Phone -->
-
-        <div class="form-group">
-
-          <label for="personPhone">
-            Phone Number
-          </label>
-
-          <input
-            type="tel"
-            id="personPhone"
-            placeholder="Optional phone number"
-          >
-
-        </div>
-
-
-        <!-- Total -->
-
-        <div class="form-group">
-
-          <label for="owedAmount">
-            Total Amount
-          </label>
-
-          <input
-            type="number"
-            id="owedAmount"
-            min="0.01"
-            step="0.01"
-            placeholder="₹ 10,000"
-            required
-          >
-
-        </div>
-
-
-        <!-- Already Paid -->
-
-        <div class="form-group">
-
-          <label for="alreadyPaid">
-            Already Paid
-          </label>
-
-          <input
-            type="number"
-            id="alreadyPaid"
-            min="0"
-            step="0.01"
-            value="0"
-            placeholder="₹ 0"
-          >
-
-        </div>
-
-
-        <!-- Reason -->
-
-        <div class="form-group">
-
-          <label for="reason">
-            Reason
-          </label>
-
-          <input
-            type="text"
-            id="reason"
-            placeholder="Example: Loan, Friend, Shop..."
-          >
-
-        </div>
-
-
-        <!-- Due Date -->
-
-        <div class="form-group">
-
-          <label for="dueDate">
-            Due Date
-          </label>
-
-          <input
-            type="date"
-            id="dueDate"
-          >
-
-        </div>
-
-
-        <!-- Note -->
-
-        <div class="form-group">
-
-          <label for="giveNote">
-            Note
-          </label>
-
-          <textarea
-            id="giveNote"
-            rows="3"
-            placeholder="Optional note"
-          ></textarea>
-
-        </div>
-
-
-        <div class="modal-actions">
-
-          <button
-            type="button"
-            class="secondary-button"
-            id="cancelGiveButton"
-          >
-            Cancel
-          </button>
-
-
-          <button
-            type="submit"
-            class="primary-button"
-          >
-            Save
-          </button>
-
-        </div>
-
-      </form>
+      <button
+        class="secondary-button"
+        onclick="closeGiveForm()"
+      >
+        Cancel
+      </button>
 
     </div>
 
-  </div>
+
+    <input
+      type="hidden"
+      id="editingGiveId"
+    >
+
+
+    <label>Person Name</label>
+
+    <input
+      type="text"
+      id="personName"
+      class="input"
+      placeholder="Enter person name"
+    >
+
+
+    <label>Phone Number</label>
+
+    <input
+      type="tel"
+      id="personPhone"
+      class="input"
+      placeholder="Optional phone number"
+    >
+
+
+    <label>Total Amount Owed</label>
+
+    <input
+      type="number"
+      id="giveTotalAmount"
+      class="input"
+      placeholder="₹ Total amount"
+      min="0"
+      step="0.01"
+      oninput="updateGivePreview()"
+    >
+
+
+    <label>Already Paid</label>
+
+    <input
+      type="number"
+      id="giveAlreadyPaid"
+      class="input"
+      placeholder="₹ Already paid"
+      min="0"
+      step="0.01"
+      oninput="updateGivePreview()"
+    >
+
+
+    <div
+      class="info-box"
+      id="alreadyPaidInfo"
+      style="display:none;"
+    >
+
+      <span>
+        Remaining Amount
+      </span>
+
+      <strong id="giveRemainingPreview">
+        ₹0.00
+      </strong>
+
+    </div>
+
+
+    <label>Reason</label>
+
+    <input
+      type="text"
+      id="giveReason"
+      class="input"
+      placeholder="Example: Friend loan, shop payment..."
+    >
+
+
+    <label>Due Date</label>
+
+    <input
+      type="date"
+      id="giveDueDate"
+      class="input"
+    >
+
+
+    <label>Notes</label>
+
+    <textarea
+      id="giveNotes"
+      class="input"
+      rows="3"
+      placeholder="Optional notes..."
+    ></textarea>
+
+
+    <button
+      class="primary-button"
+      onclick="saveGiveMoney()"
+    >
+      Save
+    </button>
+
+  </section>
+
+
+  <!-- =========================
+       LIST
+  ========================== -->
+
+  <section>
+
+    <div class="section-heading">
+      <h2>Payment List</h2>
+    </div>
+
+    <div id="giveList"></div>
+
+  </section>
 
 
   <!-- =========================
        PAYMENT MODAL
   ========================== -->
+
   <div
-    class="modal-overlay"
-    id="paymentModal"
+    id="givePaymentModal"
+    class="modal"
     style="display:none;"
   >
 
-    <div class="modal">
+    <div class="modal-content">
 
-      <div class="modal-header">
+      <div class="section-title">
 
         <div>
 
-          <h2>
-            Make Payment
-          </h2>
+          <h2>Record Payment</h2>
 
-          <p id="paymentPersonName">
+          <p id="givePaymentPerson">
             Person
           </p>
 
         </div>
 
-
         <button
-          type="button"
           class="icon-button"
-          id="closePaymentModal"
+          onclick="closeGivePaymentModal()"
         >
           ×
         </button>
@@ -481,195 +293,76 @@
       </div>
 
 
-      <form id="paymentForm">
+      <div class="info-box">
 
-        <input
-          type="hidden"
-          id="paymentGiveId"
-        >
+        <span>
+          Remaining To Pay
+        </span>
 
-
-        <div class="summary-card">
-
-          <span class="summary-label">
-            Remaining
-          </span>
-
-          <strong id="paymentRemaining">
-            ₹0
-          </strong>
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="paymentAmount">
-            Payment Amount
-          </label>
-
-          <input
-            type="number"
-            id="paymentAmount"
-            min="0.01"
-            step="0.01"
-            placeholder="Enter amount"
-            required
-          >
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="paymentDate">
-            Payment Date
-          </label>
-
-          <input
-            type="date"
-            id="paymentDate"
-            required
-          >
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="paymentAccount">
-            Paid From Account
-          </label>
-
-          <select id="paymentAccount">
-
-            <option value="">
-              Select account
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="paymentMethod">
-            Payment Method
-          </label>
-
-          <select id="paymentMethod">
-
-            <option value="cash">
-              Cash
-            </option>
-
-            <option value="bank">
-              Bank
-            </option>
-
-            <option value="upi">
-              UPI
-            </option>
-
-            <option value="wallet">
-              Wallet
-            </option>
-
-            <option value="other">
-              Other
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="paymentNote">
-            Note
-          </label>
-
-          <textarea
-            id="paymentNote"
-            rows="3"
-            placeholder="Optional note"
-          ></textarea>
-
-        </div>
-
-
-        <div class="modal-actions">
-
-          <button
-            type="button"
-            class="secondary-button"
-            id="cancelPaymentButton"
-          >
-            Cancel
-          </button>
-
-
-          <button
-            type="submit"
-            class="primary-button"
-          >
-            Save Payment
-          </button>
-
-        </div>
-
-      </form>
-
-    </div>
-
-  </div>
-
-
-  <!-- =========================
-       PAYMENT HISTORY MODAL
-  ========================== -->
-  <div
-    class="modal-overlay"
-    id="historyModal"
-    style="display:none;"
-  >
-
-    <div class="modal">
-
-      <div class="modal-header">
-
-        <div>
-
-          <h2>
-            Payment History
-          </h2>
-
-          <p id="historyPersonName">
-            Person
-          </p>
-
-        </div>
-
-
-        <button
-          type="button"
-          class="icon-button"
-          id="closeHistoryModal"
-        >
-          ×
-        </button>
+        <strong id="givePaymentRemaining">
+          ₹0.00
+        </strong>
 
       </div>
 
 
-      <div
-        id="paymentHistoryList"
-        class="transaction-list"
+      <input
+        type="hidden"
+        id="givePaymentId"
       >
-        <!-- History -->
-      </div>
+
+
+      <label>Amount Paid</label>
+
+      <input
+        type="number"
+        id="givePaymentAmount"
+        class="input"
+        placeholder="₹ Amount"
+        min="0"
+        step="0.01"
+      >
+
+
+      <label>Paid From</label>
+
+      <select
+        id="givePaymentAccount"
+        class="input"
+      >
+
+        <option value="">
+          Select account
+        </option>
+
+      </select>
+
+
+      <label>Payment Date</label>
+
+      <input
+        type="date"
+        id="givePaymentDate"
+        class="input"
+      >
+
+
+      <label>Note</label>
+
+      <textarea
+        id="givePaymentNote"
+        class="input"
+        rows="3"
+        placeholder="Optional payment note..."
+      ></textarea>
+
+
+      <button
+        class="primary-button"
+        onclick="saveGivePayment()"
+      >
+        + Record Payment
+      </button>
 
     </div>
 
@@ -677,43 +370,135 @@
 
 
   <!-- =========================
-       JAVASCRIPT
+       BOTTOM NAV
   ========================== -->
+
+  <nav class="bottom-nav">
+
+    <button onclick="goToPage('home')">
+      🏠
+      <span>Home</span>
+    </button>
+
+    <button onclick="goToPage('transactions')">
+      📋
+      <span>Transactions</span>
+    </button>
+
+    <button onclick="goToPage('buyers')">
+      👤
+      <span>Buyers</span>
+    </button>
+
+    <button onclick="goToPage('accounts')">
+      🏦
+      <span>Accounts</span>
+    </button>
+
+    <button onclick="goToPage('more')">
+      ☰
+      <span>More</span>
+    </button>
+
+  </nav>
+
+
+  <!-- =========================
+       APP JS
+  ========================== -->
+
   <script src="../js/app.js"></script>
 
 
   <script>
 
-    let walletData = null;
-
-    let filteredRecords = [];
+    let walletData;
+    let editingGiveId = null;
 
 
     /* =========================
        HELPERS
     ========================== */
 
-    function getWalletData() {
+    function money(value) {
 
       if (
         window.TamilandaWallet &&
-        typeof window.TamilandaWallet.getData === "function"
+        typeof window.TamilandaWallet.formatMoney ===
+        "function"
       ) {
 
-        return window.TamilandaWallet.getData();
+        return window.TamilandaWallet.formatMoney(
+          Number(value) || 0
+        );
 
       }
 
-      return null;
+      return "₹" +
+        (Number(value) || 0).toLocaleString(
+          "en-IN",
+          {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }
+        );
 
     }
 
 
-    function saveWalletData() {
+    function today() {
 
       if (
         window.TamilandaWallet &&
-        typeof window.TamilandaWallet.save === "function"
+        typeof window.TamilandaWallet.todayString ===
+        "function"
+      ) {
+
+        return window.TamilandaWallet.todayString();
+
+      }
+
+      const d = new Date();
+
+      return (
+        d.getFullYear() +
+        "-" +
+        String(d.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(d.getDate()).padStart(2, "0")
+      );
+
+    }
+
+
+    function generateId() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.generateId ===
+        "function"
+      ) {
+
+        return window.TamilandaWallet.generateId();
+
+      }
+
+      return (
+        Date.now().toString(36) +
+        Math.random()
+          .toString(36)
+          .substring(2, 8)
+      );
+
+    }
+
+
+    function saveData() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.save ===
+        "function"
       ) {
 
         window.TamilandaWallet.save();
@@ -723,54 +508,12 @@
     }
 
 
-    function formatMoney(amount) {
-
-      if (
-        window.TamilandaWallet &&
-        typeof window.TamilandaWallet.formatMoney === "function"
-      ) {
-
-        return window.TamilandaWallet.formatMoney(
-          amount
-        );
-
-      }
-
-
-      return "₹" +
-        Number(amount || 0)
-          .toLocaleString("en-IN");
-
-    }
-
-
-    function generateId() {
-
-      if (
-        window.TamilandaWallet &&
-        typeof window.TamilandaWallet.generateId === "function"
-      ) {
-
-        return window.TamilandaWallet.generateId();
-
-      }
-
-
-      return (
-        Date.now().toString(36) +
-        Math.random()
-          .toString(36)
-          .substring(2, 9)
-      );
-
-    }
-
-
     function escapeHtml(value) {
 
       if (
         window.TamilandaWallet &&
-        typeof window.TamilandaWallet.escapeHtml === "function"
+        typeof window.TamilandaWallet.escapeHtml ===
+        "function"
       ) {
 
         return window.TamilandaWallet.escapeHtml(
@@ -779,49 +522,12 @@
 
       }
 
-
-      return String(value ?? "")
+      return String(value || "")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
-
-    }
-
-
-    function todayString() {
-
-      if (
-        window.TamilandaWallet &&
-        typeof window.TamilandaWallet.todayString === "function"
-      ) {
-
-        return window.TamilandaWallet.todayString();
-
-      }
-
-
-      const date = new Date();
-
-
-      const year =
-        date.getFullYear();
-
-
-      const month =
-        String(
-          date.getMonth() + 1
-        ).padStart(2, "0");
-
-
-      const day =
-        String(
-          date.getDate()
-        ).padStart(2, "0");
-
-
-      return `${year}-${month}-${day}`;
 
     }
 
@@ -832,160 +538,187 @@
         return "-";
       }
 
+      const parts =
+        dateString.split("-");
 
-      const date =
-        new Date(
-          dateString + "T00:00:00"
-        );
+      if (parts.length !== 3) {
+        return dateString;
+      }
 
+      return (
+        parts[2] +
+        "/" +
+        parts[1] +
+        "/" +
+        parts[0]
+      );
+
+    }
+
+
+    function getRemaining(item) {
 
       if (
-        Number.isNaN(
-          date.getTime()
-        )
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.getGiveRemaining ===
+        "function"
       ) {
 
-        return dateString;
+        return Number(
+          window.TamilandaWallet.getGiveRemaining(
+            item.id
+          )
+        ) || 0;
 
       }
 
 
-      return date.toLocaleDateString(
-        "en-IN",
-        {
-          day: "2-digit",
-          month: "short",
-          year: "numeric"
-        }
-      );
-
-    }
-
-
-    /* =========================
-       PAYMENT DATA
-    ========================== */
-
-    function getPayments(id) {
-
-      return (
-        walletData.givePayments || []
-      )
-      .filter(
-        payment =>
-          payment.giveId === id
-      );
-
-    }
-
-
-    function getPaidAmount(record) {
-
-      const history =
-        getPayments(record.id);
-
-
-      const historyTotal =
-        history.reduce(
-          (sum, payment) =>
-            sum +
-            Number(
-              payment.amount || 0
-            ),
-          0
-        );
-
-
-      return Number(
-        record.alreadyPaid || 0
-      ) + historyTotal;
-
-    }
-
-
-    function getRemaining(record) {
-
-      const total =
-        Number(
-          record.owedAmount || 0
-        );
-
-
-      const paid =
-        getPaidAmount(record);
+      const payments =
+        (walletData.givePayments || [])
+          .filter(
+            payment =>
+              payment.giveId === item.id
+          )
+          .reduce(
+            (sum, payment) =>
+              sum +
+              Number(payment.amount || 0),
+            0
+          );
 
 
       return Math.max(
         0,
-        total - paid
+        Number(
+          item.totalAmount ||
+          item.amount ||
+          0
+        ) -
+        Number(
+          item.alreadyPaid ||
+          0
+        ) -
+        payments
       );
 
     }
 
 
-    function getStatus(record) {
+    function getPaidAmount(item) {
+
+      const total =
+        Number(
+          item.totalAmount ||
+          item.amount ||
+          0
+        );
 
       const remaining =
-        getRemaining(record);
+        getRemaining(item);
+
+      return Math.max(
+        0,
+        total - remaining
+      );
+
+    }
 
 
-      if (remaining <= 0) {
-        return "completed";
-      }
+    function isOverdue(item) {
 
+      const remaining =
+        getRemaining(item);
 
       if (
-        record.dueDate &&
-        record.dueDate < todayString()
+        remaining <= 0 ||
+        !item.dueDate
       ) {
-
-        return "overdue";
-
+        return false;
       }
 
+      return (
+        item.dueDate < today()
+      );
 
-      return "pending";
+    }
+
+
+    function getAccountName(accountId) {
+
+      const account =
+        (walletData.accounts || [])
+          .find(
+            account =>
+              account.id === accountId
+          );
+
+      return account
+        ? account.name
+        : "Unknown Account";
 
     }
 
 
     /* =========================
-       INITIALIZE
+       INIT
     ========================== */
 
-    function initializeGiveMoney() {
+    document.addEventListener(
+      "DOMContentLoaded",
+      function() {
 
-      walletData =
-        getWalletData();
+        walletData =
+          window.TamilandaWallet.getData();
 
+        document.getElementById(
+          "givePaymentDate"
+        ).value = today();
 
-      if (!walletData) {
-        return;
+        renderSummary();
+        renderGiveList();
+        populateAccounts();
+
       }
+    );
 
 
-      if (!walletData.moneyToGive) {
-        walletData.moneyToGive = [];
-      }
+    /* =========================
+       ACCOUNT SELECT
+    ========================== */
+
+    function populateAccounts() {
+
+      const select =
+        document.getElementById(
+          "givePaymentAccount"
+        );
 
 
-      if (!walletData.givePayments) {
-        walletData.givePayments = [];
-      }
+      select.innerHTML =
+        `<option value="">
+          Select account
+        </option>`;
 
 
-      if (!walletData.accounts) {
-        walletData.accounts = [];
-      }
+      (walletData.accounts || [])
+        .forEach(account => {
 
+          const option =
+            document.createElement(
+              "option"
+            );
 
-      renderSummary();
+          option.value =
+            account.id;
 
-      renderAccounts();
+          option.textContent =
+            account.name +
+            " — " +
+            money(account.balance);
 
-      applyFilters();
+          select.appendChild(option);
 
-      setupEvents();
+        });
 
     }
 
@@ -996,24 +729,31 @@
 
     function renderSummary() {
 
-      const records =
+      const list =
         walletData.moneyToGive || [];
 
+      let total =
+        0;
 
-      let owed = 0;
+      let pending =
+        0;
 
-      let remaining = 0;
-
-
-      records.forEach(record => {
-
-        owed += Number(
-          record.owedAmount || 0
-        );
+      let completed =
+        0;
 
 
-        remaining +=
-          getRemaining(record);
+      list.forEach(item => {
+
+        const remaining =
+          getRemaining(item);
+
+        total += remaining;
+
+        if (remaining <= 0) {
+          completed++;
+        } else {
+          pending++;
+        }
 
       });
 
@@ -1021,723 +761,178 @@
       document.getElementById(
         "totalPeople"
       ).textContent =
-        records.length;
+        list.length;
 
 
       document.getElementById(
-        "totalOwed"
+        "totalToGive"
       ).textContent =
-        formatMoney(owed);
+        money(total);
 
 
       document.getElementById(
-        "totalRemaining"
+        "pendingPeople"
       ).textContent =
-        formatMoney(remaining);
+        pending;
+
+
+      document.getElementById(
+        "completedPeople"
+      ).textContent =
+        completed;
 
     }
 
 
     /* =========================
-       ACCOUNT LIST
+       FORM
     ========================== */
 
-    function renderAccounts() {
+    function openGiveForm() {
 
-      const select =
-        document.getElementById(
-          "paymentAccount"
-        );
-
-
-      select.innerHTML = `
-        <option value="">
-          Select account
-        </option>
-      `;
-
-
-      (
-        walletData.accounts || []
-      )
-      .forEach(account => {
-
-        const option =
-          document.createElement(
-            "option"
-          );
-
-
-        option.value =
-          account.id;
-
-
-        option.textContent =
-          `${account.name} — ${
-            formatMoney(
-              account.balance
-            )
-          }`;
-
-
-        select.appendChild(
-          option
-        );
-
-      });
-
-    }
-
-
-    /* =========================
-       FILTERS
-    ========================== */
-
-    function applyFilters() {
-
-      const records =
-        walletData.moneyToGive || [];
-
-
-      const search =
-        document.getElementById(
-          "searchInput"
-        )
-        .value
-        .trim()
-        .toLowerCase();
-
-
-      const status =
-        document.getElementById(
-          "statusFilter"
-        ).value;
-
-
-      const sort =
-        document.getElementById(
-          "sortFilter"
-        ).value;
-
-
-      filteredRecords =
-        records.filter(record => {
-
-          if (search) {
-
-            const searchable =
-              [
-                record.personName,
-                record.name,
-                record.phone,
-                record.reason,
-                record.note
-              ]
-              .filter(Boolean)
-              .join(" ")
-              .toLowerCase();
-
-
-            if (
-              !searchable.includes(
-                search
-              )
-            ) {
-
-              return false;
-
-            }
-
-          }
-
-
-          const recordStatus =
-            getStatus(record);
-
-
-          if (
-            status !== "all" &&
-            recordStatus !== status
-          ) {
-
-            return false;
-
-          }
-
-
-          return true;
-
-        });
-
-
-      filteredRecords.sort(
-        (a, b) => {
-
-          if (sort === "name") {
-
-            return String(
-              a.personName ||
-              a.name ||
-              ""
-            )
-            .localeCompare(
-              String(
-                b.personName ||
-                b.name ||
-                ""
-              )
-            );
-
-          }
-
-
-          if (sort === "highest") {
-
-            return (
-              Number(
-                b.owedAmount || 0
-              ) -
-              Number(
-                a.owedAmount || 0
-              )
-            );
-
-          }
-
-
-          if (sort === "remaining") {
-
-            return (
-              getRemaining(b) -
-              getRemaining(a)
-            );
-
-          }
-
-
-          if (sort === "due") {
-
-            return String(
-              a.dueDate || "9999-12-31"
-            )
-            .localeCompare(
-              String(
-                b.dueDate ||
-                "9999-12-31"
-              )
-            );
-
-          }
-
-
-          const dateA =
-            String(
-              a.createdAt ||
-              a.date ||
-              ""
-            );
-
-
-          const dateB =
-            String(
-              b.createdAt ||
-              b.date ||
-              ""
-            );
-
-
-          if (sort === "oldest") {
-
-            return dateA.localeCompare(
-              dateB
-            );
-
-          }
-
-
-          return dateB.localeCompare(
-            dateA
-          );
-
-        }
-      );
-
-
-      renderRecords();
-
-    }
-
-
-    /* =========================
-       RENDER RECORDS
-    ========================== */
-
-    function renderRecords() {
-
-      const container =
-        document.getElementById(
-          "giveList"
-        );
-
-
-      const count =
-        document.getElementById(
-          "giveCount"
-        );
-
-
-      count.textContent =
-        `${filteredRecords.length} ${
-          filteredRecords.length === 1
-            ? "record"
-            : "records"
-        }`;
-
-
-      if (
-        filteredRecords.length === 0
-      ) {
-
-        container.innerHTML = `
-
-          <div class="empty-state">
-
-            <div class="empty-icon">
-              💸
-            </div>
-
-            <h3>
-              No records found
-            </h3>
-
-            <p>
-              Add money that you need to give.
-            </p>
-
-          </div>
-
-        `;
-
-        return;
-
-      }
-
-
-      container.innerHTML =
-        filteredRecords
-          .map(
-            record =>
-              createRecordHtml(record)
-          )
-          .join("");
-
-    }
-
-
-    function createRecordHtml(record) {
-
-      const total =
-        Number(
-          record.owedAmount || 0
-        );
-
-
-      const paid =
-        getPaidAmount(record);
-
-
-      const remaining =
-        getRemaining(record);
-
-
-      const status =
-        getStatus(record);
-
-
-      const percentage =
-        total > 0
-          ? Math.min(
-              100,
-              (paid / total) * 100
-            )
-          : 0;
-
-
-      const personName =
-        record.personName ||
-        record.name ||
-        "Unnamed";
-
-
-      let statusText =
-        "Pending";
-
-
-      if (
-        status === "completed"
-      ) {
-
-        statusText =
-          "Completed";
-
-      }
-
-
-      if (
-        status === "overdue"
-      ) {
-
-        statusText =
-          "Overdue";
-
-      }
-
-
-      return `
-
-        <div class="transaction-item">
-
-          <div class="transaction-icon expense-icon">
-
-            ↗
-
-          </div>
-
-
-          <div class="transaction-info">
-
-            <div class="transaction-title">
-
-              ${escapeHtml(
-                personName
-              )}
-
-            </div>
-
-
-            <div class="transaction-meta">
-
-              ${
-                record.phone
-                  ? escapeHtml(
-                      record.phone
-                    )
-                  : ""
-              }
-
-              ${
-                record.reason
-                  ? (
-                    record.phone
-                      ? " • "
-                      : ""
-                  ) +
-                    escapeHtml(
-                      record.reason
-                    )
-                  : ""
-              }
-
-            </div>
-
-
-            ${
-              record.dueDate
-                ? `
-                  <div class="transaction-meta">
-                    Due ${escapeHtml(
-                      formatDate(
-                        record.dueDate
-                      )
-                    )}
-                  </div>
-                `
-                : ""
-            }
-
-
-            <div
-              style="
-                margin-top:10px;
-                height:6px;
-                border-radius:10px;
-                background:rgba(255,255,255,0.08);
-                overflow:hidden;
-              "
-            >
-
-              <div
-                style="
-                  width:${percentage}%;
-                  height:100%;
-                  border-radius:10px;
-                  background:#55d98b;
-                "
-              ></div>
-
-            </div>
-
-
-            <div
-              style="
-                margin-top:6px;
-                font-size:12px;
-                opacity:0.7;
-              "
-            >
-
-              ${formatMoney(paid)}
-              paid of
-              ${formatMoney(total)}
-
-            </div>
-
-          </div>
-
-
-          <div class="transaction-right">
-
-            <div
-              class="transaction-amount"
-              style="
-                color:${
-                  status === "completed"
-                    ? "#55d98b"
-                    : status === "overdue"
-                      ? "#ff667a"
-                      : "#ffc857"
-                };
-              "
-            >
-
-              ${
-                status === "completed"
-                  ? "PAID"
-                  : formatMoney(
-                      remaining
-                    )
-              }
-
-            </div>
-
-
-            <div
-              style="
-                font-size:11px;
-                opacity:0.65;
-                margin-top:3px;
-              "
-            >
-
-              ${statusText}
-
-            </div>
-
-
-            <div class="transaction-actions">
-
-              ${
-                status !== "completed"
-                  ? `
-                    <button
-                      type="button"
-                      class="small-button"
-                      onclick="openPaymentModal('${record.id}')"
-                    >
-                      + Payment
-                    </button>
-                  `
-                  : ""
-              }
-
-
-              <button
-                type="button"
-                class="small-button"
-                onclick="openHistoryModal('${record.id}')"
-              >
-                History
-              </button>
-
-
-              <button
-                type="button"
-                class="small-button"
-                onclick="openEditGive('${record.id}')"
-              >
-                Edit
-              </button>
-
-
-              <button
-                type="button"
-                class="small-button danger-button"
-                onclick="deleteGive('${record.id}')"
-              >
-                Delete
-              </button>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      `;
-
-    }
-
-
-    /* =========================
-       ADD RECORD
-    ========================== */
-
-    function openAddGive() {
+      editingGiveId =
+        null;
 
       document.getElementById(
-        "giveForm"
-      ).reset();
-
-
-      document.getElementById(
-        "giveId"
-      ).value = "";
-
-
-      document.getElementById(
-        "alreadyPaid"
-      ).value = "0";
-
-
-      document.getElementById(
-        "modalTitle"
+        "formTitle"
       ).textContent =
         "Add Money To Give";
 
 
       document.getElementById(
-        "giveModal"
+        "giveFormCard"
       ).style.display =
-        "flex";
+        "block";
+
+
+      clearGiveForm();
+
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
 
     }
 
 
-    /* =========================
-       EDIT RECORD
-    ========================== */
-
-    function openEditGive(id) {
-
-      const record =
-        walletData.moneyToGive
-          .find(
-            item =>
-              item.id === id
-          );
-
-
-      if (!record) {
-        return;
-      }
-
+    function closeGiveForm() {
 
       document.getElementById(
-        "giveId"
-      ).value =
-        record.id;
+        "giveFormCard"
+      ).style.display =
+        "none";
+
+      editingGiveId =
+        null;
+
+      clearGiveForm();
+
+    }
+
+
+    function clearGiveForm() {
+
+      document.getElementById(
+        "editingGiveId"
+      ).value = "";
 
 
       document.getElementById(
         "personName"
-      ).value =
-        record.personName ||
-        record.name ||
-        "";
+      ).value = "";
 
 
       document.getElementById(
         "personPhone"
-      ).value =
-        record.phone ||
-        "";
+      ).value = "";
 
 
       document.getElementById(
-        "owedAmount"
-      ).value =
-        record.owedAmount ||
-        "";
+        "giveTotalAmount"
+      ).value = "";
 
 
       document.getElementById(
-        "alreadyPaid"
-      ).value =
-        record.alreadyPaid ||
-        0;
+        "giveAlreadyPaid"
+      ).value = "";
 
 
       document.getElementById(
-        "reason"
-      ).value =
-        record.reason ||
-        "";
+        "giveReason"
+      ).value = "";
 
 
       document.getElementById(
-        "dueDate"
-      ).value =
-        record.dueDate ||
-        "";
+        "giveDueDate"
+      ).value = "";
 
 
       document.getElementById(
-        "giveNote"
-      ).value =
-        record.note ||
-        "";
+        "giveNotes"
+      ).value = "";
 
 
       document.getElementById(
-        "modalTitle"
-      ).textContent =
-        "Edit Money To Give";
-
-
-      document.getElementById(
-        "giveModal"
+        "alreadyPaidInfo"
       ).style.display =
-        "flex";
+        "none";
+
+
+      document.getElementById(
+        "giveRemainingPreview"
+      ).textContent =
+        money(0);
 
     }
 
 
-    function closeGiveModal() {
+    function updateGivePreview() {
+
+      const total =
+        Number(
+          document.getElementById(
+            "giveTotalAmount"
+          ).value
+        ) || 0;
+
+
+      const paid =
+        Number(
+          document.getElementById(
+            "giveAlreadyPaid"
+          ).value
+        ) || 0;
+
+
+      const remaining =
+        Math.max(
+          0,
+          total - paid
+        );
+
 
       document.getElementById(
-        "giveModal"
+        "alreadyPaidInfo"
       ).style.display =
-        "none";
+        "block";
+
+
+      document.getElementById(
+        "giveRemainingPreview"
+      ).textContent =
+        money(remaining);
 
     }
 
 
     /* =========================
-       SAVE RECORD
+       SAVE GIVE MONEY
     ========================== */
 
-    function saveGive(event) {
+    function saveGiveMoney() {
 
-      event.preventDefault();
-
-
-      const id =
-        document.getElementById(
-          "giveId"
-        ).value;
-
-
-      const personName =
+      const name =
         document.getElementById(
           "personName"
         ).value.trim();
@@ -1749,44 +944,44 @@
         ).value.trim();
 
 
-      const owedAmount =
+      const total =
         Number(
           document.getElementById(
-            "owedAmount"
+            "giveTotalAmount"
           ).value
-        );
+        ) || 0;
 
 
       const alreadyPaid =
         Number(
           document.getElementById(
-            "alreadyPaid"
-          ).value || 0
-        );
+            "giveAlreadyPaid"
+          ).value
+        ) || 0;
 
 
       const reason =
         document.getElementById(
-          "reason"
+          "giveReason"
         ).value.trim();
 
 
       const dueDate =
         document.getElementById(
-          "dueDate"
+          "giveDueDate"
         ).value;
 
 
-      const note =
+      const notes =
         document.getElementById(
-          "giveNote"
+          "giveNotes"
         ).value.trim();
 
 
-      if (!personName) {
+      if (!name) {
 
         alert(
-          "Please enter person's name."
+          "Please enter person name."
         );
 
         return;
@@ -1794,13 +989,10 @@
       }
 
 
-      if (
-        !owedAmount ||
-        owedAmount <= 0
-      ) {
+      if (total <= 0) {
 
         alert(
-          "Please enter a valid amount."
+          "Please enter a valid total amount."
         );
 
         return;
@@ -1808,12 +1000,10 @@
       }
 
 
-      if (
-        alreadyPaid < 0
-      ) {
+      if (alreadyPaid < 0) {
 
         alert(
-          "Paid amount cannot be negative."
+          "Already paid cannot be negative."
         );
 
         return;
@@ -1821,9 +1011,7 @@
       }
 
 
-      if (
-        alreadyPaid > owedAmount
-      ) {
+      if (alreadyPaid > total) {
 
         alert(
           "Already paid cannot be greater than total amount."
@@ -1834,41 +1022,25 @@
       }
 
 
-      if (id) {
+      /* =========================
+         EDIT
+      ========================== */
 
-        const record =
+      if (editingGiveId) {
+
+        const item =
           walletData.moneyToGive
             .find(
-              item =>
-                item.id === id
+              x =>
+                x.id ===
+                editingGiveId
             );
 
 
-        if (!record) {
-          return;
-        }
-
-
-        const paymentTotal =
-          getPayments(id)
-            .reduce(
-              (sum, payment) =>
-                sum +
-                Number(
-                  payment.amount || 0
-                ),
-              0
-            );
-
-
-        if (
-          alreadyPaid +
-            paymentTotal >
-          owedAmount
-        ) {
+        if (!item) {
 
           alert(
-            "Paid amount cannot be greater than total amount."
+            "Record not found."
           );
 
           return;
@@ -1876,151 +1048,238 @@
         }
 
 
-        record.personName =
-          personName;
+        const hasPayments =
+          (walletData.givePayments || [])
+            .some(
+              payment =>
+                payment.giveId ===
+                item.id
+            );
 
-        record.phone =
+
+        item.name =
+          name;
+
+        item.personName =
+          name;
+
+        item.phone =
           phone;
 
-        record.owedAmount =
-          owedAmount;
-
-        record.alreadyPaid =
-          alreadyPaid;
-
-        record.reason =
+        item.reason =
           reason;
 
-        record.dueDate =
+        item.dueDate =
           dueDate;
 
-        record.note =
-          note;
+        item.notes =
+          notes;
 
-        record.updatedAt =
-          new Date().toISOString();
 
-      } else {
+        /*
+          If payment history exists,
+          don't alter financial base values.
+        */
 
-        walletData.moneyToGive.push({
+        if (!hasPayments) {
 
-          id:
-            generateId(),
+          item.totalAmount =
+            total;
 
-          personName,
+          item.amount =
+            total;
 
-          phone,
+          item.alreadyPaid =
+            alreadyPaid;
 
-          owedAmount,
+        }
 
-          alreadyPaid,
 
-          reason,
+        saveData();
 
-          dueDate,
+        walletData =
+          window.TamilandaWallet.getData();
 
-          note,
 
-          createdAt:
-            new Date().toISOString(),
+        closeGiveForm();
 
-          updatedAt:
-            new Date().toISOString()
+        renderSummary();
+        renderGiveList();
 
-        });
+        alert(
+          "Money To Give updated successfully. ✅"
+        );
+
+        return;
 
       }
 
 
-      saveWalletData();
+      /* =========================
+         NEW RECORD
+      ========================== */
 
+      const item = {
+
+        id:
+          generateId(),
+
+        name:
+          name,
+
+        personName:
+          name,
+
+        phone:
+          phone,
+
+        totalAmount:
+          total,
+
+        amount:
+          total,
+
+        alreadyPaid:
+          alreadyPaid,
+
+        reason:
+          reason,
+
+        dueDate:
+          dueDate,
+
+        notes:
+          notes,
+
+        createdAt:
+          new Date().toISOString()
+
+      };
+
+
+      if (!walletData.moneyToGive) {
+
+        walletData.moneyToGive =
+          [];
+
+      }
+
+
+      walletData.moneyToGive.push(
+        item
+      );
+
+
+      saveData();
+
+      walletData =
+        window.TamilandaWallet.getData();
+
+
+      closeGiveForm();
 
       renderSummary();
-
-      applyFilters();
-
-
-      closeGiveModal();
-
+      renderGiveList();
 
       alert(
-        id
-          ? "Record updated successfully."
-          : "Money To Give added successfully."
+        "Money To Give added successfully. ✅"
       );
 
     }
 
 
     /* =========================
-       DELETE RECORD
+       EDIT
     ========================== */
 
-    function deleteGive(id) {
+    function editGiveMoney(id) {
 
-      const index =
+      const item =
         walletData.moneyToGive
-          .findIndex(
-            item =>
-              item.id === id
+          .find(
+            x => x.id === id
           );
 
 
-      if (index === -1) {
+      if (!item) {
         return;
       }
 
 
-      const record =
-        walletData.moneyToGive[index];
+      editingGiveId =
+        id;
 
 
-      const name =
-        record.personName ||
-        record.name ||
-        "this record";
+      document.getElementById(
+        "formTitle"
+      ).textContent =
+        "Edit Money To Give";
 
 
-      const confirmed =
-        confirm(
-          `Delete ${name}?\n\nPayment history will also be deleted.`
-        );
+      document.getElementById(
+        "personName"
+      ).value =
+        item.name ||
+        item.personName ||
+        "";
 
 
-      if (!confirmed) {
-        return;
-      }
+      document.getElementById(
+        "personPhone"
+      ).value =
+        item.phone ||
+        "";
 
 
-      walletData.moneyToGive
-        .splice(
-          index,
-          1
-        );
+      document.getElementById(
+        "giveTotalAmount"
+      ).value =
+        item.totalAmount ||
+        item.amount ||
+        "";
 
 
-      walletData.givePayments =
-        (
-          walletData.givePayments ||
-          []
-        )
-        .filter(
-          payment =>
-            payment.giveId !== id
-        );
+      document.getElementById(
+        "giveAlreadyPaid"
+      ).value =
+        item.alreadyPaid ||
+        "";
 
 
-      saveWalletData();
+      document.getElementById(
+        "giveReason"
+      ).value =
+        item.reason ||
+        "";
 
 
-      renderSummary();
+      document.getElementById(
+        "giveDueDate"
+      ).value =
+        item.dueDate ||
+        "";
 
-      applyFilters();
+
+      document.getElementById(
+        "giveNotes"
+      ).value =
+        item.notes ||
+        "";
 
 
-      alert(
-        "Record deleted successfully."
-      );
+      updateGivePreview();
+
+
+      document.getElementById(
+        "giveFormCard"
+      ).style.display =
+        "block";
+
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
 
     }
 
@@ -2029,29 +1288,28 @@
        PAYMENT MODAL
     ========================== */
 
-    function openPaymentModal(id) {
+    function openGivePaymentModal(id) {
 
-      const record =
+      const item =
         walletData.moneyToGive
           .find(
-            item =>
-              item.id === id
+            x => x.id === id
           );
 
 
-      if (!record) {
+      if (!item) {
         return;
       }
 
 
       const remaining =
-        getRemaining(record);
+        getRemaining(item);
 
 
       if (remaining <= 0) {
 
         alert(
-          "This payment is already completed."
+          "This payment is already completed. ✅"
         );
 
         return;
@@ -2060,53 +1318,61 @@
 
 
       document.getElementById(
-        "paymentForm"
-      ).reset();
-
-
-      document.getElementById(
-        "paymentGiveId"
+        "givePaymentId"
       ).value =
         id;
 
 
       document.getElementById(
-        "paymentPersonName"
+        "givePaymentPerson"
       ).textContent =
-        record.personName ||
-        record.name ||
+        item.name ||
+        item.personName ||
         "Person";
 
 
       document.getElementById(
-        "paymentRemaining"
+        "givePaymentRemaining"
       ).textContent =
-        formatMoney(
-          remaining
-        );
+        money(remaining);
 
 
       document.getElementById(
-        "paymentDate"
+        "givePaymentAmount"
       ).value =
-        todayString();
-
-
-      renderAccounts();
+        "";
 
 
       document.getElementById(
-        "paymentModal"
+        "givePaymentAccount"
+      ).value =
+        "";
+
+
+      document.getElementById(
+        "givePaymentDate"
+      ).value =
+        today();
+
+
+      document.getElementById(
+        "givePaymentNote"
+      ).value =
+        "";
+
+
+      document.getElementById(
+        "givePaymentModal"
       ).style.display =
         "flex";
 
     }
 
 
-    function closePaymentModal() {
+    function closeGivePaymentModal() {
 
       document.getElementById(
-        "paymentModal"
+        "givePaymentModal"
       ).style.display =
         "none";
 
@@ -2117,70 +1383,60 @@
        SAVE PAYMENT
     ========================== */
 
-    function savePayment(event) {
-
-      event.preventDefault();
-
+    function saveGivePayment() {
 
       const giveId =
         document.getElementById(
-          "paymentGiveId"
+          "givePaymentId"
         ).value;
-
-
-      const record =
-        walletData.moneyToGive
-          .find(
-            item =>
-              item.id === giveId
-          );
-
-
-      if (!record) {
-        return;
-      }
 
 
       const amount =
         Number(
           document.getElementById(
-            "paymentAmount"
+            "givePaymentAmount"
           ).value
-        );
-
-
-      const date =
-        document.getElementById(
-          "paymentDate"
-        ).value;
+        ) || 0;
 
 
       const accountId =
         document.getElementById(
-          "paymentAccount"
+          "givePaymentAccount"
         ).value;
 
 
-      const method =
+      const date =
         document.getElementById(
-          "paymentMethod"
-        ).value;
+          "givePaymentDate"
+        ).value ||
+        today();
 
 
       const note =
         document.getElementById(
-          "paymentNote"
+          "givePaymentNote"
         ).value.trim();
 
 
-      const remaining =
-        getRemaining(record);
+      const item =
+        walletData.moneyToGive
+          .find(
+            x => x.id === giveId
+          );
 
 
-      if (
-        !amount ||
-        amount <= 0
-      ) {
+      if (!item) {
+
+        alert(
+          "Record not found."
+        );
+
+        return;
+
+      }
+
+
+      if (amount <= 0) {
 
         alert(
           "Please enter a valid payment amount."
@@ -2191,12 +1447,16 @@
       }
 
 
-      if (
-        amount > remaining
-      ) {
+      const remaining =
+        getRemaining(item);
+
+
+      if (amount > remaining) {
 
         alert(
-          `Payment cannot be greater than remaining amount (${formatMoney(remaining)}).`
+          "Maximum payment allowed is " +
+          money(remaining) +
+          "."
         );
 
         return;
@@ -2218,15 +1478,15 @@
       const account =
         walletData.accounts
           .find(
-            item =>
-              item.id === accountId
+            a =>
+              a.id === accountId
           );
 
 
       if (!account) {
 
         alert(
-          "Selected account was not found."
+          "Selected account not found."
         );
 
         return;
@@ -2234,75 +1494,70 @@
       }
 
 
+      /*
+        Payment reduces the selected
+        account balance.
+      */
+
       if (
-        Number(account.balance || 0)
-        < amount
+        Number(account.balance || 0) <
+        amount
       ) {
 
         alert(
-          `Not enough balance in ${account.name}.`
+          "Insufficient balance in selected account."
         );
 
         return;
 
       }
 
-
-      /*
-        Create payment history
-      */
-
-      const payment = {
-
-        id:
-          generateId(),
-
-        giveId,
-
-        amount,
-
-        date,
-
-        accountId,
-
-        method,
-
-        note,
-
-        createdAt:
-          new Date().toISOString()
-
-      };
-
-
-      if (!walletData.givePayments) {
-        walletData.givePayments = [];
-      }
-
-
-      walletData.givePayments.push(
-        payment
-      );
-
-
-      /*
-        Reduce account balance
-      */
 
       account.balance =
         Number(
           account.balance || 0
-        ) - amount;
+        ) -
+        amount;
+
+
+      if (!walletData.givePayments) {
+
+        walletData.givePayments =
+          [];
+
+      }
+
+
+      walletData.givePayments.push({
+
+        id:
+          generateId(),
+
+        giveId:
+          giveId,
+
+        amount:
+          amount,
+
+        accountId:
+          accountId,
+
+        date:
+          date,
+
+        note:
+          note,
+
+        createdAt:
+          new Date().toISOString()
+
+      });
 
 
       /*
-        Create expense transaction
+        This is an expense from the wallet
+        because money is actually leaving.
       */
-
-      if (!walletData.transactions) {
-        walletData.transactions = [];
-      }
-
 
       walletData.transactions.push({
 
@@ -2312,37 +1567,29 @@
         type:
           "expense",
 
-        title:
-          `Payment - ${
-            record.personName ||
-            record.name
-          }`,
-
         category:
           "Money To Give",
 
-        amount,
+        amount:
+          amount,
 
-        accountId,
+        accountId:
+          accountId,
 
-        date,
+        date:
+          date,
 
-        time:
-          new Date()
-            .toTimeString()
-            .slice(0, 5),
+        description:
+          `Payment To ${item.name || item.personName}`,
 
         note:
-          note ||
-          `Payment to ${
-            record.personName ||
-            record.name
-          }`,
+          note,
 
-        giveId,
+        source:
+          "money_to_give_payment",
 
-        givePaymentId:
-          payment.id,
+        giveId:
+          giveId,
 
         createdAt:
           new Date().toISOString()
@@ -2350,489 +1597,1321 @@
       });
 
 
-      saveWalletData();
+      saveData();
 
-
-      renderSummary();
-
-      renderAccounts();
-
-      applyFilters();
-
-
-      closePaymentModal();
+      walletData =
+        window.TamilandaWallet.getData();
 
 
       const newRemaining =
-        getRemaining(record);
+        getRemaining(item);
 
+
+      closeGivePaymentModal();
+
+      populateAccounts();
+
+      renderSummary();
+      renderGiveList();
+
+
+      if (newRemaining <= 0) {
+
+        alert(
+          "Payment completed successfully! 🎉"
+        );
+
+      } else {
+
+        alert(
+          "Payment recorded. Remaining: " +
+          money(newRemaining)
+        );
+
+      }
+
+    }
+
+
+    /* =========================
+       PAYMENT HISTORY
+    ========================== */
+
+    function getGivePayments(id) {
+
+      return (
+        walletData.givePayments || []
+      )
+        .filter(
+          payment =>
+            payment.giveId === id
+        )
+        .sort(
+          (a, b) =>
+            new Date(
+              b.date ||
+              b.createdAt
+            ) -
+            new Date(
+              a.date ||
+              a.createdAt
+            )
+        );
+
+    }
+
+
+    function toggleHistory(id) {
+
+      const element =
+        document.getElementById(
+          "give-history-" + id
+        );
+
+
+      if (!element) {
+        return;
+      }
+
+
+      element.style.display =
+        element.style.display === "none"
+          ? "block"
+          : "none";
+
+    }
+
+
+    /* =========================
+       DELETE
+    ========================== */
+
+    function deleteGiveMoney(id) {
+
+      const item =
+        walletData.moneyToGive
+          .find(
+            x => x.id === id
+          );
+
+
+      if (!item) {
+        return;
+      }
+
+
+      const payments =
+        getGivePayments(id);
+
+
+      if (payments.length > 0) {
+
+        alert(
+          "This record has payment history. Please keep it for accounting history. You can edit the record instead."
+        );
+
+        return;
+
+      }
+
+
+      const remaining =
+        getRemaining(item);
+
+
+      const person =
+        item.name ||
+        item.personName ||
+        "this record";
+
+
+      let message =
+        `Move ${person} to Trash?`;
+
+
+      if (remaining > 0) {
+
+        message +=
+          `\n\nPending amount: ${money(remaining)}`;
+
+      }
+
+
+      if (!confirm(message)) {
+        return;
+      }
+
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.moveToTrash ===
+        "function"
+      ) {
+
+        window.TamilandaWallet.moveToTrash(
+          "moneyToGive",
+          item
+        );
+
+      } else {
+
+        walletData.trash =
+          walletData.trash ||
+          [];
+
+        walletData.trash.push({
+
+          id:
+            generateId(),
+
+          type:
+            "moneyToGive",
+
+          originalCollection:
+            "moneyToGive",
+
+          data:
+            item,
+
+          deletedAt:
+            new Date().toISOString()
+
+        });
+
+      }
+
+
+      const index =
+        walletData.moneyToGive
+          .findIndex(
+            x => x.id === id
+          );
+
+
+      if (index !== -1) {
+
+        walletData.moneyToGive
+          .splice(
+            index,
+            1
+          );
+
+      }
+
+
+      saveData();
+
+      walletData =
+        window.TamilandaWallet.getData();
+
+
+      renderSummary();
+      renderGiveList();
 
       alert(
-        newRemaining <= 0
-          ? "Payment completed! 🎉"
-          : `Payment saved. Remaining: ${formatMoney(newRemaining)}`
+        "Record moved to Trash. 🗑️"
       );
 
     }
 
 
     /* =========================
-       HISTORY
+       RENDER
     ========================== */
 
-    function openHistoryModal(id) {
-
-      const record =
-        walletData.moneyToGive
-          .find(
-            item =>
-              item.id === id
-          );
-
-
-      if (!record) {
-        return;
-      }
-
-
-      document.getElementById(
-        "historyPersonName"
-      ).textContent =
-        record.personName ||
-        record.name ||
-        "Person";
-
-
-      const history =
-        getPayments(id);
-
+    function renderGiveList() {
 
       const container =
         document.getElementById(
-          "paymentHistoryList"
+          "giveList"
         );
 
 
-      if (
-        history.length === 0
-      ) {
+      const search =
+        document.getElementById(
+          "searchInput"
+        )
+        .value
+        .trim()
+        .toLowerCase();
+
+
+      const filter =
+        document.getElementById(
+          "statusFilter"
+        ).value;
+
+
+      let list =
+        [
+          ...(walletData.moneyToGive || [])
+        ];
+
+
+      list =
+        list.filter(item => {
+
+          const remaining =
+            getRemaining(item);
+
+          const completed =
+            remaining <= 0;
+
+          const overdue =
+            isOverdue(item);
+
+
+          if (
+            filter === "completed" &&
+            !completed
+          ) {
+            return false;
+          }
+
+
+          if (
+            filter === "pending" &&
+            (
+              completed ||
+              overdue
+            )
+          ) {
+            return false;
+          }
+
+
+          if (
+            filter === "overdue" &&
+            !overdue
+          ) {
+            return false;
+          }
+
+
+          if (!search) {
+            return true;
+          }
+
+
+          const searchable =
+            [
+              item.name,
+              item.personName,
+              item.phone,
+              item.reason,
+              item.notes
+            ]
+            .join(" ")
+            .toLowerCase();
+
+
+          return searchable.includes(
+            search
+          );
+
+        });
+
+
+      /*
+        Pending first,
+        overdue first,
+        completed last.
+      */
+
+      list.sort(
+        (a, b) => {
+
+          const aRemaining =
+            getRemaining(a);
+
+          const bRemaining =
+            getRemaining(b);
+
+
+          if (
+            aRemaining <= 0 &&
+            bRemaining > 0
+          ) {
+            return 1;
+          }
+
+
+          if (
+            aRemaining > 0 &&
+            bRemaining <= 0
+          ) {
+            return -1;
+          }
+
+
+          if (
+            a.dueDate &&
+            b.dueDate
+          ) {
+
+            return (
+              new Date(a.dueDate) -
+              new Date(b.dueDate)
+            );
+
+          }
+
+
+          return (
+            new Date(
+              b.createdAt || 0
+            ) -
+            new Date(
+              a.createdAt || 0
+            )
+          );
+
+        }
+      );
+
+
+      if (list.length === 0) {
 
         container.innerHTML = `
 
           <div class="empty-state">
 
             <div class="empty-icon">
-              💳
+              💸
             </div>
 
             <h3>
-              No payments yet
+              No Records Found
             </h3>
 
             <p>
-              Already paid:
-              ${formatMoney(
-                record.alreadyPaid || 0
-              )}
+              Add money that you need to pay later.
             </p>
 
+            <button
+              class="primary-button"
+              onclick="openGiveForm()"
+            >
+              + Add Money To Give
+            </button>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      container.innerHTML =
+        list
+          .map(
+            renderGiveCard
+          )
+          .join("");
+
+    }
+
+
+    /* =========================
+       CARD
+    ========================== */
+
+    function renderGiveCard(item) {
+
+      const total =
+        Number(
+          item.totalAmount ||
+          item.amount ||
+          0
+        );
+
+
+      const remaining =
+        getRemaining(item);
+
+
+      const paid =
+        getPaidAmount(item);
+
+
+      const progress =
+        total > 0
+          ? Math.min(
+              100,
+              Math.round(
+                (paid / total) * 100
+              )
+            )
+          : 0;
+
+
+      const completed =
+        remaining <= 0;
+
+
+      const overdue =
+        isOverdue(item);
+
+
+      let statusClass =
+        "status-warning";
+
+
+      let statusText =
+        "PENDING";
+
+
+      if (completed) {
+
+        statusClass =
+          "status-success";
+
+        statusText =
+          "PAID";
+
+      } else if (overdue) {
+
+        statusClass =
+          "status-danger";
+
+        statusText =
+          "OVERDUE";
+
+      }
+
+
+      const payments =
+        getGivePayments(item.id);
+
+
+      let historyHtml = "";
+
+
+      if (payments.length === 0) {
+
+        historyHtml = `
+
+          <div class="muted-text">
+            No payment history yet.
           </div>
 
         `;
 
       } else {
 
-        const sorted =
-          [...history].sort(
-            (a, b) =>
-              String(
-                b.date || ""
-              )
-              .localeCompare(
-                String(
-                  a.date || ""
-                )
-              )
-          );
-
-
-        container.innerHTML =
-          sorted
+        historyHtml =
+          payments
             .map(
-              payment =>
-                createHistoryHtml(
-                  payment
-                )
+              payment => `
+
+                <div class="payment-history-item">
+
+                  <div>
+
+                    <strong>
+                      ${money(
+                        payment.amount
+                      )}
+                    </strong>
+
+                    <small>
+                      ${formatDate(
+                        payment.date
+                      )}
+                    </small>
+
+                  </div>
+
+                  <div>
+
+                    <small>
+                      Paid from:
+                      ${escapeHtml(
+                        getAccountName(
+                          payment.accountId
+                        )
+                      )}
+                    </small>
+
+                    ${
+                      payment.note
+                        ? `
+                          <small>
+                            ${escapeHtml(
+                              payment.note
+                            )}
+                          </small>
+                        `
+                        : ""
+                    }
+
+                  </div>
+
+                </div>
+
+              `
             )
             .join("");
 
       }
 
 
-      document.getElementById(
-        "historyModal"
-      ).style.display =
-        "flex";
-
-    }
-
-
-    function createHistoryHtml(
-      payment
-    ) {
-
-      const account =
-        walletData.accounts
-          .find(
-            item =>
-              item.id ===
-              payment.accountId
-          );
-
-
       return `
 
-        <div class="transaction-item">
+        <article class="card give-card">
 
-          <div class="transaction-icon expense-icon">
+          <!-- HEADER -->
 
-            ↙
+          <div class="give-header">
 
-          </div>
+            <div>
 
+              <div class="person-title">
 
-          <div class="transaction-info">
+                <h3>
+                  ${escapeHtml(
+                    item.name ||
+                    item.personName ||
+                    "Unnamed"
+                  )}
+                </h3>
 
-            <div class="transaction-title">
+                <span class="${statusClass}">
+                  ${statusText}
+                </span>
 
-              Payment Made
+              </div>
 
-            </div>
-
-
-            <div class="transaction-meta">
-
-              ${escapeHtml(
-                formatDate(
-                  payment.date
-                )
-              )}
-
-              •
-              ${escapeHtml(
-                payment.method ||
-                "Other"
-              )}
 
               ${
-                account
-                  ? " • " +
-                    escapeHtml(
-                      account.name
-                    )
+                item.phone
+                  ? `
+                    <p>
+                      📞
+                      ${escapeHtml(
+                        item.phone
+                      )}
+                    </p>
+                  `
+                  : ""
+              }
+
+
+              ${
+                item.reason
+                  ? `
+                    <p>
+                      📝
+                      ${escapeHtml(
+                        item.reason
+                      )}
+                    </p>
+                  `
                   : ""
               }
 
             </div>
 
 
-            ${
-              payment.note
-                ? `
-                  <div class="transaction-note">
-                    ${escapeHtml(
-                      payment.note
-                    )}
-                  </div>
-                `
-                : ""
-            }
+            <div class="give-menu">
 
-          </div>
+              <button
+                class="icon-button"
+                onclick="editGiveMoney('${item.id}')"
+                title="Edit"
+              >
+                ✏️
+              </button>
 
-
-          <div class="transaction-right">
-
-            <div
-              class="transaction-amount expense-amount"
-            >
-
-              -${formatMoney(
-                payment.amount
-              )}
+              <button
+                class="icon-button"
+                onclick="deleteGiveMoney('${item.id}')"
+                title="Delete"
+              >
+                🗑️
+              </button>
 
             </div>
 
           </div>
 
-        </div>
+
+          <!-- PROGRESS -->
+
+          <div class="progress-section">
+
+            <div class="progress-label">
+
+              <span>
+                Payment Progress
+              </span>
+
+              <strong>
+                ${progress}%
+              </strong>
+
+            </div>
+
+
+            <div class="progress-bar">
+
+              <div
+                class="progress-fill"
+                style="width:${progress}%"
+              ></div>
+
+            </div>
+
+          </div>
+
+
+          <!-- MONEY -->
+
+          <div class="money-grid">
+
+            <div>
+
+              <span>
+                Total
+              </span>
+
+              <strong>
+                ${money(total)}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                Paid
+              </span>
+
+              <strong>
+                ${money(paid)}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                Remaining
+              </span>
+
+              <strong>
+                ${money(remaining)}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <!-- DUE DATE -->
+
+          ${
+            item.dueDate
+              ? `
+                <div class="info-box">
+
+                  <span>
+                    Due Date
+                  </span>
+
+                  <strong>
+                    ${formatDate(
+                      item.dueDate
+                    )}
+                  </strong>
+
+                </div>
+              `
+              : ""
+          }
+
+
+          ${
+            item.notes
+              ? `
+                <div class="note-box">
+                  🗒️
+                  ${escapeHtml(
+                    item.notes
+                  )}
+                </div>
+              `
+              : ""
+          }
+
+
+          <!-- ACTIONS -->
+
+          <div class="give-actions">
+
+            ${
+              !completed
+                ? `
+                  <button
+                    class="primary-button"
+                    onclick="openGivePaymentModal('${item.id}')"
+                  >
+                    💸 Pay Amount
+                  </button>
+                `
+                : `
+                  <button
+                    class="secondary-button"
+                    disabled
+                  >
+                    ✓ Payment Completed
+                  </button>
+                `
+            }
+
+
+            <button
+              class="secondary-button"
+              onclick="toggleHistory('${item.id}')"
+            >
+              🧾 History (${payments.length})
+            </button>
+
+          </div>
+
+
+          <!-- HISTORY -->
+
+          <div
+            id="give-history-${item.id}"
+            class="payment-history"
+            style="display:none;"
+          >
+
+            <h4>
+              Payment History
+            </h4>
+
+            ${historyHtml}
+
+          </div>
+
+        </article>
 
       `;
 
     }
 
 
-    function closeHistoryModal() {
+    /* =========================
+       NAVIGATION
+    ========================== */
 
-      document.getElementById(
-        "historyModal"
-      ).style.display =
-        "none";
+    function goBack() {
+
+      if (
+        window.history.length > 1
+      ) {
+
+        window.history.back();
+
+      } else {
+
+        goToPage("home");
+
+      }
+
+    }
+
+
+    function goToPage(page) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.goToPage ===
+        "function"
+      ) {
+
+        window.TamilandaWallet.goToPage(
+          page
+        );
+
+        return;
+
+      }
+
+
+      const pages = {
+
+        home:
+          "../index.html",
+
+        transactions:
+          "transactions.html",
+
+        buyers:
+          "buyers.html",
+
+        accounts:
+          "accounts.html",
+
+        more:
+          "more.html"
+
+      };
+
+
+      if (pages[page]) {
+
+        window.location.href =
+          pages[page];
+
+      }
 
     }
 
 
     /* =========================
-       CLEAR FILTERS
-    ========================== */
-
-    function clearFilters() {
-
-      document.getElementById(
-        "searchInput"
-      ).value =
-        "";
-
-
-      document.getElementById(
-        "statusFilter"
-      ).value =
-        "all";
-
-
-      document.getElementById(
-        "sortFilter"
-      ).value =
-        "newest";
-
-
-      applyFilters();
-
-    }
-
-
-    /* =========================
-       EVENTS
-    ========================== */
-
-    function setupEvents() {
-
-      document.getElementById(
-        "addGiveButton"
-      )
-      .addEventListener(
-        "click",
-        openAddGive
-      );
-
-
-      document.getElementById(
-        "backButton"
-      )
-      .addEventListener(
-        "click",
-        () => {
-
-          window.location.href =
-            "../index.html";
-
-        }
-      );
-
-
-      document.getElementById(
-        "searchInput"
-      )
-      .addEventListener(
-        "input",
-        applyFilters
-      );
-
-
-      document.getElementById(
-        "statusFilter"
-      )
-      .addEventListener(
-        "change",
-        applyFilters
-      );
-
-
-      document.getElementById(
-        "sortFilter"
-      )
-      .addEventListener(
-        "change",
-        applyFilters
-      );
-
-
-      document.getElementById(
-        "clearFiltersButton"
-      )
-      .addEventListener(
-        "click",
-        clearFilters
-      );
-
-
-      document.getElementById(
-        "giveForm"
-      )
-      .addEventListener(
-        "submit",
-        saveGive
-      );
-
-
-      document.getElementById(
-        "paymentForm"
-      )
-      .addEventListener(
-        "submit",
-        savePayment
-      );
-
-
-      document.getElementById(
-        "closeGiveModal"
-      )
-      .addEventListener(
-        "click",
-        closeGiveModal
-      );
-
-
-      document.getElementById(
-        "cancelGiveButton"
-      )
-      .addEventListener(
-        "click",
-        closeGiveModal
-      );
-
-
-      document.getElementById(
-        "closePaymentModal"
-      )
-      .addEventListener(
-        "click",
-        closePaymentModal
-      );
-
-
-      document.getElementById(
-        "cancelPaymentButton"
-      )
-      .addEventListener(
-        "click",
-        closePaymentModal
-      );
-
-
-      document.getElementById(
-        "closeHistoryModal"
-      )
-      .addEventListener(
-        "click",
-        closeHistoryModal
-      );
-
-
-      /* Close by clicking outside */
-
-      document.getElementById(
-        "giveModal"
-      )
-      .addEventListener(
-        "click",
-        event => {
-
-          if (
-            event.target.id ===
-            "giveModal"
-          ) {
-
-            closeGiveModal();
-
-          }
-
-        }
-      );
-
-
-      document.getElementById(
-        "paymentModal"
-      )
-      .addEventListener(
-        "click",
-        event => {
-
-          if (
-            event.target.id ===
-            "paymentModal"
-          ) {
-
-            closePaymentModal();
-
-          }
-
-        }
-      );
-
-
-      document.getElementById(
-        "historyModal"
-      )
-      .addEventListener(
-        "click",
-        event => {
-
-          if (
-            event.target.id ===
-            "historyModal"
-          ) {
-
-            closeHistoryModal();
-
-          }
-
-        }
-      );
-
-    }
-
-
-    /* =========================
-       GLOBAL FUNCTIONS
-    ========================== */
-
-    window.openEditGive =
-      openEditGive;
-
-
-    window.deleteGive =
-      deleteGive;
-
-
-    window.openPaymentModal =
-      openPaymentModal;
-
-
-    window.openHistoryModal =
-      openHistoryModal;
-
-
-    /* =========================
-       START
+       OUTSIDE MODAL CLICK
     ========================== */
 
     document.addEventListener(
-      "DOMContentLoaded",
-      initializeGiveMoney
+      "click",
+      function(event) {
+
+        const modal =
+          document.getElementById(
+            "givePaymentModal"
+          );
+
+
+        if (
+          event.target === modal
+        ) {
+
+          closeGivePaymentModal();
+
+        }
+
+      }
     );
 
   </script>
+
+
+  <!-- =========================
+       PAGE STYLES
+  ========================== -->
+
+  <style>
+
+    .give-card {
+      margin-bottom: 16px;
+    }
+
+
+    .give-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+
+    .person-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+
+    .person-title h3 {
+      margin: 0;
+    }
+
+
+    .give-header p {
+      margin: 5px 0 0;
+      opacity: 0.72;
+      font-size: 13px;
+    }
+
+
+    .give-menu {
+      display: flex;
+      gap: 4px;
+    }
+
+
+    .money-grid {
+      display: grid;
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 10px;
+
+      margin: 16px 0;
+    }
+
+
+    .money-grid > div {
+      padding: 12px;
+
+      border-radius: 12px;
+
+      background:
+        rgba(255,255,255,0.04);
+    }
+
+
+    .money-grid span {
+      display: block;
+
+      font-size: 12px;
+
+      opacity: 0.7;
+
+      margin-bottom: 5px;
+    }
+
+
+    .money-grid strong {
+      font-size: 15px;
+    }
+
+
+    .status-success,
+    .status-warning,
+    .status-danger {
+
+      display: inline-block;
+
+      font-size: 10px;
+
+      font-weight: 700;
+
+      padding: 4px 8px;
+
+      border-radius: 20px;
+
+    }
+
+
+    .status-success {
+      background:
+        rgba(50,205,120,0.15);
+    }
+
+
+    .status-warning {
+      background:
+        rgba(255,180,50,0.15);
+    }
+
+
+    .status-danger {
+      background:
+        rgba(255,70,70,0.15);
+    }
+
+
+    .progress-section {
+      margin-top: 16px;
+    }
+
+
+    .progress-label {
+
+      display: flex;
+
+      justify-content:
+        space-between;
+
+      margin-bottom: 7px;
+
+      font-size: 13px;
+
+    }
+
+
+    .progress-bar {
+
+      width: 100%;
+
+      height: 7px;
+
+      border-radius: 20px;
+
+      background:
+        rgba(255,255,255,0.08);
+
+      overflow: hidden;
+
+    }
+
+
+    .progress-fill {
+
+      height: 100%;
+
+      border-radius: 20px;
+
+      background:
+        currentColor;
+
+    }
+
+
+    .give-actions {
+
+      display: flex;
+
+      gap: 8px;
+
+      flex-wrap: wrap;
+
+      margin-top: 12px;
+
+    }
+
+
+    .give-actions button {
+
+      flex: 1;
+
+      min-width: 150px;
+
+    }
+
+
+    .info-box {
+
+      padding: 12px;
+
+      margin: 12px 0;
+
+      border-radius: 12px;
+
+      background:
+        rgba(255,255,255,0.04);
+
+    }
+
+
+    .info-box span {
+
+      display: block;
+
+      font-size: 12px;
+
+      opacity: 0.7;
+
+      margin-bottom: 4px;
+
+    }
+
+
+    .note-box {
+
+      padding: 10px 12px;
+
+      margin-top: 10px;
+
+      border-radius: 10px;
+
+      background:
+        rgba(255,255,255,0.035);
+
+      font-size: 13px;
+
+    }
+
+
+    .payment-history {
+
+      margin-top: 15px;
+
+      padding-top: 15px;
+
+      border-top:
+        1px solid
+        rgba(255,255,255,0.08);
+
+    }
+
+
+    .payment-history h4 {
+      margin-top: 0;
+    }
+
+
+    .payment-history-item {
+
+      display: flex;
+
+      justify-content:
+        space-between;
+
+      gap: 10px;
+
+      padding: 11px 0;
+
+      border-bottom:
+        1px solid
+        rgba(255,255,255,0.06);
+
+    }
+
+
+    .payment-history-item:last-child {
+      border-bottom: none;
+    }
+
+
+    .payment-history-item small {
+
+      display: block;
+
+      opacity: 0.7;
+
+      margin-top: 3px;
+
+    }
+
+
+    .muted-text {
+
+      opacity: 0.65;
+
+      font-size: 13px;
+
+    }
+
+
+    .empty-state {
+
+      text-align: center;
+
+      padding: 45px 20px;
+
+      opacity: 0.8;
+
+    }
+
+
+    .empty-icon {
+
+      font-size: 45px;
+
+      margin-bottom: 10px;
+
+    }
+
+
+    .modal {
+
+      position: fixed;
+
+      inset: 0;
+
+      z-index: 9999;
+
+      background:
+        rgba(0,0,0,0.75);
+
+      align-items: center;
+
+      justify-content: center;
+
+      padding: 18px;
+
+    }
+
+
+    .modal-content {
+
+      width: 100%;
+
+      max-width: 500px;
+
+      max-height: 90vh;
+
+      overflow-y: auto;
+
+      border-radius: 18px;
+
+      padding: 20px;
+
+      background: #111018;
+
+      box-shadow:
+        0 20px 60px
+        rgba(0,0,0,0.45);
+
+    }
+
+
+    label {
+
+      display: block;
+
+      margin-top: 12px;
+
+      margin-bottom: 6px;
+
+      font-size: 13px;
+
+      opacity: 0.85;
+
+    }
+
+
+    .section-title {
+
+      display: flex;
+
+      justify-content:
+        space-between;
+
+      align-items: center;
+
+      gap: 10px;
+
+      margin-bottom: 15px;
+
+    }
+
+
+    .section-title h2 {
+      margin: 0;
+    }
+
+
+    @media (max-width: 480px) {
+
+      .money-grid {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
+
+      .give-actions {
+        flex-direction: column;
+      }
+
+
+      .give-actions button {
+        width: 100%;
+      }
+
+    }
+
+  </style>
 
 </body>
 </html>
