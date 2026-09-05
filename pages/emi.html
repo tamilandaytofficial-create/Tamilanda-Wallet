@@ -2,17 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>My EMI - Tamilanda Wallet</title>
 
-  <link
-    rel="stylesheet"
-    href="../css/style.css"
-  >
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/style.css">
+
+  <meta name="theme-color" content="#09070d">
 </head>
 
 <body>
@@ -20,535 +17,299 @@
   <!-- =========================
        HEADER
   ========================== -->
-  <header class="page-header">
 
-    <div class="page-header-left">
+  <header class="app-header">
 
-      <button
-        type="button"
-        class="icon-button"
-        id="backButton"
-        aria-label="Go back"
-      >
-        ←
-      </button>
-
-      <div>
-        <h1>My EMI</h1>
-        <p>Your loans, cards & monthly EMIs</p>
-      </div>
-
+    <div>
+      <h1>My EMI</h1>
+      <p>Track your loans, EMIs & payments</p>
     </div>
 
     <button
-      type="button"
-      class="primary-button"
-      id="addEmiButton"
+      class="icon-button"
+      onclick="goBack()"
     >
-      + Add EMI
+      ←
     </button>
 
   </header>
 
 
   <!-- =========================
-       MAIN CONTENT
+       SUMMARY
   ========================== -->
-  <main class="page-container">
 
+  <section class="summary-grid">
 
-    <!-- =========================
-         SUMMARY
-    ========================== -->
-    <section class="summary-grid">
+    <div class="summary-card">
+      <span>Total EMI</span>
+      <strong id="totalEmis">0</strong>
+    </div>
 
-      <div class="summary-card">
+    <div class="summary-card">
+      <span>Monthly EMI</span>
+      <strong id="monthlyEmi">₹0.00</strong>
+    </div>
 
-        <span class="summary-label">
-          Active EMIs
-        </span>
+    <div class="summary-card">
+      <span>Remaining</span>
+      <strong id="totalRemaining">₹0.00</strong>
+    </div>
 
-        <strong id="totalEmis">
-          0
-        </strong>
+    <div class="summary-card">
+      <span>Due Soon</span>
+      <strong id="dueSoon">0</strong>
+    </div>
 
-      </div>
-
-
-      <div class="summary-card expense-card">
-
-        <span class="summary-label">
-          Monthly EMI
-        </span>
-
-        <strong id="monthlyEmiTotal">
-          ₹0
-        </strong>
-
-      </div>
-
-
-      <div class="summary-card income-card">
-
-        <span class="summary-label">
-          Remaining
-        </span>
-
-        <strong id="remainingEmiTotal">
-          ₹0
-        </strong>
-
-      </div>
-
-    </section>
-
-
-    <!-- =========================
-         SEARCH / FILTER
-    ========================== -->
-    <section class="card">
-
-      <div class="section-header">
-
-        <div>
-          <h2>Find EMI</h2>
-          <p>Search and filter your EMIs</p>
-        </div>
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label for="searchInput">
-          Search
-        </label>
-
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Bank, card, phone, bike..."
-          autocomplete="off"
-        >
-
-      </div>
-
-
-      <div class="form-row">
-
-        <div class="form-group">
-
-          <label for="statusFilter">
-            Status
-          </label>
-
-          <select id="statusFilter">
-
-            <option value="all">
-              All
-            </option>
-
-            <option value="active">
-              Active
-            </option>
-
-            <option value="upcoming">
-              Upcoming
-            </option>
-
-            <option value="overdue">
-              Overdue
-            </option>
-
-            <option value="completed">
-              Completed
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="sortFilter">
-            Sort
-          </label>
-
-          <select id="sortFilter">
-
-            <option value="nextDue">
-              Next Due
-            </option>
-
-            <option value="newest">
-              Newest
-            </option>
-
-            <option value="oldest">
-              Oldest
-            </option>
-
-            <option value="highest">
-              Highest EMI
-            </option>
-
-            <option value="remaining">
-              Highest Remaining
-            </option>
-
-            <option value="name">
-              Name A-Z
-            </option>
-
-          </select>
-
-        </div>
-
-      </div>
-
-
-      <button
-        type="button"
-        class="secondary-button full-width"
-        id="clearFiltersButton"
-      >
-        Clear Filters
-      </button>
-
-    </section>
-
-
-    <!-- =========================
-         EMI LIST
-    ========================== -->
-    <section class="card">
-
-      <div class="section-header">
-
-        <div>
-
-          <h2>EMI List</h2>
-
-          <p id="emiCount">
-            0 EMIs
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <div
-        id="emiList"
-        class="transaction-list"
-      >
-        <!-- EMI records -->
-      </div>
-
-    </section>
-
-  </main>
+  </section>
 
 
   <!-- =========================
-       ADD / EDIT EMI MODAL
+       ADD EMI
   ========================== -->
-  <div
-    class="modal-overlay"
-    id="emiModal"
+
+  <section class="page-actions">
+
+    <button
+      class="primary-button"
+      onclick="openEmiForm()"
+    >
+      + Add EMI
+    </button>
+
+  </section>
+
+
+  <!-- =========================
+       SEARCH / FILTER
+  ========================== -->
+
+  <section class="card">
+
+    <input
+      type="search"
+      id="searchInput"
+      class="input"
+      placeholder="🔎 Search EMI, bank, phone, bike..."
+      oninput="renderEmis()"
+    >
+
+    <select
+      id="statusFilter"
+      class="input"
+      onchange="renderEmis()"
+    >
+
+      <option value="all">All EMIs</option>
+      <option value="active">Active</option>
+      <option value="completed">Completed</option>
+      <option value="overdue">Overdue</option>
+
+    </select>
+
+  </section>
+
+
+  <!-- =========================
+       EMI FORM
+  ========================== -->
+
+  <section
+    class="card"
+    id="emiFormCard"
     style="display:none;"
   >
 
-    <div class="modal">
-
-      <div class="modal-header">
-
-        <div>
-
-          <h2 id="modalTitle">
-            Add EMI
-          </h2>
-
-          <p>
-            Enter your EMI details
-          </p>
-
-        </div>
-
-
-        <button
-          type="button"
-          class="icon-button"
-          id="closeEmiModal"
-        >
-          ×
-        </button>
-
-      </div>
-
-
-      <form id="emiForm">
-
-        <input
-          type="hidden"
-          id="emiId"
-        >
-
-
-        <!-- EMI Name -->
-
-        <div class="form-group">
-
-          <label for="emiName">
-            EMI Name
-          </label>
-
-          <input
-            type="text"
-            id="emiName"
-            placeholder="Example: SBI Personal Loan"
-            required
-          >
-
-        </div>
-
-
-        <!-- Type -->
-
-        <div class="form-group">
-
-          <label for="emiType">
-            EMI Type
-          </label>
-
-          <select id="emiType">
-
-            <option value="bank">
-              Bank Loan
-            </option>
-
-            <option value="credit-card">
-              Credit Card
-            </option>
-
-            <option value="phone">
-              Phone
-            </option>
-
-            <option value="bike">
-              Bike / Vehicle
-            </option>
-
-            <option value="personal-loan">
-              Personal Loan
-            </option>
-
-            <option value="other">
-              Other
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <!-- Total EMI -->
-
-        <div class="form-group">
-
-          <label for="totalAmount">
-            Total EMI Amount
-          </label>
-
-          <input
-            type="number"
-            id="totalAmount"
-            min="0.01"
-            step="0.01"
-            placeholder="₹ 1,00,000"
-            required
-          >
-
-        </div>
-
-
-        <!-- Monthly EMI -->
-
-        <div class="form-group">
-
-          <label for="monthlyAmount">
-            Monthly EMI
-          </label>
-
-          <input
-            type="number"
-            id="monthlyAmount"
-            min="0.01"
-            step="0.01"
-            placeholder="₹ 5,000"
-            required
-          >
-
-        </div>
-
-
-        <!-- Already Paid -->
-
-        <div class="form-group">
-
-          <label for="alreadyPaid">
-            Already Paid
-          </label>
-
-          <input
-            type="number"
-            id="alreadyPaid"
-            min="0"
-            step="0.01"
-            value="0"
-            placeholder="₹ 0"
-          >
-
-        </div>
-
-
-        <!-- Total Months -->
-
-        <div class="form-group">
-
-          <label for="totalMonths">
-            Total EMI Months
-          </label>
-
-          <input
-            type="number"
-            id="totalMonths"
-            min="1"
-            step="1"
-            placeholder="Example: 24"
-          >
-
-        </div>
-
-
-        <!-- Paid Months -->
-
-        <div class="form-group">
-
-          <label for="paidMonths">
-            EMI Months Already Paid
-          </label>
-
-          <input
-            type="number"
-            id="paidMonths"
-            min="0"
-            step="1"
-            value="0"
-            placeholder="Example: 5"
-          >
-
-        </div>
-
-
-        <!-- Next Due -->
-
-        <div class="form-group">
-
-          <label for="nextDueDate">
-            Next Due Date
-          </label>
-
-          <input
-            type="date"
-            id="nextDueDate"
-          >
-
-        </div>
-
-
-        <!-- Account -->
-
-        <div class="form-group">
-
-          <label for="defaultAccount">
-            Pay From Account
-          </label>
-
-          <select id="defaultAccount">
-
-            <option value="">
-              Select account
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <!-- Note -->
-
-        <div class="form-group">
-
-          <label for="emiNote">
-            Note
-          </label>
-
-          <textarea
-            id="emiNote"
-            rows="3"
-            placeholder="Optional note"
-          ></textarea>
-
-        </div>
-
-
-        <div class="modal-actions">
-
-          <button
-            type="button"
-            class="secondary-button"
-            id="cancelEmiButton"
-          >
-            Cancel
-          </button>
-
-
-          <button
-            type="submit"
-            class="primary-button"
-          >
-            Save EMI
-          </button>
-
-        </div>
-
-      </form>
+    <div class="section-title">
+
+      <h2 id="formTitle">
+        Add EMI
+      </h2>
+
+      <button
+        class="secondary-button"
+        onclick="closeEmiForm()"
+      >
+        Cancel
+      </button>
 
     </div>
 
-  </div>
+
+    <input
+      type="hidden"
+      id="editingEmiId"
+    >
+
+
+    <label>EMI / Loan Name</label>
+
+    <input
+      type="text"
+      id="emiName"
+      class="input"
+      placeholder="Example: Bike EMI, Phone EMI, Bank Loan"
+    >
+
+
+    <label>Lender / Bank</label>
+
+    <input
+      type="text"
+      id="lenderName"
+      class="input"
+      placeholder="Example: HDFC, SBI, Bajaj..."
+    >
+
+
+    <label>Account / Loan Number</label>
+
+    <input
+      type="text"
+      id="loanNumber"
+      class="input"
+      placeholder="Optional"
+    >
+
+
+    <label>Total EMI / Loan Amount</label>
+
+    <input
+      type="number"
+      id="emiTotalAmount"
+      class="input"
+      placeholder="₹ Total amount"
+      min="0"
+      step="0.01"
+      oninput="updateEmiPreview()"
+    >
+
+
+    <label>Already Paid</label>
+
+    <input
+      type="number"
+      id="emiAlreadyPaid"
+      class="input"
+      placeholder="₹ Amount already paid"
+      min="0"
+      step="0.01"
+      oninput="updateEmiPreview()"
+    >
+
+
+    <div class="info-box">
+
+      <div>
+        <span>Remaining Loan</span>
+
+        <strong id="emiRemainingPreview">
+          ₹0.00
+        </strong>
+      </div>
+
+    </div>
+
+
+    <label>Monthly EMI Amount</label>
+
+    <input
+      type="number"
+      id="monthlyPayment"
+      class="input"
+      placeholder="₹ Monthly payment"
+      min="0"
+      step="0.01"
+    >
+
+
+    <label>Total EMI Months</label>
+
+    <input
+      type="number"
+      id="totalMonths"
+      class="input"
+      placeholder="Example: 12"
+      min="1"
+      step="1"
+    >
+
+
+    <label>Next Due Date</label>
+
+    <input
+      type="date"
+      id="emiDueDate"
+      class="input"
+    >
+
+
+    <label>Payment Account</label>
+
+    <select
+      id="emiAccount"
+      class="input"
+    >
+
+      <option value="">
+        Select account
+      </option>
+
+    </select>
+
+
+    <label>Notes</label>
+
+    <textarea
+      id="emiNotes"
+      class="input"
+      rows="3"
+      placeholder="Optional notes..."
+    ></textarea>
+
+
+    <button
+      class="primary-button"
+      onclick="saveEmi()"
+    >
+      Save EMI
+    </button>
+
+  </section>
+
+
+  <!-- =========================
+       EMI LIST
+  ========================== -->
+
+  <section>
+
+    <div class="section-heading">
+      <h2>My EMI List</h2>
+    </div>
+
+    <div id="emiList"></div>
+
+  </section>
 
 
   <!-- =========================
        PAYMENT MODAL
   ========================== -->
+
   <div
-    class="modal-overlay"
-    id="paymentModal"
+    id="emiPaymentModal"
+    class="modal"
     style="display:none;"
   >
 
-    <div class="modal">
+    <div class="modal-content">
 
-      <div class="modal-header">
+      <div class="section-title">
 
         <div>
 
-          <h2>
-            Pay EMI
-          </h2>
+          <h2>Pay EMI</h2>
 
           <p id="paymentEmiName">
             EMI
@@ -556,11 +317,9 @@
 
         </div>
 
-
         <button
-          type="button"
           class="icon-button"
-          id="closePaymentModal"
+          onclick="closeEmiPaymentModal()"
         >
           ×
         </button>
@@ -568,182 +327,84 @@
       </div>
 
 
-      <form id="paymentForm">
-
-        <input
-          type="hidden"
-          id="paymentEmiId"
-        >
-
-
-        <!-- Monthly EMI -->
-
-        <div class="summary-card">
-
-          <span class="summary-label">
-            Monthly EMI
-          </span>
-
-          <strong id="paymentMonthlyAmount">
-            ₹0
-          </strong>
-
-        </div>
-
-
-        <!-- Remaining -->
-
-        <div
-          class="summary-card"
-          style="margin-top:12px;"
-        >
-
-          <span class="summary-label">
-            Remaining
-          </span>
-
-          <strong id="paymentRemaining">
-            ₹0
-          </strong>
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="paymentAmount">
-            Payment Amount
-          </label>
-
-          <input
-            type="number"
-            id="paymentAmount"
-            min="0.01"
-            step="0.01"
-            placeholder="Enter EMI payment"
-            required
-          >
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="paymentDate">
-            Payment Date
-          </label>
-
-          <input
-            type="date"
-            id="paymentDate"
-            required
-          >
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="paymentAccount">
-            Paid From Account
-          </label>
-
-          <select id="paymentAccount">
-
-            <option value="">
-              Select account
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="paymentNote">
-            Note
-          </label>
-
-          <textarea
-            id="paymentNote"
-            rows="3"
-            placeholder="Optional note"
-          ></textarea>
-
-        </div>
-
-
-        <div class="modal-actions">
-
-          <button
-            type="button"
-            class="secondary-button"
-            id="cancelPaymentButton"
-          >
-            Cancel
-          </button>
-
-
-          <button
-            type="submit"
-            class="primary-button"
-          >
-            Save Payment
-          </button>
-
-        </div>
-
-      </form>
-
-    </div>
-
-  </div>
-
-
-  <!-- =========================
-       PAYMENT HISTORY MODAL
-  ========================== -->
-  <div
-    class="modal-overlay"
-    id="historyModal"
-    style="display:none;"
-  >
-
-    <div class="modal">
-
-      <div class="modal-header">
+      <div class="payment-summary-box">
 
         <div>
+          <span>Remaining</span>
 
-          <h2>
-            EMI Payment History
-          </h2>
-
-          <p id="historyEmiName">
-            EMI
-          </p>
-
+          <strong id="paymentEmiRemaining">
+            ₹0.00
+          </strong>
         </div>
 
+        <div>
+          <span>Monthly EMI</span>
 
-        <button
-          type="button"
-          class="icon-button"
-          id="closeHistoryModal"
-        >
-          ×
-        </button>
+          <strong id="paymentMonthlyEmi">
+            ₹0.00
+          </strong>
+        </div>
 
       </div>
 
 
-      <div
-        id="paymentHistoryList"
-        class="transaction-list"
+      <input
+        type="hidden"
+        id="paymentEmiId"
       >
-        <!-- Payment history -->
-      </div>
+
+
+      <label>Amount Paid</label>
+
+      <input
+        type="number"
+        id="emiPaymentAmount"
+        class="input"
+        placeholder="₹ EMI amount"
+        min="0"
+        step="0.01"
+      >
+
+
+      <label>Paid From</label>
+
+      <select
+        id="emiPaymentAccount"
+        class="input"
+      >
+
+        <option value="">
+          Select account
+        </option>
+
+      </select>
+
+
+      <label>Payment Date</label>
+
+      <input
+        type="date"
+        id="emiPaymentDate"
+        class="input"
+      >
+
+
+      <label>Note</label>
+
+      <textarea
+        id="emiPaymentNote"
+        class="input"
+        rows="3"
+        placeholder="Optional payment note..."
+      ></textarea>
+
+
+      <button
+        class="primary-button"
+        onclick="saveEmiPayment()"
+      >
+        + Record EMI Payment
+      </button>
 
     </div>
 
@@ -751,43 +412,135 @@
 
 
   <!-- =========================
-       JAVASCRIPT
+       BOTTOM NAV
   ========================== -->
+
+  <nav class="bottom-nav">
+
+    <button onclick="goToPage('home')">
+      🏠
+      <span>Home</span>
+    </button>
+
+    <button onclick="goToPage('transactions')">
+      📋
+      <span>Transactions</span>
+    </button>
+
+    <button onclick="goToPage('buyers')">
+      👤
+      <span>Buyers</span>
+    </button>
+
+    <button onclick="goToPage('accounts')">
+      🏦
+      <span>Accounts</span>
+    </button>
+
+    <button onclick="goToPage('more')">
+      ☰
+      <span>More</span>
+    </button>
+
+  </nav>
+
+
+  <!-- =========================
+       APP JS
+  ========================== -->
+
   <script src="../js/app.js"></script>
 
 
   <script>
 
-    let walletData = null;
-
-    let filteredEmis = [];
+    let walletData;
+    let editingEmiId = null;
 
 
     /* =========================
        HELPERS
     ========================== */
 
-    function getWalletData() {
+    function money(value) {
 
       if (
         window.TamilandaWallet &&
-        typeof window.TamilandaWallet.getData === "function"
+        typeof window.TamilandaWallet.formatMoney ===
+        "function"
       ) {
 
-        return window.TamilandaWallet.getData();
+        return window.TamilandaWallet.formatMoney(
+          Number(value) || 0
+        );
 
       }
 
-      return null;
+      return "₹" +
+        (Number(value) || 0).toLocaleString(
+          "en-IN",
+          {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }
+        );
 
     }
 
 
-    function saveWalletData() {
+    function today() {
 
       if (
         window.TamilandaWallet &&
-        typeof window.TamilandaWallet.save === "function"
+        typeof window.TamilandaWallet.todayString ===
+        "function"
+      ) {
+
+        return window.TamilandaWallet.todayString();
+
+      }
+
+      const d = new Date();
+
+      return (
+        d.getFullYear() +
+        "-" +
+        String(d.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(d.getDate()).padStart(2, "0")
+      );
+
+    }
+
+
+    function generateId() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.generateId ===
+        "function"
+      ) {
+
+        return window.TamilandaWallet.generateId();
+
+      }
+
+      return (
+        Date.now().toString(36) +
+        Math.random()
+          .toString(36)
+          .substring(2, 8)
+      );
+
+    }
+
+
+    function saveData() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.save ===
+        "function"
       ) {
 
         window.TamilandaWallet.save();
@@ -797,54 +550,12 @@
     }
 
 
-    function formatMoney(amount) {
-
-      if (
-        window.TamilandaWallet &&
-        typeof window.TamilandaWallet.formatMoney === "function"
-      ) {
-
-        return window.TamilandaWallet.formatMoney(
-          amount
-        );
-
-      }
-
-
-      return "₹" +
-        Number(amount || 0)
-          .toLocaleString("en-IN");
-
-    }
-
-
-    function generateId() {
-
-      if (
-        window.TamilandaWallet &&
-        typeof window.TamilandaWallet.generateId === "function"
-      ) {
-
-        return window.TamilandaWallet.generateId();
-
-      }
-
-
-      return (
-        Date.now().toString(36) +
-        Math.random()
-          .toString(36)
-          .substring(2, 9)
-      );
-
-    }
-
-
     function escapeHtml(value) {
 
       if (
         window.TamilandaWallet &&
-        typeof window.TamilandaWallet.escapeHtml === "function"
+        typeof window.TamilandaWallet.escapeHtml ===
+        "function"
       ) {
 
         return window.TamilandaWallet.escapeHtml(
@@ -853,49 +564,12 @@
 
       }
 
-
-      return String(value ?? "")
+      return String(value || "")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
-
-    }
-
-
-    function todayString() {
-
-      if (
-        window.TamilandaWallet &&
-        typeof window.TamilandaWallet.todayString === "function"
-      ) {
-
-        return window.TamilandaWallet.todayString();
-
-      }
-
-
-      const date = new Date();
-
-
-      const year =
-        date.getFullYear();
-
-
-      const month =
-        String(
-          date.getMonth() + 1
-        ).padStart(2, "0");
-
-
-      const day =
-        String(
-          date.getDate()
-        ).padStart(2, "0");
-
-
-      return `${year}-${month}-${day}`;
 
     }
 
@@ -906,258 +580,274 @@
         return "-";
       }
 
+      const parts =
+        dateString.split("-");
 
-      const date =
-        new Date(
-          dateString + "T00:00:00"
-        );
-
-
-      if (
-        Number.isNaN(
-          date.getTime()
-        )
-      ) {
-
+      if (parts.length !== 3) {
         return dateString;
-
       }
 
-
-      return date.toLocaleDateString(
-        "en-IN",
-        {
-          day: "2-digit",
-          month: "short",
-          year: "numeric"
-        }
+      return (
+        parts[2] +
+        "/" +
+        parts[1] +
+        "/" +
+        parts[0]
       );
+
+    }
+
+
+    function getAccountName(accountId) {
+
+      const account =
+        (walletData.accounts || [])
+          .find(
+            a =>
+              a.id === accountId
+          );
+
+      return account
+        ? account.name
+        : "Unknown Account";
 
     }
 
 
     /* =========================
-       EMI PAYMENTS
+       GET REMAINING
     ========================== */
-
-    function getPayments(emiId) {
-
-      return (
-        walletData.emiPayments || []
-      )
-      .filter(
-        payment =>
-          payment.emiId === emiId
-      );
-
-    }
-
-
-    function getPaidAmount(emi) {
-
-      const history =
-        getPayments(emi.id);
-
-
-      const historyTotal =
-        history.reduce(
-          (sum, payment) =>
-            sum +
-            Number(
-              payment.amount || 0
-            ),
-          0
-        );
-
-
-      return Number(
-        emi.alreadyPaid || 0
-      ) + historyTotal;
-
-    }
-
 
     function getRemaining(emi) {
 
-      const total =
-        Number(
-          emi.totalAmount || 0
-        );
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.getEmiRemaining ===
+        "function"
+      ) {
+
+        return Number(
+          window.TamilandaWallet.getEmiRemaining(
+            emi.id
+          )
+        ) || 0;
+
+      }
 
 
-      const paid =
-        getPaidAmount(emi);
+      const payments =
+        (walletData.emiPayments || [])
+          .filter(
+            payment =>
+              payment.emiId === emi.id
+          )
+          .reduce(
+            (sum, payment) =>
+              sum +
+              Number(payment.amount || 0),
+            0
+          );
 
 
       return Math.max(
         0,
-        total - paid
+        Number(
+          emi.totalAmount ||
+          emi.amount ||
+          0
+        ) -
+        Number(
+          emi.alreadyPaid ||
+          0
+        ) -
+        payments
       );
 
     }
 
 
-    function getStatus(emi) {
+    function getPaid(emi) {
+
+      const total =
+        Number(
+          emi.totalAmount ||
+          emi.amount ||
+          0
+        );
+
 
       const remaining =
         getRemaining(emi);
 
 
-      if (remaining <= 0) {
+      return Math.max(
+        0,
+        total - remaining
+      );
 
-        return "completed";
-
-      }
+    }
 
 
-      if (
-        emi.nextDueDate &&
-        emi.nextDueDate < todayString()
-      ) {
+    function isOverdue(emi) {
 
-        return "overdue";
-
-      }
+      const remaining =
+        getRemaining(emi);
 
 
       if (
-        emi.nextDueDate === todayString()
+        remaining <= 0 ||
+        !emi.dueDate
       ) {
 
-        return "upcoming";
+        return false;
 
       }
 
 
-      return "active";
+      return (
+        emi.dueDate < today()
+      );
+
+    }
+
+
+    function daysUntil(dateString) {
+
+      if (!dateString) {
+        return null;
+      }
+
+
+      const todayDate =
+        new Date(
+          today() + "T00:00:00"
+        );
+
+
+      const dueDate =
+        new Date(
+          dateString + "T00:00:00"
+        );
+
+
+      return Math.ceil(
+        (
+          dueDate -
+          todayDate
+        ) /
+        (1000 * 60 * 60 * 24)
+      );
 
     }
 
 
     /* =========================
-       INITIALIZE
+       INIT
     ========================== */
 
-    function initializeEmi() {
+    document.addEventListener(
+      "DOMContentLoaded",
+      function() {
 
-      walletData =
-        getWalletData();
+        walletData =
+          window.TamilandaWallet.getData();
 
 
-      if (!walletData) {
-        return;
+        document.getElementById(
+          "emiDueDate"
+        ).value = today();
+
+
+        document.getElementById(
+          "emiPaymentDate"
+        ).value = today();
+
+
+        populateAccounts();
+
+        renderSummary();
+
+        renderEmis();
+
       }
-
-
-      if (!walletData.myEmis) {
-        walletData.myEmis = [];
-      }
-
-
-      if (!walletData.emiPayments) {
-        walletData.emiPayments = [];
-      }
-
-
-      if (!walletData.accounts) {
-        walletData.accounts = [];
-      }
-
-
-      renderAccounts();
-
-      renderSummary();
-
-      applyFilters();
-
-      setupEvents();
-
-    }
+    );
 
 
     /* =========================
-       ACCOUNT OPTIONS
+       ACCOUNT SELECTS
     ========================== */
 
-    function renderAccounts() {
+    function populateAccounts() {
 
-      const defaultAccount =
+      const formSelect =
         document.getElementById(
-          "defaultAccount"
+          "emiAccount"
         );
 
 
-      const paymentAccount =
+      const paymentSelect =
         document.getElementById(
-          "paymentAccount"
+          "emiPaymentAccount"
         );
 
 
-      defaultAccount.innerHTML = `
-        <option value="">
+      formSelect.innerHTML =
+        `<option value="">
           Select account
-        </option>
-      `;
+        </option>`;
 
 
-      paymentAccount.innerHTML = `
-        <option value="">
+      paymentSelect.innerHTML =
+        `<option value="">
           Select account
-        </option>
-      `;
+        </option>`;
 
 
-      (
-        walletData.accounts || []
-      )
-      .forEach(account => {
+      (walletData.accounts || [])
+        .forEach(account => {
 
-        const option1 =
-          document.createElement(
-            "option"
+          const option1 =
+            document.createElement(
+              "option"
+            );
+
+
+          option1.value =
+            account.id;
+
+
+          option1.textContent =
+            account.name +
+            " — " +
+            money(account.balance);
+
+
+          formSelect.appendChild(
+            option1
           );
 
 
-        option1.value =
-          account.id;
+          const option2 =
+            document.createElement(
+              "option"
+            );
 
 
-        option1.textContent =
-          `${account.name} — ${
-            formatMoney(
-              account.balance
-            )
-          }`;
+          option2.value =
+            account.id;
 
 
-        defaultAccount.appendChild(
-          option1
-        );
+          option2.textContent =
+            account.name +
+            " — " +
+            money(account.balance);
 
 
-        const option2 =
-          document.createElement(
-            "option"
+          paymentSelect.appendChild(
+            option2
           );
 
-
-        option2.value =
-          account.id;
-
-
-        option2.textContent =
-          `${account.name} — ${
-            formatMoney(
-              account.balance
-            )
-          }`;
-
-
-        paymentAccount.appendChild(
-          option2
-        );
-
-      });
+        });
 
     }
 
@@ -1172,33 +862,56 @@
         walletData.myEmis || [];
 
 
-      let monthlyTotal = 0;
+      let monthly =
+        0;
 
-      let remainingTotal = 0;
+      let remaining =
+        0;
 
-      let activeCount = 0;
+      let dueSoon =
+        0;
 
 
       emis.forEach(emi => {
 
-        if (
-          getStatus(emi) !==
-          "completed"
-        ) {
-
-          activeCount++;
-
-        }
+        const emiRemaining =
+          getRemaining(emi);
 
 
-        monthlyTotal +=
+        remaining +=
+          emiRemaining;
+
+
+        monthly +=
           Number(
-            emi.monthlyAmount || 0
+            emi.monthlyPayment ||
+            emi.emiAmount ||
+            0
           );
 
 
-        remainingTotal +=
-          getRemaining(emi);
+        if (
+          emiRemaining > 0 &&
+          emi.dueDate
+        ) {
+
+          const days =
+            daysUntil(
+              emi.dueDate
+            );
+
+
+          if (
+            days !== null &&
+            days >= 0 &&
+            days <= 7
+          ) {
+
+            dueSoon++;
+
+          }
+
+        }
 
       });
 
@@ -1206,684 +919,173 @@
       document.getElementById(
         "totalEmis"
       ).textContent =
-        activeCount;
+        emis.length;
 
 
       document.getElementById(
-        "monthlyEmiTotal"
+        "monthlyEmi"
       ).textContent =
-        formatMoney(
-          monthlyTotal
-        );
+        money(monthly);
 
 
       document.getElementById(
-        "remainingEmiTotal"
+        "totalRemaining"
       ).textContent =
-        formatMoney(
-          remainingTotal
-        );
+        money(remaining);
+
+
+      document.getElementById(
+        "dueSoon"
+      ).textContent =
+        dueSoon;
 
     }
 
 
     /* =========================
-       FILTERS
+       FORM
     ========================== */
 
-    function applyFilters() {
+    function openEmiForm() {
 
-      const emis =
-        walletData.myEmis || [];
-
-
-      const search =
-        document.getElementById(
-          "searchInput"
-        )
-        .value
-        .trim()
-        .toLowerCase();
-
-
-      const status =
-        document.getElementById(
-          "statusFilter"
-        ).value;
-
-
-      const sort =
-        document.getElementById(
-          "sortFilter"
-        ).value;
-
-
-      filteredEmis =
-        emis.filter(emi => {
-
-          if (search) {
-
-            const searchable =
-              [
-                emi.name,
-                emi.emiName,
-                emi.type,
-                emi.note
-              ]
-              .filter(Boolean)
-              .join(" ")
-              .toLowerCase();
-
-
-            if (
-              !searchable.includes(
-                search
-              )
-            ) {
-
-              return false;
-
-            }
-
-          }
-
-
-          const emiStatus =
-            getStatus(emi);
-
-
-          if (
-            status !== "all" &&
-            emiStatus !== status
-          ) {
-
-            return false;
-
-          }
-
-
-          return true;
-
-        });
-
-
-      filteredEmis.sort(
-        (a, b) => {
-
-          if (sort === "name") {
-
-            return String(
-              a.name ||
-              a.emiName ||
-              ""
-            )
-            .localeCompare(
-              String(
-                b.name ||
-                b.emiName ||
-                ""
-              )
-            );
-
-          }
-
-
-          if (sort === "highest") {
-
-            return (
-              Number(
-                b.monthlyAmount || 0
-              ) -
-              Number(
-                a.monthlyAmount || 0
-              )
-            );
-
-          }
-
-
-          if (sort === "remaining") {
-
-            return (
-              getRemaining(b) -
-              getRemaining(a)
-            );
-
-          }
-
-
-          if (sort === "nextDue") {
-
-            return String(
-              a.nextDueDate ||
-              "9999-12-31"
-            )
-            .localeCompare(
-              String(
-                b.nextDueDate ||
-                "9999-12-31"
-              )
-            );
-
-          }
-
-
-          const dateA =
-            String(
-              a.createdAt ||
-              ""
-            );
-
-
-          const dateB =
-            String(
-              b.createdAt ||
-              ""
-            );
-
-
-          if (
-            sort === "oldest"
-          ) {
-
-            return dateA.localeCompare(
-              dateB
-            );
-
-          }
-
-
-          return dateB.localeCompare(
-            dateA
-          );
-
-        }
-      );
-
-
-      renderEmis();
-
-    }
-
-
-    /* =========================
-       RENDER EMI LIST
-    ========================== */
-
-    function renderEmis() {
-
-      const container =
-        document.getElementById(
-          "emiList"
-        );
-
-
-      const count =
-        document.getElementById(
-          "emiCount"
-        );
-
-
-      count.textContent =
-        `${filteredEmis.length} ${
-          filteredEmis.length === 1
-            ? "EMI"
-            : "EMIs"
-        }`;
-
-
-      if (
-        filteredEmis.length === 0
-      ) {
-
-        container.innerHTML = `
-
-          <div class="empty-state">
-
-            <div class="empty-icon">
-              💳
-            </div>
-
-            <h3>
-              No EMIs found
-            </h3>
-
-            <p>
-              Add your first EMI.
-            </p>
-
-          </div>
-
-        `;
-
-        return;
-
-      }
-
-
-      container.innerHTML =
-        filteredEmis
-          .map(
-            emi =>
-              createEmiHtml(emi)
-          )
-          .join("");
-
-    }
-
-
-    function createEmiHtml(emi) {
-
-      const total =
-        Number(
-          emi.totalAmount || 0
-        );
-
-
-      const paid =
-        getPaidAmount(emi);
-
-
-      const remaining =
-        getRemaining(emi);
-
-
-      const monthly =
-        Number(
-          emi.monthlyAmount || 0
-        );
-
-
-      const status =
-        getStatus(emi);
-
-
-      const percentage =
-        total > 0
-          ? Math.min(
-              100,
-              (paid / total) * 100
-            )
-          : 0;
-
-
-      const name =
-        emi.name ||
-        emi.emiName ||
-        "EMI";
-
-
-      let statusText =
-        "Active";
-
-
-      if (
-        status === "completed"
-      ) {
-
-        statusText =
-          "Completed";
-
-      }
-
-
-      if (
-        status === "upcoming"
-      ) {
-
-        statusText =
-          "Due Today";
-
-      }
-
-
-      if (
-        status === "overdue"
-      ) {
-
-        statusText =
-          "Overdue";
-
-      }
-
-
-      return `
-
-        <div class="transaction-item">
-
-          <div class="transaction-icon expense-icon">
-
-            💳
-
-          </div>
-
-
-          <div class="transaction-info">
-
-            <div class="transaction-title">
-
-              ${escapeHtml(name)}
-
-            </div>
-
-
-            <div class="transaction-meta">
-
-              ${escapeHtml(
-                emi.type ||
-                "EMI"
-              )}
-
-              ${
-                emi.nextDueDate
-                  ? " • Due " +
-                    escapeHtml(
-                      formatDate(
-                        emi.nextDueDate
-                      )
-                    )
-                  : ""
-              }
-
-            </div>
-
-
-            <div class="transaction-meta">
-
-              Monthly:
-              ${formatMoney(monthly)}
-
-            </div>
-
-
-            <div
-              style="
-                margin-top:10px;
-                height:6px;
-                border-radius:10px;
-                background:rgba(255,255,255,0.08);
-                overflow:hidden;
-              "
-            >
-
-              <div
-                style="
-                  width:${percentage}%;
-                  height:100%;
-                  border-radius:10px;
-                  background:#55d98b;
-                "
-              ></div>
-
-            </div>
-
-
-            <div
-              style="
-                margin-top:6px;
-                font-size:12px;
-                opacity:0.7;
-              "
-            >
-
-              ${formatMoney(paid)}
-              paid of
-              ${formatMoney(total)}
-
-            </div>
-
-          </div>
-
-
-          <div class="transaction-right">
-
-            <div
-              class="transaction-amount"
-              style="
-                color:${
-                  status === "completed"
-                    ? "#55d98b"
-                    : status === "overdue"
-                      ? "#ff667a"
-                      : "#ffc857"
-                };
-              "
-            >
-
-              ${
-                status === "completed"
-                  ? "PAID"
-                  : formatMoney(
-                      remaining
-                    )
-              }
-
-            </div>
-
-
-            <div
-              style="
-                font-size:11px;
-                opacity:0.65;
-                margin-top:3px;
-              "
-            >
-
-              ${statusText}
-
-            </div>
-
-
-            <div class="transaction-actions">
-
-              ${
-                status !== "completed"
-                  ? `
-                    <button
-                      type="button"
-                      class="small-button"
-                      onclick="openPaymentModal('${emi.id}')"
-                    >
-                      + Pay EMI
-                    </button>
-                  `
-                  : ""
-              }
-
-
-              <button
-                type="button"
-                class="small-button"
-                onclick="openHistoryModal('${emi.id}')"
-              >
-                History
-              </button>
-
-
-              <button
-                type="button"
-                class="small-button"
-                onclick="openEditEmi('${emi.id}')"
-              >
-                Edit
-              </button>
-
-
-              <button
-                type="button"
-                class="small-button danger-button"
-                onclick="deleteEmi('${emi.id}')"
-              >
-                Delete
-              </button>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      `;
-
-    }
-
-
-    /* =========================
-       ADD EMI
-    ========================== */
-
-    function openAddEmi() {
-
-      document.getElementById(
-        "emiForm"
-      ).reset();
+      editingEmiId =
+        null;
 
 
       document.getElementById(
-        "emiId"
-      ).value = "";
-
-
-      document.getElementById(
-        "alreadyPaid"
-      ).value = "0";
-
-
-      document.getElementById(
-        "paidMonths"
-      ).value = "0";
-
-
-      document.getElementById(
-        "modalTitle"
+        "formTitle"
       ).textContent =
         "Add EMI";
 
 
       document.getElementById(
-        "emiModal"
+        "emiFormCard"
       ).style.display =
-        "flex";
+        "block";
+
+
+      clearEmiForm();
+
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
 
     }
 
 
-    /* =========================
-       EDIT EMI
-    ========================== */
-
-    function openEditEmi(id) {
-
-      const emi =
-        walletData.myEmis
-          .find(
-            item =>
-              item.id === id
-          );
-
-
-      if (!emi) {
-        return;
-      }
-
+    function closeEmiForm() {
 
       document.getElementById(
-        "emiId"
-      ).value =
-        emi.id;
+        "emiFormCard"
+      ).style.display =
+        "none";
+
+
+      editingEmiId =
+        null;
+
+
+      clearEmiForm();
+
+    }
+
+
+    function clearEmiForm() {
+
+      document.getElementById(
+        "editingEmiId"
+      ).value = "";
 
 
       document.getElementById(
         "emiName"
-      ).value =
-        emi.name ||
-        emi.emiName ||
-        "";
+      ).value = "";
 
 
       document.getElementById(
-        "emiType"
-      ).value =
-        emi.type ||
-        "bank";
+        "lenderName"
+      ).value = "";
 
 
       document.getElementById(
-        "totalAmount"
-      ).value =
-        emi.totalAmount ||
-        "";
+        "loanNumber"
+      ).value = "";
 
 
       document.getElementById(
-        "monthlyAmount"
-      ).value =
-        emi.monthlyAmount ||
-        "";
+        "emiTotalAmount"
+      ).value = "";
 
 
       document.getElementById(
-        "alreadyPaid"
-      ).value =
-        emi.alreadyPaid ||
-        0;
+        "emiAlreadyPaid"
+      ).value = "";
+
+
+      document.getElementById(
+        "monthlyPayment"
+      ).value = "";
 
 
       document.getElementById(
         "totalMonths"
-      ).value =
-        emi.totalMonths ||
-        "";
+      ).value = "";
 
 
       document.getElementById(
-        "paidMonths"
-      ).value =
-        emi.paidMonths ||
-        0;
+        "emiDueDate"
+      ).value = today();
 
 
       document.getElementById(
-        "nextDueDate"
-      ).value =
-        emi.nextDueDate ||
-        "";
+        "emiAccount"
+      ).value = "";
 
 
       document.getElementById(
-        "defaultAccount"
-      ).value =
-        emi.accountId ||
-        "";
+        "emiNotes"
+      ).value = "";
 
 
       document.getElementById(
-        "emiNote"
-      ).value =
-        emi.note ||
-        "";
-
-
-      document.getElementById(
-        "modalTitle"
+        "emiRemainingPreview"
       ).textContent =
-        "Edit EMI";
-
-
-      document.getElementById(
-        "emiModal"
-      ).style.display =
-        "flex";
+        money(0);
 
     }
 
 
-    function closeEmiModal() {
+    function updateEmiPreview() {
+
+      const total =
+        Number(
+          document.getElementById(
+            "emiTotalAmount"
+          ).value
+        ) || 0;
+
+
+      const paid =
+        Number(
+          document.getElementById(
+            "emiAlreadyPaid"
+          ).value
+        ) || 0;
+
+
+      const remaining =
+        Math.max(
+          0,
+          total - paid
+        );
+
 
       document.getElementById(
-        "emiModal"
-      ).style.display =
-        "none";
+        "emiRemainingPreview"
+      ).textContent =
+        money(remaining);
 
     }
 
@@ -1892,16 +1094,7 @@
        SAVE EMI
     ========================== */
 
-    function saveEmi(event) {
-
-      event.preventDefault();
-
-
-      const id =
-        document.getElementById(
-          "emiId"
-        ).value;
-
+    function saveEmi() {
 
       const name =
         document.getElementById(
@@ -1909,67 +1102,65 @@
         ).value.trim();
 
 
-      const type =
+      const lender =
         document.getElementById(
-          "emiType"
-        ).value;
+          "lenderName"
+        ).value.trim();
 
 
-      const totalAmount =
+      const loanNumber =
+        document.getElementById(
+          "loanNumber"
+        ).value.trim();
+
+
+      const total =
         Number(
           document.getElementById(
-            "totalAmount"
+            "emiTotalAmount"
           ).value
-        );
-
-
-      const monthlyAmount =
-        Number(
-          document.getElementById(
-            "monthlyAmount"
-          ).value
-        );
+        ) || 0;
 
 
       const alreadyPaid =
         Number(
           document.getElementById(
-            "alreadyPaid"
-          ).value || 0
-        );
+            "emiAlreadyPaid"
+          ).value
+        ) || 0;
+
+
+      const monthlyPayment =
+        Number(
+          document.getElementById(
+            "monthlyPayment"
+          ).value
+        ) || 0;
 
 
       const totalMonths =
         Number(
           document.getElementById(
             "totalMonths"
-          ).value || 0
-        );
+          ).value
+        ) || 0;
 
 
-      const paidMonths =
-        Number(
-          document.getElementById(
-            "paidMonths"
-          ).value || 0
-        );
-
-
-      const nextDueDate =
+      const dueDate =
         document.getElementById(
-          "nextDueDate"
+          "emiDueDate"
         ).value;
 
 
       const accountId =
         document.getElementById(
-          "defaultAccount"
+          "emiAccount"
         ).value;
 
 
-      const note =
+      const notes =
         document.getElementById(
-          "emiNote"
+          "emiNotes"
         ).value.trim();
 
 
@@ -1984,13 +1175,10 @@
       }
 
 
-      if (
-        !totalAmount ||
-        totalAmount <= 0
-      ) {
+      if (total <= 0) {
 
         alert(
-          "Please enter a valid total EMI amount."
+          "Please enter a valid total amount."
         );
 
         return;
@@ -1998,13 +1186,10 @@
       }
 
 
-      if (
-        !monthlyAmount ||
-        monthlyAmount <= 0
-      ) {
+      if (alreadyPaid < 0) {
 
         alert(
-          "Please enter a valid monthly EMI."
+          "Already paid cannot be negative."
         );
 
         return;
@@ -2012,13 +1197,10 @@
       }
 
 
-      if (
-        alreadyPaid < 0 ||
-        alreadyPaid > totalAmount
-      ) {
+      if (alreadyPaid > total) {
 
         alert(
-          "Already paid amount is invalid."
+          "Already paid cannot be greater than total amount."
         );
 
         return;
@@ -2026,14 +1208,10 @@
       }
 
 
-      if (
-        totalMonths < 0 ||
-        paidMonths < 0 ||
-        paidMonths > totalMonths
-      ) {
+      if (monthlyPayment <= 0) {
 
         alert(
-          "Please check EMI month values."
+          "Please enter monthly EMI amount."
         );
 
         return;
@@ -2041,46 +1219,67 @@
       }
 
 
-      if (id) {
+      if (totalMonths <= 0) {
+
+        alert(
+          "Please enter total EMI months."
+        );
+
+        return;
+
+      }
+
+
+      if (!dueDate) {
+
+        alert(
+          "Please select next due date."
+        );
+
+        return;
+
+      }
+
+
+      if (!walletData.myEmis) {
+
+        walletData.myEmis = [];
+
+      }
+
+
+      /* =========================
+         EDIT
+      ========================== */
+
+      if (editingEmiId) {
 
         const emi =
-          walletData.myEmis
-            .find(
-              item =>
-                item.id === id
-            );
+          walletData.myEmis.find(
+            item =>
+              item.id ===
+              editingEmiId
+          );
 
 
         if (!emi) {
-          return;
-        }
-
-
-        const paymentTotal =
-          getPayments(id)
-            .reduce(
-              (sum, payment) =>
-                sum +
-                Number(
-                  payment.amount || 0
-                ),
-              0
-            );
-
-
-        if (
-          alreadyPaid +
-            paymentTotal >
-          totalAmount
-        ) {
 
           alert(
-            "Paid amount cannot be greater than total amount."
+            "EMI record not found."
           );
 
           return;
 
         }
+
+
+        const hasPayments =
+          (walletData.emiPayments || [])
+            .some(
+              payment =>
+                payment.emiId ===
+                emi.id
+            );
 
 
         emi.name =
@@ -2089,167 +1288,269 @@
         emi.emiName =
           name;
 
-        emi.type =
-          type;
+        emi.lender =
+          lender;
 
-        emi.totalAmount =
-          totalAmount;
+        emi.lenderName =
+          lender;
 
-        emi.monthlyAmount =
-          monthlyAmount;
+        emi.loanNumber =
+          loanNumber;
 
-        emi.alreadyPaid =
-          alreadyPaid;
+        emi.dueDate =
+          dueDate;
 
-        emi.totalMonths =
-          totalMonths;
+        emi.notes =
+          notes;
 
-        emi.paidMonths =
-          paidMonths;
 
-        emi.nextDueDate =
-          nextDueDate;
+        /*
+          Financial base values are protected
+          after payment history exists.
+        */
 
-        emi.accountId =
-          accountId;
+        if (!hasPayments) {
 
-        emi.note =
-          note;
+          emi.totalAmount =
+            total;
 
-        emi.updatedAt =
-          new Date().toISOString();
+          emi.amount =
+            total;
 
-      } else {
+          emi.alreadyPaid =
+            alreadyPaid;
 
-        walletData.myEmis.push({
+          emi.monthlyPayment =
+            monthlyPayment;
 
-          id:
-            generateId(),
+          emi.emiAmount =
+            monthlyPayment;
 
-          name,
+          emi.totalMonths =
+            totalMonths;
 
-          emiName:
-            name,
+          emi.accountId =
+            accountId;
 
-          type,
+        }
 
-          totalAmount,
 
-          monthlyAmount,
+        saveData();
 
-          alreadyPaid,
+        walletData =
+          window.TamilandaWallet.getData();
 
-          totalMonths,
 
-          paidMonths,
+        closeEmiForm();
 
-          nextDueDate,
+        renderSummary();
+        renderEmis();
 
-          accountId,
+        alert(
+          "EMI updated successfully. ✅"
+        );
 
-          note,
-
-          createdAt:
-            new Date().toISOString(),
-
-          updatedAt:
-            new Date().toISOString()
-
-        });
+        return;
 
       }
 
 
-      saveWalletData();
+      /* =========================
+         NEW EMI
+      ========================== */
+
+      const emi = {
+
+        id:
+          generateId(),
+
+        name:
+          name,
+
+        emiName:
+          name,
+
+        lender:
+          lender,
+
+        lenderName:
+          lender,
+
+        loanNumber:
+          loanNumber,
+
+        totalAmount:
+          total,
+
+        amount:
+          total,
+
+        alreadyPaid:
+          alreadyPaid,
+
+        monthlyPayment:
+          monthlyPayment,
+
+        emiAmount:
+          monthlyPayment,
+
+        totalMonths:
+          totalMonths,
+
+        dueDate:
+          dueDate,
+
+        accountId:
+          accountId,
+
+        notes:
+          notes,
+
+        createdAt:
+          new Date().toISOString()
+
+      };
 
 
-      renderAccounts();
+      walletData.myEmis.push(
+        emi
+      );
+
+
+      saveData();
+
+      walletData =
+        window.TamilandaWallet.getData();
+
+
+      closeEmiForm();
 
       renderSummary();
-
-      applyFilters();
-
-
-      closeEmiModal();
-
+      renderEmis();
 
       alert(
-        id
-          ? "EMI updated successfully."
-          : "EMI added successfully."
+        "EMI added successfully. 🎉"
       );
 
     }
 
 
     /* =========================
-       DELETE EMI
+       EDIT EMI
     ========================== */
 
-    function deleteEmi(id) {
+    function editEmi(id) {
 
-      const index =
+      const emi =
         walletData.myEmis
-          .findIndex(
+          .find(
             item =>
               item.id === id
           );
 
 
-      if (index === -1) {
+      if (!emi) {
         return;
       }
 
 
-      const emi =
-        walletData.myEmis[index];
+      editingEmiId =
+        id;
 
 
-      const name =
+      document.getElementById(
+        "formTitle"
+      ).textContent =
+        "Edit EMI";
+
+
+      document.getElementById(
+        "emiName"
+      ).value =
         emi.name ||
         emi.emiName ||
-        "this EMI";
+        "";
 
 
-      const confirmed =
-        confirm(
-          `Delete ${name}?\n\nEMI payment history will also be deleted.`
-        );
+      document.getElementById(
+        "lenderName"
+      ).value =
+        emi.lender ||
+        emi.lenderName ||
+        "";
 
 
-      if (!confirmed) {
-        return;
-      }
+      document.getElementById(
+        "loanNumber"
+      ).value =
+        emi.loanNumber ||
+        "";
 
 
-      walletData.myEmis.splice(
-        index,
-        1
-      );
+      document.getElementById(
+        "emiTotalAmount"
+      ).value =
+        emi.totalAmount ||
+        emi.amount ||
+        "";
 
 
-      walletData.emiPayments =
-        (
-          walletData.emiPayments ||
-          []
-        )
-        .filter(
-          payment =>
-            payment.emiId !== id
-        );
+      document.getElementById(
+        "emiAlreadyPaid"
+      ).value =
+        emi.alreadyPaid ||
+        "";
 
 
-      saveWalletData();
+      document.getElementById(
+        "monthlyPayment"
+      ).value =
+        emi.monthlyPayment ||
+        emi.emiAmount ||
+        "";
 
 
-      renderSummary();
+      document.getElementById(
+        "totalMonths"
+      ).value =
+        emi.totalMonths ||
+        "";
 
-      applyFilters();
+
+      document.getElementById(
+        "emiDueDate"
+      ).value =
+        emi.dueDate ||
+        today();
 
 
-      alert(
-        "EMI deleted successfully."
-      );
+      document.getElementById(
+        "emiAccount"
+      ).value =
+        emi.accountId ||
+        "";
+
+
+      document.getElementById(
+        "emiNotes"
+      ).value =
+        emi.notes ||
+        "";
+
+
+      updateEmiPreview();
+
+
+      document.getElementById(
+        "emiFormCard"
+      ).style.display =
+        "block";
+
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
 
     }
 
@@ -2258,7 +1559,7 @@
        PAYMENT MODAL
     ========================== */
 
-    function openPaymentModal(id) {
+    function openEmiPaymentModal(id) {
 
       const emi =
         walletData.myEmis
@@ -2280,7 +1581,7 @@
       if (remaining <= 0) {
 
         alert(
-          "This EMI is already completed."
+          "This EMI is already completed. ✅"
         );
 
         return;
@@ -2288,9 +1589,12 @@
       }
 
 
-      document.getElementById(
-        "paymentForm"
-      ).reset();
+      const monthly =
+        Number(
+          emi.monthlyPayment ||
+          emi.emiAmount ||
+          0
+        );
 
 
       document.getElementById(
@@ -2308,64 +1612,57 @@
 
 
       document.getElementById(
-        "paymentMonthlyAmount"
+        "paymentEmiRemaining"
       ).textContent =
-        formatMoney(
-          emi.monthlyAmount
-        );
+        money(remaining);
 
 
       document.getElementById(
-        "paymentRemaining"
+        "paymentMonthlyEmi"
       ).textContent =
-        formatMoney(
+        money(monthly);
+
+
+      document.getElementById(
+        "emiPaymentAmount"
+      ).value =
+        Math.min(
+          monthly || remaining,
           remaining
         );
 
 
       document.getElementById(
-        "paymentAmount"
+        "emiPaymentAccount"
       ).value =
-        emi.monthlyAmount ||
+        emi.accountId ||
         "";
 
 
       document.getElementById(
-        "paymentDate"
+        "emiPaymentDate"
       ).value =
-        todayString();
-
-
-      renderAccounts();
-
-
-      /*
-        Automatically select the
-        EMI's default account.
-      */
-
-      if (emi.accountId) {
-
-        document.getElementById(
-          "paymentAccount"
-        ).value =
-          emi.accountId;
-
-      }
+        today();
 
 
       document.getElementById(
-        "paymentModal"
+        "emiPaymentNote"
+      ).value =
+        "";
+
+
+      document.getElementById(
+        "emiPaymentModal"
       ).style.display =
         "flex";
 
     }
 
 
-    function closePaymentModal() {
+    function closeEmiPaymentModal() {
 
       document.getElementById(
-        "paymentModal"
+        "emiPaymentModal"
       ).style.display =
         "none";
 
@@ -2373,18 +1670,42 @@
 
 
     /* =========================
-       SAVE PAYMENT
+       SAVE EMI PAYMENT
     ========================== */
 
-    function savePayment(event) {
-
-      event.preventDefault();
-
+    function saveEmiPayment() {
 
       const emiId =
         document.getElementById(
           "paymentEmiId"
         ).value;
+
+
+      const amount =
+        Number(
+          document.getElementById(
+            "emiPaymentAmount"
+          ).value
+        ) || 0;
+
+
+      const accountId =
+        document.getElementById(
+          "emiPaymentAccount"
+        ).value;
+
+
+      const date =
+        document.getElementById(
+          "emiPaymentDate"
+        ).value ||
+        today();
+
+
+      const note =
+        document.getElementById(
+          "emiPaymentNote"
+        ).value.trim();
 
 
       const emi =
@@ -2396,44 +1717,17 @@
 
 
       if (!emi) {
+
+        alert(
+          "EMI record not found."
+        );
+
         return;
+
       }
 
 
-      const amount =
-        Number(
-          document.getElementById(
-            "paymentAmount"
-          ).value
-        );
-
-
-      const date =
-        document.getElementById(
-          "paymentDate"
-        ).value;
-
-
-      const accountId =
-        document.getElementById(
-          "paymentAccount"
-        ).value;
-
-
-      const note =
-        document.getElementById(
-          "paymentNote"
-        ).value.trim();
-
-
-      const remaining =
-        getRemaining(emi);
-
-
-      if (
-        !amount ||
-        amount <= 0
-      ) {
+      if (amount <= 0) {
 
         alert(
           "Please enter a valid payment amount."
@@ -2444,12 +1738,16 @@
       }
 
 
-      if (
-        amount > remaining
-      ) {
+      const remaining =
+        getRemaining(emi);
+
+
+      if (amount > remaining) {
 
         alert(
-          `Payment cannot be greater than remaining amount (${formatMoney(remaining)}).`
+          "Maximum payment allowed is " +
+          money(remaining) +
+          "."
         );
 
         return;
@@ -2479,7 +1777,7 @@
       if (!account) {
 
         alert(
-          "Selected account was not found."
+          "Selected account not found."
         );
 
         return;
@@ -2488,13 +1786,12 @@
 
 
       if (
-        Number(
-          account.balance || 0
-        ) < amount
+        Number(account.balance || 0) <
+        amount
       ) {
 
         alert(
-          `Not enough balance in ${account.name}.`
+          "Insufficient balance in selected account."
         );
 
         return;
@@ -2503,89 +1800,53 @@
 
 
       /*
-        Create payment history
-      */
-
-      const payment = {
-
-        id:
-          generateId(),
-
-        emiId,
-
-        amount,
-
-        date,
-
-        accountId,
-
-        note,
-
-        createdAt:
-          new Date().toISOString()
-
-      };
-
-
-      if (!walletData.emiPayments) {
-        walletData.emiPayments = [];
-      }
-
-
-      walletData.emiPayments.push(
-        payment
-      );
-
-
-      /*
-        Reduce account balance
+        Reduce actual account balance.
       */
 
       account.balance =
         Number(
           account.balance || 0
-        ) - amount;
+        ) -
+        amount;
 
 
-      /*
-        Increase paid month count
-        when payment is at least one
-        monthly EMI amount.
-      */
+      if (!walletData.emiPayments) {
 
-      if (
-        Number(emi.monthlyAmount || 0) > 0 &&
-        amount >=
-          Number(
-            emi.monthlyAmount
-          )
-      ) {
-
-        const monthsPaid =
-          Math.floor(
-            amount /
-            Number(
-              emi.monthlyAmount
-            )
-          );
-
-
-        emi.paidMonths =
-          Number(
-            emi.paidMonths || 0
-          ) + monthsPaid;
+        walletData.emiPayments =
+          [];
 
       }
 
 
+      walletData.emiPayments.push({
+
+        id:
+          generateId(),
+
+        emiId:
+          emiId,
+
+        amount:
+          amount,
+
+        accountId:
+          accountId,
+
+        date:
+          date,
+
+        note:
+          note,
+
+        createdAt:
+          new Date().toISOString()
+
+      });
+
+
       /*
-        Create expense transaction
+        EMI payment is an expense.
       */
-
-      if (!walletData.transactions) {
-        walletData.transactions = [];
-      }
-
 
       walletData.transactions.push({
 
@@ -2595,37 +1856,29 @@
         type:
           "expense",
 
-        title:
-          `EMI Payment - ${
-            emi.name ||
-            emi.emiName
-          }`,
-
         category:
           "EMI",
 
-        amount,
+        amount:
+          amount,
 
-        accountId,
+        accountId:
+          accountId,
 
-        date,
+        date:
+          date,
 
-        time:
-          new Date()
-            .toTimeString()
-            .slice(0, 5),
+        description:
+          `EMI Payment - ${emi.name || emi.emiName}`,
 
         note:
-          note ||
-          `EMI payment - ${
-            emi.name ||
-            emi.emiName
-          }`,
+          note,
 
-        emiId,
+        source:
+          "emi_payment",
 
-        emiPaymentId:
-          payment.id,
+        emiId:
+          emiId,
 
         createdAt:
           new Date().toISOString()
@@ -2634,78 +1887,72 @@
 
 
       /*
-        Move next due date forward
-        by one month.
+        Automatically move the next due date
+        forward by roughly one month.
       */
 
       if (
-        emi.nextDueDate
+        emi.dueDate
       ) {
 
-        const nextDate =
+        const due =
           new Date(
-            emi.nextDueDate +
+            emi.dueDate +
             "T00:00:00"
           );
 
 
-        nextDate.setMonth(
-          nextDate.getMonth() + 1
+        due.setMonth(
+          due.getMonth() + 1
         );
 
 
-        const year =
-          nextDate.getFullYear();
-
-
-        const month =
+        emi.dueDate =
+          due.getFullYear() +
+          "-" +
           String(
-            nextDate.getMonth() + 1
-          )
-          .padStart(
-            2,
-            "0"
-          );
-
-
-        const day =
+            due.getMonth() + 1
+          ).padStart(2, "0") +
+          "-" +
           String(
-            nextDate.getDate()
-          )
-          .padStart(
-            2,
-            "0"
-          );
-
-
-        emi.nextDueDate =
-          `${year}-${month}-${day}`;
+            due.getDate()
+          ).padStart(2, "0");
 
       }
 
 
-      saveWalletData();
+      saveData();
 
-
-      renderAccounts();
-
-      renderSummary();
-
-      applyFilters();
-
-
-      closePaymentModal();
+      walletData =
+        window.TamilandaWallet.getData();
 
 
       const newRemaining =
         getRemaining(emi);
 
 
-      alert(
-        newRemaining <= 0
-          ? "EMI fully paid! 🎉"
-          : `EMI payment saved. Remaining: ${formatMoney(newRemaining)}`
-      );
+      closeEmiPaymentModal();
+
+      populateAccounts();
+
+      renderSummary();
+      renderEmis();
+
+
+      if (newRemaining <= 0) {
+
+        alert(
+          "EMI fully completed! 🎉"
+        );
+
+      } else {
+
+        alert(
+          "EMI payment recorded. Remaining: " +
+          money(newRemaining)
+        );
+
+      }
 
     }
 
@@ -2714,7 +1961,56 @@
        PAYMENT HISTORY
     ========================== */
 
-    function openHistoryModal(id) {
+    function getEmiPayments(id) {
+
+      return (
+        walletData.emiPayments || []
+      )
+        .filter(
+          payment =>
+            payment.emiId === id
+        )
+        .sort(
+          (a, b) =>
+            new Date(
+              b.date ||
+              b.createdAt
+            ) -
+            new Date(
+              a.date ||
+              a.createdAt
+            )
+        );
+
+    }
+
+
+    function toggleHistory(id) {
+
+      const element =
+        document.getElementById(
+          "emi-history-" + id
+        );
+
+
+      if (!element) {
+        return;
+      }
+
+
+      element.style.display =
+        element.style.display === "none"
+          ? "block"
+          : "none";
+
+    }
+
+
+    /* =========================
+       DELETE EMI
+    ========================== */
+
+    function deleteEmi(id) {
 
       const emi =
         walletData.myEmis
@@ -2729,27 +2025,268 @@
       }
 
 
-      document.getElementById(
-        "historyEmiName"
-      ).textContent =
-        emi.name ||
-        emi.emiName ||
-        "EMI";
+      const payments =
+        getEmiPayments(id);
 
 
-      const history =
-        getPayments(id);
+      if (payments.length > 0) {
 
-
-      const container =
-        document.getElementById(
-          "paymentHistoryList"
+        alert(
+          "This EMI has payment history. Please keep it for accounting history. You can edit the EMI instead."
         );
+
+        return;
+
+      }
+
+
+      const remaining =
+        getRemaining(emi);
+
+
+      let message =
+        `Move ${emi.name || "this EMI"} to Trash?`;
+
+
+      if (remaining > 0) {
+
+        message +=
+          `\n\nRemaining: ${money(remaining)}`;
+
+      }
+
+
+      if (!confirm(message)) {
+        return;
+      }
 
 
       if (
-        history.length === 0
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.moveToTrash ===
+        "function"
       ) {
+
+        window.TamilandaWallet.moveToTrash(
+          "myEmis",
+          emi
+        );
+
+      } else {
+
+        walletData.trash =
+          walletData.trash ||
+          [];
+
+        walletData.trash.push({
+
+          id:
+            generateId(),
+
+          type:
+            "myEmis",
+
+          originalCollection:
+            "myEmis",
+
+          data:
+            emi,
+
+          deletedAt:
+            new Date().toISOString()
+
+        });
+
+      }
+
+
+      const index =
+        walletData.myEmis
+          .findIndex(
+            item =>
+              item.id === id
+          );
+
+
+      if (index !== -1) {
+
+        walletData.myEmis.splice(
+          index,
+          1
+        );
+
+      }
+
+
+      saveData();
+
+      walletData =
+        window.TamilandaWallet.getData();
+
+
+      renderSummary();
+      renderEmis();
+
+      alert(
+        "EMI moved to Trash. 🗑️"
+      );
+
+    }
+
+
+    /* =========================
+       RENDER
+    ========================== */
+
+    function renderEmis() {
+
+      const container =
+        document.getElementById(
+          "emiList"
+        );
+
+
+      const search =
+        document.getElementById(
+          "searchInput"
+        )
+        .value
+        .trim()
+        .toLowerCase();
+
+
+      const filter =
+        document.getElementById(
+          "statusFilter"
+        ).value;
+
+
+      let list =
+        [
+          ...(walletData.myEmis || [])
+        ];
+
+
+      list =
+        list.filter(emi => {
+
+          const remaining =
+            getRemaining(emi);
+
+
+          const completed =
+            remaining <= 0;
+
+
+          const overdue =
+            isOverdue(emi);
+
+
+          if (
+            filter === "completed" &&
+            !completed
+          ) {
+            return false;
+          }
+
+
+          if (
+            filter === "active" &&
+            (
+              completed ||
+              overdue
+            )
+          ) {
+            return false;
+          }
+
+
+          if (
+            filter === "overdue" &&
+            !overdue
+          ) {
+            return false;
+          }
+
+
+          if (!search) {
+            return true;
+          }
+
+
+          const searchable =
+            [
+              emi.name,
+              emi.emiName,
+              emi.lender,
+              emi.lenderName,
+              emi.loanNumber,
+              emi.notes
+            ]
+            .join(" ")
+            .toLowerCase();
+
+
+          return searchable.includes(
+            search
+          );
+
+        });
+
+
+      list.sort(
+        (a, b) => {
+
+          const aRemaining =
+            getRemaining(a);
+
+          const bRemaining =
+            getRemaining(b);
+
+
+          if (
+            aRemaining <= 0 &&
+            bRemaining > 0
+          ) {
+            return 1;
+          }
+
+
+          if (
+            aRemaining > 0 &&
+            bRemaining <= 0
+          ) {
+            return -1;
+          }
+
+
+          if (
+            a.dueDate &&
+            b.dueDate
+          ) {
+
+            return (
+              new Date(a.dueDate) -
+              new Date(b.dueDate)
+            );
+
+          }
+
+
+          return (
+            new Date(
+              b.createdAt || 0
+            ) -
+            new Date(
+              a.createdAt || 0
+            )
+          );
+
+        }
+      );
+
+
+      if (list.length === 0) {
 
         container.innerHTML = `
 
@@ -2760,407 +2297,1092 @@
             </div>
 
             <h3>
-              No payments yet
+              No EMI Found
             </h3>
 
             <p>
-              Already paid:
-              ${formatMoney(
-                emi.alreadyPaid || 0
-              )}
+              Add your bank, phone, bike, loan or other EMI.
             </p>
 
+            <button
+              class="primary-button"
+              onclick="openEmiForm()"
+            >
+              + Add EMI
+            </button>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      container.innerHTML =
+        list
+          .map(
+            renderEmiCard
+          )
+          .join("");
+
+    }
+
+
+    /* =========================
+       EMI CARD
+    ========================== */
+
+    function renderEmiCard(emi) {
+
+      const total =
+        Number(
+          emi.totalAmount ||
+          emi.amount ||
+          0
+        );
+
+
+      const remaining =
+        getRemaining(emi);
+
+
+      const paid =
+        getPaid(emi);
+
+
+      const monthly =
+        Number(
+          emi.monthlyPayment ||
+          emi.emiAmount ||
+          0
+        );
+
+
+      const progress =
+        total > 0
+          ? Math.min(
+              100,
+              Math.round(
+                (paid / total) * 100
+              )
+            )
+          : 0;
+
+
+      const completed =
+        remaining <= 0;
+
+
+      const overdue =
+        isOverdue(emi);
+
+
+      const days =
+        daysUntil(
+          emi.dueDate
+        );
+
+
+      let statusClass =
+        "status-warning";
+
+
+      let statusText =
+        "ACTIVE";
+
+
+      if (completed) {
+
+        statusClass =
+          "status-success";
+
+        statusText =
+          "COMPLETED";
+
+      } else if (overdue) {
+
+        statusClass =
+          "status-danger";
+
+        statusText =
+          "OVERDUE";
+
+      }
+
+
+      let dueText =
+        "";
+
+
+      if (emi.dueDate) {
+
+        if (overdue) {
+
+          dueText =
+            "Overdue";
+
+        } else if (
+          days === 0
+        ) {
+
+          dueText =
+            "Due Today";
+
+        } else if (
+          days === 1
+        ) {
+
+          dueText =
+            "Due Tomorrow";
+
+        } else {
+
+          dueText =
+            `Due in ${days} days`;
+
+        }
+
+      }
+
+
+      const payments =
+        getEmiPayments(
+          emi.id
+        );
+
+
+      let historyHtml =
+        "";
+
+
+      if (
+        payments.length === 0
+      ) {
+
+        historyHtml = `
+
+          <div class="muted-text">
+            No payment history yet.
           </div>
 
         `;
 
       } else {
 
-        const sorted =
-          [...history].sort(
-            (a, b) =>
-              String(
-                b.date || ""
-              )
-              .localeCompare(
-                String(
-                  a.date || ""
-                )
-              )
-          );
-
-
-        container.innerHTML =
-          sorted
+        historyHtml =
+          payments
             .map(
-              payment =>
-                createHistoryHtml(
-                  payment
-                )
+              payment => `
+
+                <div class="payment-history-item">
+
+                  <div>
+
+                    <strong>
+                      ${money(
+                        payment.amount
+                      )}
+                    </strong>
+
+                    <small>
+                      ${formatDate(
+                        payment.date
+                      )}
+                    </small>
+
+                  </div>
+
+                  <div>
+
+                    <small>
+                      Paid from:
+                      ${escapeHtml(
+                        getAccountName(
+                          payment.accountId
+                        )
+                      )}
+                    </small>
+
+                    ${
+                      payment.note
+                        ? `
+                          <small>
+                            ${escapeHtml(
+                              payment.note
+                            )}
+                          </small>
+                        `
+                        : ""
+                    }
+
+                  </div>
+
+                </div>
+
+              `
             )
             .join("");
 
       }
 
 
-      document.getElementById(
-        "historyModal"
-      ).style.display =
-        "flex";
-
-    }
-
-
-    function createHistoryHtml(
-      payment
-    ) {
-
-      const account =
-        walletData.accounts
-          .find(
-            item =>
-              item.id ===
-              payment.accountId
-          );
-
-
       return `
 
-        <div class="transaction-item">
+        <article class="card emi-card">
 
-          <div class="transaction-icon expense-icon">
+          <!-- HEADER -->
 
-            ↙
+          <div class="emi-header">
 
-          </div>
+            <div>
 
+              <div class="emi-title">
 
-          <div class="transaction-info">
+                <h3>
+                  ${escapeHtml(
+                    emi.name ||
+                    emi.emiName ||
+                    "Unnamed EMI"
+                  )}
+                </h3>
 
-            <div class="transaction-title">
+                <span class="${statusClass}">
+                  ${statusText}
+                </span>
 
-              EMI Payment
+              </div>
 
-            </div>
-
-
-            <div class="transaction-meta">
-
-              ${escapeHtml(
-                formatDate(
-                  payment.date
-                )
-              )}
 
               ${
-                account
-                  ? " • " +
-                    escapeHtml(
-                      account.name
-                    )
+                emi.lender ||
+                emi.lenderName
+                  ? `
+                    <p>
+                      🏦
+                      ${escapeHtml(
+                        emi.lender ||
+                        emi.lenderName
+                      )}
+                    </p>
+                  `
+                  : ""
+              }
+
+
+              ${
+                emi.loanNumber
+                  ? `
+                    <p>
+                      🔢
+                      ${escapeHtml(
+                        emi.loanNumber
+                      )}
+                    </p>
+                  `
                   : ""
               }
 
             </div>
 
 
-            ${
-              payment.note
-                ? `
-                  <div class="transaction-note">
-                    ${escapeHtml(
-                      payment.note
-                    )}
-                  </div>
-                `
-                : ""
-            }
+            <div class="emi-menu">
 
-          </div>
+              <button
+                class="icon-button"
+                onclick="editEmi('${emi.id}')"
+                title="Edit"
+              >
+                ✏️
+              </button>
 
-
-          <div class="transaction-right">
-
-            <div
-              class="transaction-amount expense-amount"
-            >
-
-              -${formatMoney(
-                payment.amount
-              )}
+              <button
+                class="icon-button"
+                onclick="deleteEmi('${emi.id}')"
+                title="Delete"
+              >
+                🗑️
+              </button>
 
             </div>
 
           </div>
 
-        </div>
+
+          <!-- PROGRESS -->
+
+          <div class="progress-section">
+
+            <div class="progress-label">
+
+              <span>
+                Payment Progress
+              </span>
+
+              <strong>
+                ${progress}%
+              </strong>
+
+            </div>
+
+
+            <div class="progress-bar">
+
+              <div
+                class="progress-fill"
+                style="width:${progress}%"
+              ></div>
+
+            </div>
+
+          </div>
+
+
+          <!-- MONEY -->
+
+          <div class="money-grid">
+
+            <div>
+
+              <span>
+                Total
+              </span>
+
+              <strong>
+                ${money(total)}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                Paid
+              </span>
+
+              <strong>
+                ${money(paid)}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                Remaining
+              </span>
+
+              <strong>
+                ${money(remaining)}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                Monthly EMI
+              </span>
+
+              <strong>
+                ${money(monthly)}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <!-- DUE -->
+
+          ${
+            emi.dueDate
+              ? `
+                <div class="info-box">
+
+                  <div>
+
+                    <span>
+                      Next Due Date
+                    </span>
+
+                    <strong>
+                      ${formatDate(
+                        emi.dueDate
+                      )}
+                    </strong>
+
+                  </div>
+
+                  <div>
+
+                    <span>
+                      Status
+                    </span>
+
+                    <strong>
+                      ${dueText}
+                    </strong>
+
+                  </div>
+
+                </div>
+              `
+              : ""
+          }
+
+
+          ${
+            emi.totalMonths
+              ? `
+                <div class="small-info">
+                  📆 Total Tenure:
+                  ${emi.totalMonths} months
+                </div>
+              `
+              : ""
+          }
+
+
+          ${
+            emi.notes
+              ? `
+                <div class="note-box">
+                  📝
+                  ${escapeHtml(
+                    emi.notes
+                  )}
+                </div>
+              `
+              : ""
+          }
+
+
+          <!-- ACTIONS -->
+
+          <div class="emi-actions">
+
+            ${
+              !completed
+                ? `
+                  <button
+                    class="primary-button"
+                    onclick="openEmiPaymentModal('${emi.id}')"
+                  >
+                    💳 Pay EMI
+                  </button>
+                `
+                : `
+                  <button
+                    class="secondary-button"
+                    disabled
+                  >
+                    ✓ EMI Completed
+                  </button>
+                `
+            }
+
+
+            <button
+              class="secondary-button"
+              onclick="toggleHistory('${emi.id}')"
+            >
+              🧾 History (${payments.length})
+            </button>
+
+          </div>
+
+
+          <!-- HISTORY -->
+
+          <div
+            id="emi-history-${emi.id}"
+            class="payment-history"
+            style="display:none;"
+          >
+
+            <h4>
+              EMI Payment History
+            </h4>
+
+            ${historyHtml}
+
+          </div>
+
+        </article>
 
       `;
 
     }
 
 
-    function closeHistoryModal() {
+    /* =========================
+       NAVIGATION
+    ========================== */
 
-      document.getElementById(
-        "historyModal"
-      ).style.display =
-        "none";
+    function goBack() {
+
+      if (
+        window.history.length > 1
+      ) {
+
+        window.history.back();
+
+      } else {
+
+        goToPage("home");
+
+      }
+
+    }
+
+
+    function goToPage(page) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.goToPage ===
+        "function"
+      ) {
+
+        window.TamilandaWallet.goToPage(
+          page
+        );
+
+        return;
+
+      }
+
+
+      const pages = {
+
+        home:
+          "../index.html",
+
+        transactions:
+          "transactions.html",
+
+        buyers:
+          "buyers.html",
+
+        accounts:
+          "accounts.html",
+
+        more:
+          "more.html"
+
+      };
+
+
+      if (pages[page]) {
+
+        window.location.href =
+          pages[page];
+
+      }
 
     }
 
 
     /* =========================
-       CLEAR FILTERS
-    ========================== */
-
-    function clearFilters() {
-
-      document.getElementById(
-        "searchInput"
-      ).value =
-        "";
-
-
-      document.getElementById(
-        "statusFilter"
-      ).value =
-        "all";
-
-
-      document.getElementById(
-        "sortFilter"
-      ).value =
-        "nextDue";
-
-
-      applyFilters();
-
-    }
-
-
-    /* =========================
-       EVENTS
-    ========================== */
-
-    function setupEvents() {
-
-      document.getElementById(
-        "addEmiButton"
-      )
-      .addEventListener(
-        "click",
-        openAddEmi
-      );
-
-
-      document.getElementById(
-        "backButton"
-      )
-      .addEventListener(
-        "click",
-        () => {
-
-          window.location.href =
-            "../index.html";
-
-        }
-      );
-
-
-      document.getElementById(
-        "searchInput"
-      )
-      .addEventListener(
-        "input",
-        applyFilters
-      );
-
-
-      document.getElementById(
-        "statusFilter"
-      )
-      .addEventListener(
-        "change",
-        applyFilters
-      );
-
-
-      document.getElementById(
-        "sortFilter"
-      )
-      .addEventListener(
-        "change",
-        applyFilters
-      );
-
-
-      document.getElementById(
-        "clearFiltersButton"
-      )
-      .addEventListener(
-        "click",
-        clearFilters
-      );
-
-
-      document.getElementById(
-        "emiForm"
-      )
-      .addEventListener(
-        "submit",
-        saveEmi
-      );
-
-
-      document.getElementById(
-        "paymentForm"
-      )
-      .addEventListener(
-        "submit",
-        savePayment
-      );
-
-
-      document.getElementById(
-        "closeEmiModal"
-      )
-      .addEventListener(
-        "click",
-        closeEmiModal
-      );
-
-
-      document.getElementById(
-        "cancelEmiButton"
-      )
-      .addEventListener(
-        "click",
-        closeEmiModal
-      );
-
-
-      document.getElementById(
-        "closePaymentModal"
-      )
-      .addEventListener(
-        "click",
-        closePaymentModal
-      );
-
-
-      document.getElementById(
-        "cancelPaymentButton"
-      )
-      .addEventListener(
-        "click",
-        closePaymentModal
-      );
-
-
-      document.getElementById(
-        "closeHistoryModal"
-      )
-      .addEventListener(
-        "click",
-        closeHistoryModal
-      );
-
-
-      /* Close modal by clicking outside */
-
-      document.getElementById(
-        "emiModal"
-      )
-      .addEventListener(
-        "click",
-        event => {
-
-          if (
-            event.target.id ===
-            "emiModal"
-          ) {
-
-            closeEmiModal();
-
-          }
-
-        }
-      );
-
-
-      document.getElementById(
-        "paymentModal"
-      )
-      .addEventListener(
-        "click",
-        event => {
-
-          if (
-            event.target.id ===
-            "paymentModal"
-          ) {
-
-            closePaymentModal();
-
-          }
-
-        }
-      );
-
-
-      document.getElementById(
-        "historyModal"
-      )
-      .addEventListener(
-        "click",
-        event => {
-
-          if (
-            event.target.id ===
-            "historyModal"
-          ) {
-
-            closeHistoryModal();
-
-          }
-
-        }
-      );
-
-    }
-
-
-    /* =========================
-       GLOBAL FUNCTIONS
-    ========================== */
-
-    window.openEditEmi =
-      openEditEmi;
-
-
-    window.deleteEmi =
-      deleteEmi;
-
-
-    window.openPaymentModal =
-      openPaymentModal;
-
-
-    window.openHistoryModal =
-      openHistoryModal;
-
-
-    /* =========================
-       START
+       OUTSIDE MODAL CLICK
     ========================== */
 
     document.addEventListener(
-      "DOMContentLoaded",
-      initializeEmi
+      "click",
+      function(event) {
+
+        const modal =
+          document.getElementById(
+            "emiPaymentModal"
+          );
+
+
+        if (
+          event.target === modal
+        ) {
+
+          closeEmiPaymentModal();
+
+        }
+
+      }
     );
 
   </script>
+
+
+  <!-- =========================
+       PAGE STYLES
+  ========================== -->
+
+  <style>
+
+    .emi-card {
+      margin-bottom: 16px;
+    }
+
+
+    .emi-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+
+    .emi-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+
+    .emi-title h3 {
+      margin: 0;
+    }
+
+
+    .emi-header p {
+      margin: 5px 0 0;
+      opacity: 0.72;
+      font-size: 13px;
+    }
+
+
+    .emi-menu {
+      display: flex;
+      gap: 4px;
+    }
+
+
+    .money-grid {
+      display: grid;
+      grid-template-columns:
+        repeat(2, 1fr);
+
+      gap: 10px;
+
+      margin: 16px 0;
+    }
+
+
+    .money-grid > div {
+      padding: 12px;
+
+      border-radius: 12px;
+
+      background:
+        rgba(255,255,255,0.04);
+    }
+
+
+    .money-grid span {
+      display: block;
+
+      font-size: 12px;
+
+      opacity: 0.7;
+
+      margin-bottom: 5px;
+    }
+
+
+    .money-grid strong {
+      font-size: 15px;
+    }
+
+
+    .status-success,
+    .status-warning,
+    .status-danger {
+
+      display: inline-block;
+
+      font-size: 10px;
+
+      font-weight: 700;
+
+      padding: 4px 8px;
+
+      border-radius: 20px;
+
+    }
+
+
+    .status-success {
+      background:
+        rgba(50,205,120,0.15);
+    }
+
+
+    .status-warning {
+      background:
+        rgba(255,180,50,0.15);
+    }
+
+
+    .status-danger {
+      background:
+        rgba(255,70,70,0.15);
+    }
+
+
+    .progress-section {
+      margin-top: 16px;
+    }
+
+
+    .progress-label {
+
+      display: flex;
+
+      justify-content:
+        space-between;
+
+      margin-bottom: 7px;
+
+      font-size: 13px;
+
+    }
+
+
+    .progress-bar {
+
+      width: 100%;
+
+      height: 7px;
+
+      border-radius: 20px;
+
+      background:
+        rgba(255,255,255,0.08);
+
+      overflow: hidden;
+
+    }
+
+
+    .progress-fill {
+
+      height: 100%;
+
+      border-radius: 20px;
+
+      background:
+        currentColor;
+
+    }
+
+
+    .emi-actions {
+
+      display: flex;
+
+      gap: 8px;
+
+      flex-wrap: wrap;
+
+      margin-top: 12px;
+
+    }
+
+
+    .emi-actions button {
+
+      flex: 1;
+
+      min-width: 150px;
+
+    }
+
+
+    .info-box {
+
+      display: flex;
+
+      justify-content:
+        space-between;
+
+      gap: 12px;
+
+      flex-wrap: wrap;
+
+      padding: 12px;
+
+      margin: 12px 0;
+
+      border-radius: 12px;
+
+      background:
+        rgba(255,255,255,0.04);
+
+    }
+
+
+    .info-box > div {
+      min-width: 110px;
+    }
+
+
+    .info-box span {
+
+      display: block;
+
+      font-size: 12px;
+
+      opacity: 0.7;
+
+      margin-bottom: 4px;
+
+    }
+
+
+    .payment-summary-box {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(2, 1fr);
+
+      gap: 10px;
+
+      margin-bottom: 15px;
+
+    }
+
+
+    .payment-summary-box > div {
+
+      padding: 14px;
+
+      border-radius: 12px;
+
+      background:
+        rgba(255,255,255,0.05);
+
+    }
+
+
+    .payment-summary-box span {
+
+      display: block;
+
+      font-size: 12px;
+
+      opacity: 0.7;
+
+      margin-bottom: 5px;
+
+    }
+
+
+    .small-info {
+
+      font-size: 13px;
+
+      opacity: 0.72;
+
+      margin: 10px 0;
+
+    }
+
+
+    .note-box {
+
+      padding: 10px 12px;
+
+      margin-top: 10px;
+
+      border-radius: 10px;
+
+      background:
+        rgba(255,255,255,0.035);
+
+      font-size: 13px;
+
+    }
+
+
+    .payment-history {
+
+      margin-top: 15px;
+
+      padding-top: 15px;
+
+      border-top:
+        1px solid
+        rgba(255,255,255,0.08);
+
+    }
+
+
+    .payment-history h4 {
+      margin-top: 0;
+    }
+
+
+    .payment-history-item {
+
+      display: flex;
+
+      justify-content:
+        space-between;
+
+      gap: 10px;
+
+      padding: 11px 0;
+
+      border-bottom:
+        1px solid
+        rgba(255,255,255,0.06);
+
+    }
+
+
+    .payment-history-item:last-child {
+      border-bottom: none;
+    }
+
+
+    .payment-history-item small {
+
+      display: block;
+
+      opacity: 0.7;
+
+      margin-top: 3px;
+
+    }
+
+
+    .muted-text {
+
+      opacity: 0.65;
+
+      font-size: 13px;
+
+    }
+
+
+    .empty-state {
+
+      text-align: center;
+
+      padding: 45px 20px;
+
+      opacity: 0.8;
+
+    }
+
+
+    .empty-icon {
+
+      font-size: 45px;
+
+      margin-bottom: 10px;
+
+    }
+
+
+    .modal {
+
+      position: fixed;
+
+      inset: 0;
+
+      z-index: 9999;
+
+      background:
+        rgba(0,0,0,0.75);
+
+      align-items: center;
+
+      justify-content: center;
+
+      padding: 18px;
+
+    }
+
+
+    .modal-content {
+
+      width: 100%;
+
+      max-width: 500px;
+
+      max-height: 90vh;
+
+      overflow-y: auto;
+
+      border-radius: 18px;
+
+      padding: 20px;
+
+      background: #111018;
+
+      box-shadow:
+        0 20px 60px
+        rgba(0,0,0,0.45);
+
+    }
+
+
+    label {
+
+      display: block;
+
+      margin-top: 12px;
+
+      margin-bottom: 6px;
+
+      font-size: 13px;
+
+      opacity: 0.85;
+
+    }
+
+
+    .section-title {
+
+      display: flex;
+
+      justify-content:
+        space-between;
+
+      align-items: center;
+
+      gap: 10px;
+
+      margin-bottom: 15px;
+
+    }
+
+
+    .section-title h2 {
+      margin: 0;
+    }
+
+
+    @media (max-width: 480px) {
+
+      .emi-actions {
+        flex-direction: column;
+      }
+
+
+      .emi-actions button {
+        width: 100%;
+      }
+
+    }
+
+  </style>
 
 </body>
 </html>
