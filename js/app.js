@@ -1877,6 +1877,371 @@ function deleteRecord(
 
 
 /* =========================================================
+   TRASH / RESTORE HELPERS
+   ========================================================= */
+
+/*
+  Trash records created by older versions may store the
+  collection name directly in item.type.
+
+  Newer / manually-created trash records may use shorter
+  names such as "transaction", "buyer", "give", etc.
+
+  This resolver supports both formats so old trash items
+  remain restorable.
+*/
+
+function resolveTrashCollection(trashItem) {
+
+  if (!trashItem) {
+    return null;
+  }
+
+  const candidates = [
+    trashItem.originalCollection,
+    trashItem.collection,
+    trashItem.type
+  ];
+
+  const aliases = {
+    transaction: "transactions",
+    transactions: "transactions",
+
+    buyer: "buyers",
+    buyers: "buyers",
+
+    account: "accounts",
+    accounts: "accounts",
+
+    give: "moneyToGive",
+    moneyToGive: "moneyToGive",
+    money_to_give: "moneyToGive",
+
+    emi: "myEmis",
+    myEmis: "myEmis",
+
+    recurring: "recurringBills",
+    recurringBills: "recurringBills",
+
+    buyerPayment: "buyerPayments",
+    buyerPayments: "buyerPayments",
+
+    givePayment: "givePayments",
+    givePayments: "givePayments",
+
+    emiPayment: "emiPayments",
+    emiPayments: "emiPayments",
+
+    recurringPayment: "recurringPayments",
+    recurringPayments: "recurringPayments"
+  };
+
+  for (const candidate of candidates) {
+
+    if (!candidate) {
+      continue;
+    }
+
+    if (
+      Object.prototype.hasOwnProperty.call(
+        walletData,
+        candidate
+      ) &&
+      Array.isArray(walletData[candidate])
+    ) {
+      return candidate;
+    }
+
+    if (aliases[candidate]) {
+      return aliases[candidate];
+    }
+  }
+
+  return null;
+}
+
+
+function findRecordById(collectionName, recordId) {
+
+  if (
+    !collectionName ||
+    !Array.isArray(walletData[collectionName])
+  ) {
+    return null;
+  }
+
+  return walletData[collectionName].find(
+    record =>
+      String(record.id) ===
+      String(recordId)
+  ) || null;
+}
+
+
+/*
+  Re-apply the account-side effect of a restored
+  transaction.
+
+  IMPORTANT:
+  Delete pages in this project already reverse the
+  account balance before moving a transaction to Trash.
+
+  Therefore restoring the transaction must apply that
+  financial effect again exactly once.
+
+  Transfer transactions are excluded because the
+  transfer operation already changed both account
+  balances and transfer records are informational
+  ledger entries.
+*/
+
+function restoreTransactionLedger(transaction) {
+
+  if (!transaction) {
+    return {
+      success: false,
+      reason: "Invalid transaction."
+    };
+  }
+
+  const type =
+    transaction.type || "";
+
+  const amount =
+    Number(transaction.amount || 0);
+
+  if (
+    !Number.isFinite(amount) ||
+    amount <= 0
+  ) {
+    return {
+      success: false,
+      reason: "Invalid transaction amount."
+    };
+  }
+
+  if (
+    isTransferTransaction(transaction)
+  ) {
+    return {
+      success: true,
+      changedBalance: false
+    };
+  }
+
+  if (
+    !isIncomeTransaction(transaction) &&
+    !isExpenseTransaction(transaction)
+  ) {
+    return {
+      success: true,
+      changedBalance: false
+    };
+  }
+
+  const account =
+    getAccountById(
+      transaction.accountId
+    );
+
+  if (!account) {
+    return {
+      success: false,
+      reason: "Linked account was not found."
+    };
+  }
+
+  const currentBalance =
+    getAccountBalance(account);
+
+  /*
+    Income restoration:
+    add the money back to the account.
+  */
+
+  if (
+    isIncomeTransaction(transaction)
+  ) {
+
+    setAccountBalance(
+      account,
+      currentBalance + amount
+    );
+
+    return {
+      success: true,
+      changedBalance: true
+    };
+  }
+
+  /*
+    Expense restoration:
+    the deleted expense needs to be applied again,
+    so the account balance must decrease.
+
+    Do not allow a negative balance during restore.
+  */
+
+  if (
+    isExpenseTransaction(transaction)
+  ) {
+
+    if (amount > currentBalance) {
+      return {
+        success: false,
+        reason:
+          "Insufficient balance in the linked account to restore this expense."
+      };
+    }
+
+    setAccountBalance(
+      account,
+      currentBalance - amount
+    );
+
+    return {
+      success: true,
+      changedBalance: true
+    };
+  }
+
+  return {
+    success: true,
+    changedBalance: false
+  };
+}
+
+
+/*
+  Restore one trash item.
+
+  Returns an object instead of only true/false so the
+  Trash page can show a useful failure reason.
+*/
+
+function restoreTrashItemByIndex(index) {
+
+  if (
+    !Number.isInteger(index) ||
+    index < 0 ||
+    index >= walletData.trash.length
+  ) {
+    return {
+      success: false,
+      reason: "Trash item not found."
+    };
+  }
+
+  const trashItem =
+    walletData.trash[index];
+
+  if (
+    !trashItem ||
+    !trashItem.data
+  ) {
+    return {
+      success: false,
+      reason: "Trash item data is missing."
+    };
+  }
+
+  const collection =
+    resolveTrashCollection(
+      trashItem
+    );
+
+  if (!collection) {
+    return {
+      success: false,
+      reason:
+        "Original wallet collection could not be identified."
+    };
+  }
+
+  const recordId =
+    trashItem.data.id ||
+    trashItem.originalId ||
+    null;
+
+  /*
+    If the record already exists, it is already restored.
+    Remove only the duplicate Trash copy.
+    DO NOT apply the ledger again.
+  */
+
+  if (
+    recordId !== null &&
+    findRecordById(
+      collection,
+      recordId
+    )
+  ) {
+
+    walletData.trash.splice(
+      index,
+      1
+    );
+
+    return {
+      success: true,
+      alreadyExists: true,
+      changedBalance: false
+    };
+  }
+
+  /*
+    Transaction restore must re-apply the financial
+    account effect before the transaction is restored.
+  */
+
+  if (
+    collection === "transactions"
+  ) {
+
+    const ledgerResult =
+      restoreTransactionLedger(
+        trashItem.data
+      );
+
+    if (!ledgerResult.success) {
+      return {
+        success: false,
+        reason: ledgerResult.reason ||
+          "Transaction balance could not be restored."
+      };
+    }
+  }
+
+  /*
+    Restore the actual record.
+  */
+
+  walletData[collection].push(
+    deepClone(
+      trashItem.data
+    )
+  );
+
+  /*
+    Only remove the Trash entry AFTER the complete
+    restoration succeeds.
+  */
+
+  walletData.trash.splice(
+    index,
+    1
+  );
+
+  return {
+    success: true,
+    collection: collection,
+    changedBalance:
+      collection === "transactions"
+  };
+}
+
+
+/* =========================================================
    RESTORE FROM TRASH
    ========================================================= */
 
@@ -1891,80 +2256,29 @@ function restoreFromTrash(
         String(trashId)
     );
 
-
   if (index === -1) {
-
     return false;
-
   }
 
-
-  const trashItem =
-    walletData.trash[index];
-
-
-  if (
-    !trashItem.data ||
-    !trashItem.type
-  ) {
-
-    return false;
-
-  }
-
-
-  const collection =
-    trashItem.type;
-
-
-  if (
-    !Array.isArray(
-      walletData[collection]
-    )
-  ) {
-
-    return false;
-
-  }
-
-
-  /*
-    Avoid duplicate restoration.
-  */
-
-  const alreadyExists =
-    walletData[collection].some(
-      item =>
-        String(item.id) ===
-        String(
-          trashItem.data.id
-        )
+  const result =
+    restoreTrashItemByIndex(
+      index
     );
 
+  if (!result.success) {
 
-  if (!alreadyExists) {
-
-    walletData[collection].push(
-      deepClone(
-        trashItem.data
-      )
+    console.error(
+      "Restore failed:",
+      result.reason
     );
 
+    return false;
   }
-
-
-  walletData.trash.splice(
-    index,
-    1
-  );
-
 
   saveWalletData();
-
   updateDashboard();
 
   return true;
-
 }
 
 
@@ -1974,56 +2288,122 @@ function restoreFromTrash(
 
 function restoreAllFromTrash() {
 
-  const trashItems =
-    [...walletData.trash];
+  if (
+    !Array.isArray(walletData.trash) ||
+    walletData.trash.length === 0
+  ) {
+    return {
+      success: true,
+      restored: 0,
+      failed: 0,
+      failedItems: []
+    };
+  }
 
+  /*
+    Work from the end so removing an item does not
+    change the index of items that are still pending.
 
-  trashItems.reverse()
-    .forEach(
-      item => {
+    Non-transaction records can be restored first.
+    Transactions are restored afterwards so their linked
+    accounts are more likely to already exist.
+  */
 
-        if (
-          item.data &&
-          item.type &&
-          Array.isArray(
-            walletData[item.type]
-          )
-        ) {
+  const transactionItems = [];
+  const otherItems = [];
 
-          const exists =
-            walletData[item.type].some(
-              record =>
-                String(record.id) ===
-                String(item.data.id)
-            );
+  walletData.trash.forEach(
+    (item, index) => {
 
+      const collection =
+        resolveTrashCollection(item);
 
-          if (!exists) {
-
-            walletData[
-              item.type
-            ].push(
-              deepClone(
-                item.data
-              )
-            );
-
-          }
-
-        }
-
+      if (
+        collection === "transactions"
+      ) {
+        transactionItems.push(index);
+      } else {
+        otherItems.push(index);
       }
-    );
 
+    }
+  );
 
-  walletData.trash = [];
+  /*
+    Convert original indexes into stable Trash IDs.
+  */
+
+  const restoreIds = [
+    ...otherItems,
+    ...transactionItems
+  ]
+    .map(
+      index =>
+        walletData.trash[index]?.id
+    )
+    .filter(Boolean);
+
+  let restored = 0;
+  let failed = 0;
+  const failedItems = [];
+
+  restoreIds.forEach(
+    trashId => {
+
+      const currentIndex =
+        walletData.trash.findIndex(
+          item =>
+            String(item.id) ===
+            String(trashId)
+        );
+
+      if (currentIndex === -1) {
+        return;
+      }
+
+      const result =
+        restoreTrashItemByIndex(
+          currentIndex
+        );
+
+      if (result.success) {
+
+        restored++;
+
+      } else {
+
+        failed++;
+
+        const item =
+          walletData.trash[currentIndex];
+
+        failedItems.push({
+          id: item?.id || trashId,
+          title:
+            item?.data?.description ||
+            item?.data?.name ||
+            item?.data?.personName ||
+            item?.data?.buyerName ||
+            item?.data?.accountName ||
+            "Unknown item",
+          reason:
+            result.reason ||
+            "Restore failed."
+        });
+      }
+
+    }
+  );
 
   saveWalletData();
-
   updateDashboard();
 
-  return true;
-
+  return {
+    success: failed === 0,
+    restored: restored,
+    failed: failed,
+    failedItems: failedItems
+  };
 }
 
 
