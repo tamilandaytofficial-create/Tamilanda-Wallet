@@ -335,6 +335,61 @@
     }
 
 
+
+    .notification-controls {
+      margin-bottom: 20px;
+      padding: 16px;
+      border-radius: 17px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.035);
+    }
+
+    .notification-controls-title {
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .notification-controls-text {
+      font-size: 12px;
+      line-height: 1.5;
+      opacity: 0.55;
+      margin-bottom: 13px;
+    }
+
+    .notification-controls-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .notification-action {
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.10);
+      color: inherit;
+      border-radius: 12px;
+      padding: 10px 13px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .notification-action.secondary {
+      background: rgba(255,255,255,0.035);
+    }
+
+    .notification-action:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .notification-permission {
+      margin-top: 10px;
+      font-size: 11px;
+      line-height: 1.5;
+      opacity: 0.45;
+    }
+
     @media (max-width: 360px) {
 
       .summary-grid {
@@ -472,6 +527,32 @@
 
       </div>
 
+
+
+      <!-- =========================
+           NOTIFICATION CONTROLS
+      ========================== -->
+
+      <div class="notification-controls">
+        <div class="notification-controls-title">🔔 Reminder Notifications</div>
+        <div class="notification-controls-text">
+          Get browser alerts for overdue and upcoming payments when Tamilanda Wallet is open.
+        </div>
+
+        <div class="notification-controls-row">
+          <button class="notification-action" id="enableNotifications">
+            Enable Notifications
+          </button>
+
+          <button class="notification-action secondary" id="checkNotifications">
+            Check Now
+          </button>
+        </div>
+
+        <div class="notification-permission" id="notificationPermission">
+          Browser notifications are not enabled.
+        </div>
+      </div>
 
       <!-- =========================
            FILTERS
@@ -658,84 +739,35 @@
            DATA
         ========================== */
 
-        let walletData =
-          window.TamilandaWallet &&
-          window.TamilandaWallet.getData
-            ? window.TamilandaWallet.getData()
-            : null;
+        let walletData = null;
 
+        function loadWalletData() {
 
-        if (!walletData) {
-
-          try {
-
-            walletData = JSON.parse(
-              localStorage.getItem(
-                "tamilanda_wallet_data"
-              )
-            ) || {};
-
-          } catch (error) {
-
-            walletData = {};
-
+          if (
+            window.TamilandaWallet &&
+            typeof window.TamilandaWallet.getData === "function"
+          ) {
+            walletData = window.TamilandaWallet.getData() || {};
+            return;
           }
 
+          try {
+            walletData =
+              JSON.parse(
+                localStorage.getItem("tamilanda_wallet_data")
+              ) || {};
+          } catch (error) {
+            walletData = {};
+          }
         }
 
+        loadWalletData();
 
-        const accounts =
-          Array.isArray(walletData.accounts)
-            ? walletData.accounts
+        function collection(name) {
+          return Array.isArray(walletData[name])
+            ? walletData[name]
             : [];
-
-
-        const buyers =
-          Array.isArray(walletData.buyers)
-            ? walletData.buyers
-            : [];
-
-
-        const moneyToGive =
-          Array.isArray(walletData.moneyToGive)
-            ? walletData.moneyToGive
-            : [];
-
-
-        const myEmis =
-          Array.isArray(walletData.myEmis)
-            ? walletData.myEmis
-            : [];
-
-
-        const recurringBills =
-          Array.isArray(walletData.recurringBills)
-            ? walletData.recurringBills
-            : [];
-
-
-        const buyerPayments =
-          Array.isArray(walletData.buyerPayments)
-            ? walletData.buyerPayments
-            : [];
-
-
-        const givePayments =
-          Array.isArray(walletData.givePayments)
-            ? walletData.givePayments
-            : [];
-
-
-        const emiPayments =
-          Array.isArray(walletData.emiPayments)
-            ? walletData.emiPayments
-            : [];
-
-
-        const recurringPayments =
-          Array.isArray(walletData.recurringPayments)
-            ? walletData.recurringPayments
-            : [];
+        }
 
 
         /* =========================
@@ -889,7 +921,23 @@
            BUILD ALERTS
         ========================== */
 
-        const alerts = [];
+        let alerts = [];
+
+        function buildAlerts() {
+
+          loadWalletData();
+
+          const accounts = collection("accounts");
+          const buyers = collection("buyers");
+          const moneyToGive = collection("moneyToGive");
+          const myEmis = collection("myEmis");
+          const recurringBills = collection("recurringBills");
+          const buyerPayments = collection("buyerPayments");
+          const givePayments = collection("givePayments");
+          const emiPayments = collection("emiPayments");
+          const recurringPayments = collection("recurringPayments");
+
+          alerts = [];
 
 
         /*
@@ -1309,170 +1357,40 @@
         );
 
 
-        /* =========================
-           SORT
-        ========================== */
-
-        alerts.sort(
-          (
-            first,
-            second
-          ) => {
-
-            if (
-              first.dayDifference <
-              second.dayDifference
-            ) {
-
-              return -1;
-
-            }
-
-            if (
-              first.dayDifference >
-              second.dayDifference
-            ) {
-
-              return 1;
-
-            }
-
-            return 0;
-
-          }
-        );
-
-
-        /* =========================
-           SUMMARY
-        ========================== */
-
-        const overdueAlerts =
-          alerts.filter(
-            item =>
-              item.dayDifference < 0
+          alerts.sort(
+            (first, second) =>
+              first.dayDifference - second.dayDifference
           );
 
-
-        const upcomingAlerts =
-          alerts.filter(
-            item =>
-              item.dayDifference >= 0
-          );
+          return alerts;
+        }
 
 
-        const receiveAmount =
-          alerts
-            .filter(
-              item =>
-                item.type === "receive"
-            )
-            .reduce(
-              (
-                total,
-                item
-              ) =>
-                total +
-                item.amount,
-              0
-            );
-
-
-        const payAmount =
-          alerts
-            .filter(
-              item =>
-                item.type === "pay"
-            )
-            .reduce(
-              (
-                total,
-                item
-              ) =>
-                total +
-                item.amount,
-              0
-            );
-
-
-        document.getElementById(
-          "overdueCount"
-        ).textContent =
-          overdueAlerts.length;
-
-
-        document.getElementById(
-          "upcomingCount"
-        ).textContent =
-          upcomingAlerts.length;
-
-
-        document.getElementById(
-          "toReceive"
-        ).textContent =
-          money(receiveAmount);
-
-
-        document.getElementById(
-          "toPay"
-        ).textContent =
-          money(payAmount);
-
-
-        /* =========================
-           RENDER
-        ========================== */
-
-        const list =
-          document.getElementById(
-            "notificationList"
-          );
-
+        let currentFilter = "all";
 
         function getStatus(item) {
 
-          if (
-            item.dayDifference < 0
-          ) {
-
+          if (item.dayDifference < 0) {
             return {
               text:
-                Math.abs(
-                  item.dayDifference
-                ) +
+                Math.abs(item.dayDifference) +
                 " day" +
                 (
-                  Math.abs(
-                    item.dayDifference
-                  ) === 1
+                  Math.abs(item.dayDifference) === 1
                     ? ""
                     : "s"
                 ) +
                 " overdue",
-
-              badge:
-                "OVERDUE"
-
+              badge: "OVERDUE"
             };
-
           }
 
-
-          if (
-            item.dayDifference === 0
-          ) {
-
+          if (item.dayDifference === 0) {
             return {
-              text:
-                "Due today",
-
-              badge:
-                "TODAY"
-
+              text: "Due today",
+              badge: "TODAY"
             };
-
           }
-
 
           return {
             text:
@@ -1484,223 +1402,380 @@
                   ? ""
                   : "s"
               ),
-
-            badge:
-              "UPCOMING"
-
+            badge: "UPCOMING"
           };
-
         }
 
+        function updateSummary() {
 
-        function render(
-          filter = "all"
-        ) {
+          const overdueAlerts =
+            alerts.filter(
+              item => item.dayDifference < 0
+            );
 
-          let filtered =
-            alerts;
+          const upcomingAlerts =
+            alerts.filter(
+              item => item.dayDifference >= 0
+            );
 
-
-          if (
-            filter === "overdue"
-          ) {
-
-            filtered =
-              alerts.filter(
-                item =>
-                  item.dayDifference < 0
+          const receiveAmount =
+            alerts
+              .filter(item => item.type === "receive")
+              .reduce(
+                (total, item) =>
+                  total + item.amount,
+                0
               );
 
-          }
-
-
-          if (
-            filter === "upcoming"
-          ) {
-
-            filtered =
-              alerts.filter(
-                item =>
-                  item.dayDifference >= 0
+          const payAmount =
+            alerts
+              .filter(item => item.type === "pay")
+              .reduce(
+                (total, item) =>
+                  total + item.amount,
+                0
               );
 
-          }
+          document.getElementById("overdueCount").textContent =
+            overdueAlerts.length;
 
+          document.getElementById("upcomingCount").textContent =
+            upcomingAlerts.length;
 
-          if (
-            filter === "receive"
-          ) {
+          document.getElementById("toReceive").textContent =
+            money(receiveAmount);
 
+          document.getElementById("toPay").textContent =
+            money(payAmount);
+        }
+
+        const list =
+          document.getElementById("notificationList");
+
+        function render(filter = currentFilter) {
+
+          currentFilter = filter;
+          buildAlerts();
+          updateSummary();
+
+          let filtered = alerts;
+
+          if (filter === "overdue") {
             filtered =
               alerts.filter(
-                item =>
-                  item.type === "receive"
+                item => item.dayDifference < 0
               );
-
           }
 
-
-          if (
-            filter === "pay"
-          ) {
-
+          if (filter === "upcoming") {
             filtered =
               alerts.filter(
-                item =>
-                  item.type === "pay"
+                item => item.dayDifference >= 0
               );
-
           }
 
+          if (filter === "receive") {
+            filtered =
+              alerts.filter(
+                item => item.type === "receive"
+              );
+          }
 
-          if (
-            filtered.length === 0
-          ) {
+          if (filter === "pay") {
+            filtered =
+              alerts.filter(
+                item => item.type === "pay"
+              );
+          }
 
+          if (filtered.length === 0) {
             list.innerHTML = `
-
               <div class="empty-state">
-
-                <div class="empty-icon">
-                  🔔
-                </div>
-
+                <div class="empty-icon">🔔</div>
                 <div class="empty-title">
                   No payment alerts
                 </div>
-
                 <div class="empty-text">
                   You don't have any matching
                   upcoming or overdue payments.
                 </div>
-
               </div>
-
             `;
-
             return;
-
           }
-
 
           list.innerHTML =
             filtered
-              .map(
-                item => {
+              .map(item => {
 
-                  const status =
-                    getStatus(item);
+                const status = getStatus(item);
 
+                const direction =
+                  item.type === "receive"
+                    ? "To Receive"
+                    : "To Pay";
 
-                  const direction =
-                    item.type === "receive"
-                      ? "To Receive"
-                      : "To Pay";
-
-
-                  return `
-
-                    <div
-                      class="notification-item"
-                      data-link="${escapeHtml(
-                        item.link
-                      )}"
-                      style="cursor:pointer;"
-                    >
-
-                      <div class="notification-icon">
-                        ${item.icon}
-                      </div>
-
-
-                      <div class="notification-content">
-
-                        <div class="notification-title">
-                          ${escapeHtml(
-                            item.title
-                          )}
-                        </div>
-
-
-                        <div class="notification-description">
-                          ${escapeHtml(
-                            item.description
-                          )}
-                        </div>
-
-
-                        <div class="notification-amount">
-                          ${escapeHtml(
-                            money(item.amount)
-                          )}
-                        </div>
-
-
-                        <div class="notification-meta">
-                          ${direction}
-                          •
-                          Due:
-                          ${escapeHtml(
-                            formatDate(
-                              item.dueDate
-                            )
-                          )}
-                          •
-                          ${escapeHtml(
-                            status.text
-                          )}
-                        </div>
-
-                      </div>
-
-
-                      <div>
-                        <span class="status-badge">
-                          ${status.badge}
-                        </span>
-                      </div>
-
+                return `
+                  <div
+                    class="notification-item"
+                    data-link="${escapeHtml(item.link)}"
+                    style="cursor:pointer;"
+                  >
+                    <div class="notification-icon">
+                      ${item.icon}
                     </div>
 
-                  `;
+                    <div class="notification-content">
+                      <div class="notification-title">
+                        ${escapeHtml(item.title)}
+                      </div>
 
-                }
-              )
+                      <div class="notification-description">
+                        ${escapeHtml(item.description)}
+                      </div>
+
+                      <div class="notification-amount">
+                        ${escapeHtml(money(item.amount))}
+                      </div>
+
+                      <div class="notification-meta">
+                        ${direction}
+                        • Due:
+                        ${escapeHtml(formatDate(item.dueDate))}
+                        •
+                        ${escapeHtml(status.text)}
+                      </div>
+                    </div>
+
+                    <div>
+                      <span class="status-badge">
+                        ${status.badge}
+                      </span>
+                    </div>
+                  </div>
+                `;
+              })
               .join("");
 
-
           list
-            .querySelectorAll(
-              ".notification-item"
-            )
-            .forEach(
-              item => {
+            .querySelectorAll(".notification-item")
+            .forEach(item => {
 
-                item.addEventListener(
-                  "click",
-                  () => {
+              item.addEventListener(
+                "click",
+                () => {
 
-                    const link =
-                      item.dataset.link;
+                  const link = item.dataset.link;
 
-                    if (link) {
-
-                      window.location.href =
-                        link;
-
-                    }
-
+                  if (link) {
+                    window.location.href = link;
                   }
-                );
+                }
+              );
+            });
+        }
 
+        function getNotificationPermissionText() {
+
+          const permissionBox =
+            document.getElementById("notificationPermission");
+
+          const button =
+            document.getElementById("enableNotifications");
+
+          if (!("Notification" in window)) {
+            permissionBox.textContent =
+              "Browser notifications are not supported here. In-app alerts will still work.";
+
+            button.disabled = true;
+            return;
+          }
+
+          if (Notification.permission === "granted") {
+            permissionBox.textContent =
+              "Browser notifications are enabled. 🔔";
+
+            button.textContent = "Notifications Enabled";
+            return;
+          }
+
+          if (Notification.permission === "denied") {
+            permissionBox.textContent =
+              "Notifications are blocked by your browser. Enable them in browser/site settings.";
+
+            button.textContent = "Notifications Blocked";
+            return;
+          }
+
+          permissionBox.textContent =
+            "Tap Enable Notifications to allow reminder alerts.";
+        }
+
+        function reminderKey(item) {
+
+          return [
+            "tamilanda_wallet_reminder",
+            item.source,
+            item.id,
+            item.dueDate,
+            item.dayDifference < 0
+              ? "overdue"
+              : item.dayDifference === 0
+                ? "today"
+                : "upcoming"
+          ].join("_");
+        }
+
+        function sendBrowserReminder(item) {
+
+          if (
+            !("Notification" in window) ||
+            Notification.permission !== "granted"
+          ) {
+            return;
+          }
+
+          const key = reminderKey(item);
+
+          if (localStorage.getItem(key) === "1") {
+            return;
+          }
+
+          const timing =
+            item.dayDifference < 0
+              ? "Overdue"
+              : item.dayDifference === 0
+                ? "Due today"
+                : "Upcoming";
+
+          const direction =
+            item.type === "receive"
+              ? "To receive"
+              : "To pay";
+
+          try {
+
+            new Notification(
+              "Tamilanda Wallet • " + timing,
+              {
+                body:
+                  item.title +
+                  " • " +
+                  direction +
+                  " " +
+                  money(item.amount) +
+                  (
+                    item.dayDifference < 0
+                      ? ""
+                      : " • " + formatDate(item.dueDate)
+                  ),
+                icon: "../icons/icon-192.png",
+                tag: key
               }
             );
 
+            localStorage.setItem(key, "1");
+
+          } catch (error) {
+            // In-app reminders remain available if browser notifications fail.
+          }
         }
 
+        function checkBrowserReminders() {
+
+          buildAlerts();
+
+          alerts.forEach(item => {
+
+            /*
+             * Reminder window:
+             * - overdue
+             * - due today
+             * - due within 3 days
+             */
+            if (
+              item.dayDifference <= 3
+            ) {
+              sendBrowserReminder(item);
+            }
+          });
+        }
+
+        document
+          .getElementById("enableNotifications")
+          .addEventListener(
+            "click",
+            async () => {
+
+              if (!("Notification" in window)) {
+                getNotificationPermissionText();
+                return;
+              }
+
+              try {
+
+                const permission =
+                  await Notification.requestPermission();
+
+                getNotificationPermissionText();
+
+                if (permission === "granted") {
+                  checkBrowserReminders();
+                }
+
+              } catch (error) {
+
+                getNotificationPermissionText();
+
+              }
+            }
+          );
+
+        document
+          .getElementById("checkNotifications")
+          .addEventListener(
+            "click",
+            () => {
+
+              render(currentFilter);
+              checkBrowserReminders();
+
+            }
+          );
+
+        getNotificationPermissionText();
 
         render("all");
 
+        /* =========================
+           REFRESH WHEN WALLET DATA CHANGES
+        ========================== */
+
+        window.addEventListener(
+          "storage",
+          event => {
+
+            if (
+              event.key === "tamilanda_wallet_data"
+            ) {
+              render(currentFilter);
+              checkBrowserReminders();
+            }
+
+          }
+        );
+
+        document.addEventListener(
+          "visibilitychange",
+          () => {
+
+            if (!document.hidden) {
+              render(currentFilter);
+              checkBrowserReminders();
+            }
+
+          }
+        );
 
         /* =========================
            FILTER BUTTONS
