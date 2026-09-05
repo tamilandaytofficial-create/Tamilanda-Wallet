@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Privacy & Security - Tamilanda Wallet</title>
+
+  <link rel="manifest" href="../manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png">
+  <link rel="apple-touch-icon" href="../icons/icon-192.png">
+
+  <link rel="stylesheet" href="../css/style.css">
+
+  <style>
+    .privacy-page {
+      padding-bottom: 110px;
+    }
+
+    .privacy-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .back-button {
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 13px;
+      background: rgba(255,255,255,0.06);
+      color: inherit;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .privacy-header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .security-card {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.035);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .security-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 25px;
+      background: rgba(255,255,255,0.07);
+      margin-bottom: 14px;
+    }
+
+    .security-card h2 {
+      margin: 0 0 8px;
+      font-size: 17px;
+    }
+
+    .security-card p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.65;
+      opacity: 0.65;
+    }
+
+    .security-list {
+      margin: 12px 0 0;
+      padding-left: 20px;
+    }
+
+    .security-list li {
+      margin-bottom: 9px;
+      font-size: 13px;
+      line-height: 1.5;
+      opacity: 0.7;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .status-label {
+      font-size: 13px;
+      opacity: 0.65;
+    }
+
+    .status-badge {
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(255,255,255,0.07);
+    }
+
+    .future-box {
+      border: 1px dashed rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.025);
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 12px;
+    }
+
+    .future-box strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 13px;
+    }
+
+    .future-box span {
+      font-size: 12px;
+      opacity: 0.55;
+      line-height: 1.5;
+    }
+
+    .privacy-note {
+      text-align: center;
+      margin-top: 26px;
+      font-size: 12px;
+      line-height: 1.6;
+      opacity: 0.4;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app-container">
+
+    <main class="page-content privacy-page">
+
+      <!-- Header -->
+      <div class="privacy-header">
+
+        <button
+          class="back-button"
+          id="backButton"
+          aria-label="Go back">
+          ‹
+        </button>
+
+        <h1>Privacy & Security</h1>
+
+      </div>
+
+
+      <!-- Local Storage -->
+      <section class="security-card">
+
+        <div class="security-icon">🔐</div>
+
+        <h2>Your Wallet Data</h2>
+
+        <p>
+          Tamilanda Wallet is designed as a local-first wallet.
+          Your wallet information is currently stored inside this
+          browser/device using local storage.
+        </p>
+
+        <ul class="security-list">
+          <li>Accounts and balances</li>
+          <li>Income and expenses</li>
+          <li>Transactions</li>
+          <li>Buyer and EMI information</li>
+          <li>Money To Give records</li>
+          <li>Recurring payment information</li>
+        </ul>
+
+        <div class="status-row">
+          <span class="status-label">Current storage</span>
+          <span class="status-badge">LOCAL DEVICE</span>
+        </div>
+
+      </section>
+
+
+      <!-- No Account -->
+      <section class="security-card">
+
+        <div class="security-icon">📱</div>
+
+        <h2>No Cloud Account Required</h2>
+
+        <p>
+          The current version does not require you to create a
+          Tamilanda account or sign in to use the wallet.
+        </p>
+
+      </section>
+
+
+      <!-- Backup -->
+      <section class="security-card">
+
+        <div class="security-icon">💾</div>
+
+        <h2>Backup & Restore</h2>
+
+        <p>
+          You can create a backup of your wallet data from
+          Settings and restore it later.
+        </p>
+
+        <div class="future-box">
+
+          <strong>Important</strong>
+
+          <span>
+            Keep your backup file in a safe place. Anyone who gets
+            access to an unencrypted backup may be able to read
+            the wallet information inside it.
+          </span>
+
+        </div>
+
+      </section>
+
+
+      <!-- Security Roadmap -->
+      <section class="security-card">
+
+        <div class="security-icon">🛡️</div>
+
+        <h2>Security Roadmap</h2>
+
+        <p>
+          Additional security features can be added as the wallet
+          grows.
+        </p>
+
+        <ul class="security-list">
+          <li>App PIN lock</li>
+          <li>Biometric unlock</li>
+          <li>Encrypted backup</li>
+          <li>Secure restore confirmation</li>
+          <li>Session/app lock</li>
+        </ul>
+
+        <div class="status-row">
+          <span class="status-label">Advanced security</span>
+          <span class="status-badge">PLANNED</span>
+        </div>
+
+      </section>
+
+
+      <!-- Data Control -->
+      <section class="security-card">
+
+        <div class="security-icon">🗑️</div>
+
+        <h2>Your Data Control</h2>
+
+        <p>
+          You can export your wallet backup or clear the wallet
+          data from the Settings page.
+        </p>
+
+        <div class="future-box">
+
+          <strong>Before deleting</strong>
+
+          <span>
+            Always create a backup if you may need the wallet data
+            again in the future.
+          </span>
+
+        </div>
+
+      </section>
+
+
+      <div class="privacy-note">
+        TAMILANDA WALLET<br>
+        Your money. Your control. 🔒
+      </div>
+
+    </main>
+
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+
+      <button class="nav-item" data-page="home">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Home</span>
+      </button>
+
+      <button class="nav-item" data-page="transactions">
+        <span class="nav-icon">📋</span>
+        <span class="nav-label">Transactions</span>
+      </button>
+
+      <button class="nav-item" data-page="buyers">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">Buyers</span>
+      </button>
+
+      <button class="nav-item" data-page="accounts">
+        <span class="nav-icon">🏦</span>
+        <span class="nav-label">Accounts</span>
+      </button>
+
+      <button class="nav-item" data-page="more">
+        <span class="nav-icon">☰</span>
+        <span class="nav-label">More</span>
+      </button>
+
+    </nav>
+
+  </div>
+
+
+  <script src="../js/app.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+      // Back button
+      document.getElementById("backButton").addEventListener("click", () => {
+
+        if (document.referrer) {
+          history.back();
+        } else {
+          window.location.href = "./more.html";
+        }
+
+      });
+
+
+      // Bottom navigation
+      document.querySelectorAll(".bottom-nav .nav-item").forEach(item => {
+
+        item.addEventListener("click", () => {
+
+          const page = item.dataset.page;
+
+          if (page === "home") {
+            window.location.href = "../index.html";
+          }
+
+          else if (page === "transactions") {
+            window.location.href = "./transactions.html";
+          }
+
+          else if (page === "buyers") {
+            window.location.href = "./buyers.html";
+          }
+
+          else if (page === "accounts") {
+            window.location.href = "./accounts.html";
+          }
+
+          else if (page === "more") {
+            window.location.href = "./more.html";
+          }
+
+        });
+
+      });
+
+    });
+  </script>
+
+</body>
+</html>
