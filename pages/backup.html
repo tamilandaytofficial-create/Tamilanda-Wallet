@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Backup - Tamilanda Wallet</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+
+  <style>
+    .page-header {
+      padding: 22px 16px 12px;
+    }
+
+    .page-header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .page-header p {
+      margin: 5px 0 0;
+      font-size: 13px;
+      opacity: 0.6;
+    }
+
+    .section {
+      padding: 0 16px;
+      margin-bottom: 16px;
+    }
+
+    .card {
+      padding: 17px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .card h3 {
+      margin: 0 0 7px;
+      font-size: 16px;
+    }
+
+    .card p {
+      margin: 0 0 14px;
+      font-size: 11px;
+      line-height: 1.6;
+      opacity: 0.6;
+    }
+
+    .button {
+      width: 100%;
+      border: 0;
+      border-radius: 11px;
+      padding: 12px;
+      margin-top: 8px;
+      background: rgba(255,255,255,0.1);
+      color: inherit;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .button.primary {
+      background: rgba(74,222,128,0.14);
+    }
+
+    .button.danger {
+      background: rgba(244,63,94,0.12);
+      color: #fb7185;
+    }
+
+    .file-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.05);
+      color: inherit;
+      border: 1px solid rgba(255,255,255,0.1);
+      margin-top: 4px;
+    }
+
+    .status {
+      padding: 12px;
+      border-radius: 11px;
+      background: rgba(255,255,255,0.04);
+      font-size: 11px;
+      line-height: 1.5;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .stat {
+      padding: 11px;
+      border-radius: 11px;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .stat small {
+      display: block;
+      opacity: 0.55;
+      font-size: 10px;
+      margin-bottom: 4px;
+    }
+
+    .stat strong {
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page-header">
+    <h1>💾 Backup & Restore</h1>
+    <p>Keep a copy of your Tamilanda Wallet data</p>
+  </div>
+
+
+  <!-- CURRENT DATA -->
+  <div class="section">
+
+    <div class="card">
+
+      <h3>📊 Current Data</h3>
+
+      <p>
+        Download your wallet data as a JSON backup file.
+        Keep this file somewhere safe.
+      </p>
+
+      <div class="stats">
+
+        <div class="stat">
+          <small>Accounts</small>
+          <strong id="accountCount">0</strong>
+        </div>
+
+        <div class="stat">
+          <small>Transactions</small>
+          <strong id="transactionCount">0</strong>
+        </div>
+
+        <div class="stat">
+          <small>Buyers</small>
+          <strong id="buyerCount">0</strong>
+        </div>
+
+        <div class="stat">
+          <small>EMIs</small>
+          <strong id="emiCount">0</strong>
+        </div>
+
+      </div>
+
+      <button
+        class="button primary"
+        onclick="downloadBackup()"
+      >
+        ⬇️ Download Backup
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- RESTORE -->
+  <div class="section">
+
+    <div class="card">
+
+      <h3>♻️ Restore Backup</h3>
+
+      <p>
+        Select a previously downloaded Tamilanda Wallet
+        JSON backup file.
+      </p>
+
+      <input
+        class="file-input"
+        type="file"
+        id="backupFile"
+        accept=".json,application/json"
+      >
+
+      <button
+        class="button"
+        onclick="restoreBackup()"
+      >
+        ♻️ Restore Data
+      </button>
+
+      <div
+        class="status"
+        id="status"
+      ></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- WARNING -->
+  <div class="section">
+
+    <div class="card">
+
+      <h3>⚠️ Important</h3>
+
+      <p>
+        Restoring a backup replaces the current wallet data.
+        Always download your current backup before restoring
+        another file.
+      </p>
+
+      <button
+        class="button danger"
+        onclick="downloadBackup()"
+      >
+        💾 Backup Current Data First
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+
+    <button onclick="location.href='../index.html'">
+      🏠
+      <span>Home</span>
+    </button>
+
+    <button onclick="location.href='transactions.html'">
+      📒
+      <span>Transactions</span>
+    </button>
+
+    <button onclick="location.href='buyers.html'">
+      👤
+      <span>Buyers</span>
+    </button>
+
+    <button onclick="location.href='accounts.html'">
+      🏦
+      <span>Accounts</span>
+    </button>
+
+    <button class="active" onclick="location.href='more.html'">
+      ☰
+      <span>More</span>
+    </button>
+
+  </div>
+
+
+  <script src="../js/app.js"></script>
+
+  <script>
+
+    const STORAGE_KEY =
+      "tamilanda_wallet_data";
+
+
+    function getData() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.getData === "function"
+      ) {
+        return window.TamilandaWallet.getData();
+      }
+
+      try {
+        return JSON.parse(
+          localStorage.getItem(STORAGE_KEY)
+        ) || {};
+      } catch (error) {
+        return {};
+      }
+
+    }
+
+
+    function saveData(data) {
+
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(data)
+      );
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.save === "function"
+      ) {
+        window.TamilandaWallet.save();
+      }
+
+    }
+
+
+    function updateStats() {
+
+      const data =
+        getData();
+
+      document.getElementById(
+        "accountCount"
+      ).textContent =
+        (data.accounts || []).length;
+
+      document.getElementById(
+        "transactionCount"
+      ).textContent =
+        (data.transactions || []).length;
+
+      document.getElementById(
+        "buyerCount"
+      ).textContent =
+        (data.buyers || []).length;
+
+      document.getElementById(
+        "emiCount"
+      ).textContent =
+        (data.myEmis || []).length;
+
+    }
+
+
+    function showStatus(
+      message
+    ) {
+
+      const status =
+        document.getElementById(
+          "status"
+        );
+
+      status.textContent =
+        message;
+
+      status.style.display =
+        "block";
+
+    }
+
+
+    function createBackupData() {
+
+      const data =
+        getData();
+
+
+      /*
+       * Backup metadata is kept outside
+       * the actual wallet collections.
+       */
+      return {
+
+        backupFormat:
+          "Tamilanda Wallet Backup",
+
+        backupVersion:
+          1,
+
+        appName:
+          "Tamilanda Wallet",
+
+        createdAt:
+          new Date().toISOString(),
+
+        data:
+          data
+
+      };
+
+    }
+
+
+    function downloadBackup() {
+
+      try {
+
+        const backup =
+          createBackupData();
+
+
+        const json =
+          JSON.stringify(
+            backup,
+            null,
+            2
+          );
+
+
+        const blob =
+          new Blob(
+            [json],
+            {
+              type:
+                "application/json"
+            }
+          );
+
+
+        const url =
+          URL.createObjectURL(
+            blob
+          );
+
+
+        const link =
+          document.createElement(
+            "a"
+          );
+
+
+        const date =
+          new Date()
+            .toISOString()
+            .slice(0, 10);
+
+
+        link.href =
+          url;
+
+        link.download =
+          `tamilanda-wallet-backup-${date}.json`;
+
+
+        document.body.appendChild(
+          link
+        );
+
+        link.click();
+
+        link.remove();
+
+
+        setTimeout(
+          () =>
+            URL.revokeObjectURL(url),
+          1000
+        );
+
+
+        showStatus(
+          "✅ Backup file created successfully."
+        );
+
+      } catch (error) {
+
+        console.error(
+          error
+        );
+
+        showStatus(
+          "❌ Backup failed. Please try again."
+        );
+
+      }
+
+    }
+
+
+    function validateBackup(
+      backup
+    ) {
+
+      if (
+        !backup ||
+        typeof backup !== "object"
+      ) {
+        return false;
+      }
+
+
+      if (
+        backup.backupFormat !==
+        "Tamilanda Wallet Backup"
+      ) {
+        return false;
+      }
+
+
+      if (
+        !backup.data ||
+        typeof backup.data !== "object"
+      ) {
+        return false;
+      }
+
+
+      return true;
+
+    }
+
+
+    function restoreBackup() {
+
+      const input =
+        document.getElementById(
+          "backupFile"
+        );
+
+
+      const file =
+        input.files &&
+        input.files[0];
+
+
+      if (!file) {
+
+        showStatus(
+          "⚠️ Please select a backup JSON file first."
+        );
+
+        return;
+
+      }
+
+
+      if (
+        !file.name
+          .toLowerCase()
+          .endsWith(".json")
+      ) {
+
+        showStatus(
+          "❌ Please select a valid JSON backup file."
+        );
+
+        return;
+
+      }
+
+
+      const reader =
+        new FileReader();
+
+
+      reader.onload =
+        function(event) {
+
+          try {
+
+            const backup =
+              JSON.parse(
+                event.target.result
+              );
+
+
+            if (
+              !validateBackup(
+                backup
+              )
+            ) {
+
+              showStatus(
+                "❌ Invalid Tamilanda Wallet backup file."
+              );
+
+              return;
+
+            }
+
+
+            const confirmed =
+              confirm(
+                "Restore this backup?\n\n" +
+                "Your current wallet data will be replaced.\n\n" +
+                "For safety, download your current backup first."
+              );
+
+
+            if (!confirmed) {
+
+              showStatus(
+                "Restore cancelled."
+              );
+
+              return;
+
+            }
+
+
+            /*
+             * Create a safety backup in the browser
+             * before replacing the current data.
+             */
+            const currentBackup =
+              createBackupData();
+
+
+            localStorage.setItem(
+              "tamilanda_wallet_pre_restore_backup",
+              JSON.stringify(
+                currentBackup
+              )
+            );
+
+
+            const restoredData =
+              backup.data;
+
+
+            /*
+             * Basic collection validation.
+             */
+            const collections = [
+              "accounts",
+              "transactions",
+              "buyers",
+              "buyerPayments",
+              "moneyToGive",
+              "givePayments",
+              "myEmis",
+              "emiPayments",
+              "recurringBills",
+              "recurringPayments",
+              "trash"
+            ];
+
+
+            collections.forEach(
+              key => {
+
+                if (
+                  !Array.isArray(
+                    restoredData[key]
+                  )
+                ) {
+
+                  restoredData[key] = [];
+
+                }
+
+              }
+            );
+
+
+            if (
+              !restoredData.categories ||
+              typeof restoredData.categories !==
+              "object"
+            ) {
+
+              restoredData.categories = {};
+
+            }
+
+
+            if (
+              !restoredData.settings ||
+              typeof restoredData.settings !==
+              "object"
+            ) {
+
+              restoredData.settings = {
+                currency: "INR",
+                currencySymbol: "₹",
+                appName:
+                  "Tamilanda Wallet"
+              };
+
+            }
+
+
+            if (
+              !restoredData.profile ||
+              typeof restoredData.profile !==
+              "object"
+            ) {
+
+              restoredData.profile = {
+                name: "",
+                phone: "",
+                email: ""
+              };
+
+            }
+
+
+            if (
+              !restoredData.security ||
+              typeof restoredData.security !==
+              "object"
+            ) {
+
+              restoredData.security = {
+                pinEnabled: false,
+                pinConfigured: false
+              };
+
+            }
+
+
+            localStorage.setItem(
+              STORAGE_KEY,
+              JSON.stringify(
+                restoredData
+              )
+            );
+
+
+            showStatus(
+              "✅ Backup restored successfully. Reloading..."
+            );
+
+
+            setTimeout(
+              () => {
+                window.location.reload();
+              },
+              900
+            );
+
+          } catch (error) {
+
+            console.error(
+              error
+            );
+
+            showStatus(
+              "❌ Could not read this backup file."
+            );
+
+          }
+
+        };
+
+
+      reader.onerror =
+        function() {
+
+          showStatus(
+            "❌ Failed to read the selected file."
+          );
+
+        };
+
+
+      reader.readAsText(
+        file
+      );
+
+    }
+
+
+    updateStats();
+
+  </script>
+
+</body>
+</html>
