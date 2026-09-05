@@ -3647,4 +3647,135 @@ window.addEventListener(
    ========================================================= */
 
 
+/* =========================================================
+   GLOBAL BOTTOM NAV NORMALIZER
+   =========================================================
+
+   Every page in the project must render the same five
+   navigation items with identical dimensions and typography.
+   Some legacy pages use different nav classes/styles, so we
+   enforce the final visual contract at runtime with inline
+   !important styles. This prevents page-specific CSS from
+   resizing Home / Transactions / Buyers / Accounts / More.
+*/
+
+function normalizeBottomNavigation() {
+
+  const navs = document.querySelectorAll(
+    '.bottom-nav'
+  );
+
+  navs.forEach(nav => {
+
+    nav.style.setProperty('width', '100%', 'important');
+    nav.style.setProperty('max-width', '720px', 'important');
+    nav.style.setProperty('height', '76px', 'important');
+    nav.style.setProperty('min-height', '76px', 'important');
+    nav.style.setProperty('max-height', '76px', 'important');
+    nav.style.setProperty('display', 'grid', 'important');
+    nav.style.setProperty('grid-template-columns', 'repeat(5, minmax(0, 1fr))', 'important');
+    nav.style.setProperty('align-items', 'stretch', 'important');
+    nav.style.setProperty('padding', '8px 8px calc(8px + env(safe-area-inset-bottom))', 'important');
+    nav.style.setProperty('box-sizing', 'border-box', 'important');
+    nav.style.setProperty('overflow', 'hidden', 'important');
+
+    const items = Array.from(nav.children)
+      .filter(child =>
+        child.matches && child.matches('button, a')
+      );
+
+    items.forEach(item => {
+
+      item.classList.add('nav-item');
+
+      item.style.setProperty('box-sizing', 'border-box', 'important');
+      item.style.setProperty('width', '100%', 'important');
+      item.style.setProperty('min-width', '0', 'important');
+      item.style.setProperty('max-width', 'none', 'important');
+      item.style.setProperty('height', '60px', 'important');
+      item.style.setProperty('min-height', '60px', 'important');
+      item.style.setProperty('max-height', '60px', 'important');
+      item.style.setProperty('margin', '0', 'important');
+      item.style.setProperty('padding', '5px 2px', 'important');
+      item.style.setProperty('border', '0', 'important');
+      item.style.setProperty('border-radius', '0', 'important');
+      item.style.setProperty('background', 'transparent', 'important');
+      item.style.setProperty('display', 'flex', 'important');
+      item.style.setProperty('flex-direction', 'column', 'important');
+      item.style.setProperty('align-items', 'center', 'important');
+      item.style.setProperty('justify-content', 'center', 'important');
+      item.style.setProperty('gap', '4px', 'important');
+      item.style.setProperty('font-family', 'inherit', 'important');
+      item.style.setProperty('font-size', '10px', 'important');
+      item.style.setProperty('font-weight', '700', 'important');
+      item.style.setProperty('line-height', '1', 'important');
+      item.style.setProperty('text-align', 'center', 'important');
+      item.style.setProperty('transform', 'none', 'important');
+      item.style.setProperty('scale', '1', 'important');
+      item.style.setProperty('appearance', 'none', 'important');
+      item.style.setProperty('-webkit-appearance', 'none', 'important');
+      item.style.setProperty('-webkit-text-size-adjust', '100%', 'important');
+      item.style.setProperty('text-size-adjust', '100%', 'important');
+      item.style.setProperty('-webkit-tap-highlight-color', 'transparent', 'important');
+
+      const icon =
+        item.querySelector('.nav-icon') ||
+        item.firstElementChild;
+
+      const label =
+        item.querySelector('.nav-label') ||
+        item.querySelector('small') ||
+        item.lastElementChild;
+
+      if (icon && icon !== label) {
+        icon.style.setProperty('display', 'block', 'important');
+        icon.style.setProperty('font-size', '20px', 'important');
+        icon.style.setProperty('line-height', '1', 'important');
+        icon.style.setProperty('font-weight', '400', 'important');
+        icon.style.setProperty('width', 'auto', 'important');
+        icon.style.setProperty('height', '20px', 'important');
+        icon.style.setProperty('min-height', '20px', 'important');
+        icon.style.setProperty('max-height', '20px', 'important');
+        icon.style.setProperty('margin', '0', 'important');
+        icon.style.setProperty('padding', '0', 'important');
+        icon.style.setProperty('transform', 'none', 'important');
+        icon.style.setProperty('scale', '1', 'important');
+      }
+
+      if (label && label !== icon) {
+        label.style.setProperty('display', 'block', 'important');
+        label.style.setProperty('font-size', '10px', 'important');
+        label.style.setProperty('line-height', '1', 'important');
+        label.style.setProperty('font-weight', '700', 'important');
+        label.style.setProperty('width', 'auto', 'important');
+        label.style.setProperty('height', '10px', 'important');
+        label.style.setProperty('min-height', '10px', 'important');
+        label.style.setProperty('max-height', '10px', 'important');
+        label.style.setProperty('white-space', 'nowrap', 'important');
+        label.style.setProperty('margin', '0', 'important');
+        label.style.setProperty('padding', '0', 'important');
+        label.style.setProperty('transform', 'none', 'important');
+        label.style.setProperty('scale', '1', 'important');
+      }
+
+    });
+
+  });
+}
+
+/* Run immediately because app.js is loaded after the nav HTML. */
+normalizeBottomNavigation();
+
+document.addEventListener(
+  'DOMContentLoaded',
+  normalizeBottomNavigation,
+  { once: true }
+);
+
+window.addEventListener(
+  'pageshow',
+  normalizeBottomNavigation
+);
+
+
 })(window, document);
