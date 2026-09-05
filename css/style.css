@@ -1799,3 +1799,39 @@ select {
     -webkit-appearance: auto;
     appearance: auto;
 }
+
+
+/* =========================================================
+   FORCE DARK COLOR SCHEME FOR NATIVE SELECT MENUS
+   Chrome/Windows native option popup can ignore option
+   background rules unless the document itself declares
+   a dark color scheme.
+   ========================================================= */
+
+html,
+body {
+    color-scheme: dark !important;
+}
+
+select,
+select:focus,
+select:active {
+    color-scheme: dark !important;
+    background-color: #15121d !important;
+    color: #ffffff !important;
+    text-shadow: none !important;
+}
+
+select option,
+select optgroup {
+    color: #ffffff !important;
+    background: #15121d !important;
+}
+
+/* Prevent white native-looking controls on dark pages */
+input,
+textarea,
+select,
+button {
+    color-scheme: dark;
+}
