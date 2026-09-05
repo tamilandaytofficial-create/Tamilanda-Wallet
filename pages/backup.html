@@ -69,6 +69,14 @@
       color: #fb7185;
     }
 
+
+    .notification-safe {
+      margin-top: 10px;
+      font-size: 11px;
+      line-height: 1.5;
+      opacity: 0.55;
+    }
+
     .file-input {
       width: 100%;
       box-sizing: border-box;
@@ -169,6 +177,32 @@
 
     </div>
 
+  </div>
+
+
+
+  <!-- BACKUP SAFETY -->
+  <div class="section">
+    <div class="card">
+      <h3>🛡️ Backup Safety</h3>
+      <p>
+        Every backup includes integrity information. Before restoring,
+        Tamilanda Wallet validates the backup and keeps a safety copy
+        of your current data.
+      </p>
+
+      <div class="stats">
+        <div class="stat">
+          <small>Last Backup</small>
+          <strong id="lastBackupStatus">Not created</strong>
+        </div>
+
+        <div class="stat">
+          <small>Pre-Restore Safety</small>
+          <strong id="safetyBackupStatus">Checking...</strong>
+        </div>
+      </div>
+    </div>
   </div>
 
 
@@ -355,23 +389,91 @@
     }
 
 
-    function createBackupData() {
+    function getStorageData() {
+      return getData();
+    }
 
-      const data =
-        getData();
 
+    function canonicalize(value) {
+
+      if (Array.isArray(value)) {
+        return value.map(canonicalize);
+      }
+
+      if (value && typeof value === "object") {
+        return Object.keys(value)
+          .sort()
+          .reduce((result, key) => {
+            result[key] = canonicalize(value[key]);
+            return result;
+          }, {});
+      }
+
+      return value;
+    }
+
+
+    async function createIntegrityHash(payload) {
+
+      const canonical =
+        JSON.stringify(
+          canonicalize(payload)
+        );
+
+      if (
+        window.crypto &&
+        window.crypto.subtle &&
+        typeof TextEncoder !== "undefined"
+      ) {
+
+        const bytes =
+          new TextEncoder().encode(canonical);
+
+        const digest =
+          await crypto.subtle.digest(
+            "SHA-256",
+            bytes
+          );
+
+        return Array.from(
+          new Uint8Array(digest)
+        )
+          .map(byte =>
+            byte.toString(16).padStart(2, "0")
+          )
+          .join("");
+      }
 
       /*
-       * Backup metadata is kept outside
-       * the actual wallet collections.
+       * Fallback is intentionally marked as non-cryptographic.
+       * The restore validator still checks the backup structure.
        */
-      return {
+      let hash = 2166136261;
 
+      for (let index = 0; index < canonical.length; index++) {
+        hash ^= canonical.charCodeAt(index);
+        hash =
+          Math.imul(hash, 16777619);
+      }
+
+      return (
+        "fallback-" +
+        (hash >>> 0).toString(16)
+      );
+    }
+
+
+    async function createBackupData() {
+
+      const data =
+        getStorageData();
+
+      const backup = {
         backupFormat:
           "Tamilanda Wallet Backup",
 
         backupVersion:
-          1,
+          2,
 
         appName:
           "Tamilanda Wallet",
@@ -381,18 +483,69 @@
 
         data:
           data
-
       };
 
+      backup.integrity = {
+        algorithm:
+          "SHA-256",
+
+        hash:
+          await createIntegrityHash(
+            backup.data
+          )
+      };
+
+      return backup;
     }
 
 
-    function downloadBackup() {
+    function showBackupStatus() {
+
+      let lastBackup =
+        "Not created";
+
+      try {
+
+        const value =
+          localStorage.getItem(
+            "tamilanda_wallet_last_backup"
+          );
+
+        if (value) {
+
+          const date =
+            new Date(value);
+
+          if (!isNaN(date.getTime())) {
+            lastBackup =
+              date.toLocaleString("en-IN");
+          }
+        }
+
+      } catch (error) {}
+
+      document.getElementById(
+        "lastBackupStatus"
+      ).textContent =
+        lastBackup;
+
+      document.getElementById(
+        "safetyBackupStatus"
+      ).textContent =
+        localStorage.getItem(
+          "tamilanda_wallet_pre_restore_backup"
+        )
+          ? "Available"
+          : "Not created";
+    }
+
+
+    async function downloadBackup() {
 
       try {
 
         const backup =
-          createBackupData();
+          await createBackupData();
 
 
         const json =
@@ -454,8 +607,15 @@
         );
 
 
+        localStorage.setItem(
+          "tamilanda_wallet_last_backup",
+          new Date().toISOString()
+        );
+
+        showBackupStatus();
+
         showStatus(
-          "✅ Backup file created successfully."
+          "✅ Secure backup file created successfully."
         );
 
       } catch (error) {
@@ -473,7 +633,7 @@
     }
 
 
-    function validateBackup(
+    async function validateBackup(
       backup
     ) {
 
@@ -481,76 +641,160 @@
         !backup ||
         typeof backup !== "object"
       ) {
-        return false;
+        return {
+          valid: false,
+          message: "Backup is not a valid object."
+        };
       }
-
 
       if (
         backup.backupFormat !==
         "Tamilanda Wallet Backup"
       ) {
-        return false;
+        return {
+          valid: false,
+          message: "This is not a Tamilanda Wallet backup."
+        };
       }
 
+      if (
+        ![1, 2].includes(
+          Number(backup.backupVersion)
+        )
+      ) {
+        return {
+          valid: false,
+          message: "Unsupported backup version."
+        };
+      }
 
       if (
         !backup.data ||
-        typeof backup.data !== "object"
+        typeof backup.data !== "object" ||
+        Array.isArray(backup.data)
       ) {
-        return false;
+        return {
+          valid: false,
+          message: "Backup data is missing or invalid."
+        };
       }
 
+      const collections = [
+        "accounts",
+        "transactions",
+        "buyers",
+        "buyerPayments",
+        "moneyToGive",
+        "givePayments",
+        "myEmis",
+        "emiPayments",
+        "recurringBills",
+        "recurringPayments",
+        "trash"
+      ];
 
-      return true;
+      const missingCollections =
+        collections.filter(
+          key =>
+            backup.data[key] !== undefined &&
+            !Array.isArray(backup.data[key])
+        );
 
+      if (missingCollections.length) {
+        return {
+          valid: false,
+          message:
+            "Invalid backup collections: " +
+            missingCollections.join(", ")
+        };
+      }
+
+      if (backup.backupVersion >= 2) {
+
+        if (
+          !backup.integrity ||
+          backup.integrity.algorithm !== "SHA-256" ||
+          typeof backup.integrity.hash !== "string" ||
+          !backup.integrity.hash
+        ) {
+          return {
+            valid: false,
+            message: "Backup integrity information is missing."
+          };
+        }
+
+        const calculated =
+          await createIntegrityHash(
+            backup.data
+          );
+
+        if (
+          calculated !==
+          backup.integrity.hash
+        ) {
+          return {
+            valid: false,
+            message:
+              "Backup integrity check failed. The file may be corrupted or modified."
+          };
+        }
+      }
+
+      return {
+        valid: true,
+        message: "Backup verified."
+      };
     }
 
 
-    function restoreBackup() {
+    async function restoreBackup() {
 
       const input =
         document.getElementById(
           "backupFile"
         );
 
-
       const file =
         input.files &&
         input.files[0];
 
-
       if (!file) {
-
         showStatus(
           "⚠️ Please select a backup JSON file first."
         );
-
         return;
-
       }
-
 
       if (
         !file.name
           .toLowerCase()
           .endsWith(".json")
       ) {
-
         showStatus(
           "❌ Please select a valid JSON backup file."
         );
-
         return;
-
       }
 
+      /*
+       * Limit extremely large restore attempts.
+       * This protects localStorage from accidental oversized files.
+       */
+      if (
+        file.size >
+        20 * 1024 * 1024
+      ) {
+        showStatus(
+          "❌ Backup file is too large. Maximum supported size is 20 MB."
+        );
+        return;
+      }
 
       const reader =
         new FileReader();
 
-
       reader.onload =
-        function(event) {
+        async function(event) {
 
           try {
 
@@ -559,48 +803,39 @@
                 event.target.result
               );
 
-
-            if (
-              !validateBackup(
+            const validation =
+              await validateBackup(
                 backup
-              )
-            ) {
-
-              showStatus(
-                "❌ Invalid Tamilanda Wallet backup file."
               );
 
+            if (!validation.valid) {
+              showStatus(
+                "❌ " +
+                validation.message
+              );
               return;
-
             }
-
 
             const confirmed =
               confirm(
                 "Restore this backup?\n\n" +
                 "Your current wallet data will be replaced.\n\n" +
-                "For safety, download your current backup first."
+                "A safety backup of the current data will be kept before restore."
               );
 
-
             if (!confirmed) {
-
               showStatus(
                 "Restore cancelled."
               );
-
               return;
-
             }
 
-
             /*
-             * Create a safety backup in the browser
-             * before replacing the current data.
+             * Create a safety backup before replacing current data.
+             * This is also integrity-protected.
              */
             const currentBackup =
-              createBackupData();
-
+              await createBackupData();
 
             localStorage.setItem(
               "tamilanda_wallet_pre_restore_backup",
@@ -609,14 +844,13 @@
               )
             );
 
-
             const restoredData =
-              backup.data;
+              JSON.parse(
+                JSON.stringify(
+                  backup.data
+                )
+              );
 
-
-            /*
-             * Basic collection validation.
-             */
             const collections = [
               "accounts",
               "transactions",
@@ -631,7 +865,6 @@
               "trash"
             ];
 
-
             collections.forEach(
               key => {
 
@@ -640,71 +873,64 @@
                     restoredData[key]
                   )
                 ) {
-
                   restoredData[key] = [];
-
                 }
 
               }
             );
 
-
             if (
               !restoredData.categories ||
               typeof restoredData.categories !==
-              "object"
+              "object" ||
+              Array.isArray(restoredData.categories)
             ) {
-
               restoredData.categories = {};
-
             }
-
 
             if (
               !restoredData.settings ||
               typeof restoredData.settings !==
-              "object"
+              "object" ||
+              Array.isArray(restoredData.settings)
             ) {
-
               restoredData.settings = {
                 currency: "INR",
                 currencySymbol: "₹",
                 appName:
                   "Tamilanda Wallet"
               };
-
             }
-
 
             if (
               !restoredData.profile ||
               typeof restoredData.profile !==
-              "object"
+              "object" ||
+              Array.isArray(restoredData.profile)
             ) {
-
               restoredData.profile = {
                 name: "",
                 phone: "",
                 email: ""
               };
-
             }
-
 
             if (
               !restoredData.security ||
               typeof restoredData.security !==
-              "object"
+              "object" ||
+              Array.isArray(restoredData.security)
             ) {
-
               restoredData.security = {
                 pinEnabled: false,
                 pinConfigured: false
               };
-
             }
 
-
+            /*
+             * Do not restore arbitrary top-level executable values.
+             * JSON is data only, and only known wallet structures are used.
+             */
             localStorage.setItem(
               STORAGE_KEY,
               JSON.stringify(
@@ -712,11 +938,11 @@
               )
             );
 
+            showBackupStatus();
 
             showStatus(
-              "✅ Backup restored successfully. Reloading..."
+              "✅ Backup verified and restored successfully. Reloading..."
             );
-
 
             setTimeout(
               () => {
@@ -732,13 +958,11 @@
             );
 
             showStatus(
-              "❌ Could not read this backup file."
+              "❌ Could not read or verify this backup file."
             );
-
           }
 
         };
-
 
       reader.onerror =
         function() {
@@ -749,15 +973,14 @@
 
         };
 
-
       reader.readAsText(
         file
       );
-
     }
 
 
     updateStats();
+    showBackupStatus();
 
   </script>
 
