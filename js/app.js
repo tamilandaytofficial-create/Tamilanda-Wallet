@@ -95,6 +95,86 @@ const DEFAULT_WALLET_DATA = {
 
 
 /* =========================================================
+   TRANSACTION CLASSIFICATION
+   ========================================================= */
+
+/*
+  These are the transaction types that represent
+  actual money entering the wallet.
+*/
+
+const INCOME_TRANSACTION_TYPES = [
+
+  "income",
+
+  "buyer_payment",
+
+  "buyer_initial_payment"
+
+];
+
+
+/*
+  These are the transaction types that represent
+  actual money leaving the wallet.
+*/
+
+const EXPENSE_TRANSACTION_TYPES = [
+
+  "expense",
+
+  "emi_payment",
+
+  "recurring_payment",
+
+  "money_to_give_payment"
+
+];
+
+
+/*
+  Transfer is intentionally NOT included
+  in either list.
+*/
+
+const TRANSFER_TRANSACTION_TYPES = [
+
+  "transfer"
+
+];
+
+
+function isIncomeTransaction(transaction) {
+
+  return !!transaction &&
+    INCOME_TRANSACTION_TYPES.includes(
+      transaction.type
+    );
+
+}
+
+
+function isExpenseTransaction(transaction) {
+
+  return !!transaction &&
+    EXPENSE_TRANSACTION_TYPES.includes(
+      transaction.type
+    );
+
+}
+
+
+function isTransferTransaction(transaction) {
+
+  return !!transaction &&
+    TRANSFER_TRANSACTION_TYPES.includes(
+      transaction.type
+    );
+
+}
+
+
+/* =========================================================
    GLOBAL WALLET DATA
    ========================================================= */
 
@@ -150,16 +230,41 @@ function todayString() {
 
 function escapeHtml(value) {
 
-  if (value === null || value === undefined) {
+  if (
+    value === null ||
+    value === undefined
+  ) {
+
     return "";
+
   }
 
   return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+
+    .replace(
+      /</g,
+      "&lt;"
+    )
+
+    .replace(
+      />/g,
+      "&gt;"
+    )
+
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+
+    .replace(
+      /'/g,
+      "&#039;"
+    );
 
 }
 
@@ -167,14 +272,24 @@ function escapeHtml(value) {
 function formatDisplayDate(dateString) {
 
   if (!dateString) {
+
     return "—";
+
   }
 
   const date =
-    new Date(dateString + "T00:00:00");
+    new Date(
+      dateString + "T00:00:00"
+    );
 
-  if (Number.isNaN(date.getTime())) {
+  if (
+    Number.isNaN(
+      date.getTime()
+    )
+  ) {
+
     return dateString;
+
   }
 
   return date.toLocaleDateString(
@@ -228,7 +343,9 @@ function loadWalletData() {
     if (!saved) {
 
       const fresh =
-        deepClone(DEFAULT_WALLET_DATA);
+        deepClone(
+          DEFAULT_WALLET_DATA
+        );
 
       localStorage.setItem(
         WALLET_STORAGE_KEY,
@@ -236,12 +353,15 @@ function loadWalletData() {
       );
 
       return fresh;
+
     }
 
     const parsed =
       JSON.parse(saved);
 
-    return normalizeWalletData(parsed);
+    return normalizeWalletData(
+      parsed
+    );
 
   } catch (error) {
 
@@ -264,7 +384,9 @@ function saveWalletData() {
   try {
 
     walletData =
-      normalizeWalletData(walletData);
+      normalizeWalletData(
+        walletData
+      );
 
     localStorage.setItem(
       WALLET_STORAGE_KEY,
@@ -294,10 +416,13 @@ function saveWalletData() {
 function normalizeWalletData(data) {
 
   const base =
-    deepClone(DEFAULT_WALLET_DATA);
+    deepClone(
+      DEFAULT_WALLET_DATA
+    );
 
   const source =
-    data && typeof data === "object"
+    data &&
+    typeof data === "object"
       ? data
       : {};
 
@@ -346,30 +471,52 @@ function normalizeWalletData(data) {
   const arrayKeys = [
 
     "accounts",
+
     "transactions",
+
     "buyers",
+
     "buyerPayments",
+
     "moneyToGive",
+
     "givePayments",
+
     "myEmis",
+
     "emiPayments",
+
     "recurringBills",
+
     "recurringPayments",
+
     "trash"
 
   ];
 
 
-  arrayKeys.forEach(key => {
+  arrayKeys.forEach(
+    key => {
 
-    if (!Array.isArray(result[key])) {
-      result[key] = [];
+      if (
+        !Array.isArray(
+          result[key]
+        )
+      ) {
+
+        result[key] = [];
+
+      }
+
     }
+  );
 
-  });
 
-
-  if (!Array.isArray(result.categories.income)) {
+  if (
+    !Array.isArray(
+      result.categories.income
+    )
+  ) {
 
     result.categories.income =
       deepClone(
@@ -379,7 +526,11 @@ function normalizeWalletData(data) {
   }
 
 
-  if (!Array.isArray(result.categories.expense)) {
+  if (
+    !Array.isArray(
+      result.categories.expense
+    )
+  ) {
 
     result.categories.expense =
       deepClone(
@@ -414,7 +565,9 @@ function getAccountById(accountId) {
 function getAccountName(account) {
 
   if (!account) {
+
     return "Unknown Account";
+
   }
 
   return (
@@ -430,7 +583,9 @@ function getAccountName(account) {
 function getAccountBalance(account) {
 
   if (!account) {
+
     return 0;
+
   }
 
   return Number(
@@ -448,15 +603,18 @@ function setAccountBalance(
 ) {
 
   if (!account) {
+
     return;
+
   }
 
   account.balance =
     Number(balance || 0);
 
+
   /*
     Keep currentBalance synchronized
-    if an older account object uses it.
+    when an older account object has it.
   */
 
   if (
@@ -492,6 +650,10 @@ function calculateTotalBalance() {
 }
 
 
+/* =========================================================
+   TODAY INCOME
+   ========================================================= */
+
 function calculateTodayIncome() {
 
   const today =
@@ -500,26 +662,35 @@ function calculateTodayIncome() {
   return (
     walletData.transactions || []
   )
-    .filter(transaction => {
 
-      return (
-        transaction.date === today &&
-        (
-          transaction.type === "income" ||
-          transaction.type === "buyer_payment"
-        )
-      );
+    .filter(
+      transaction => {
 
-    })
+        return (
+          transaction.date === today &&
+          isIncomeTransaction(
+            transaction
+          )
+        );
+
+      }
+    )
+
     .reduce(
       (total, transaction) =>
         total +
-        Number(transaction.amount || 0),
+        Number(
+          transaction.amount || 0
+        ),
       0
     );
 
 }
 
+
+/* =========================================================
+   TODAY EXPENSE
+   ========================================================= */
 
 function calculateTodayExpense() {
 
@@ -529,27 +700,35 @@ function calculateTodayExpense() {
   return (
     walletData.transactions || []
   )
-    .filter(transaction => {
 
-      return (
-        transaction.date === today &&
-        (
-          transaction.type === "expense" ||
-          transaction.type === "recurring_payment" ||
-          transaction.type === "emi_payment"
-        )
-      );
+    .filter(
+      transaction => {
 
-    })
+        return (
+          transaction.date === today &&
+          isExpenseTransaction(
+            transaction
+          )
+        );
+
+      }
+    )
+
     .reduce(
       (total, transaction) =>
         total +
-        Number(transaction.amount || 0),
+        Number(
+          transaction.amount || 0
+        ),
       0
     );
 
 }
 
+
+/* =========================================================
+   TODAY PROFIT
+   ========================================================= */
 
 function calculateTodayProfit() {
 
@@ -562,14 +741,17 @@ function calculateTodayProfit() {
 
 
 /* =========================================================
-   RECEIVABLE / LIABILITY CALCULATIONS
+   RECEIVABLE / LIABILITY
    ========================================================= */
 
 function getBuyerRemaining(buyer) {
 
   if (!buyer) {
+
     return 0;
+
   }
+
 
   const total =
     Number(
@@ -577,6 +759,7 @@ function getBuyerRemaining(buyer) {
       buyer.amount ??
       0
     );
+
 
   const initial =
     Number(
@@ -586,24 +769,35 @@ function getBuyerRemaining(buyer) {
       0
     );
 
+
   const payments =
     (
       walletData.buyerPayments || []
     )
-      .filter(payment =>
-        String(payment.buyerId) ===
-        String(buyer.id)
+
+      .filter(
+        payment =>
+          String(
+            payment.buyerId
+          ) ===
+          String(buyer.id)
       )
+
       .reduce(
         (sum, payment) =>
           sum +
-          Number(payment.amount || 0),
+          Number(
+            payment.amount || 0
+          ),
         0
       );
 
+
   return Math.max(
     0,
-    total - initial - payments
+    total -
+    initial -
+    payments
   );
 
 }
@@ -623,11 +817,18 @@ function calculateMoneyToReceive() {
 }
 
 
+/* =========================================================
+   MONEY TO GIVE
+   ========================================================= */
+
 function getGiveRemaining(record) {
 
   if (!record) {
+
     return 0;
+
   }
+
 
   const total =
     Number(
@@ -636,6 +837,7 @@ function getGiveRemaining(record) {
       0
     );
 
+
   const alreadyPaid =
     Number(
       record.alreadyPaid ??
@@ -643,24 +845,35 @@ function getGiveRemaining(record) {
       0
     );
 
+
   const payments =
     (
       walletData.givePayments || []
     )
-      .filter(payment =>
-        String(payment.giveId) ===
-        String(record.id)
+
+      .filter(
+        payment =>
+          String(
+            payment.giveId
+          ) ===
+          String(record.id)
       )
+
       .reduce(
         (sum, payment) =>
           sum +
-          Number(payment.amount || 0),
+          Number(
+            payment.amount || 0
+          ),
         0
       );
 
+
   return Math.max(
     0,
-    total - alreadyPaid - payments
+    total -
+    alreadyPaid -
+    payments
   );
 
 }
@@ -680,11 +893,18 @@ function calculateMoneyToGive() {
 }
 
 
+/* =========================================================
+   MY EMI
+   ========================================================= */
+
 function getEmiRemaining(emi) {
 
   if (!emi) {
+
     return 0;
+
   }
+
 
   const total =
     Number(
@@ -694,31 +914,51 @@ function getEmiRemaining(emi) {
       0
     );
 
+
+  /*
+    Support all existing field names.
+
+    alreadyPaid is important because the
+    current EMI page uses it for previous payments.
+  */
+
   const directPaid =
     Number(
+      emi.alreadyPaid ??
       emi.paidAmount ??
       emi.paid ??
       0
     );
 
+
   const payments =
     (
       walletData.emiPayments || []
     )
-      .filter(payment =>
-        String(payment.emiId) ===
-        String(emi.id)
+
+      .filter(
+        payment =>
+          String(
+            payment.emiId
+          ) ===
+          String(emi.id)
       )
+
       .reduce(
         (sum, payment) =>
           sum +
-          Number(payment.amount || 0),
+          Number(
+            payment.amount || 0
+          ),
         0
       );
 
+
   return Math.max(
     0,
-    total - directPaid - payments
+    total -
+    directPaid -
+    payments
   );
 
 }
@@ -791,11 +1031,17 @@ function calculateNetWorth() {
 function addTransaction(transaction) {
 
   if (!transaction) {
+
     return false;
+
   }
 
+
   const amount =
-    Number(transaction.amount || 0);
+    Number(
+      transaction.amount || 0
+    );
+
 
   if (
     !Number.isFinite(amount) ||
@@ -808,7 +1054,8 @@ function addTransaction(transaction) {
 
 
   const type =
-    transaction.type;
+    transaction.type ||
+    "other";
 
 
   const account =
@@ -818,11 +1065,20 @@ function addTransaction(transaction) {
 
 
   /*
-    Income increases account balance.
+    Only actual income types increase balance.
+
+    Important:
+    Payment pages such as Buyer / EMI / Recurring
+    already manage their account balance directly,
+    so they should NOT call addTransaction()
+    for the same payment.
+
+    This function is therefore safe for standalone
+    transaction creation and Quick Add.
   */
 
   if (
-    type === "income" &&
+    isIncomeTransaction(transaction) &&
     account
   ) {
 
@@ -836,11 +1092,11 @@ function addTransaction(transaction) {
 
 
   /*
-    Expense decreases account balance.
+    Expense types decrease balance.
   */
 
   if (
-    type === "expense" &&
+    isExpenseTransaction(transaction) &&
     account
   ) {
 
@@ -863,38 +1119,54 @@ function addTransaction(transaction) {
   }
 
 
+  /*
+    Transfer does not change balance here.
+    transferBetweenAccounts() handles it separately.
+  */
+
+
   const newTransaction = {
 
     id:
       transaction.id ||
       generateId("txn"),
 
-    type: type || "other",
+    type:
 
-    amount: amount,
+      type,
+
+    amount:
+
+      amount,
 
     accountId:
+
       transaction.accountId ||
       null,
 
     category:
+
       transaction.category ||
       "",
 
     description:
+
       transaction.description ||
       transaction.note ||
       "",
 
     note:
+
       transaction.note ||
       "",
 
     date:
+
       transaction.date ||
       todayString(),
 
     createdAt:
+
       transaction.createdAt ||
       new Date().toISOString()
 
@@ -903,22 +1175,27 @@ function addTransaction(transaction) {
 
   /*
     Preserve additional fields.
+
+    This keeps buyerId, paymentId,
+    emiId, billId, giveId etc.
   */
 
   Object.keys(transaction)
-    .forEach(key => {
+    .forEach(
+      key => {
 
-      if (
-        newTransaction[key] ===
-        undefined
-      ) {
+        if (
+          newTransaction[key] ===
+          undefined
+        ) {
 
-        newTransaction[key] =
-          transaction[key];
+          newTransaction[key] =
+            transaction[key];
+
+        }
 
       }
-
-    });
+    );
 
 
   walletData.transactions.unshift(
@@ -942,8 +1219,11 @@ function addTransaction(transaction) {
 function addAccount(account) {
 
   if (!account) {
+
     return false;
+
   }
+
 
   const name =
     String(
@@ -954,7 +1234,9 @@ function addAccount(account) {
 
 
   if (!name) {
+
     return false;
+
   }
 
 
@@ -964,7 +1246,8 @@ function addAccount(account) {
       account.id ||
       generateId("account"),
 
-    name: name,
+    name:
+      name,
 
     type:
       account.type ||
@@ -1029,7 +1312,10 @@ function transferBetweenAccounts(
     Number(amount);
 
 
-  if (!fromAccount || !toAccount) {
+  if (
+    !fromAccount ||
+    !toAccount
+  ) {
 
     console.error(
       "Transfer failed: account not found."
@@ -1087,7 +1373,7 @@ function transferBetweenAccounts(
 
 
   /*
-    Remove from source account.
+    Source decreases.
   */
 
   setAccountBalance(
@@ -1098,7 +1384,7 @@ function transferBetweenAccounts(
 
 
   /*
-    Add to destination account.
+    Destination increases.
   */
 
   setAccountBalance(
@@ -1109,9 +1395,8 @@ function transferBetweenAccounts(
 
 
   /*
-    IMPORTANT:
-    Transfer is NOT income.
-    Transfer is NOT expense.
+    Transfer is NOT income
+    and NOT expense.
   */
 
   const transferId =
@@ -1120,20 +1405,17 @@ function transferBetweenAccounts(
 
   const baseTransaction = {
 
-    id: transferId,
+    type:
+      "transfer",
 
-    type: "transfer",
-
-    amount: transferAmount,
+    amount:
+      transferAmount,
 
     fromAccountId:
       fromAccount.id,
 
     toAccountId:
       toAccount.id,
-
-    accountId:
-      fromAccount.id,
 
     date:
       date || todayString(),
@@ -1146,7 +1428,10 @@ function transferBetweenAccounts(
       `Transfer from ${getAccountName(fromAccount)} to ${getAccountName(toAccount)}`,
 
     createdAt:
-      new Date().toISOString()
+      new Date().toISOString(),
+
+    transferId:
+      transferId
 
   };
 
@@ -1154,6 +1439,12 @@ function transferBetweenAccounts(
   walletData.transactions.unshift({
 
     ...baseTransaction,
+
+    id:
+      generateId("transfer"),
+
+    accountId:
+      fromAccount.id,
 
     transferDirection:
       "out"
@@ -1193,8 +1484,11 @@ function transferBetweenAccounts(
 function addBuyer(buyer) {
 
   if (!buyer) {
+
     return false;
+
   }
+
 
   const name =
     String(
@@ -1205,7 +1499,9 @@ function addBuyer(buyer) {
 
 
   if (!name) {
+
     return false;
+
   }
 
 
@@ -1215,7 +1511,8 @@ function addBuyer(buyer) {
       buyer.id ||
       generateId("buyer"),
 
-    name: name,
+    name:
+      name,
 
     phone:
       buyer.phone ||
@@ -1302,13 +1599,20 @@ function addBuyerPayment(
     Number(amount);
 
 
-  if (!buyer || !account) {
+  if (
+    !buyer ||
+    !account
+  ) {
+
     return false;
+
   }
 
 
   if (
-    !Number.isFinite(paymentAmount) ||
+    !Number.isFinite(
+      paymentAmount
+    ) ||
     paymentAmount <= 0
   ) {
 
@@ -1335,7 +1639,7 @@ function addBuyerPayment(
 
   /*
     Buyer pays us.
-    Therefore account balance increases.
+    Account balance increases.
   */
 
   setAccountBalance(
@@ -1345,10 +1649,20 @@ function addBuyerPayment(
   );
 
 
+  const paymentId =
+    generateId(
+      "buyer_payment"
+    );
+
+
+  const transactionId =
+    generateId("txn");
+
+
   const payment = {
 
     id:
-      generateId("buyer_payment"),
+      paymentId,
 
     buyerId:
       buyer.id,
@@ -1364,6 +1678,9 @@ function addBuyerPayment(
 
     note:
       note || "",
+
+    transactionId:
+      transactionId,
 
     createdAt:
       new Date().toISOString()
@@ -1383,7 +1700,7 @@ function addBuyerPayment(
   walletData.transactions.unshift({
 
     id:
-      generateId("txn"),
+      transactionId,
 
     type:
       "buyer_payment",
@@ -1396,6 +1713,9 @@ function addBuyerPayment(
 
     buyerId:
       buyer.id,
+
+    paymentId:
+      paymentId,
 
     category:
       "FF Account Sale",
@@ -1434,7 +1754,9 @@ function moveToTrash(
 ) {
 
   if (!data) {
+
     return false;
+
   }
 
 
@@ -1488,7 +1810,9 @@ function deleteRecord(
 
 
   const index =
-    walletData[collectionName].findIndex(
+    walletData[
+      collectionName
+    ].findIndex(
       item =>
         String(item.id) ===
         String(recordId)
@@ -1496,7 +1820,9 @@ function deleteRecord(
 
 
   if (index === -1) {
+
     return false;
+
   }
 
 
@@ -1506,10 +1832,31 @@ function deleteRecord(
     ][index];
 
 
-  moveToTrash(
-    collectionName,
-    record
-  );
+  /*
+    IMPORTANT:
+    This function only moves the record
+    to Trash.
+
+    Existing Income / Expense pages already
+    reverse their account balance before calling
+    deleteRecord().
+
+    Therefore we intentionally DO NOT reverse
+    the balance here, preventing double reversal.
+  */
+
+  const moved =
+    moveToTrash(
+      collectionName,
+      record
+    );
+
+
+  if (!moved) {
+
+    return false;
+
+  }
 
 
   walletData[
@@ -1546,7 +1893,9 @@ function restoreFromTrash(
 
 
   if (index === -1) {
+
     return false;
+
   }
 
 
@@ -1630,35 +1979,41 @@ function restoreAllFromTrash() {
 
 
   trashItems.reverse()
-    .forEach(item => {
+    .forEach(
+      item => {
 
-      if (
-        item.data &&
-        item.type &&
-        Array.isArray(
-          walletData[item.type]
-        )
-      ) {
+        if (
+          item.data &&
+          item.type &&
+          Array.isArray(
+            walletData[item.type]
+          )
+        ) {
 
-        const exists =
-          walletData[item.type].some(
-            record =>
-              String(record.id) ===
-              String(item.data.id)
-          );
+          const exists =
+            walletData[item.type].some(
+              record =>
+                String(record.id) ===
+                String(item.data.id)
+            );
 
 
-        if (!exists) {
+          if (!exists) {
 
-          walletData[item.type].push(
-            deepClone(item.data)
-          );
+            walletData[
+              item.type
+            ].push(
+              deepClone(
+                item.data
+              )
+            );
+
+          }
 
         }
 
       }
-
-    });
+    );
 
 
   walletData.trash = [];
@@ -1677,11 +2032,6 @@ function restoreAllFromTrash() {
    ========================================================= */
 
 function updateDashboard() {
-
-  /*
-    Dashboard elements are optional because
-    app.js is shared by every page.
-  */
 
   const totalBalanceElement =
     document.getElementById(
@@ -1809,7 +2159,9 @@ function renderAccountsPreview() {
 
 
   if (!container) {
+
     return;
+
   }
 
 
@@ -1833,37 +2185,44 @@ function renderAccountsPreview() {
   container.innerHTML =
     accounts
       .slice(0, 5)
-      .map(account => {
+      .map(
+        account => {
 
-        return `
-          <div class="account-preview-item">
+          return `
+            <div class="account-preview-item">
 
-            <div>
+              <div>
+
+                <strong>
+                  ${escapeHtml(
+                    getAccountName(account)
+                  )}
+                </strong>
+
+                <small>
+                  ${escapeHtml(
+                    account.type ||
+                    "Account"
+                  )}
+                </small>
+
+              </div>
+
               <strong>
                 ${escapeHtml(
-                  getAccountName(account)
+                  formatMoney(
+                    getAccountBalance(
+                      account
+                    )
+                  )
                 )}
               </strong>
 
-              <small>
-                ${escapeHtml(
-                  account.type || "Account"
-                )}
-              </small>
             </div>
+          `;
 
-            <strong>
-              ${escapeHtml(
-                formatMoney(
-                  getAccountBalance(account)
-                )
-              )}
-            </strong>
-
-          </div>
-        `;
-
-      })
+        }
+      )
       .join("");
 
 }
@@ -1882,7 +2241,9 @@ function renderRecentTransactions() {
 
 
   if (!container) {
+
     return;
+
   }
 
 
@@ -1906,78 +2267,159 @@ function renderRecentTransactions() {
   container.innerHTML =
     transactions
       .slice(0, 8)
-      .map(transaction => {
+      .map(
+        transaction => {
 
-        let sign = "";
-
-        if (
-          transaction.type ===
-            "income" ||
-          transaction.type ===
-            "buyer_payment"
-        ) {
-
-          sign = "+";
-
-        } else if (
-          transaction.type ===
-          "expense"
-        ) {
-
-          sign = "-";
-
-        }
+          let sign = "";
 
 
-        let title =
-          transaction.description ||
-          transaction.category ||
-          "Transaction";
+          /*
+            Income types.
+          */
+
+          if (
+            isIncomeTransaction(
+              transaction
+            )
+          ) {
+
+            sign = "+";
+
+          }
 
 
-        if (
-          transaction.type ===
-          "transfer"
-        ) {
+          /*
+            Expense types.
+          */
 
-          title =
+          else if (
+            isExpenseTransaction(
+              transaction
+            )
+          ) {
+
+            sign = "-";
+
+          }
+
+
+          /*
+            Transfer has no
+            income/expense sign.
+          */
+
+
+          let title =
             transaction.description ||
-            "Account Transfer";
+            transaction.category ||
+            "Transaction";
 
-        }
+
+          if (
+            transaction.type ===
+            "buyer_initial_payment"
+          ) {
+
+            title =
+              transaction.description ||
+              "Buyer Initial Payment";
+
+          }
 
 
-        return `
-          <div class="transaction-preview-item">
+          if (
+            transaction.type ===
+            "buyer_payment"
+          ) {
 
-            <div>
+            title =
+              transaction.description ||
+              "Buyer Payment";
+
+          }
+
+
+          if (
+            transaction.type ===
+            "emi_payment"
+          ) {
+
+            title =
+              transaction.description ||
+              "EMI Payment";
+
+          }
+
+
+          if (
+            transaction.type ===
+            "recurring_payment"
+          ) {
+
+            title =
+              transaction.description ||
+              "Recurring Payment";
+
+          }
+
+
+          if (
+            transaction.type ===
+            "money_to_give_payment"
+          ) {
+
+            title =
+              transaction.description ||
+              "Money To Give Payment";
+
+          }
+
+
+          if (
+            isTransferTransaction(
+              transaction
+            )
+          ) {
+
+            title =
+              transaction.description ||
+              "Account Transfer";
+
+          }
+
+
+          return `
+            <div class="transaction-preview-item">
+
+              <div>
+
+                <strong>
+                  ${escapeHtml(title)}
+                </strong>
+
+                <small>
+                  ${escapeHtml(
+                    formatDisplayDate(
+                      transaction.date
+                    )
+                  )}
+                </small>
+
+              </div>
 
               <strong>
-                ${escapeHtml(title)}
-              </strong>
-
-              <small>
-                ${escapeHtml(
-                  formatDisplayDate(
-                    transaction.date
+                ${sign}${escapeHtml(
+                  formatMoney(
+                    transaction.amount
                   )
                 )}
-              </small>
+              </strong>
 
             </div>
+          `;
 
-            <strong>
-              ${sign}${escapeHtml(
-                formatMoney(
-                  transaction.amount
-                )
-              )}
-            </strong>
-
-          </div>
-        `;
-
-      })
+        }
+      )
       .join("");
 
 }
@@ -2078,7 +2520,9 @@ function goToPage(page) {
   };
 
 
-  if (pageMap[page]) {
+  if (
+    pageMap[page]
+  ) {
 
     window.location.href =
       pageMap[page];
@@ -2096,8 +2540,8 @@ window.TamilandaWallet = {
 
   /* Data */
 
-  getData: () =>
-    walletData,
+  getData:
+    () => walletData,
 
   save:
     saveWalletData,
@@ -2119,6 +2563,18 @@ window.TamilandaWallet = {
 
   formatDisplayDate:
     formatDisplayDate,
+
+
+  /* Transaction classification */
+
+  isIncomeTransaction:
+    isIncomeTransaction,
+
+  isExpenseTransaction:
+    isExpenseTransaction,
+
+  isTransferTransaction:
+    isTransferTransaction,
 
 
   /* Calculations */
