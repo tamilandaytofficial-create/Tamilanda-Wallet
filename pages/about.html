@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>About - Tamilanda Wallet</title>
+
+  <link rel="manifest" href="../manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png">
+  <link rel="apple-touch-icon" href="../icons/icon-192.png">
+
+  <link rel="stylesheet" href="../css/style.css">
+
+  <style>
+    .about-page {
+      padding-bottom: 110px;
+    }
+
+    .about-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 26px;
+    }
+
+    .back-button {
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 13px;
+      background: rgba(255,255,255,0.06);
+      color: inherit;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .about-header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .app-brand {
+      text-align: center;
+      padding: 18px 0 28px;
+    }
+
+    .app-logo {
+      width: 92px;
+      height: 92px;
+      object-fit: contain;
+      border-radius: 24px;
+      margin-bottom: 14px;
+    }
+
+    .app-brand h2 {
+      margin: 0 0 6px;
+      font-size: 23px;
+      font-weight: 800;
+    }
+
+    .app-brand p {
+      margin: 0;
+      font-size: 13px;
+      opacity: 0.55;
+    }
+
+    .about-card {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.035);
+      border-radius: 20px;
+      padding: 19px;
+      margin-bottom: 14px;
+    }
+
+    .about-card h3 {
+      margin: 0 0 9px;
+      font-size: 16px;
+    }
+
+    .about-card p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.65;
+      opacity: 0.65;
+    }
+
+    .feature-list {
+      list-style: none;
+      padding: 0;
+      margin: 12px 0 0;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 13px;
+      opacity: 0.7;
+    }
+
+    .feature-list li span {
+      font-size: 16px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding: 11px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .info-row:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .info-label {
+      font-size: 13px;
+      opacity: 0.55;
+    }
+
+    .info-value {
+      font-size: 13px;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .about-footer {
+      text-align: center;
+      margin-top: 26px;
+      font-size: 12px;
+      line-height: 1.7;
+      opacity: 0.4;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app-container">
+
+    <main class="page-content about-page">
+
+      <!-- Header -->
+      <div class="about-header">
+
+        <button
+          class="back-button"
+          id="backButton"
+          aria-label="Go back"
+        >
+          ‹
+        </button>
+
+        <h1>About</h1>
+
+      </div>
+
+
+      <!-- App Brand -->
+      <div class="app-brand">
+
+        <img
+          src="../icons/icon-192.png"
+          alt="Tamilanda Wallet"
+          class="app-logo"
+        >
+
+        <h2>TAMILANDA WALLET</h2>
+
+        <p>Your money. Your control.</p>
+
+      </div>
+
+
+      <!-- About -->
+      <section class="about-card">
+
+        <h3>About Tamilanda Wallet</h3>
+
+        <p>
+          Tamilanda Wallet is a private personal and business
+          money management wallet designed to help you track
+          your daily money, accounts, income, expenses, buyers,
+          EMIs and pending payments in one place.
+        </p>
+
+      </section>
+
+
+      <!-- Features -->
+      <section class="about-card">
+
+        <h3>What You Can Manage</h3>
+
+        <ul class="feature-list">
+
+          <li>
+            <span>🏦</span>
+            Bank, cash and UPI accounts
+          </li>
+
+          <li>
+            <span>💰</span>
+            Income and expenses
+          </li>
+
+          <li>
+            <span>👤</span>
+            FF buyers and receivables
+          </li>
+
+          <li>
+            <span>🤝</span>
+            Money you need to give
+          </li>
+
+          <li>
+            <span>📅</span>
+            Your own EMIs
+          </li>
+
+          <li>
+            <span>🔄</span>
+            Recurring payments
+          </li>
+
+          <li>
+            <span>📊</span>
+            Reports and calculations
+          </li>
+
+          <li>
+            <span>💾</span>
+            Backup and restore
+          </li>
+
+        </ul>
+
+      </section>
+
+
+      <!-- App Information -->
+      <section class="about-card">
+
+        <h3>App Information</h3>
+
+        <div class="info-row">
+
+          <span class="info-label">
+            App Name
+          </span>
+
+          <span class="info-value">
+            Tamilanda Wallet
+          </span>
+
+        </div>
+
+
+        <div class="info-row">
+
+          <span class="info-label">
+            Version
+          </span>
+
+          <span class="info-value">
+            1.0.0
+          </span>
+
+        </div>
+
+
+        <div class="info-row">
+
+          <span class="info-label">
+            App Type
+          </span>
+
+          <span class="info-value">
+            PWA
+          </span>
+
+        </div>
+
+
+        <div class="info-row">
+
+          <span class="info-label">
+            Storage
+          </span>
+
+          <span class="info-value">
+            Local Device
+          </span>
+
+        </div>
+
+      </section>
+
+
+      <!-- Privacy -->
+      <section class="about-card">
+
+        <h3>Privacy First 🔐</h3>
+
+        <p>
+          Tamilanda Wallet currently works locally on your device.
+          Advanced security features such as PIN lock, biometric
+          unlock and encrypted backups can be added in future
+          versions.
+        </p>
+
+      </section>
+
+
+      <div class="about-footer">
+
+        TAMILANDA WALLET
+
+        <br>
+
+        Built for simple and private money management.
+
+        <br><br>
+
+        💰 Track &nbsp; • &nbsp; 📊 Understand &nbsp; • &nbsp; 🔐 Control
+
+      </div>
+
+    </main>
+
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+
+      <button
+        class="nav-item"
+        data-page="home"
+      >
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Home</span>
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="transactions"
+      >
+        <span class="nav-icon">📋</span>
+        <span class="nav-label">Transactions</span>
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="buyers"
+      >
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">Buyers</span>
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="accounts"
+      >
+        <span class="nav-icon">🏦</span>
+        <span class="nav-label">Accounts</span>
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="more"
+      >
+        <span class="nav-icon">☰</span>
+        <span class="nav-label">More</span>
+      </button>
+
+    </nav>
+
+  </div>
+
+
+  <script src="../js/app.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+      /*
+       * Back Button
+       */
+
+      document
+        .getElementById("backButton")
+        .addEventListener("click", () => {
+
+          if (document.referrer) {
+
+            history.back();
+
+          } else {
+
+            window.location.href =
+              "./more.html";
+
+          }
+
+        });
+
+
+      /*
+       * Bottom Navigation
+       */
+
+      document
+        .querySelectorAll(".bottom-nav .nav-item")
+        .forEach((item) => {
+
+          item.addEventListener("click", () => {
+
+            const page = item.dataset.page;
+
+
+            if (page === "home") {
+
+              window.location.href =
+                "../index.html";
+
+              return;
+            }
+
+
+            if (page === "transactions") {
+
+              window.location.href =
+                "./transactions.html";
+
+              return;
+            }
+
+
+            if (page === "buyers") {
+
+              window.location.href =
+                "./buyers.html";
+
+              return;
+            }
+
+
+            if (page === "accounts") {
+
+              window.location.href =
+                "./accounts.html";
+
+              return;
+            }
+
+
+            if (page === "more") {
+
+              window.location.href =
+                "./more.html";
+
+              return;
+            }
+
+          });
+
+        });
+
+    });
+  </script>
+
+</body>
+</html>
