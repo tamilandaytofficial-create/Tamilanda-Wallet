@@ -1,18 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Money To Give - Tamilanda Wallet</title>
 
-  <link rel="manifest" href="../manifest.json">
-  <link rel="stylesheet" href="../css/style.css">
+  <link
+    rel="manifest"
+    href="../manifest.json"
+  >
 
-  <meta name="theme-color" content="#09070d">
+  <link
+    rel="stylesheet"
+    href="../css/style.css"
+  >
+
+  <meta
+    name="theme-color"
+    content="#09070d"
+  >
+
 </head>
 
 <body>
+
 
   <!-- =========================
        HEADER
@@ -21,9 +38,17 @@
   <header class="app-header">
 
     <div>
-      <h1>Money To Give</h1>
-      <p>Track money you have to pay others</p>
+
+      <h1>
+        Money To Give
+      </h1>
+
+      <p>
+        Track money you have to pay others
+      </p>
+
     </div>
+
 
     <button
       class="icon-button"
@@ -35,6 +60,7 @@
   </header>
 
 
+
   <!-- =========================
        SUMMARY
   ========================== -->
@@ -42,26 +68,58 @@
   <section class="summary-grid">
 
     <div class="summary-card">
-      <span>Total People</span>
-      <strong id="totalPeople">0</strong>
+
+      <span>
+        Total People
+      </span>
+
+      <strong id="totalPeople">
+        0
+      </strong>
+
     </div>
 
-    <div class="summary-card">
-      <span>Total To Give</span>
-      <strong id="totalToGive">₹0.00</strong>
-    </div>
 
     <div class="summary-card">
-      <span>Pending</span>
-      <strong id="pendingPeople">0</strong>
+
+      <span>
+        Total To Give
+      </span>
+
+      <strong id="totalToGive">
+        ₹0.00
+      </strong>
+
     </div>
 
+
     <div class="summary-card">
-      <span>Completed</span>
-      <strong id="completedPeople">0</strong>
+
+      <span>
+        Pending
+      </span>
+
+      <strong id="pendingPeople">
+        0
+      </strong>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <span>
+        Completed
+      </span>
+
+      <strong id="completedPeople">
+        0
+      </strong>
+
     </div>
 
   </section>
+
 
 
   <!-- =========================
@@ -80,6 +138,7 @@
   </section>
 
 
+
   <!-- =========================
        SEARCH / FILTER
   ========================== -->
@@ -94,20 +153,33 @@
       oninput="renderGiveList()"
     >
 
+
     <select
       id="statusFilter"
       class="input"
       onchange="renderGiveList()"
     >
 
-      <option value="all">All</option>
-      <option value="pending">Pending</option>
-      <option value="completed">Completed</option>
-      <option value="overdue">Overdue</option>
+      <option value="all">
+        All
+      </option>
+
+      <option value="pending">
+        Pending
+      </option>
+
+      <option value="completed">
+        Completed
+      </option>
+
+      <option value="overdue">
+        Overdue
+      </option>
 
     </select>
 
   </section>
+
 
 
   <!-- =========================
@@ -142,7 +214,11 @@
     >
 
 
-    <label>Person Name</label>
+    <!-- PERSON -->
+
+    <label>
+      Person Name
+    </label>
 
     <input
       type="text"
@@ -152,7 +228,11 @@
     >
 
 
-    <label>Phone Number</label>
+    <!-- PHONE -->
+
+    <label>
+      Phone Number
+    </label>
 
     <input
       type="tel"
@@ -162,7 +242,11 @@
     >
 
 
-    <label>Total Amount Owed</label>
+    <!-- TOTAL -->
+
+    <label>
+      Total Amount Owed
+    </label>
 
     <input
       type="number"
@@ -175,17 +259,31 @@
     >
 
 
-    <label>Already Paid</label>
+    <!-- ALREADY PAID -->
+
+    <label>
+      Already Paid
+    </label>
 
     <input
       type="number"
       id="giveAlreadyPaid"
       class="input"
-      placeholder="₹ Already paid"
+      placeholder="₹ Amount already paid"
       min="0"
       step="0.01"
       oninput="updateGivePreview()"
     >
+
+
+    <div
+      class="helper-text"
+      id="alreadyPaidHelper"
+    >
+      Already Paid is treated as a previous/historical payment.
+      It reduces the outstanding amount but does not change
+      today's account balance.
+    </div>
 
 
     <div
@@ -205,7 +303,11 @@
     </div>
 
 
-    <label>Reason</label>
+    <!-- REASON -->
+
+    <label>
+      Reason
+    </label>
 
     <input
       type="text"
@@ -215,7 +317,11 @@
     >
 
 
-    <label>Due Date</label>
+    <!-- DUE DATE -->
+
+    <label>
+      Due Date
+    </label>
 
     <input
       type="date"
@@ -224,7 +330,11 @@
     >
 
 
-    <label>Notes</label>
+    <!-- NOTES -->
+
+    <label>
+      Notes
+    </label>
 
     <textarea
       id="giveNotes"
@@ -244,6 +354,7 @@
   </section>
 
 
+
   <!-- =========================
        LIST
   ========================== -->
@@ -251,12 +362,18 @@
   <section>
 
     <div class="section-heading">
-      <h2>Payment List</h2>
+
+      <h2>
+        Payment List
+      </h2>
+
     </div>
+
 
     <div id="giveList"></div>
 
   </section>
+
 
 
   <!-- =========================
@@ -275,13 +392,16 @@
 
         <div>
 
-          <h2>Record Payment</h2>
+          <h2>
+            Record Payment
+          </h2>
 
           <p id="givePaymentPerson">
             Person
           </p>
 
         </div>
+
 
         <button
           class="icon-button"
@@ -312,7 +432,9 @@
       >
 
 
-      <label>Amount Paid</label>
+      <label>
+        Amount Paid
+      </label>
 
       <input
         type="number"
@@ -324,7 +446,9 @@
       >
 
 
-      <label>Paid From</label>
+      <label>
+        Paid From
+      </label>
 
       <select
         id="givePaymentAccount"
@@ -338,7 +462,9 @@
       </select>
 
 
-      <label>Payment Date</label>
+      <label>
+        Payment Date
+      </label>
 
       <input
         type="date"
@@ -347,7 +473,9 @@
       >
 
 
-      <label>Note</label>
+      <label>
+        Note
+      </label>
 
       <textarea
         id="givePaymentNote"
@@ -369,6 +497,7 @@
   </div>
 
 
+
   <!-- =========================
        BOTTOM NAV
   ========================== -->
@@ -376,31 +505,61 @@
   <nav class="bottom-nav">
 
     <button onclick="goToPage('home')">
+
       🏠
-      <span>Home</span>
+
+      <span>
+        Home
+      </span>
+
     </button>
+
 
     <button onclick="goToPage('transactions')">
+
       📋
-      <span>Transactions</span>
+
+      <span>
+        Transactions
+      </span>
+
     </button>
+
 
     <button onclick="goToPage('buyers')">
+
       👤
-      <span>Buyers</span>
+
+      <span>
+        Buyers
+      </span>
+
     </button>
+
 
     <button onclick="goToPage('accounts')">
+
       🏦
-      <span>Accounts</span>
+
+      <span>
+        Accounts
+      </span>
+
     </button>
 
+
     <button onclick="goToPage('more')">
+
       ☰
-      <span>More</span>
+
+      <span>
+        More
+      </span>
+
     </button>
 
   </nav>
+
 
 
   <!-- =========================
@@ -412,15 +571,20 @@
 
   <script>
 
-    let walletData;
+    let walletData = null;
+
     let editingGiveId = null;
 
 
-    /* =========================
+    /* =====================================================
        HELPERS
-    ========================== */
+    ===================================================== */
 
     function money(value) {
+
+      const amount =
+        Number(value) || 0;
+
 
       if (
         window.TamilandaWallet &&
@@ -429,13 +593,14 @@
       ) {
 
         return window.TamilandaWallet.formatMoney(
-          Number(value) || 0
+          amount
         );
 
       }
 
+
       return "₹" +
-        (Number(value) || 0).toLocaleString(
+        amount.toLocaleString(
           "en-IN",
           {
             minimumFractionDigits: 2,
@@ -444,6 +609,7 @@
         );
 
     }
+
 
 
     function today() {
@@ -458,17 +624,25 @@
 
       }
 
-      const d = new Date();
+
+      const d =
+        new Date();
+
 
       return (
         d.getFullYear() +
         "-" +
-        String(d.getMonth() + 1).padStart(2, "0") +
+        String(
+          d.getMonth() + 1
+        ).padStart(2, "0") +
         "-" +
-        String(d.getDate()).padStart(2, "0")
+        String(
+          d.getDate()
+        ).padStart(2, "0")
       );
 
     }
+
 
 
     function generateId() {
@@ -479,9 +653,12 @@
         "function"
       ) {
 
-        return window.TamilandaWallet.generateId();
+        return window.TamilandaWallet.generateId(
+          "give"
+        );
 
       }
+
 
       return (
         Date.now().toString(36) +
@@ -493,6 +670,7 @@
     }
 
 
+
     function saveData() {
 
       if (
@@ -501,11 +679,20 @@
         "function"
       ) {
 
-        window.TamilandaWallet.save();
+        return window.TamilandaWallet.save();
 
       }
 
+
+      localStorage.setItem(
+        "tamilanda_wallet_data",
+        JSON.stringify(walletData)
+      );
+
+      return true;
+
     }
+
 
 
     function escapeHtml(value) {
@@ -522,14 +709,33 @@
 
       }
 
-      return String(value || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+
+      return String(
+        value ?? ""
+      )
+        .replace(
+          /&/g,
+          "&amp;"
+        )
+        .replace(
+          /</g,
+          "&lt;"
+        )
+        .replace(
+          />/g,
+          "&gt;"
+        )
+        .replace(
+          /"/g,
+          "&quot;"
+        )
+        .replace(
+          /'/g,
+          "&#039;"
+        );
 
     }
+
 
 
     function formatDate(dateString) {
@@ -538,12 +744,21 @@
         return "-";
       }
 
-      const parts =
-        dateString.split("-");
 
-      if (parts.length !== 3) {
+      const parts =
+        String(
+          dateString
+        ).split("-");
+
+
+      if (
+        parts.length !== 3
+      ) {
+
         return dateString;
+
       }
+
 
       return (
         parts[2] +
@@ -556,72 +771,127 @@
     }
 
 
-    function getRemaining(item) {
 
-      if (
-        window.TamilandaWallet &&
-        typeof window.TamilandaWallet.getGiveRemaining ===
-        "function"
-      ) {
+    /* =====================================================
+       ACCOUNT
+    ===================================================== */
 
-        return Number(
-          window.TamilandaWallet.getGiveRemaining(
-            item.id
-          )
-        ) || 0;
+    function getAccount(accountId) {
 
+      return (
+        walletData.accounts || []
+      ).find(
+        account =>
+          String(account.id) ===
+          String(accountId)
+      );
+
+    }
+
+
+
+    function getAccountName(accountId) {
+
+      const account =
+        getAccount(accountId);
+
+
+      if (!account) {
+        return "Unknown Account";
       }
 
 
+      return (
+        account.name ||
+        account.accountName ||
+        account.title ||
+        "Unnamed Account"
+      );
+
+    }
+
+
+
+    /* =====================================================
+       REMAINING
+    ===================================================== */
+
+    function getRemaining(item) {
+
+      if (!item) {
+        return 0;
+      }
+
+
+      const total =
+        Number(
+          item.totalAmount ??
+          item.amount ??
+          0
+        );
+
+
+      const initialPaid =
+        Number(
+          item.alreadyPaid || 0
+        );
+
+
       const payments =
-        (walletData.givePayments || [])
-          .filter(
-            payment =>
-              payment.giveId === item.id
-          )
-          .reduce(
-            (sum, payment) =>
-              sum +
-              Number(payment.amount || 0),
-            0
-          );
+        (
+          walletData.givePayments || []
+        )
+        .filter(
+          payment =>
+            String(payment.giveId) ===
+            String(item.id)
+        )
+        .reduce(
+          (
+            sum,
+            payment
+          ) =>
+            sum +
+            Number(
+              payment.amount || 0
+            ),
+          0
+        );
 
 
       return Math.max(
         0,
-        Number(
-          item.totalAmount ||
-          item.amount ||
-          0
-        ) -
-        Number(
-          item.alreadyPaid ||
-          0
-        ) -
+        total -
+        initialPaid -
         payments
       );
 
     }
 
 
+
     function getPaidAmount(item) {
 
       const total =
         Number(
-          item.totalAmount ||
-          item.amount ||
+          item.totalAmount ??
+          item.amount ??
           0
         );
+
 
       const remaining =
         getRemaining(item);
 
+
       return Math.max(
         0,
-        total - remaining
+        total -
+        remaining
       );
 
     }
+
 
 
     function isOverdue(item) {
@@ -629,39 +899,29 @@
       const remaining =
         getRemaining(item);
 
+
       if (
         remaining <= 0 ||
         !item.dueDate
       ) {
+
         return false;
+
       }
 
+
       return (
-        item.dueDate < today()
+        item.dueDate <
+        today()
       );
 
     }
 
 
-    function getAccountName(accountId) {
 
-      const account =
-        (walletData.accounts || [])
-          .find(
-            account =>
-              account.id === accountId
-          );
-
-      return account
-        ? account.name
-        : "Unknown Account";
-
-    }
-
-
-    /* =========================
+    /* =====================================================
        INIT
-    ========================== */
+    ===================================================== */
 
     document.addEventListener(
       "DOMContentLoaded",
@@ -670,21 +930,47 @@
         walletData =
           window.TamilandaWallet.getData();
 
+
+        if (
+          !walletData.moneyToGive
+        ) {
+
+          walletData.moneyToGive =
+            [];
+
+        }
+
+
+        if (
+          !walletData.givePayments
+        ) {
+
+          walletData.givePayments =
+            [];
+
+        }
+
+
         document.getElementById(
           "givePaymentDate"
-        ).value = today();
+        ).value =
+          today();
+
 
         renderSummary();
+
         renderGiveList();
+
         populateAccounts();
 
       }
     );
 
 
-    /* =========================
+
+    /* =====================================================
        ACCOUNT SELECT
-    ========================== */
+    ===================================================== */
 
     function populateAccounts() {
 
@@ -694,43 +980,61 @@
         );
 
 
-      select.innerHTML =
-        `<option value="">
+      select.innerHTML = `
+        <option value="">
           Select account
-        </option>`;
+        </option>
+      `;
 
 
-      (walletData.accounts || [])
-        .forEach(account => {
+      (
+        walletData.accounts || []
+      )
+      .forEach(
+        account => {
 
           const option =
             document.createElement(
               "option"
             );
 
+
           option.value =
             account.id;
 
+
           option.textContent =
-            account.name +
+            (
+              account.name ||
+              account.accountName ||
+              "Unnamed Account"
+            ) +
             " — " +
-            money(account.balance);
+            money(
+              account.balance
+            );
 
-          select.appendChild(option);
 
-        });
+          select.appendChild(
+            option
+          );
+
+        }
+      );
 
     }
 
 
-    /* =========================
+
+    /* =====================================================
        SUMMARY
-    ========================== */
+    ===================================================== */
 
     function renderSummary() {
 
       const list =
         walletData.moneyToGive || [];
+
 
       let total =
         0;
@@ -742,20 +1046,31 @@
         0;
 
 
-      list.forEach(item => {
+      list.forEach(
+        item => {
 
-        const remaining =
-          getRemaining(item);
+          const remaining =
+            getRemaining(item);
 
-        total += remaining;
 
-        if (remaining <= 0) {
-          completed++;
-        } else {
-          pending++;
+          total +=
+            remaining;
+
+
+          if (
+            remaining <= 0
+          ) {
+
+            completed++;
+
+          } else {
+
+            pending++;
+
+          }
+
         }
-
-      });
+      );
 
 
       document.getElementById(
@@ -784,14 +1099,16 @@
     }
 
 
-    /* =========================
+
+    /* =====================================================
        FORM
-    ========================== */
+    ===================================================== */
 
     function openGiveForm() {
 
       editingGiveId =
         null;
+
 
       document.getElementById(
         "formTitle"
@@ -816,6 +1133,7 @@
     }
 
 
+
     function closeGiveForm() {
 
       document.getElementById(
@@ -823,54 +1141,65 @@
       ).style.display =
         "none";
 
+
       editingGiveId =
         null;
+
 
       clearGiveForm();
 
     }
 
 
+
     function clearGiveForm() {
 
       document.getElementById(
         "editingGiveId"
-      ).value = "";
+      ).value =
+        "";
 
 
       document.getElementById(
         "personName"
-      ).value = "";
+      ).value =
+        "";
 
 
       document.getElementById(
         "personPhone"
-      ).value = "";
+      ).value =
+        "";
 
 
       document.getElementById(
         "giveTotalAmount"
-      ).value = "";
+      ).value =
+        "";
 
 
       document.getElementById(
         "giveAlreadyPaid"
-      ).value = "";
+      ).value =
+        "";
 
 
       document.getElementById(
         "giveReason"
-      ).value = "";
+      ).value =
+        "";
 
 
       document.getElementById(
         "giveDueDate"
-      ).value = "";
+      ).value =
+        "";
 
 
       document.getElementById(
         "giveNotes"
-      ).value = "";
+      ).value =
+        "";
 
 
       document.getElementById(
@@ -885,6 +1214,7 @@
         money(0);
 
     }
+
 
 
     function updateGivePreview() {
@@ -908,7 +1238,8 @@
       const remaining =
         Math.max(
           0,
-          total - paid
+          total -
+          paid
         );
 
 
@@ -926,22 +1257,27 @@
     }
 
 
-    /* =========================
+
+    /* =====================================================
        SAVE GIVE MONEY
-    ========================== */
+    ===================================================== */
 
     function saveGiveMoney() {
 
       const name =
         document.getElementById(
           "personName"
-        ).value.trim();
+        )
+        .value
+        .trim();
 
 
       const phone =
         document.getElementById(
           "personPhone"
-        ).value.trim();
+        )
+        .value
+        .trim();
 
 
       const total =
@@ -963,7 +1299,9 @@
       const reason =
         document.getElementById(
           "giveReason"
-        ).value.trim();
+        )
+        .value
+        .trim();
 
 
       const dueDate =
@@ -975,8 +1313,14 @@
       const notes =
         document.getElementById(
           "giveNotes"
-        ).value.trim();
+        )
+        .value
+        .trim();
 
+
+      /* =========================
+         VALIDATION
+      ========================== */
 
       if (!name) {
 
@@ -989,7 +1333,10 @@
       }
 
 
-      if (total <= 0) {
+      if (
+        !Number.isFinite(total) ||
+        total <= 0
+      ) {
 
         alert(
           "Please enter a valid total amount."
@@ -1000,10 +1347,13 @@
       }
 
 
-      if (alreadyPaid < 0) {
+      if (
+        !Number.isFinite(alreadyPaid) ||
+        alreadyPaid < 0
+      ) {
 
         alert(
-          "Already paid cannot be negative."
+          "Already paid amount is invalid."
         );
 
         return;
@@ -1011,7 +1361,9 @@
       }
 
 
-      if (alreadyPaid > total) {
+      if (
+        alreadyPaid > total
+      ) {
 
         alert(
           "Already paid cannot be greater than total amount."
@@ -1022,9 +1374,10 @@
       }
 
 
-      /* =========================
-         EDIT
-      ========================== */
+
+      /* =================================================
+         EDIT EXISTING
+      ================================================= */
 
       if (editingGiveId) {
 
@@ -1032,8 +1385,8 @@
           walletData.moneyToGive
             .find(
               x =>
-                x.id ===
-                editingGiveId
+                String(x.id) ===
+                String(editingGiveId)
             );
 
 
@@ -1049,36 +1402,85 @@
 
 
         const hasPayments =
-          (walletData.givePayments || [])
-            .some(
-              payment =>
-                payment.giveId ===
-                item.id
+          (
+            walletData.givePayments || []
+          )
+          .some(
+            payment =>
+              String(payment.giveId) ===
+              String(item.id)
+          );
+
+
+        /*
+          Once actual payments exist,
+          total + alreadyPaid are locked.
+
+          This prevents changing the
+          accounting base after payments
+          have already been recorded.
+        */
+
+        if (hasPayments) {
+
+          const existingTotal =
+            Number(
+              item.totalAmount ??
+              item.amount ??
+              0
             );
+
+
+          const existingInitialPaid =
+            Number(
+              item.alreadyPaid || 0
+            );
+
+
+          if (
+            total !== existingTotal ||
+            alreadyPaid !==
+              existingInitialPaid
+          ) {
+
+            alert(
+              "Payment history exists. Total Amount and Already Paid cannot be changed now. Edit only personal details, reason, due date or notes."
+            );
+
+            return;
+
+          }
+
+        }
 
 
         item.name =
           name;
 
+
         item.personName =
           name;
+
 
         item.phone =
           phone;
 
+
         item.reason =
           reason;
 
+
         item.dueDate =
           dueDate;
+
 
         item.notes =
           notes;
 
 
         /*
-          If payment history exists,
-          don't alter financial base values.
+          If there is no payment history,
+          financial base can still be edited.
         */
 
         if (!hasPayments) {
@@ -1086,8 +1488,10 @@
           item.totalAmount =
             total;
 
+
           item.amount =
             total;
+
 
           item.alreadyPaid =
             alreadyPaid;
@@ -1097,27 +1501,35 @@
 
         saveData();
 
+
         walletData =
           window.TamilandaWallet.getData();
 
 
         closeGiveForm();
 
+
         renderSummary();
+
         renderGiveList();
+
+        populateAccounts();
+
 
         alert(
           "Money To Give updated successfully. ✅"
         );
+
 
         return;
 
       }
 
 
-      /* =========================
+
+      /* =================================================
          NEW RECORD
-      ========================== */
+      ================================================= */
 
       const item = {
 
@@ -1139,6 +1551,16 @@
         amount:
           total,
 
+        /*
+          This represents money that was
+          already paid BEFORE this record
+          was being tracked.
+
+          It reduces the outstanding amount,
+          but does not touch current account
+          balances.
+        */
+
         alreadyPaid:
           alreadyPaid,
 
@@ -1157,7 +1579,9 @@
       };
 
 
-      if (!walletData.moneyToGive) {
+      if (
+        !walletData.moneyToGive
+      ) {
 
         walletData.moneyToGive =
           [];
@@ -1172,14 +1596,20 @@
 
       saveData();
 
+
       walletData =
         window.TamilandaWallet.getData();
 
 
       closeGiveForm();
 
+
       renderSummary();
+
       renderGiveList();
+
+      populateAccounts();
+
 
       alert(
         "Money To Give added successfully. ✅"
@@ -1188,16 +1618,19 @@
     }
 
 
-    /* =========================
+
+    /* =====================================================
        EDIT
-    ========================== */
+    ===================================================== */
 
     function editGiveMoney(id) {
 
       const item =
         walletData.moneyToGive
           .find(
-            x => x.id === id
+            x =>
+              String(x.id) ===
+              String(id)
           );
 
 
@@ -1234,15 +1667,15 @@
       document.getElementById(
         "giveTotalAmount"
       ).value =
-        item.totalAmount ||
-        item.amount ||
+        item.totalAmount ??
+        item.amount ??
         "";
 
 
       document.getElementById(
         "giveAlreadyPaid"
       ).value =
-        item.alreadyPaid ||
+        item.alreadyPaid ??
         "";
 
 
@@ -1270,6 +1703,58 @@
       updateGivePreview();
 
 
+      const hasPayments =
+        (
+          walletData.givePayments || []
+        )
+        .some(
+          payment =>
+            String(payment.giveId) ===
+            String(item.id)
+        );
+
+
+      if (hasPayments) {
+
+        document.getElementById(
+          "giveTotalAmount"
+        ).readOnly =
+          true;
+
+
+        document.getElementById(
+          "giveAlreadyPaid"
+        ).readOnly =
+          true;
+
+
+        document.getElementById(
+          "alreadyPaidHelper"
+        ).textContent =
+          "🔒 Financial amounts are locked because payment history already exists.";
+
+      } else {
+
+        document.getElementById(
+          "giveTotalAmount"
+        ).readOnly =
+          false;
+
+
+        document.getElementById(
+          "giveAlreadyPaid"
+        ).readOnly =
+          false;
+
+
+        document.getElementById(
+          "alreadyPaidHelper"
+        ).textContent =
+          "Already Paid is treated as a previous/historical payment. It reduces the outstanding amount but does not change today's account balance.";
+
+      }
+
+
       document.getElementById(
         "giveFormCard"
       ).style.display =
@@ -1284,16 +1769,19 @@
     }
 
 
-    /* =========================
+
+    /* =====================================================
        PAYMENT MODAL
-    ========================== */
+    ===================================================== */
 
     function openGivePaymentModal(id) {
 
       const item =
         walletData.moneyToGive
           .find(
-            x => x.id === id
+            x =>
+              String(x.id) ===
+              String(id)
           );
 
 
@@ -1306,7 +1794,9 @@
         getRemaining(item);
 
 
-      if (remaining <= 0) {
+      if (
+        remaining <= 0
+      ) {
 
         alert(
           "This payment is already completed. ✅"
@@ -1369,6 +1859,7 @@
     }
 
 
+
     function closeGivePaymentModal() {
 
       document.getElementById(
@@ -1379,9 +1870,10 @@
     }
 
 
-    /* =========================
+
+    /* =====================================================
        SAVE PAYMENT
-    ========================== */
+    ===================================================== */
 
     function saveGivePayment() {
 
@@ -1415,13 +1907,17 @@
       const note =
         document.getElementById(
           "givePaymentNote"
-        ).value.trim();
+        )
+        .value
+        .trim();
 
 
       const item =
         walletData.moneyToGive
           .find(
-            x => x.id === giveId
+            x =>
+              String(x.id) ===
+              String(giveId)
           );
 
 
@@ -1436,7 +1932,10 @@
       }
 
 
-      if (amount <= 0) {
+      if (
+        !Number.isFinite(amount) ||
+        amount <= 0
+      ) {
 
         alert(
           "Please enter a valid payment amount."
@@ -1451,7 +1950,9 @@
         getRemaining(item);
 
 
-      if (amount > remaining) {
+      if (
+        amount > remaining
+      ) {
 
         alert(
           "Maximum payment allowed is " +
@@ -1476,11 +1977,9 @@
 
 
       const account =
-        walletData.accounts
-          .find(
-            a =>
-              a.id === accountId
-          );
+        getAccount(
+          accountId
+        );
 
 
       if (!account) {
@@ -1494,14 +1993,14 @@
       }
 
 
-      /*
-        Payment reduces the selected
-        account balance.
-      */
+      const accountBalance =
+        Number(
+          account.balance || 0
+        );
+
 
       if (
-        Number(account.balance || 0) <
-        amount
+        accountBalance < amount
       ) {
 
         alert(
@@ -1513,14 +2012,77 @@
       }
 
 
+
+      /* =================================================
+         DUPLICATE-SAFE CHECK
+      ================================================= */
+
+      const duplicate =
+        (
+          walletData.givePayments || []
+        )
+        .some(
+          payment => {
+
+            return (
+              String(
+                payment.giveId
+              ) ===
+              String(giveId) &&
+
+              Number(
+                payment.amount || 0
+              ) ===
+              amount &&
+
+              String(
+                payment.accountId
+              ) ===
+              String(accountId) &&
+
+              String(
+                payment.date || ""
+              ) ===
+              String(date) &&
+
+              String(
+                payment.note || ""
+              ) ===
+              String(note)
+            );
+
+          }
+        );
+
+
+      if (duplicate) {
+
+        alert(
+          "This exact payment already exists. Duplicate payment was blocked. ⚠️"
+        );
+
+        return;
+
+      }
+
+
+
+      /* =================================================
+         ACCOUNT BALANCE
+      ================================================= */
+
+      const oldBalance =
+        accountBalance;
+
+
       account.balance =
-        Number(
-          account.balance || 0
-        ) -
+        oldBalance -
         amount;
 
 
-      if (!walletData.givePayments) {
+      if (
+        !walletData.givePayments
+      ) {
 
         walletData.givePayments =
           [];
@@ -1528,10 +2090,29 @@
       }
 
 
+      if (
+        !walletData.transactions
+      ) {
+
+        walletData.transactions =
+          [];
+
+      }
+
+
+
+      /* =================================================
+         PAYMENT RECORD
+      ================================================= */
+
+      const paymentId =
+        generateId();
+
+
       walletData.givePayments.push({
 
         id:
-          generateId(),
+          paymentId,
 
         giveId:
           giveId,
@@ -1548,16 +2129,19 @@
         note:
           note,
 
+        source:
+          "money_to_give_payment",
+
         createdAt:
           new Date().toISOString()
 
       });
 
 
-      /*
-        This is an expense from the wallet
-        because money is actually leaving.
-      */
+
+      /* =================================================
+         EXPENSE TRANSACTION
+      ================================================= */
 
       walletData.transactions.push({
 
@@ -1580,7 +2164,11 @@
           date,
 
         description:
-          `Payment To ${item.name || item.personName}`,
+          `Payment To ${
+            item.name ||
+            item.personName ||
+            "Person"
+          }`,
 
         note:
           note,
@@ -1591,31 +2179,95 @@
         giveId:
           giveId,
 
+        paymentId:
+          paymentId,
+
         createdAt:
           new Date().toISOString()
 
       });
 
 
-      saveData();
+
+      /* =================================================
+         SAVE
+      ================================================= */
+
+      try {
+
+        saveData();
+
+      } catch (error) {
+
+        /*
+          Safety rollback if storage fails.
+        */
+
+        account.balance =
+          oldBalance;
+
+
+        walletData.givePayments =
+          walletData.givePayments
+            .filter(
+              payment =>
+                payment.id !==
+                paymentId
+            );
+
+
+        walletData.transactions =
+          walletData.transactions
+            .filter(
+              transaction =>
+                transaction.paymentId !==
+                paymentId
+            );
+
+
+        alert(
+          "Payment could not be saved. Account balance was protected."
+        );
+
+        return;
+
+      }
+
 
       walletData =
         window.TamilandaWallet.getData();
 
 
+      const updatedItem =
+        walletData.moneyToGive
+          .find(
+            x =>
+              String(x.id) ===
+              String(giveId)
+          );
+
+
       const newRemaining =
-        getRemaining(item);
+        updatedItem
+          ? getRemaining(
+              updatedItem
+            )
+          : 0;
 
 
       closeGivePaymentModal();
 
+
       populateAccounts();
 
       renderSummary();
+
       renderGiveList();
 
 
-      if (newRemaining <= 0) {
+      if (
+        newRemaining <= 0
+      ) {
 
         alert(
           "Payment completed successfully! 🎉"
@@ -1633,39 +2285,45 @@
     }
 
 
-    /* =========================
+
+    /* =====================================================
        PAYMENT HISTORY
-    ========================== */
+    ===================================================== */
 
     function getGivePayments(id) {
 
       return (
         walletData.givePayments || []
       )
-        .filter(
-          payment =>
-            payment.giveId === id
-        )
-        .sort(
-          (a, b) =>
-            new Date(
-              b.date ||
-              b.createdAt
-            ) -
-            new Date(
-              a.date ||
-              a.createdAt
-            )
-        );
+      .filter(
+        payment =>
+          String(
+            payment.giveId
+          ) ===
+          String(id)
+      )
+      .sort(
+        (a, b) =>
+          new Date(
+            b.date ||
+            b.createdAt
+          ) -
+          new Date(
+            a.date ||
+            a.createdAt
+          )
+      );
 
     }
+
 
 
     function toggleHistory(id) {
 
       const element =
         document.getElementById(
-          "give-history-" + id
+          "give-history-" +
+          id
         );
 
 
@@ -1675,23 +2333,27 @@
 
 
       element.style.display =
-        element.style.display === "none"
+        element.style.display ===
+        "none"
           ? "block"
           : "none";
 
     }
 
 
-    /* =========================
+
+    /* =====================================================
        DELETE
-    ========================== */
+    ===================================================== */
 
     function deleteGiveMoney(id) {
 
       const item =
         walletData.moneyToGive
           .find(
-            x => x.id === id
+            x =>
+              String(x.id) ===
+              String(id)
           );
 
 
@@ -1704,7 +2366,14 @@
         getGivePayments(id);
 
 
-      if (payments.length > 0) {
+      /*
+        Records with actual payment history
+        are protected.
+      */
+
+      if (
+        payments.length > 0
+      ) {
 
         alert(
           "This record has payment history. Please keep it for accounting history. You can edit the record instead."
@@ -1729,7 +2398,9 @@
         `Move ${person} to Trash?`;
 
 
-      if (remaining > 0) {
+      if (
+        remaining > 0
+      ) {
 
         message +=
           `\n\nPending amount: ${money(remaining)}`;
@@ -1737,9 +2408,36 @@
       }
 
 
-      if (!confirm(message)) {
-        return;
+      if (
+        Number(
+          item.alreadyPaid || 0
+        ) > 0
+      ) {
+
+        message +=
+          `\nAlready paid: ${money(
+            item.alreadyPaid
+          )}`;
+
       }
+
+
+      if (
+        !confirm(message)
+      ) {
+
+        return;
+
+      }
+
+
+
+      /* =================================================
+         MOVE TO TRASH
+      ================================================= */
+
+      let moved =
+        false;
 
 
       if (
@@ -1748,16 +2446,30 @@
         "function"
       ) {
 
-        window.TamilandaWallet.moveToTrash(
-          "moneyToGive",
-          item
-        );
+        moved =
+          window.TamilandaWallet.moveToTrash(
+            "moneyToGive",
+            item
+          ) !== false;
 
-      } else {
+      }
 
-        walletData.trash =
-          walletData.trash ||
-          [];
+
+      /*
+        Fallback trash implementation.
+      */
+
+      if (!moved) {
+
+        if (
+          !walletData.trash
+        ) {
+
+          walletData.trash =
+            [];
+
+        }
+
 
         walletData.trash.push({
 
@@ -1784,11 +2496,15 @@
       const index =
         walletData.moneyToGive
           .findIndex(
-            x => x.id === id
+            x =>
+              String(x.id) ===
+              String(id)
           );
 
 
-      if (index !== -1) {
+      if (
+        index !== -1
+      ) {
 
         walletData.moneyToGive
           .splice(
@@ -1801,12 +2517,17 @@
 
       saveData();
 
+
       walletData =
         window.TamilandaWallet.getData();
 
 
       renderSummary();
+
       renderGiveList();
+
+      populateAccounts();
+
 
       alert(
         "Record moved to Trash. 🗑️"
@@ -1815,9 +2536,10 @@
     }
 
 
-    /* =========================
-       RENDER
-    ========================== */
+
+    /* =====================================================
+       RENDER LIST
+    ===================================================== */
 
     function renderGiveList() {
 
@@ -1842,87 +2564,99 @@
         ).value;
 
 
-      let list =
-        [
-          ...(walletData.moneyToGive || [])
-        ];
+      let list = [
+        ...(walletData.moneyToGive || [])
+      ];
 
 
       list =
-        list.filter(item => {
+        list.filter(
+          item => {
 
-          const remaining =
-            getRemaining(item);
-
-          const completed =
-            remaining <= 0;
-
-          const overdue =
-            isOverdue(item);
+            const remaining =
+              getRemaining(item);
 
 
-          if (
-            filter === "completed" &&
-            !completed
-          ) {
-            return false;
+            const completed =
+              remaining <= 0;
+
+
+            const overdue =
+              isOverdue(item);
+
+
+            if (
+              filter ===
+              "completed" &&
+              !completed
+            ) {
+
+              return false;
+
+            }
+
+
+            if (
+              filter ===
+              "pending" &&
+              (
+                completed ||
+                overdue
+              )
+            ) {
+
+              return false;
+
+            }
+
+
+            if (
+              filter ===
+              "overdue" &&
+              !overdue
+            ) {
+
+              return false;
+
+            }
+
+
+            if (!search) {
+              return true;
+            }
+
+
+            const searchable =
+              [
+                item.name,
+                item.personName,
+                item.phone,
+                item.reason,
+                item.notes
+              ]
+              .join(" ")
+              .toLowerCase();
+
+
+            return searchable.includes(
+              search
+            );
+
           }
+        );
 
 
-          if (
-            filter === "pending" &&
-            (
-              completed ||
-              overdue
-            )
-          ) {
-            return false;
-          }
 
-
-          if (
-            filter === "overdue" &&
-            !overdue
-          ) {
-            return false;
-          }
-
-
-          if (!search) {
-            return true;
-          }
-
-
-          const searchable =
-            [
-              item.name,
-              item.personName,
-              item.phone,
-              item.reason,
-              item.notes
-            ]
-            .join(" ")
-            .toLowerCase();
-
-
-          return searchable.includes(
-            search
-          );
-
-        });
-
-
-      /*
-        Pending first,
-        overdue first,
-        completed last.
-      */
+      /* =================================================
+         SORT
+      ================================================= */
 
       list.sort(
         (a, b) => {
 
           const aRemaining =
             getRemaining(a);
+
 
           const bRemaining =
             getRemaining(b);
@@ -1932,7 +2666,9 @@
             aRemaining <= 0 &&
             bRemaining > 0
           ) {
+
             return 1;
+
           }
 
 
@@ -1940,7 +2676,9 @@
             aRemaining > 0 &&
             bRemaining <= 0
           ) {
+
             return -1;
+
           }
 
 
@@ -1950,8 +2688,12 @@
           ) {
 
             return (
-              new Date(a.dueDate) -
-              new Date(b.dueDate)
+              new Date(
+                a.dueDate
+              ) -
+              new Date(
+                b.dueDate
+              )
             );
 
           }
@@ -1970,7 +2712,14 @@
       );
 
 
-      if (list.length === 0) {
+
+      /* =================================================
+         EMPTY
+      ================================================= */
+
+      if (
+        list.length === 0
+      ) {
 
         container.innerHTML = `
 
@@ -2014,18 +2763,46 @@
     }
 
 
-    /* =========================
+
+    /* =====================================================
        CARD
-    ========================== */
+    ===================================================== */
 
     function renderGiveCard(item) {
 
       const total =
         Number(
-          item.totalAmount ||
-          item.amount ||
+          item.totalAmount ??
+          item.amount ??
           0
         );
+
+
+      const initialPaid =
+        Number(
+          item.alreadyPaid || 0
+        );
+
+
+      const actualPayments =
+        getGivePayments(
+          item.id
+        );
+
+
+      const paymentHistoryTotal =
+        actualPayments
+          .reduce(
+            (
+              sum,
+              payment
+            ) =>
+              sum +
+              Number(
+                payment.amount || 0
+              ),
+            0
+          );
 
 
       const remaining =
@@ -2041,7 +2818,11 @@
           ? Math.min(
               100,
               Math.round(
-                (paid / total) * 100
+                (
+                  paid /
+                  total
+                ) *
+                100
               )
             )
           : 0;
@@ -2063,7 +2844,9 @@
         "PENDING";
 
 
-      if (completed) {
+      if (
+        completed
+      ) {
 
         statusClass =
           "status-success";
@@ -2071,7 +2854,9 @@
         statusText =
           "PAID";
 
-      } else if (overdue) {
+      } else if (
+        overdue
+      ) {
 
         statusClass =
           "status-danger";
@@ -2082,27 +2867,72 @@
       }
 
 
-      const payments =
-        getGivePayments(item.id);
+
+      /* =================================================
+         HISTORY HTML
+      ================================================= */
+
+      let historyHtml =
+        "";
 
 
-      let historyHtml = "";
+      if (
+        initialPaid > 0
+      ) {
 
+        historyHtml += `
 
-      if (payments.length === 0) {
+          <div class="payment-history-item">
 
-        historyHtml = `
+            <div>
 
-          <div class="muted-text">
-            No payment history yet.
+              <strong>
+                ${money(initialPaid)}
+              </strong>
+
+              <small>
+                Already Paid / Previous
+              </small>
+
+            </div>
+
+            <div>
+
+              <small>
+                Historical amount
+              </small>
+
+            </div>
+
           </div>
 
         `;
 
+      }
+
+
+      if (
+        actualPayments.length === 0
+      ) {
+
+        if (
+          initialPaid <= 0
+        ) {
+
+          historyHtml = `
+
+            <div class="muted-text">
+              No payment history yet.
+            </div>
+
+          `;
+
+        }
+
       } else {
 
-        historyHtml =
-          payments
+        historyHtml +=
+          actualPayments
             .map(
               payment => `
 
@@ -2158,9 +2988,17 @@
       }
 
 
+
+      /* =================================================
+         CARD HTML
+      ================================================= */
+
       return `
 
-        <article class="card give-card">
+        <article
+          class="card give-card"
+        >
+
 
           <!-- HEADER -->
 
@@ -2178,7 +3016,9 @@
                   )}
                 </h3>
 
-                <span class="${statusClass}">
+                <span
+                  class="${statusClass}"
+                >
                   ${statusText}
                 </span>
 
@@ -2225,6 +3065,7 @@
                 ✏️
               </button>
 
+
               <button
                 class="icon-button"
                 onclick="deleteGiveMoney('${item.id}')"
@@ -2236,6 +3077,7 @@
             </div>
 
           </div>
+
 
 
           <!-- PROGRESS -->
@@ -2265,6 +3107,7 @@
             </div>
 
           </div>
+
 
 
           <!-- MONEY -->
@@ -2312,11 +3155,56 @@
           </div>
 
 
+
+          <!-- PAYMENT BREAKDOWN -->
+
+          ${
+            initialPaid > 0
+              ? `
+
+                <div class="payment-breakdown">
+
+                  <div>
+
+                    <span>
+                      Previous Paid
+                    </span>
+
+                    <strong>
+                      ${money(initialPaid)}
+                    </strong>
+
+                  </div>
+
+
+                  <div>
+
+                    <span>
+                      New Payments
+                    </span>
+
+                    <strong>
+                      ${money(
+                        paymentHistoryTotal
+                      )}
+                    </strong>
+
+                  </div>
+
+                </div>
+
+              `
+              : ""
+          }
+
+
+
           <!-- DUE DATE -->
 
           ${
             item.dueDate
               ? `
+
                 <div class="info-box">
 
                   <span>
@@ -2330,23 +3218,33 @@
                   </strong>
 
                 </div>
+
               `
               : ""
           }
 
+
+
+          <!-- NOTES -->
 
           ${
             item.notes
               ? `
+
                 <div class="note-box">
+
                   🗒️
+
                   ${escapeHtml(
                     item.notes
                   )}
+
                 </div>
+
               `
               : ""
           }
+
 
 
           <!-- ACTIONS -->
@@ -2356,20 +3254,24 @@
             ${
               !completed
                 ? `
+
                   <button
                     class="primary-button"
                     onclick="openGivePaymentModal('${item.id}')"
                   >
                     💸 Pay Amount
                   </button>
+
                 `
                 : `
+
                   <button
                     class="secondary-button"
                     disabled
                   >
                     ✓ Payment Completed
                   </button>
+
                 `
             }
 
@@ -2378,10 +3280,15 @@
               class="secondary-button"
               onclick="toggleHistory('${item.id}')"
             >
-              🧾 History (${payments.length})
+              🧾 History (${actualPayments.length + (
+                initialPaid > 0
+                  ? 1
+                  : 0
+              )})
             </button>
 
           </div>
+
 
 
           <!-- HISTORY -->
@@ -2400,6 +3307,7 @@
 
           </div>
 
+
         </article>
 
       `;
@@ -2407,9 +3315,10 @@
     }
 
 
-    /* =========================
+
+    /* =====================================================
        NAVIGATION
-    ========================== */
+    ===================================================== */
 
     function goBack() {
 
@@ -2421,11 +3330,14 @@
 
       } else {
 
-        goToPage("home");
+        goToPage(
+          "home"
+        );
 
       }
 
     }
+
 
 
     function goToPage(page) {
@@ -2465,7 +3377,9 @@
       };
 
 
-      if (pages[page]) {
+      if (
+        pages[page]
+      ) {
 
         window.location.href =
           pages[page];
@@ -2475,9 +3389,10 @@
     }
 
 
-    /* =========================
+
+    /* =====================================================
        OUTSIDE MODAL CLICK
-    ========================== */
+    ===================================================== */
 
     document.addEventListener(
       "click",
@@ -2490,7 +3405,8 @@
 
 
         if (
-          event.target === modal
+          event.target ===
+          modal
         ) {
 
           closeGivePaymentModal();
@@ -2501,6 +3417,7 @@
     );
 
   </script>
+
 
 
   <!-- =========================
@@ -2515,18 +3432,32 @@
 
 
     .give-header {
+
       display: flex;
-      justify-content: space-between;
+
+      justify-content:
+        space-between;
+
       gap: 12px;
-      align-items: flex-start;
+
+      align-items:
+        flex-start;
+
     }
 
 
     .person-title {
+
       display: flex;
-      align-items: center;
+
+      align-items:
+        center;
+
       gap: 8px;
-      flex-wrap: wrap;
+
+      flex-wrap:
+        wrap;
+
     }
 
 
@@ -2536,47 +3467,76 @@
 
 
     .give-header p {
-      margin: 5px 0 0;
-      opacity: 0.72;
-      font-size: 13px;
+
+      margin:
+        5px 0 0;
+
+      opacity:
+        0.72;
+
+      font-size:
+        13px;
+
     }
 
 
     .give-menu {
+
       display: flex;
+
       gap: 4px;
+
     }
 
 
     .money-grid {
+
       display: grid;
+
       grid-template-columns:
         repeat(3, 1fr);
 
       gap: 10px;
 
-      margin: 16px 0;
+      margin:
+        16px 0;
+
     }
 
 
     .money-grid > div {
-      padding: 12px;
 
-      border-radius: 12px;
+      padding:
+        12px;
+
+      border-radius:
+        12px;
 
       background:
-        rgba(255,255,255,0.04);
+        rgba(
+          255,
+          255,
+          255,
+          0.04
+        );
+
     }
 
 
     .money-grid span {
-      display: block;
 
-      font-size: 12px;
+      display:
+        block;
 
-      opacity: 0.7;
+      font-size:
+        12px;
 
-      margin-bottom: 5px;
+      opacity:
+        0.7;
+
+      margin-bottom:
+        5px;
+
     }
 
 
@@ -2589,34 +3549,60 @@
     .status-warning,
     .status-danger {
 
-      display: inline-block;
+      display:
+        inline-block;
 
-      font-size: 10px;
+      font-size:
+        10px;
 
-      font-weight: 700;
+      font-weight:
+        700;
 
-      padding: 4px 8px;
+      padding:
+        4px 8px;
 
-      border-radius: 20px;
+      border-radius:
+        20px;
 
     }
 
 
     .status-success {
+
       background:
-        rgba(50,205,120,0.15);
+        rgba(
+          50,
+          205,
+          120,
+          0.15
+        );
+
     }
 
 
     .status-warning {
+
       background:
-        rgba(255,180,50,0.15);
+        rgba(
+          255,
+          180,
+          50,
+          0.15
+        );
+
     }
 
 
     .status-danger {
+
       background:
-        rgba(255,70,70,0.15);
+        rgba(
+          255,
+          70,
+          70,
+          0.15
+        );
+
     }
 
 
@@ -2627,39 +3613,53 @@
 
     .progress-label {
 
-      display: flex;
+      display:
+        flex;
 
       justify-content:
         space-between;
 
-      margin-bottom: 7px;
+      margin-bottom:
+        7px;
 
-      font-size: 13px;
+      font-size:
+        13px;
 
     }
 
 
     .progress-bar {
 
-      width: 100%;
+      width:
+        100%;
 
-      height: 7px;
+      height:
+        7px;
 
-      border-radius: 20px;
+      border-radius:
+        20px;
 
       background:
-        rgba(255,255,255,0.08);
+        rgba(
+          255,
+          255,
+          255,
+          0.08
+        );
 
-      overflow: hidden;
+      overflow:
+        hidden;
 
     }
 
 
     .progress-fill {
 
-      height: 100%;
+      height:
+        100%;
 
-      border-radius: 20px;
+      border-radius:
+        20px;
 
       background:
         currentColor;
@@ -2669,78 +3669,201 @@
 
     .give-actions {
 
-      display: flex;
+      display:
+        flex;
 
-      gap: 8px;
+      gap:
+        8px;
 
-      flex-wrap: wrap;
+      flex-wrap:
+        wrap;
 
-      margin-top: 12px;
+      margin-top:
+        12px;
 
     }
 
 
     .give-actions button {
 
-      flex: 1;
+      flex:
+        1;
 
-      min-width: 150px;
+      min-width:
+        150px;
 
     }
 
 
     .info-box {
 
-      padding: 12px;
+      padding:
+        12px;
 
-      margin: 12px 0;
+      margin:
+        12px 0;
 
-      border-radius: 12px;
+      border-radius:
+        12px;
 
       background:
-        rgba(255,255,255,0.04);
+        rgba(
+          255,
+          255,
+          255,
+          0.04
+        );
 
     }
 
 
     .info-box span {
 
-      display: block;
+      display:
+        block;
 
-      font-size: 12px;
+      font-size:
+        12px;
 
-      opacity: 0.7;
+      opacity:
+        0.7;
 
-      margin-bottom: 4px;
+      margin-bottom:
+        4px;
 
     }
 
 
     .note-box {
 
-      padding: 10px 12px;
+      padding:
+        10px 12px;
 
-      margin-top: 10px;
+      margin-top:
+        10px;
 
-      border-radius: 10px;
+      border-radius:
+        10px;
 
       background:
-        rgba(255,255,255,0.035);
+        rgba(
+          255,
+          255,
+          255,
+          0.035
+        );
 
+      font-size:
+        13px;
+
+    }
+
+
+    .helper-text {
+
+      margin-top:
+        6px;
+
+      padding:
+        9px 11px;
+
+      border-radius:
+        9px;
+
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          0.035
+        );
+
+      font-size:
+        11px;
+
+      line-height:
+        1.5;
+
+      opacity:
+        0.68;
+
+    }
+
+
+    .payment-breakdown {
+
+      display:
+        grid;
+
+      grid-template-columns:
+        repeat(2, 1fr);
+
+      gap:
+        10px;
+
+      margin:
+        10px 0;
+
+    }
+
+
+    .payment-breakdown > div {
+
+      padding:
+        10px 12px;
+
+      border-radius:
+        10px;
+
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          0.025
+        );
+
+    }
+
+
+    .payment-breakdown span {
+
+      display:
+        block;
+
+      font-size:
+        11px;
+
+      opacity:
+        0.65;
+
+      margin-bottom:
+        4px;
+
+    }
+
+
+    .payment-breakdown strong {
       font-size: 13px;
-
     }
 
 
     .payment-history {
 
-      margin-top: 15px;
+      margin-top:
+        15px;
 
-      padding-top: 15px;
+      padding-top:
+        15px;
 
       border-top:
         1px solid
-        rgba(255,255,255,0.08);
+        rgba(
+          255,
+          255,
+          255,
+          0.08
+        );
 
     }
 
@@ -2752,18 +3875,26 @@
 
     .payment-history-item {
 
-      display: flex;
+      display:
+        flex;
 
       justify-content:
         space-between;
 
-      gap: 10px;
+      gap:
+        10px;
 
-      padding: 11px 0;
+      padding:
+        11px 0;
 
       border-bottom:
         1px solid
-        rgba(255,255,255,0.06);
+        rgba(
+          255,
+          255,
+          255,
+          0.06
+        );
 
     }
 
@@ -2775,114 +3906,156 @@
 
     .payment-history-item small {
 
-      display: block;
+      display:
+        block;
 
-      opacity: 0.7;
+      opacity:
+        0.7;
 
-      margin-top: 3px;
+      margin-top:
+        3px;
 
     }
 
 
     .muted-text {
 
-      opacity: 0.65;
+      opacity:
+        0.65;
 
-      font-size: 13px;
+      font-size:
+        13px;
 
     }
 
 
     .empty-state {
 
-      text-align: center;
+      text-align:
+        center;
 
-      padding: 45px 20px;
+      padding:
+        45px 20px;
 
-      opacity: 0.8;
+      opacity:
+        0.8;
 
     }
 
 
     .empty-icon {
 
-      font-size: 45px;
+      font-size:
+        45px;
 
-      margin-bottom: 10px;
+      margin-bottom:
+        10px;
 
     }
 
 
     .modal {
 
-      position: fixed;
+      position:
+        fixed;
 
-      inset: 0;
+      inset:
+        0;
 
-      z-index: 9999;
+      z-index:
+        9999;
 
       background:
-        rgba(0,0,0,0.75);
+        rgba(
+          0,
+          0,
+          0,
+          0.75
+        );
 
-      align-items: center;
+      align-items:
+        center;
 
-      justify-content: center;
+      justify-content:
+        center;
 
-      padding: 18px;
+      padding:
+        18px;
 
     }
 
 
     .modal-content {
 
-      width: 100%;
+      width:
+        100%;
 
-      max-width: 500px;
+      max-width:
+        500px;
 
-      max-height: 90vh;
+      max-height:
+        90vh;
 
-      overflow-y: auto;
+      overflow-y:
+        auto;
 
-      border-radius: 18px;
+      border-radius:
+        18px;
 
-      padding: 20px;
+      padding:
+        20px;
 
-      background: #111018;
+      background:
+        #111018;
 
       box-shadow:
         0 20px 60px
-        rgba(0,0,0,0.45);
+        rgba(
+          0,
+          0,
+          0,
+          0.45
+        );
 
     }
 
 
     label {
 
-      display: block;
+      display:
+        block;
 
-      margin-top: 12px;
+      margin-top:
+        12px;
 
-      margin-bottom: 6px;
+      margin-bottom:
+        6px;
 
-      font-size: 13px;
+      font-size:
+        13px;
 
-      opacity: 0.85;
+      opacity:
+        0.85;
 
     }
 
 
     .section-title {
 
-      display: flex;
+      display:
+        flex;
 
       justify-content:
         space-between;
 
-      align-items: center;
+      align-items:
+        center;
 
-      gap: 10px;
+      gap:
+        10px;
 
-      margin-bottom: 15px;
+      margin-bottom:
+        15px;
 
     }
 
@@ -2895,23 +4068,40 @@
     @media (max-width: 480px) {
 
       .money-grid {
+
         grid-template-columns:
           repeat(2, 1fr);
+
+      }
+
+
+      .payment-breakdown {
+
+        grid-template-columns:
+          1fr;
+
       }
 
 
       .give-actions {
-        flex-direction: column;
+
+        flex-direction:
+          column;
+
       }
 
 
       .give-actions button {
-        width: 100%;
+
+        width:
+          100%;
+
       }
 
     }
 
   </style>
+
 
 </body>
 </html>
