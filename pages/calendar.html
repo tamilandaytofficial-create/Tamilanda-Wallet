@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Calendar - Tamilanda Wallet</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+
+  <style>
+    .page-header {
+      padding: 22px 16px 12px;
+    }
+
+    .page-header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .page-header p {
+      margin: 5px 0 0;
+      font-size: 13px;
+      opacity: .6;
+    }
+
+    .section {
+      padding: 0 16px;
+      margin-bottom: 15px;
+    }
+
+    .calendar-card,
+    .event-card {
+      background: rgba(255,255,255,.055);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+    }
+
+    .calendar-card {
+      padding: 15px;
+    }
+
+    .calendar-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .calendar-head strong {
+      font-size: 16px;
+    }
+
+    .month-buttons {
+      display: flex;
+      gap: 6px;
+    }
+
+    .month-buttons button {
+      border: 0;
+      border-radius: 8px;
+      width: 32px;
+      height: 30px;
+      background: rgba(255,255,255,.08);
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .weekdays,
+    .days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+    }
+
+    .weekday {
+      text-align: center;
+      font-size: 9px;
+      opacity: .45;
+      padding-bottom: 4px;
+    }
+
+    .day {
+      min-height: 40px;
+      border: 0;
+      border-radius: 9px;
+      background: rgba(255,255,255,.035);
+      color: inherit;
+      cursor: pointer;
+      position: relative;
+      font-size: 11px;
+    }
+
+    .day.empty {
+      background: transparent;
+      cursor: default;
+    }
+
+    .day.today {
+      border: 1px solid rgba(255,255,255,.28);
+    }
+
+    .day.selected {
+      background: rgba(255,255,255,.13);
+    }
+
+    .day.has-event::after {
+      content: "";
+      position: absolute;
+      bottom: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .selected-date {
+      margin-top: 13px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,.07);
+      font-size: 12px;
+      opacity: .7;
+    }
+
+    .event-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .event-card {
+      padding: 13px;
+    }
+
+    .event-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .event-title {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .event-type {
+      margin-top: 3px;
+      font-size: 10px;
+      opacity: .5;
+    }
+
+    .event-amount {
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .event-amount.receive {
+      color: #4ade80;
+    }
+
+    .event-amount.pay {
+      color: #fb7185;
+    }
+
+    .event-bottom {
+      margin-top: 8px;
+      font-size: 10px;
+      opacity: .55;
+      line-height: 1.5;
+    }
+
+    .open-button {
+      width: 100%;
+      border: 0;
+      border-radius: 10px;
+      padding: 11px;
+      margin-top: 9px;
+      background: rgba(255,255,255,.08);
+      color: inherit;
+      cursor: pointer;
+      font-size: 11px;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 24px 10px;
+      opacity: .5;
+      font-size: 12px;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .summary-box {
+      padding: 12px;
+      border-radius: 13px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.07);
+    }
+
+    .summary-box small {
+      display: block;
+      font-size: 10px;
+      opacity: .55;
+      margin-bottom: 5px;
+    }
+
+    .summary-box strong {
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page-header">
+    <h1>📅 Calendar</h1>
+    <p>View your upcoming financial dates</p>
+  </div>
+
+
+  <div class="section">
+
+    <div class="summary">
+
+      <div class="summary-box">
+        <small>📥 To Receive</small>
+        <strong id="receiveCount">0</strong>
+      </div>
+
+      <div class="summary-box">
+        <small>📤 To Pay</small>
+        <strong id="payCount">0</strong>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="section">
+
+    <div class="calendar-card">
+
+      <div class="calendar-head">
+
+        <strong id="monthTitle"></strong>
+
+        <div class="month-buttons">
+          <button onclick="changeMonth(-1)">‹</button>
+          <button onclick="goToday()">Today</button>
+          <button onclick="changeMonth(1)">›</button>
+        </div>
+
+      </div>
+
+
+      <div class="weekdays">
+
+        <div class="weekday">MON</div>
+        <div class="weekday">TUE</div>
+        <div class="weekday">WED</div>
+        <div class="weekday">THU</div>
+        <div class="weekday">FRI</div>
+        <div class="weekday">SAT</div>
+        <div class="weekday">SUN</div>
+
+      </div>
+
+
+      <div
+        class="days"
+        id="calendarDays"
+      ></div>
+
+
+      <div
+        class="selected-date"
+        id="selectedDate"
+      >
+        Select a date
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="section">
+
+    <div class="event-list" id="eventList"></div>
+
+  </div>
+
+
+  <div class="bottom-nav">
+
+    <button onclick="location.href='../index.html'">
+      🏠
+      <span>Home</span>
+    </button>
+
+    <button onclick="location.href='transactions.html'">
+      📒
+      <span>Transactions</span>
+    </button>
+
+    <button onclick="location.href='buyers.html'">
+      👤
+      <span>Buyers</span>
+    </button>
+
+    <button onclick="location.href='accounts.html'">
+      🏦
+      <span>Accounts</span>
+    </button>
+
+    <button class="active" onclick="location.href='more.html'">
+      ☰
+      <span>More</span>
+    </button>
+
+  </div>
+
+
+  <script src="../js/app.js"></script>
+
+  <script>
+
+    let walletData = {};
+
+    let viewDate = new Date();
+
+    let selectedDate = new Date();
+
+
+    function getData() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.getData === "function"
+      ) {
+        return window.TamilandaWallet.getData();
+      }
+
+      try {
+        return JSON.parse(
+          localStorage.getItem(
+            "tamilanda_wallet_data"
+          )
+        ) || {};
+      } catch (error) {
+        return {};
+      }
+
+    }
+
+
+    function money(value) {
+
+      value =
+        Number(value) || 0;
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.formatMoney === "function"
+      ) {
+        return window.TamilandaWallet.formatMoney(value);
+      }
+
+      return "₹" +
+        value.toLocaleString("en-IN");
+
+    }
+
+
+    function escapeHtml(text) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.escapeHtml === "function"
+      ) {
+        return window.TamilandaWallet.escapeHtml(
+          String(text ?? "")
+        );
+      }
+
+      return String(text ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    function dateKey(date) {
+
+      const d =
+        date instanceof Date
+          ? date
+          : new Date(date);
+
+      if (isNaN(d.getTime())) {
+        return "";
+      }
+
+      return [
+        d.getFullYear(),
+        String(d.getMonth() + 1).padStart(2, "0"),
+        String(d.getDate()).padStart(2, "0")
+      ].join("-");
+
+    }
+
+
+    function parseDate(value) {
+
+      if (!value) {
+        return null;
+      }
+
+      if (
+        /^\d{4}-\d{2}-\d{2}$/.test(
+          String(value)
+        )
+      ) {
+
+        const parts =
+          String(value)
+            .split("-")
+            .map(Number);
+
+        return new Date(
+          parts[0],
+          parts[1] - 1,
+          parts[2]
+        );
+
+      }
+
+      const date =
+        new Date(value);
+
+      return isNaN(date.getTime())
+        ? null
+        : date;
+
+    }
+
+
+    function formatDate(date) {
+
+      return date.toLocaleDateString(
+        "en-IN",
+        {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        }
+      );
+
+    }
+
+
+    function getBuyerEvents() {
+
+      return (walletData.buyers || [])
+        .filter(buyer => {
+
+          const remaining =
+            getBuyerRemaining(
+              buyer
+            );
+
+          return (
+            remaining > 0 &&
+            buyer.dueDate
+          );
+
+        })
+        .map(buyer => {
+
+          return {
+            date: buyer.dueDate,
+            title:
+              buyer.name ||
+              "Buyer",
+            type:
+              "Money To Receive",
+            amount:
+              getBuyerRemaining(
+                buyer
+              ),
+            direction:
+              "receive",
+            page:
+              "buyers.html"
+          };
+
+        });
+
+    }
+
+
+    function getGiveEvents() {
+
+      return (walletData.moneyToGive || [])
+        .filter(item => {
+
+          const remaining =
+            getGiveRemaining(
+              item
+            );
+
+          return (
+            remaining > 0 &&
+            item.dueDate
+          );
+
+        })
+        .map(item => {
+
+          return {
+            date: item.dueDate,
+            title:
+              item.name ||
+              item.personName ||
+              "Money To Give",
+            type:
+              "Money To Give",
+            amount:
+              getGiveRemaining(
+                item
+              ),
+            direction:
+              "pay",
+            page:
+              "give-money.html"
+          };
+
+        });
+
+    }
+
+
+    function getEmiEvents() {
+
+      return (walletData.myEmis || [])
+        .filter(item => {
+
+          const remaining =
+            getEmiRemaining(
+              item
+            );
+
+          return (
+            remaining > 0 &&
+            item.nextDueDate
+          );
+
+        })
+        .map(item => {
+
+          return {
+            date:
+              item.nextDueDate,
+            title:
+              item.name ||
+              "EMI",
+            type:
+              "EMI Payment",
+            amount:
+              Number(
+                item.monthlyPayment ||
+                item.emiAmount ||
+                0
+              ),
+            direction:
+              "pay",
+            page:
+              "emi.html"
+          };
+
+        });
+
+    }
+
+
+    function getRecurringEvents() {
+
+      return (walletData.recurringBills || [])
+        .filter(item => {
+
+          return (
+            item.active !== false &&
+            item.nextDueDate
+          );
+
+        })
+        .map(item => {
+
+          return {
+            date:
+              item.nextDueDate,
+            title:
+              item.name ||
+              "Recurring Payment",
+            type:
+              "Recurring Payment",
+            amount:
+              Number(
+                item.amount
+              ) || 0,
+            direction:
+              "pay",
+            page:
+              "recurring.html"
+          };
+
+        });
+
+    }
+
+
+    function getBuyerRemaining(
+      buyer
+    ) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.getBuyerRemaining === "function"
+      ) {
+        return window.TamilandaWallet.getBuyerRemaining(
+          buyer.id
+        );
+      }
+
+      const total =
+        Number(
+          buyer.totalAmount ??
+          buyer.amount ??
+          0
+        );
+
+      const initial =
+        Number(
+          buyer.initialPayment ??
+          buyer.paid ??
+          0
+        );
+
+      const payments =
+        (walletData.buyerPayments || [])
+          .filter(
+            p =>
+              String(p.buyerId) ===
+              String(buyer.id)
+          )
+          .reduce(
+            (sum, p) =>
+              sum +
+              (Number(p.amount) || 0),
+            0
+          );
+
+      return Math.max(
+        0,
+        total -
+        initial -
+        payments
+      );
+
+    }
+
+
+    function getGiveRemaining(
+      item
+    ) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.getGiveRemaining === "function"
+      ) {
+        return window.TamilandaWallet.getGiveRemaining(
+          item.id
+        );
+      }
+
+      const total =
+        Number(
+          item.totalAmount ??
+          item.amount ??
+          0
+        );
+
+      const paid =
+        Number(
+          item.alreadyPaid ??
+          item.paid ??
+          0
+        );
+
+      const payments =
+        (walletData.givePayments || [])
+          .filter(
+            p =>
+              String(p.giveId) ===
+              String(item.id)
+          )
+          .reduce(
+            (sum, p) =>
+              sum +
+              (Number(p.amount) || 0),
+            0
+          );
+
+      return Math.max(
+        0,
+        total -
+        paid -
+        payments
+      );
+
+    }
+
+
+    function getEmiRemaining(
+      item
+    ) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.getEmiRemaining === "function"
+      ) {
+        return window.TamilandaWallet.getEmiRemaining(
+          item.id
+        );
+      }
+
+      const total =
+        Number(
+          item.totalAmount ??
+          item.emiAmount ??
+          item.amount ??
+          0
+        );
+
+      const paid =
+        Number(
+          item.alreadyPaid ??
+          item.paid ??
+          0
+        );
+
+      const payments =
+        (walletData.emiPayments || [])
+          .filter(
+            p =>
+              String(p.emiId) ===
+              String(item.id)
+          )
+          .reduce(
+            (sum, p) =>
+              sum +
+              (Number(p.amount) || 0),
+            0
+          );
+
+      return Math.max(
+        0,
+        total -
+        paid -
+        payments
+      );
+
+    }
+
+
+    function getAllEvents() {
+
+      return [
+        ...getBuyerEvents(),
+        ...getGiveEvents(),
+        ...getEmiEvents(),
+        ...getRecurringEvents()
+      ];
+
+    }
+
+
+    function renderCalendar() {
+
+      walletData =
+        getData();
+
+
+      const year =
+        viewDate.getFullYear();
+
+      const month =
+        viewDate.getMonth();
+
+
+      document.getElementById(
+        "monthTitle"
+      ).textContent =
+        viewDate.toLocaleDateString(
+          "en-IN",
+          {
+            month: "long",
+            year: "numeric"
+          }
+        );
+
+
+      const firstDay =
+        new Date(
+          year,
+          month,
+          1
+        );
+
+
+      let startDay =
+        firstDay.getDay();
+
+
+      /*
+       * Monday = 0
+       */
+      startDay =
+        startDay === 0
+          ? 6
+          : startDay - 1;
+
+
+      const daysInMonth =
+        new Date(
+          year,
+          month + 1,
+          0
+        ).getDate();
+
+
+      const events =
+        getAllEvents();
+
+
+      const eventDates =
+        new Set(
+          events
+            .map(
+              event =>
+                String(event.date)
+            )
+        );
+
+
+      const todayKey =
+        dateKey(
+          new Date()
+        );
+
+
+      const selectedKey =
+        dateKey(
+          selectedDate
+        );
+
+
+      let html = "";
+
+
+      for (
+        let i = 0;
+        i < startDay;
+        i++
+      ) {
+
+        html +=
+          `<button class="day empty"></button>`;
+
+      }
+
+
+      for (
+        let day = 1;
+        day <= daysInMonth;
+        day++
+      ) {
+
+        const current =
+          new Date(
+            year,
+            month,
+            day
+          );
+
+
+        const key =
+          dateKey(
+            current
+          );
+
+
+        const classes = [
+          "day"
+        ];
+
+
+        if (
+          key === todayKey
+        ) {
+          classes.push(
+            "today"
+          );
+        }
+
+
+        if (
+          key === selectedKey
+        ) {
+          classes.push(
+            "selected"
+          );
+        }
+
+
+        if (
+          eventDates.has(key)
+        ) {
+          classes.push(
+            "has-event"
+          );
+        }
+
+
+        html += `
+          <button
+            class="${classes.join(" ")}"
+            onclick="selectDate(${year}, ${month}, ${day})"
+          >
+            ${day}
+          </button>
+        `;
+
+      }
+
+
+      document.getElementById(
+        "calendarDays"
+      ).innerHTML =
+        html;
+
+
+      document.getElementById(
+        "selectedDate"
+      ).textContent =
+        formatDate(
+          selectedDate
+        );
+
+
+      renderEvents();
+
+    }
+
+
+    function selectDate(
+      year,
+      month,
+      day
+    ) {
+
+      selectedDate =
+        new Date(
+          year,
+          month,
+          day
+        );
+
+      renderCalendar();
+
+    }
+
+
+    function changeMonth(
+      amount
+    ) {
+
+      viewDate =
+        new Date(
+          viewDate.getFullYear(),
+          viewDate.getMonth() + amount,
+          1
+        );
+
+
+      renderCalendar();
+
+    }
+
+
+    function goToday() {
+
+      const now =
+        new Date();
+
+      viewDate =
+        new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          1
+        );
+
+      selectedDate =
+        now;
+
+      renderCalendar();
+
+    }
+
+
+    function renderEvents() {
+
+      const container =
+        document.getElementById(
+          "eventList"
+        );
+
+
+      const selectedKey =
+        dateKey(
+          selectedDate
+        );
+
+
+      const events =
+        getAllEvents()
+          .filter(
+            event =>
+              dateKey(
+                parseDate(
+                  event.date
+                )
+              ) === selectedKey
+          );
+
+
+      const allEvents =
+        getAllEvents();
+
+
+      const receiveCount =
+        allEvents.filter(
+          event =>
+            event.direction ===
+            "receive"
+        ).length;
+
+
+      const payCount =
+        allEvents.filter(
+          event =>
+            event.direction ===
+            "pay"
+        ).length;
+
+
+      document.getElementById(
+        "receiveCount"
+      ).textContent =
+        receiveCount;
+
+
+      document.getElementById(
+        "payCount"
+      ).textContent =
+        payCount;
+
+
+      if (!events.length) {
+
+        container.innerHTML = `
+          <div class="event-card empty">
+            📅 No financial due dates on this date.
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      container.innerHTML =
+        events
+          .map(event => {
+
+            return `
+              <div class="event-card">
+
+                <div class="event-top">
+
+                  <div>
+
+                    <div class="event-title">
+                      ${escapeHtml(
+                        event.title
+                      )}
+                    </div>
+
+                    <div class="event-type">
+                      ${escapeHtml(
+                        event.type
+                      )}
+                    </div>
+
+                  </div>
+
+                  <div class="event-amount ${event.direction}">
+                    ${money(event.amount)}
+                  </div>
+
+                </div>
+
+                <div class="event-bottom">
+                  ${
+                    event.direction === "receive"
+                      ? "📥 Money expected"
+                      : "📤 Payment expected"
+                  }
+                </div>
+
+                <button
+                  class="open-button"
+                  onclick="location.href='${event.page}'"
+                >
+                  Open →
+                </button>
+
+              </div>
+            `;
+
+          })
+          .join("");
+
+    }
+
+
+    renderCalendar();
+
+  </script>
+
+</body>
+</html>
