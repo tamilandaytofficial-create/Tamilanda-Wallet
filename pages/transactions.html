@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Transactions - Tamilanda Wallet</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+  <!-- =========================
+       PAGE HEADER
+  ========================== -->
+  <header class="page-header">
+
+    <div class="page-header-left">
+
+      <button
+        type="button"
+        class="icon-button"
+        id="backButton"
+        aria-label="Go back"
+      >
+        ←
+      </button>
+
+      <div>
+        <h1>Transactions</h1>
+        <p>All your money movements</p>
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- =========================
+       MAIN CONTENT
+  ========================== -->
+  <main class="page-container">
+
+    <!-- Summary -->
+    <section class="summary-grid">
+
+      <div class="summary-card income-card">
+        <span class="summary-label">Income</span>
+        <strong id="totalIncome">₹0</strong>
+      </div>
+
+      <div class="summary-card expense-card">
+        <span class="summary-label">Expense</span>
+        <strong id="totalExpense">₹0</strong>
+      </div>
+
+      <div class="summary-card profit-card">
+        <span class="summary-label">Profit</span>
+        <strong id="totalProfit">₹0</strong>
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         FILTERS
+    ========================== -->
+    <section class="card filter-card">
+
+      <div class="section-header">
+        <div>
+          <h2>Filter</h2>
+          <p>Find a transaction quickly</p>
+        </div>
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="searchInput">Search</label>
+
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search transaction..."
+          autocomplete="off"
+        >
+
+      </div>
+
+
+      <div class="form-row">
+
+        <div class="form-group">
+
+          <label for="typeFilter">Type</label>
+
+          <select id="typeFilter">
+
+            <option value="all">All</option>
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="dateFilter">Date</label>
+
+          <select id="dateFilter">
+
+            <option value="all">All Dates</option>
+            <option value="today">Today</option>
+            <option value="7days">Last 7 Days</option>
+            <option value="30days">Last 30 Days</option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="secondary-button full-width"
+        id="clearFiltersButton"
+      >
+        Clear Filters
+      </button>
+
+    </section>
+
+
+    <!-- =========================
+         TRANSACTION LIST
+    ========================== -->
+    <section class="card">
+
+      <div class="section-header">
+
+        <div>
+          <h2>Transaction History</h2>
+          <p id="transactionCount">0 transactions</p>
+        </div>
+
+      </div>
+
+
+      <div id="transactionsList" class="transaction-list">
+
+        <!-- Transactions will be loaded here -->
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =========================
+       EDIT TRANSACTION MODAL
+  ========================== -->
+  <div
+    class="modal-overlay"
+    id="editModal"
+    style="display: none;"
+  >
+
+    <div class="modal">
+
+      <div class="modal-header">
+
+        <div>
+          <h2>Edit Transaction</h2>
+          <p>Update transaction details</p>
+        </div>
+
+        <button
+          type="button"
+          class="icon-button"
+          id="closeModalButton"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <form id="editTransactionForm">
+
+        <input
+          type="hidden"
+          id="editTransactionId"
+        >
+
+
+        <div class="form-group">
+
+          <label for="editAmount">Amount</label>
+
+          <input
+            type="number"
+            id="editAmount"
+            min="0.01"
+            step="0.01"
+            placeholder="Enter amount"
+            required
+          >
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="editTitle">Name</label>
+
+          <input
+            type="text"
+            id="editTitle"
+            placeholder="Transaction name"
+            required
+          >
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="editCategory">Category</label>
+
+          <input
+            type="text"
+            id="editCategory"
+            placeholder="Category"
+          >
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="editDate">Date</label>
+
+          <input
+            type="date"
+            id="editDate"
+            required
+          >
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="editTime">Time</label>
+
+          <input
+            type="time"
+            id="editTime"
+          >
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="editNote">Note</label>
+
+          <textarea
+            id="editNote"
+            rows="3"
+            placeholder="Optional note"
+          ></textarea>
+
+        </div>
+
+
+        <div class="modal-actions">
+
+          <button
+            type="button"
+            class="secondary-button"
+            id="cancelEditButton"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            class="primary-button"
+          >
+            Save Changes
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       JAVASCRIPT
+  ========================== -->
+  <script src="../js/app.js"></script>
+
+
+  <script>
+
+    let walletData = null;
+
+    let filteredTransactions = [];
+
+
+    /* =========================
+       HELPERS
+    ========================== */
+
+    function getWalletData() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.getData === "function"
+      ) {
+        return window.TamilandaWallet.getData();
+      }
+
+      return null;
+    }
+
+
+    function saveWalletData() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.save === "function"
+      ) {
+        window.TamilandaWallet.save();
+      }
+
+    }
+
+
+    function formatMoney(amount) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.formatMoney === "function"
+      ) {
+        return window.TamilandaWallet.formatMoney(amount);
+      }
+
+      return "₹" + Number(amount || 0).toLocaleString("en-IN");
+    }
+
+
+    function escapeHtml(value) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.escapeHtml === "function"
+      ) {
+        return window.TamilandaWallet.escapeHtml(value);
+      }
+
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+
+    function formatDate(dateString) {
+
+      if (!dateString) {
+        return "-";
+      }
+
+      const date = new Date(dateString + "T00:00:00");
+
+      if (Number.isNaN(date.getTime())) {
+        return dateString;
+      }
+
+      return date.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      });
+
+    }
+
+
+    function getToday() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.todayString === "function"
+      ) {
+        return window.TamilandaWallet.todayString();
+      }
+
+      const date = new Date();
+
+      const year = date.getFullYear();
+
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+
+      const day = String(date.getDate()).padStart(2, "0");
+
+      return `${year}-${month}-${day}`;
+
+    }
+
+
+    /* =========================
+       INITIALIZE
+    ========================== */
+
+    function initializeTransactions() {
+
+      walletData = getWalletData();
+
+      if (!walletData) {
+        return;
+      }
+
+      renderSummary();
+
+      applyFilters();
+
+      setupEvents();
+
+    }
+
+
+    /* =========================
+       SUMMARY
+    ========================== */
+
+    function renderSummary() {
+
+      const transactions = walletData.transactions || [];
+
+      let income = 0;
+
+      let expense = 0;
+
+
+      transactions.forEach(transaction => {
+
+        const amount = Number(transaction.amount || 0);
+
+        if (transaction.type === "income") {
+          income += amount;
+        }
+
+        if (transaction.type === "expense") {
+          expense += amount;
+        }
+
+      });
+
+
+      const profit = income - expense;
+
+
+      document.getElementById("totalIncome").textContent =
+        formatMoney(income);
+
+      document.getElementById("totalExpense").textContent =
+        formatMoney(expense);
+
+      document.getElementById("totalProfit").textContent =
+        formatMoney(profit);
+
+    }
+
+
+    /* =========================
+       FILTERS
+    ========================== */
+
+    function applyFilters() {
+
+      const transactions = walletData.transactions || [];
+
+      const searchText =
+        document.getElementById("searchInput").value
+          .trim()
+          .toLowerCase();
+
+
+      const type =
+        document.getElementById("typeFilter").value;
+
+
+      const dateFilter =
+        document.getElementById("dateFilter").value;
+
+
+      const today = new Date();
+
+      today.setHours(0, 0, 0, 0);
+
+
+      filteredTransactions = transactions.filter(transaction => {
+
+        /* Search */
+
+        if (searchText) {
+
+          const searchableText = [
+
+            transaction.title,
+
+            transaction.name,
+
+            transaction.category,
+
+            transaction.note,
+
+            transaction.type
+
+          ]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
+
+
+          if (!searchableText.includes(searchText)) {
+            return false;
+          }
+
+        }
+
+
+        /* Type */
+
+        if (
+          type !== "all" &&
+          transaction.type !== type
+        ) {
+          return false;
+        }
+
+
+        /* Date */
+
+        if (dateFilter !== "all") {
+
+          if (!transaction.date) {
+            return false;
+          }
+
+
+          const transactionDate =
+            new Date(transaction.date + "T00:00:00");
+
+
+          transactionDate.setHours(0, 0, 0, 0);
+
+
+          const difference =
+            today.getTime() - transactionDate.getTime();
+
+
+          const days =
+            difference / (1000 * 60 * 60 * 24);
+
+
+          if (dateFilter === "today") {
+
+            if (days !== 0) {
+              return false;
+            }
+
+          }
+
+
+          if (dateFilter === "7days") {
+
+            if (days < 0 || days > 6) {
+              return false;
+            }
+
+          }
+
+
+          if (dateFilter === "30days") {
+
+            if (days < 0 || days > 29) {
+              return false;
+            }
+
+          }
+
+        }
+
+
+        return true;
+
+      });
+
+
+      /* Latest first */
+
+      filteredTransactions.sort((a, b) => {
+
+        const dateA =
+          `${a.date || ""} ${a.time || ""}`;
+
+        const dateB =
+          `${b.date || ""} ${b.time || ""}`;
+
+        return dateB.localeCompare(dateA);
+
+      });
+
+
+      renderTransactions();
+
+    }
+
+
+    /* =========================
+       TRANSACTION LIST
+    ========================== */
+
+    function renderTransactions() {
+
+      const container =
+        document.getElementById("transactionsList");
+
+
+      const count =
+        document.getElementById("transactionCount");
+
+
+      count.textContent =
+        `${filteredTransactions.length} ${
+          filteredTransactions.length === 1
+            ? "transaction"
+            : "transactions"
+        }`;
+
+
+      if (filteredTransactions.length === 0) {
+
+        container.innerHTML = `
+
+          <div class="empty-state">
+
+            <div class="empty-icon">💸</div>
+
+            <h3>No transactions found</h3>
+
+            <p>
+              Try changing your filters or add a new transaction.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      container.innerHTML =
+        filteredTransactions
+          .map(transaction => createTransactionHtml(transaction))
+          .join("");
+
+    }
+
+
+    function createTransactionHtml(transaction) {
+
+      const isIncome =
+        transaction.type === "income";
+
+
+      const amount =
+        Number(transaction.amount || 0);
+
+
+      const title =
+        transaction.title ||
+        transaction.name ||
+        (isIncome ? "Income" : "Expense");
+
+
+      const category =
+        transaction.category ||
+        "";
+
+
+      const note =
+        transaction.note ||
+        "";
+
+
+      const date =
+        formatDate(transaction.date);
+
+
+      const time =
+        transaction.time ||
+        "";
+
+
+      const account =
+        getAccountName(transaction.accountId);
+
+
+      return `
+
+        <div class="transaction-item">
+
+          <div class="transaction-icon ${
+            isIncome ? "income-icon" : "expense-icon"
+          }">
+
+            ${isIncome ? "↗" : "↘"}
+
+          </div>
+
+
+          <div class="transaction-info">
+
+            <div class="transaction-title">
+
+              ${escapeHtml(title)}
+
+            </div>
+
+
+            <div class="transaction-meta">
+
+              ${escapeHtml(category)}
+
+              ${category && account ? " • " : ""}
+
+              ${escapeHtml(account)}
+
+              ${account ? " • " : ""}
+
+              ${escapeHtml(date)}
+
+              ${time ? " • " + escapeHtml(time) : ""}
+
+            </div>
+
+
+            ${
+              note
+                ? `
+                  <div class="transaction-note">
+                    ${escapeHtml(note)}
+                  </div>
+                `
+                : ""
+            }
+
+          </div>
+
+
+          <div class="transaction-right">
+
+            <div class="transaction-amount ${
+              isIncome
+                ? "income-amount"
+                : "expense-amount"
+            }">
+
+              ${isIncome ? "+" : "-"}${formatMoney(amount)}
+
+            </div>
+
+
+            <div class="transaction-actions">
+
+              <button
+                type="button"
+                class="small-button"
+                onclick="openEditTransaction('${transaction.id}')"
+              >
+                Edit
+              </button>
+
+
+              <button
+                type="button"
+                class="small-button danger-button"
+                onclick="deleteTransaction('${transaction.id}')"
+              >
+                Delete
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      `;
+
+    }
+
+
+    /* =========================
+       ACCOUNT NAME
+    ========================== */
+
+    function getAccountName(accountId) {
+
+      if (!accountId) {
+        return "";
+      }
+
+
+      const account =
+        (walletData.accounts || [])
+          .find(item => item.id === accountId);
+
+
+      return account
+        ? account.name
+        : "";
+
+    }
+
+
+    /* =========================
+       EDIT TRANSACTION
+    ========================== */
+
+    function openEditTransaction(id) {
+
+      const transaction =
+        (walletData.transactions || [])
+          .find(item => item.id === id);
+
+
+      if (!transaction) {
+        return;
+      }
+
+
+      document.getElementById("editTransactionId").value =
+        transaction.id || "";
+
+
+      document.getElementById("editAmount").value =
+        transaction.amount || "";
+
+
+      document.getElementById("editTitle").value =
+        transaction.title ||
+        transaction.name ||
+        "";
+
+
+      document.getElementById("editCategory").value =
+        transaction.category ||
+        "";
+
+
+      document.getElementById("editDate").value =
+        transaction.date ||
+        getToday();
+
+
+      document.getElementById("editTime").value =
+        transaction.time ||
+        "";
+
+
+      document.getElementById("editNote").value =
+        transaction.note ||
+        "";
+
+
+      document.getElementById("editModal").style.display =
+        "flex";
+
+    }
+
+
+    function closeEditModal() {
+
+      document.getElementById("editModal").style.display =
+        "none";
+
+    }
+
+
+    /* =========================
+       SAVE EDIT
+    ========================== */
+
+    function saveEditedTransaction(event) {
+
+      event.preventDefault();
+
+
+      const id =
+        document.getElementById("editTransactionId").value;
+
+
+      const transaction =
+        (walletData.transactions || [])
+          .find(item => item.id === id);
+
+
+      if (!transaction) {
+        return;
+      }
+
+
+      const newAmount =
+        Number(
+          document.getElementById("editAmount").value
+        );
+
+
+      if (!newAmount || newAmount <= 0) {
+
+        alert("Please enter a valid amount.");
+
+        return;
+
+      }
+
+
+      const newTitle =
+        document.getElementById("editTitle").value.trim();
+
+
+      if (!newTitle) {
+
+        alert("Please enter a transaction name.");
+
+        return;
+
+      }
+
+
+      const oldAmount =
+        Number(transaction.amount || 0);
+
+
+      /* =========================
+         IMPORTANT:
+         Update account balance
+      ========================== */
+
+      if (transaction.accountId) {
+
+        const account =
+          (walletData.accounts || [])
+            .find(item => item.id === transaction.accountId);
+
+
+        if (account) {
+
+          if (transaction.type === "income") {
+
+            account.balance =
+              Number(account.balance || 0) - oldAmount;
+
+            account.balance =
+              Number(account.balance || 0) + newAmount;
+
+          }
+
+
+          if (transaction.type === "expense") {
+
+            account.balance =
+              Number(account.balance || 0) + oldAmount;
+
+
+            if (Number(account.balance || 0) < newAmount) {
+
+              alert(
+                "Not enough balance in this account for the updated expense."
+              );
+
+              /* Restore old balance */
+
+              account.balance =
+                Number(account.balance || 0) - oldAmount;
+
+              account.balance =
+                Number(account.balance || 0) + oldAmount;
+
+              return;
+
+            }
+
+
+            account.balance =
+              Number(account.balance || 0) - newAmount;
+
+          }
+
+        }
+
+      }
+
+
+      /* Update transaction */
+
+      transaction.amount =
+        newAmount;
+
+
+      transaction.title =
+        newTitle;
+
+
+      transaction.category =
+        document.getElementById("editCategory").value.trim();
+
+
+      transaction.date =
+        document.getElementById("editDate").value;
+
+
+      transaction.time =
+        document.getElementById("editTime").value;
+
+
+      transaction.note =
+        document.getElementById("editNote").value.trim();
+
+
+      saveWalletData();
+
+
+      renderSummary();
+
+      applyFilters();
+
+      closeEditModal();
+
+
+      alert("Transaction updated successfully.");
+
+    }
+
+
+    /* =========================
+       DELETE TRANSACTION
+    ========================== */
+
+    function deleteTransaction(id) {
+
+      const index =
+        (walletData.transactions || [])
+          .findIndex(item => item.id === id);
+
+
+      if (index === -1) {
+        return;
+      }
+
+
+      const transaction =
+        walletData.transactions[index];
+
+
+      const title =
+        transaction.title ||
+        transaction.name ||
+        "this transaction";
+
+
+      const confirmed =
+        confirm(
+          `Delete ${title}?\n\nThe account balance will also be adjusted.`
+        );
+
+
+      if (!confirmed) {
+        return;
+      }
+
+
+      /* =========================
+         REVERSE ACCOUNT BALANCE
+      ========================== */
+
+      if (transaction.accountId) {
+
+        const account =
+          (walletData.accounts || [])
+            .find(item => item.id === transaction.accountId);
+
+
+        if (account) {
+
+          const amount =
+            Number(transaction.amount || 0);
+
+
+          if (transaction.type === "income") {
+
+            account.balance =
+              Number(account.balance || 0) - amount;
+
+          }
+
+
+          if (transaction.type === "expense") {
+
+            account.balance =
+              Number(account.balance || 0) + amount;
+
+          }
+
+        }
+
+      }
+
+
+      /* Remove transaction */
+
+      walletData.transactions.splice(index, 1);
+
+
+      saveWalletData();
+
+
+      renderSummary();
+
+      applyFilters();
+
+
+      alert("Transaction deleted.");
+
+    }
+
+
+    /* =========================
+       EVENTS
+    ========================== */
+
+    function setupEvents() {
+
+      document
+        .getElementById("searchInput")
+        .addEventListener(
+          "input",
+          applyFilters
+        );
+
+
+      document
+        .getElementById("typeFilter")
+        .addEventListener(
+          "change",
+          applyFilters
+        );
+
+
+      document
+        .getElementById("dateFilter")
+        .addEventListener(
+          "change",
+          applyFilters
+        );
+
+
+      document
+        .getElementById("clearFiltersButton")
+        .addEventListener(
+          "click",
+          clearFilters
+        );
+
+
+      document
+        .getElementById("backButton")
+        .addEventListener(
+          "click",
+          () => {
+            window.location.href = "../index.html";
+          }
+        );
+
+
+      document
+        .getElementById("closeModalButton")
+        .addEventListener(
+          "click",
+          closeEditModal
+        );
+
+
+      document
+        .getElementById("cancelEditButton")
+        .addEventListener(
+          "click",
+          closeEditModal
+        );
+
+
+      document
+        .getElementById("editTransactionForm")
+        .addEventListener(
+          "submit",
+          saveEditedTransaction
+        );
+
+
+      document
+        .getElementById("editModal")
+        .addEventListener(
+          "click",
+          event => {
+
+            if (
+              event.target.id === "editModal"
+            ) {
+              closeEditModal();
+            }
+
+          }
+        );
+
+    }
+
+
+    /* =========================
+       CLEAR FILTERS
+    ========================== */
+
+    function clearFilters() {
+
+      document.getElementById("searchInput").value =
+        "";
+
+      document.getElementById("typeFilter").value =
+        "all";
+
+      document.getElementById("dateFilter").value =
+        "all";
+
+
+      applyFilters();
+
+    }
+
+
+    /* =========================
+       START
+    ========================== */
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      initializeTransactions
+    );
+
+
+    /* Make functions available to buttons */
+
+    window.openEditTransaction =
+      openEditTransaction;
+
+
+    window.deleteTransaction =
+      deleteTransaction;
+
+  </script>
+
+</body>
+</html>
