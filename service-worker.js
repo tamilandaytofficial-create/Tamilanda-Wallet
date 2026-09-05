@@ -1,4 +1,4 @@
-const CACHE_NAME = "tamilanda-wallet-v2";
+const CACHE_NAME = "tamilanda-wallet-v3";
 
 const APP_FILES = [
   "./",
@@ -43,11 +43,16 @@ const APP_FILES = [
 ];
 
 
+/* =========================================================
+   INSTALL
+   ========================================================= */
+
 self.addEventListener("install", event => {
 
   event.waitUntil(
 
     caches.open(CACHE_NAME)
+
       .then(cache => {
 
         return cache.addAll(APP_FILES);
@@ -55,6 +60,10 @@ self.addEventListener("install", event => {
       })
 
       .then(() => {
+
+        /*
+         * Activate the new service worker immediately.
+         */
 
         return self.skipWaiting();
 
@@ -65,30 +74,43 @@ self.addEventListener("install", event => {
 });
 
 
+/* =========================================================
+   ACTIVATE
+   ========================================================= */
+
 self.addEventListener("activate", event => {
 
   event.waitUntil(
 
     caches.keys()
+
       .then(cacheNames => {
 
         return Promise.all(
 
           cacheNames
-            .filter(
-              cacheName =>
-                cacheName !== CACHE_NAME
-            )
-            .map(
-              cacheName =>
-                caches.delete(cacheName)
-            )
+
+            .filter(cacheName => {
+
+              return cacheName !== CACHE_NAME;
+
+            })
+
+            .map(cacheName => {
+
+              return caches.delete(cacheName);
+
+            })
 
         );
 
       })
 
       .then(() => {
+
+        /*
+         * Take control of already-open pages.
+         */
 
         return self.clients.claim();
 
@@ -99,64 +121,119 @@ self.addEventListener("activate", event => {
 });
 
 
+/* =========================================================
+   FETCH
+   ========================================================= */
+
+/*
+ * IMPORTANT:
+ *
+ * This app uses NETWORK-FIRST.
+ *
+ * Latest GitHub Pages files are requested first.
+ *
+ * If the network is unavailable:
+ *      -> use cached version
+ *
+ * This prevents old app.js / HTML files from
+ * permanently blocking newer GitHub updates.
+ */
+
 self.addEventListener("fetch", event => {
 
-  if (
-    event.request.method !== "GET"
-  ) {
+  if (event.request.method !== "GET") {
     return;
   }
 
 
   event.respondWith(
 
-    caches.match(event.request)
-      .then(cachedResponse => {
+    fetch(event.request)
 
-        if (cachedResponse) {
+      .then(networkResponse => {
 
-          return cachedResponse;
+        /*
+         * Only cache successful same-origin responses.
+         */
+
+        if (
+          networkResponse &&
+          networkResponse.status === 200 &&
+          networkResponse.type === "basic"
+        ) {
+
+          const responseClone =
+            networkResponse.clone();
+
+
+          caches.open(CACHE_NAME)
+
+            .then(cache => {
+
+              cache.put(
+                event.request,
+                responseClone
+              );
+
+            })
+
+            .catch(error => {
+
+              console.warn(
+                "Cache update failed:",
+                error
+              );
+
+            });
 
         }
 
 
-        return fetch(event.request)
-          .then(networkResponse => {
+        return networkResponse;
 
-            if (
-              !networkResponse ||
-              networkResponse.status !== 200 ||
-              networkResponse.type !== "basic"
-            ) {
+      })
 
-              return networkResponse;
+      .catch(() => {
+
+        /*
+         * Network unavailable.
+         *
+         * Fall back to cached response.
+         */
+
+        return caches.match(event.request)
+
+          .then(cachedResponse => {
+
+            if (cachedResponse) {
+
+              return cachedResponse;
 
             }
 
 
-            const responseClone =
-              networkResponse.clone();
+            /*
+             * If a page is unavailable offline,
+             * return the cached home page.
+             */
+
+            if (
+              event.request.mode === "navigate"
+            ) {
+
+              return caches.match(
+                "./index.html"
+              );
+
+            }
 
 
-            caches.open(CACHE_NAME)
-              .then(cache => {
-
-                cache.put(
-                  event.request,
-                  responseClone
-                );
-
-              });
-
-
-            return networkResponse;
-
-          })
-
-          .catch(() => {
-
-            return caches.match(
-              "./index.html"
+            return new Response(
+              "Offline",
+              {
+                status: 503,
+                statusText: "Offline"
+              }
             );
 
           });
