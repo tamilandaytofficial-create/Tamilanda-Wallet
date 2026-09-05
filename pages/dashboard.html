@@ -1,0 +1,1787 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Dashboard - Tamilanda Wallet</title>
+
+  <link
+    rel="manifest"
+    href="../manifest.json"
+  >
+
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="192x192"
+    href="../icons/icon-192.png"
+  >
+
+  <link
+    rel="apple-touch-icon"
+    href="../icons/icon-192.png"
+  >
+
+  <link
+    rel="stylesheet"
+    href="../css/style.css"
+  >
+
+  <style>
+
+    .dashboard-page {
+      padding-bottom: 110px;
+    }
+
+    .dashboard-header {
+      margin-bottom: 22px;
+    }
+
+    .dashboard-header h1 {
+      margin: 0 0 5px;
+      font-size: 25px;
+    }
+
+    .dashboard-header p {
+      margin: 0;
+      font-size: 12px;
+      opacity: 0.55;
+    }
+
+    .balance-card {
+      padding: 22px;
+      border-radius: 22px;
+      margin-bottom: 14px;
+
+      border: 1px solid rgba(255,255,255,0.08);
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(255,255,255,0.09),
+          rgba(255,255,255,0.025)
+        );
+    }
+
+    .balance-label {
+      font-size: 12px;
+      opacity: 0.55;
+      margin-bottom: 8px;
+    }
+
+    .balance-value {
+      font-size: 31px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .balance-note {
+      margin-top: 8px;
+      font-size: 11px;
+      opacity: 0.45;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .stat-card {
+      padding: 16px;
+      border-radius: 17px;
+
+      border: 1px solid rgba(255,255,255,0.07);
+
+      background: rgba(255,255,255,0.035);
+    }
+
+    .stat-icon {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      opacity: 0.5;
+      margin-bottom: 5px;
+    }
+
+    .stat-value {
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .quick-button {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.035);
+      color: inherit;
+
+      border-radius: 17px;
+      padding: 15px;
+
+      cursor: pointer;
+      text-align: left;
+
+      transition: 0.2s ease;
+    }
+
+    .quick-button:hover {
+      background: rgba(255,255,255,0.07);
+      transform: translateY(-1px);
+    }
+
+    .quick-button:active {
+      transform: scale(0.98);
+    }
+
+    .quick-icon {
+      font-size: 21px;
+      margin-bottom: 8px;
+    }
+
+    .quick-title {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .quick-description {
+      margin-top: 3px;
+      font-size: 10px;
+      opacity: 0.45;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .view-button {
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font-size: 11px;
+      opacity: 0.55;
+      cursor: pointer;
+    }
+
+    .list-card {
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.035);
+      border-radius: 18px;
+      overflow: hidden;
+      margin-bottom: 22px;
+    }
+
+    .list-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .list-item:last-child {
+      border-bottom: 0;
+    }
+
+    .list-icon {
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 12px;
+
+      background: rgba(255,255,255,0.07);
+
+      font-size: 18px;
+    }
+
+    .list-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .list-title {
+      font-size: 13px;
+      font-weight: 700;
+
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .list-subtitle {
+      margin-top: 3px;
+      font-size: 10px;
+      opacity: 0.45;
+    }
+
+    .list-amount {
+      font-size: 13px;
+      font-weight: 800;
+      text-align: right;
+    }
+
+    .empty-state {
+      padding: 25px 15px;
+      text-align: center;
+      font-size: 12px;
+      opacity: 0.45;
+    }
+
+    .alerts-card {
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.035);
+      border-radius: 18px;
+      overflow: hidden;
+      margin-bottom: 22px;
+    }
+
+    .alert-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+
+      cursor: pointer;
+    }
+
+    .alert-row:last-child {
+      border-bottom: 0;
+    }
+
+    .alert-icon {
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 12px;
+
+      background: rgba(255,255,255,0.07);
+      font-size: 18px;
+    }
+
+    .alert-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .alert-title {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .alert-subtitle {
+      margin-top: 3px;
+      font-size: 10px;
+      opacity: 0.45;
+    }
+
+    .alert-arrow {
+      font-size: 18px;
+      opacity: 0.4;
+    }
+
+    .dashboard-footer {
+      text-align: center;
+      margin-top: 28px;
+      font-size: 11px;
+      line-height: 1.6;
+      opacity: 0.35;
+    }
+
+    @media (max-width: 360px) {
+
+      .stats-grid,
+      .quick-actions {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+  <div class="app-container">
+
+    <main class="page-content dashboard-page">
+
+
+      <!-- =========================
+           HEADER
+      ========================== -->
+
+      <div class="dashboard-header">
+
+        <h1>
+          Dashboard
+        </h1>
+
+        <p>
+          Your complete money overview
+        </p>
+
+      </div>
+
+
+      <!-- =========================
+           BALANCE
+      ========================== -->
+
+      <div class="balance-card">
+
+        <div class="balance-label">
+          Current Balance
+        </div>
+
+        <div
+          class="balance-value"
+          id="totalBalance"
+        >
+          ₹0
+        </div>
+
+        <div class="balance-note">
+          Total balance across your accounts
+        </div>
+
+      </div>
+
+
+      <!-- =========================
+           TODAY STATS
+      ========================== -->
+
+      <div class="stats-grid">
+
+
+        <div class="stat-card">
+
+          <div class="stat-icon">
+            📥
+          </div>
+
+          <div class="stat-label">
+            Today's Income
+          </div>
+
+          <div
+            class="stat-value"
+            id="todayIncome"
+          >
+            ₹0
+          </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <div class="stat-icon">
+            📤
+          </div>
+
+          <div class="stat-label">
+            Today's Expense
+          </div>
+
+          <div
+            class="stat-value"
+            id="todayExpense"
+          >
+            ₹0
+          </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <div class="stat-icon">
+            📊
+          </div>
+
+          <div class="stat-label">
+            Today's Profit
+          </div>
+
+          <div
+            class="stat-value"
+            id="todayProfit"
+          >
+            ₹0
+          </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <div class="stat-icon">
+            👤
+          </div>
+
+          <div class="stat-label">
+            Money To Receive
+          </div>
+
+          <div
+            class="stat-value"
+            id="moneyToReceive"
+          >
+            ₹0
+          </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <div class="stat-icon">
+            🤝
+          </div>
+
+          <div class="stat-label">
+            Money To Give
+          </div>
+
+          <div
+            class="stat-value"
+            id="moneyToGive"
+          >
+            ₹0
+          </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <div class="stat-icon">
+            📅
+          </div>
+
+          <div class="stat-label">
+            EMI To Pay
+          </div>
+
+          <div
+            class="stat-value"
+            id="emiToPay"
+          >
+            ₹0
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =========================
+           QUICK ACTIONS
+      ========================== -->
+
+      <div class="section-header">
+
+        <h2 class="section-title">
+          Quick Add
+        </h2>
+
+      </div>
+
+
+      <div class="quick-actions">
+
+
+        <button
+          class="quick-button"
+          id="addIncomeButton"
+        >
+
+          <div class="quick-icon">
+            ➕💰
+          </div>
+
+          <div class="quick-title">
+            Add Income
+          </div>
+
+          <div class="quick-description">
+            Record money received
+          </div>
+
+        </button>
+
+
+        <button
+          class="quick-button"
+          id="addExpenseButton"
+        >
+
+          <div class="quick-icon">
+            ➖💸
+          </div>
+
+          <div class="quick-title">
+            Add Expense
+          </div>
+
+          <div class="quick-description">
+            Record money spent
+          </div>
+
+        </button>
+
+
+        <button
+          class="quick-button"
+          id="addBuyerButton"
+        >
+
+          <div class="quick-icon">
+            👤➕
+          </div>
+
+          <div class="quick-title">
+            Add Buyer
+          </div>
+
+          <div class="quick-description">
+            Add FF buyer
+          </div>
+
+        </button>
+
+
+        <button
+          class="quick-button"
+          id="addEmiButton"
+        >
+
+          <div class="quick-icon">
+            📅➕
+          </div>
+
+          <div class="quick-title">
+            Add EMI
+          </div>
+
+          <div class="quick-description">
+            Add your EMI
+          </div>
+
+        </button>
+
+      </div>
+
+
+      <!-- =========================
+           PAYMENT ALERTS
+      ========================== -->
+
+      <div class="section-header">
+
+        <h2 class="section-title">
+          Payment Alerts
+        </h2>
+
+        <button
+          class="view-button"
+          id="viewNotifications"
+        >
+          View All
+        </button>
+
+      </div>
+
+
+      <div
+        class="alerts-card"
+        id="alertsList"
+      >
+
+        <div class="empty-state">
+          No payment alerts
+        </div>
+
+      </div>
+
+
+      <!-- =========================
+           ACCOUNTS
+      ========================== -->
+
+      <div class="section-header">
+
+        <h2 class="section-title">
+          Accounts
+        </h2>
+
+        <button
+          class="view-button"
+          id="viewAccounts"
+        >
+          View All
+        </button>
+
+      </div>
+
+
+      <div
+        class="list-card"
+        id="accountsList"
+      >
+
+        <div class="empty-state">
+          No accounts added yet
+        </div>
+
+      </div>
+
+
+      <!-- =========================
+           RECENT TRANSACTIONS
+      ========================== -->
+
+      <div class="section-header">
+
+        <h2 class="section-title">
+          Recent Transactions
+        </h2>
+
+        <button
+          class="view-button"
+          id="viewTransactions"
+        >
+          View All
+        </button>
+
+      </div>
+
+
+      <div
+        class="list-card"
+        id="transactionsList"
+      >
+
+        <div class="empty-state">
+          No transactions yet
+        </div>
+
+      </div>
+
+
+      <!-- =========================
+           FOOTER
+      ========================== -->
+
+      <div class="dashboard-footer">
+
+        TAMILANDA WALLET
+
+        <br>
+
+        Your money. Your control. 🔐
+
+      </div>
+
+    </main>
+
+
+    <!-- =========================
+         BOTTOM NAVIGATION
+    ========================== -->
+
+    <nav class="bottom-nav">
+
+
+      <button
+        class="nav-item active"
+        data-page="home"
+      >
+
+        <span class="nav-icon">
+          🏠
+        </span>
+
+        <span class="nav-label">
+          Home
+        </span>
+
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="transactions"
+      >
+
+        <span class="nav-icon">
+          📋
+        </span>
+
+        <span class="nav-label">
+          Transactions
+        </span>
+
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="buyers"
+      >
+
+        <span class="nav-icon">
+          👤
+        </span>
+
+        <span class="nav-label">
+          Buyers
+        </span>
+
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="accounts"
+      >
+
+        <span class="nav-icon">
+          🏦
+        </span>
+
+        <span class="nav-label">
+          Accounts
+        </span>
+
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="more"
+      >
+
+        <span class="nav-icon">
+          ☰
+        </span>
+
+        <span class="nav-label">
+          More
+        </span>
+
+      </button>
+
+    </nav>
+
+  </div>
+
+
+  <!-- =========================
+       APP JS
+  ========================== -->
+
+  <script src="../js/app.js"></script>
+
+
+  <script>
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      () => {
+
+
+        /* =========================
+           DATA
+        ========================== */
+
+        let walletData = null;
+
+
+        if (
+          window.TamilandaWallet &&
+          typeof window.TamilandaWallet.getData ===
+            "function"
+        ) {
+
+          walletData =
+            window.TamilandaWallet.getData();
+
+        }
+
+
+        if (!walletData) {
+
+          try {
+
+            walletData =
+              JSON.parse(
+                localStorage.getItem(
+                  "tamilanda_wallet_data"
+                )
+              ) || {};
+
+          } catch (error) {
+
+            walletData = {};
+
+          }
+
+        }
+
+
+        const accounts =
+          Array.isArray(walletData.accounts)
+            ? walletData.accounts
+            : [];
+
+
+        const transactions =
+          Array.isArray(walletData.transactions)
+            ? walletData.transactions
+            : [];
+
+
+        /* =========================
+           MONEY FORMAT
+        ========================== */
+
+        function formatMoney(value) {
+
+          const amount =
+            Number(value) || 0;
+
+
+          if (
+            window.TamilandaWallet &&
+            typeof
+              window.TamilandaWallet.formatMoney ===
+              "function"
+          ) {
+
+            return window.TamilandaWallet.formatMoney(
+              amount
+            );
+
+          }
+
+
+          return "₹" +
+            amount.toLocaleString(
+              "en-IN",
+              {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+              }
+            );
+
+        }
+
+
+        /* =========================
+           ACCOUNT BALANCE
+        ========================== */
+
+        let totalBalance = 0;
+
+
+        accounts.forEach(
+          account => {
+
+            totalBalance +=
+              Number(
+                account.balance
+              ) || 0;
+
+          }
+        );
+
+
+        document.getElementById(
+          "totalBalance"
+        ).textContent =
+          formatMoney(
+            totalBalance
+          );
+
+
+        /* =========================
+           TODAY
+        ========================== */
+
+        const today =
+          new Date();
+
+
+        const todayString =
+          today.toISOString()
+            .slice(0, 10);
+
+
+        let todayIncome = 0;
+
+        let todayExpense = 0;
+
+
+        transactions.forEach(
+          transaction => {
+
+            const date =
+              transaction.date ||
+              transaction.createdAt ||
+              "";
+
+
+            if (
+              String(date)
+                .slice(0, 10) !==
+              todayString
+            ) {
+
+              return;
+
+            }
+
+
+            const amount =
+              Number(
+                transaction.amount
+              ) || 0;
+
+
+            const type =
+              String(
+                transaction.type || ""
+              ).toLowerCase();
+
+
+            if (
+              type === "income"
+            ) {
+
+              todayIncome +=
+                amount;
+
+            }
+
+
+            if (
+              type === "expense"
+            ) {
+
+              todayExpense +=
+                amount;
+
+            }
+
+          }
+        );
+
+
+        document.getElementById(
+          "todayIncome"
+        ).textContent =
+          formatMoney(
+            todayIncome
+          );
+
+
+        document.getElementById(
+          "todayExpense"
+        ).textContent =
+          formatMoney(
+            todayExpense
+          );
+
+
+        document.getElementById(
+          "todayProfit"
+        ).textContent =
+          formatMoney(
+            todayIncome -
+            todayExpense
+          );
+
+
+        /* =========================
+           OTHER TOTALS
+        ========================== */
+
+        let moneyToReceive = 0;
+
+        let moneyToGive = 0;
+
+        let emiToPay = 0;
+
+
+        if (
+          window.TamilandaWallet
+        ) {
+
+          if (
+            typeof
+              window.TamilandaWallet
+                .calculateMoneyToReceive ===
+              "function"
+          ) {
+
+            moneyToReceive =
+              window.TamilandaWallet
+                .calculateMoneyToReceive();
+
+          }
+
+
+          if (
+            typeof
+              window.TamilandaWallet
+                .calculateMoneyToGive ===
+              "function"
+          ) {
+
+            moneyToGive =
+              window.TamilandaWallet
+                .calculateMoneyToGive();
+
+          }
+
+
+          if (
+            typeof
+              window.TamilandaWallet
+                .calculateEmiToPay ===
+              "function"
+          ) {
+
+            emiToPay =
+              window.TamilandaWallet
+                .calculateEmiToPay();
+
+          }
+
+        }
+
+
+        document.getElementById(
+          "moneyToReceive"
+        ).textContent =
+          formatMoney(
+            moneyToReceive
+          );
+
+
+        document.getElementById(
+          "moneyToGive"
+        ).textContent =
+          formatMoney(
+            moneyToGive
+          );
+
+
+        document.getElementById(
+          "emiToPay"
+        ).textContent =
+          formatMoney(
+            emiToPay
+          );
+
+
+        /* =========================
+           ACCOUNTS
+        ========================== */
+
+        const accountsList =
+          document.getElementById(
+            "accountsList"
+          );
+
+
+        if (
+          accounts.length === 0
+        ) {
+
+          accountsList.innerHTML = `
+
+            <div class="empty-state">
+              No accounts added yet
+            </div>
+
+          `;
+
+        } else {
+
+          accountsList.innerHTML =
+            accounts
+              .slice(0, 5)
+              .map(
+                account => {
+
+                  const balance =
+                    Number(
+                      account.balance
+                    ) || 0;
+
+
+                  return `
+
+                    <div class="list-item">
+
+                      <div class="list-icon">
+                        🏦
+                      </div>
+
+                      <div class="list-content">
+
+                        <div class="list-title">
+                          ${escapeHtml(
+                            account.name ||
+                            "Account"
+                          )}
+                        </div>
+
+                        <div class="list-subtitle">
+                          ${escapeHtml(
+                            account.type ||
+                            "Account"
+                          )}
+                        </div>
+
+                      </div>
+
+                      <div class="list-amount">
+                        ${escapeHtml(
+                          formatMoney(balance)
+                        )}
+                      </div>
+
+                    </div>
+
+                  `;
+
+                }
+              )
+              .join("");
+
+        }
+
+
+        /* =========================
+           RECENT TRANSACTIONS
+        ========================== */
+
+        const transactionsList =
+          document.getElementById(
+            "transactionsList"
+          );
+
+
+        const recentTransactions =
+          [...transactions]
+            .sort(
+              (
+                first,
+                second
+              ) => {
+
+                const firstDate =
+                  new Date(
+                    first.createdAt ||
+                    first.date ||
+                    0
+                  ).getTime();
+
+
+                const secondDate =
+                  new Date(
+                    second.createdAt ||
+                    second.date ||
+                    0
+                  ).getTime();
+
+
+                return (
+                  secondDate -
+                  firstDate
+                );
+
+              }
+            )
+            .slice(0, 5);
+
+
+        if (
+          recentTransactions.length === 0
+        ) {
+
+          transactionsList.innerHTML = `
+
+            <div class="empty-state">
+              No transactions yet
+            </div>
+
+          `;
+
+        } else {
+
+          transactionsList.innerHTML =
+            recentTransactions
+              .map(
+                transaction => {
+
+                  const type =
+                    String(
+                      transaction.type ||
+                      ""
+                    ).toLowerCase();
+
+
+                  const icon =
+                    type === "income"
+                      ? "💰"
+                      : "💸";
+
+
+                  const sign =
+                    type === "income"
+                      ? "+"
+                      : "-";
+
+
+                  const accountName =
+                    accounts.find(
+                      account =>
+                        String(
+                          account.id
+                        ) ===
+                        String(
+                          transaction.accountId
+                        )
+                    );
+
+
+                  return `
+
+                    <div class="list-item">
+
+                      <div class="list-icon">
+                        ${icon}
+                      </div>
+
+                      <div class="list-content">
+
+                        <div class="list-title">
+                          ${escapeHtml(
+                            transaction.category ||
+                            transaction.title ||
+                            type ||
+                            "Transaction"
+                          )}
+                        </div>
+
+                        <div class="list-subtitle">
+                          ${escapeHtml(
+                            accountName
+                              ? accountName.name
+                              : (
+                                  transaction.date ||
+                                  ""
+                                )
+                          )}
+                        </div>
+
+                      </div>
+
+                      <div class="list-amount">
+                        ${sign}${escapeHtml(
+                          formatMoney(
+                            Number(
+                              transaction.amount
+                            ) || 0
+                          )
+                        )}
+                      </div>
+
+                    </div>
+
+                  `;
+
+                }
+              )
+              .join("");
+
+        }
+
+
+        /* =========================
+           ESCAPE HTML
+        ========================== */
+
+        function escapeHtml(value) {
+
+          if (
+            value === null ||
+            value === undefined
+          ) {
+
+            return "";
+
+          }
+
+
+          return String(value)
+            .replace(
+              /&/g,
+              "&amp;"
+            )
+            .replace(
+              /</g,
+              "&lt;"
+            )
+            .replace(
+              />/g,
+              "&gt;"
+            )
+            .replace(
+              /"/g,
+              "&quot;"
+            )
+            .replace(
+              /'/g,
+              "&#039;"
+            );
+
+        }
+
+
+        /* =========================
+           PAYMENT ALERTS
+        ========================== */
+
+        const alertsList =
+          document.getElementById(
+            "alertsList"
+          );
+
+
+        let alertCount = 0;
+
+
+        if (
+          Array.isArray(
+            walletData.buyers
+          )
+        ) {
+
+          walletData.buyers.forEach(
+            buyer => {
+
+              const remaining =
+                Number(
+                  buyer.remainingAmount
+                ) || 0;
+
+
+              if (
+                remaining > 0 &&
+                buyer.dueDate
+              ) {
+
+                alertCount++;
+
+              }
+
+            }
+          );
+
+        }
+
+
+        if (
+          Array.isArray(
+            walletData.moneyToGive
+          )
+        ) {
+
+          walletData.moneyToGive.forEach(
+            item => {
+
+              const remaining =
+                Number(
+                  item.remainingAmount
+                ) || 0;
+
+
+              if (
+                remaining > 0 &&
+                item.dueDate
+              ) {
+
+                alertCount++;
+
+              }
+
+            }
+          );
+
+        }
+
+
+        if (
+          Array.isArray(
+            walletData.myEmis
+          )
+        ) {
+
+          walletData.myEmis.forEach(
+            emi => {
+
+              if (
+                emi.nextPaymentDate ||
+                emi.nextDueDate ||
+                emi.dueDate
+              ) {
+
+                alertCount++;
+
+              }
+
+            }
+          );
+
+        }
+
+
+        if (
+          Array.isArray(
+            walletData.recurringBills
+          )
+        ) {
+
+          walletData.recurringBills.forEach(
+            bill => {
+
+              if (
+                bill.active !== false &&
+                bill.nextDueDate
+              ) {
+
+                alertCount++;
+
+              }
+
+            }
+          );
+
+        }
+
+
+        if (
+          alertCount === 0
+        ) {
+
+          alertsList.innerHTML = `
+
+            <div class="empty-state">
+              No payment alerts
+            </div>
+
+          `;
+
+        } else {
+
+          alertsList.innerHTML = `
+
+            <div
+              class="alert-row"
+              id="openNotifications"
+            >
+
+              <div class="alert-icon">
+                🔔
+              </div>
+
+              <div class="alert-content">
+
+                <div class="alert-title">
+                  ${alertCount}
+                  payment alert${alertCount === 1 ? "" : "s"}
+                </div>
+
+                <div class="alert-subtitle">
+                  Tap to view upcoming and overdue payments
+                </div>
+
+              </div>
+
+              <div class="alert-arrow">
+                ›
+              </div>
+
+            </div>
+
+          `;
+
+
+          document
+            .getElementById(
+              "openNotifications"
+            )
+            .addEventListener(
+              "click",
+              () => {
+
+                window.location.href =
+                  "./notifications.html";
+
+              }
+            );
+
+        }
+
+
+        /* =========================
+           QUICK ACTIONS
+        ========================== */
+
+        document
+          .getElementById(
+            "addIncomeButton"
+          )
+          .addEventListener(
+            "click",
+            () => {
+
+              window.location.href =
+                "./income.html";
+
+            }
+          );
+
+
+        document
+          .getElementById(
+            "addExpenseButton"
+          )
+          .addEventListener(
+            "click",
+            () => {
+
+              window.location.href =
+                "./expense.html";
+
+            }
+          );
+
+
+        document
+          .getElementById(
+            "addBuyerButton"
+          )
+          .addEventListener(
+            "click",
+            () => {
+
+              window.location.href =
+                "./buyers.html";
+
+            }
+          );
+
+
+        document
+          .getElementById(
+            "addEmiButton"
+          )
+          .addEventListener(
+            "click",
+            () => {
+
+              window.location.href =
+                "./emi.html";
+
+            }
+          );
+
+
+        /* =========================
+           VIEW BUTTONS
+        ========================== */
+
+        document
+          .getElementById(
+            "viewNotifications"
+          )
+          .addEventListener(
+            "click",
+            () => {
+
+              window.location.href =
+                "./notifications.html";
+
+            }
+          );
+
+
+        document
+          .getElementById(
+            "viewAccounts"
+          )
+          .addEventListener(
+            "click",
+            () => {
+
+              window.location.href =
+                "./accounts.html";
+
+            }
+          );
+
+
+        document
+          .getElementById(
+            "viewTransactions"
+          )
+          .addEventListener(
+            "click",
+            () => {
+
+              window.location.href =
+                "./transactions.html";
+
+            }
+          );
+
+
+        /* =========================
+           BOTTOM NAV
+        ========================== */
+
+        document
+          .querySelectorAll(
+            ".bottom-nav .nav-item"
+          )
+          .forEach(
+            item => {
+
+              item.addEventListener(
+                "click",
+                () => {
+
+                  const page =
+                    item.dataset.page;
+
+
+                  if (
+                    page === "home"
+                  ) {
+
+                    window.location.href =
+                      "../index.html";
+
+                    return;
+
+                  }
+
+
+                  if (
+                    page === "transactions"
+                  ) {
+
+                    window.location.href =
+                      "./transactions.html";
+
+                    return;
+
+                  }
+
+
+                  if (
+                    page === "buyers"
+                  ) {
+
+                    window.location.href =
+                      "./buyers.html";
+
+                    return;
+
+                  }
+
+
+                  if (
+                    page === "accounts"
+                  ) {
+
+                    window.location.href =
+                      "./accounts.html";
+
+                    return;
+
+                  }
+
+
+                  if (
+                    page === "more"
+                  ) {
+
+                    window.location.href =
+                      "./more.html";
+
+                    return;
+
+                  }
+
+                }
+              );
+
+            }
+          );
+
+      }
+    );
+
+  </script>
+
+</body>
+
+</html>
