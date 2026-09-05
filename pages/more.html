@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
@@ -13,173 +10,58 @@
   <title>More - Tamilanda Wallet</title>
 
   <link
-    rel="manifest"
-    href="../manifest.json"
-  >
-
-  <link
-    rel="icon"
-    type="image/png"
-    sizes="192x192"
-    href="../icons/icon-192.png"
-  >
-
-  <link
-    rel="apple-touch-icon"
-    href="../icons/icon-192.png"
-  >
-
-  <link
     rel="stylesheet"
     href="../css/style.css"
   >
 
   <style>
-
-    .more-page {
-      padding-bottom: 110px;
+    .page-header {
+      padding: 22px 16px 14px;
     }
 
-    .more-header {
-      margin-bottom: 22px;
-    }
-
-    .more-header h1 {
-      margin: 0 0 5px;
-      font-size: 25px;
-    }
-
-    .more-header p {
+    .page-header h1 {
       margin: 0;
-      font-size: 12px;
-      opacity: 0.5;
+      font-size: 24px;
     }
 
-    /* =========================
-       PROFILE CARD
-    ========================== */
-
-    .profile-card {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-
-      padding: 16px;
-      margin-bottom: 24px;
-
-      border-radius: 19px;
-
-      border: 1px solid rgba(255,255,255,0.08);
-
-      background:
-        linear-gradient(
-          135deg,
-          rgba(255,255,255,0.07),
-          rgba(255,255,255,0.025)
-        );
-
-      cursor: pointer;
+    .page-header p {
+      margin: 5px 0 0;
+      font-size: 13px;
+      opacity: .55;
     }
 
-    .profile-avatar {
-      width: 48px;
-      height: 48px;
-      min-width: 48px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      border-radius: 15px;
-
-      background: rgba(255,255,255,0.09);
-
-      font-size: 23px;
-    }
-
-    .profile-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .profile-name {
-      font-size: 15px;
-      font-weight: 800;
-
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .profile-subtitle {
-      margin-top: 4px;
-
-      font-size: 11px;
-
-      opacity: 0.45;
-    }
-
-    .profile-arrow {
-      font-size: 22px;
-      opacity: 0.35;
-    }
-
-    /* =========================
-       SECTION
-    ========================== */
-
-    .more-section {
-      margin-bottom: 23px;
+    .section {
+      padding: 0 16px;
+      margin-bottom: 18px;
     }
 
     .section-title {
-      margin: 0 0 9px 4px;
-
       font-size: 11px;
-      font-weight: 800;
-
-      letter-spacing: 1px;
+      font-weight: 700;
+      opacity: .45;
+      margin: 0 0 8px 4px;
       text-transform: uppercase;
-
-      opacity: 0.42;
+      letter-spacing: .5px;
     }
 
-    /* =========================
-       MENU
-    ========================== */
-
     .menu-card {
+      background: rgba(255,255,255,.055);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
       overflow: hidden;
-
-      border-radius: 17px;
-
-      border: 1px solid rgba(255,255,255,0.07);
-
-      background: rgba(255,255,255,0.035);
     }
 
     .menu-item {
       width: 100%;
-
       display: flex;
       align-items: center;
-
-      gap: 13px;
-
+      gap: 12px;
       padding: 14px;
-
-      border: 0;
-
-      border-bottom:
-        1px solid
-        rgba(255,255,255,0.055);
-
       background: transparent;
-
+      border: 0;
+      border-bottom: 1px solid rgba(255,255,255,.055);
       color: inherit;
-
       text-align: left;
-
       cursor: pointer;
     }
 
@@ -187,26 +69,16 @@
       border-bottom: 0;
     }
 
-    .menu-item:active {
-      background:
-        rgba(255,255,255,0.06);
-    }
-
     .menu-icon {
-      width: 40px;
-      height: 40px;
-      min-width: 40px;
-
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-
-      border-radius: 12px;
-
-      background:
-        rgba(255,255,255,0.055);
-
-      font-size: 18px;
+      background: rgba(255,255,255,.07);
+      font-size: 17px;
     }
 
     .menu-content {
@@ -221,1106 +93,703 @@
 
     .menu-description {
       margin-top: 3px;
-
       font-size: 10px;
-
-      line-height: 1.4;
-
-      opacity: 0.42;
+      opacity: .48;
     }
 
     .menu-arrow {
-      font-size: 19px;
-      opacity: 0.25;
+      font-size: 16px;
+      opacity: .35;
     }
 
-    /* =========================
-       RIGHT SIDE
-    ========================== */
-
-    .menu-right {
+    .profile-card {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.055);
+      border: 1px solid rgba(255,255,255,.08);
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 13px;
+      margin-bottom: 18px;
     }
 
-    .badge {
-      min-width: 20px;
-
-      padding: 4px 8px;
-
-      border-radius: 20px;
-
-      background:
-        rgba(255,255,255,0.08);
-
-      font-size: 9px;
-      font-weight: 800;
-
-      text-align: center;
-
-      opacity: 0.65;
+    .profile-avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.09);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 21px;
     }
 
-    /* =========================
-       FOOTER
-    ========================== */
+    .profile-info {
+      flex: 1;
+    }
 
-    .app-footer {
-      margin-top: 30px;
+    .profile-name {
+      font-size: 14px;
+      font-weight: 700;
+    }
 
-      text-align: center;
-
+    .profile-sub {
+      margin-top: 4px;
       font-size: 10px;
-
-      line-height: 1.7;
-
-      opacity: 0.3;
+      opacity: .5;
     }
 
+    .profile-button {
+      border: 0;
+      background: rgba(255,255,255,.08);
+      color: inherit;
+      border-radius: 9px;
+      padding: 8px 10px;
+      font-size: 10px;
+      cursor: pointer;
+    }
+
+    .app-version {
+      text-align: center;
+      padding: 8px 0 90px;
+      font-size: 10px;
+      opacity: .35;
+    }
   </style>
-
 </head>
-
 
 <body>
 
-  <div class="app-container">
+  <div class="page-header">
+    <h1>☰ More</h1>
+    <p>Everything in one place</p>
+  </div>
 
-    <main class="page-content more-page">
 
+  <div class="section">
 
-      <!-- =========================
-           HEADER
-      ========================== -->
+    <div class="profile-card">
 
-      <div class="more-header">
-
-        <h1>
-          More
-        </h1>
-
-        <p>
-          Manage your wallet and app
-        </p>
-
+      <div class="profile-avatar">
+        👤
       </div>
 
+      <div class="profile-info">
 
-      <!-- =========================
-           PROFILE
-      ========================== -->
-
-      <div
-        class="profile-card"
-        id="profileCard"
-      >
-
-        <div class="profile-avatar">
-          👤
+        <div
+          class="profile-name"
+          id="profileName"
+        >
+          My Profile
         </div>
 
-        <div class="profile-info">
-
-          <div
-            class="profile-name"
-            id="profileName"
-          >
-            My Wallet
-          </div>
-
-          <div class="profile-subtitle">
-            Personal profile & settings
-          </div>
-
-        </div>
-
-        <div class="profile-arrow">
-          ›
+        <div
+          class="profile-sub"
+          id="profileSub"
+        >
+          Manage your wallet profile
         </div>
 
       </div>
 
-
-      <!-- =========================
-           MONEY
-      ========================== -->
-
-      <section class="more-section">
-
-        <div class="section-title">
-          Money
-        </div>
-
-        <div class="menu-card">
-
-
-          <button
-            class="menu-item"
-            data-page="income"
-          >
-
-            <div class="menu-icon">
-              💰
-            </div>
-
-            <div class="menu-content">
-
-              <div class="menu-title">
-                Income
-              </div>
-
-              <div class="menu-description">
-                Add and manage money received
-              </div>
-
-            </div>
-
-            <div class="menu-arrow">
-              ›
-            </div>
-
-          </button>
-
-
-          <button
-            class="menu-item"
-            data-page="expense"
-          >
-
-            <div class="menu-icon">
-              💸
-            </div>
-
-            <div class="menu-content">
-
-              <div class="menu-title">
-                Expenses
-              </div>
-
-              <div class="menu-description">
-                Track your daily spending
-              </div>
-
-            </div>
-
-            <div class="menu-arrow">
-              ›
-            </div>
-
-          </button>
-
-
-          <button
-            class="menu-item"
-            data-page="accounts"
-          >
-
-            <div class="menu-icon">
-              🏦
-            </div>
-
-            <div class="menu-content">
-
-              <div class="menu-title">
-                Accounts
-              </div>
-
-              <div class="menu-description">
-                Bank, cash, UPI and wallet balances
-              </div>
-
-            </div>
-
-            <div class="menu-arrow">
-              ›
-            </div>
-
-          </button>
-
-
-          <button
-            class="menu-item"
-            data-page="transactions"
-          >
-
-            <div class="menu-icon">
-              📋
-            </div>
-
-            <div class="menu-content">
-
-              <div class="menu-title">
-                Transactions
-              </div>
-
-              <div class="menu-description">
-                View your complete money history
-              </div>
-
-            </div>
-
-            <div class="menu-arrow">
-              ›
-            </div>
-
-          </button>
-
-
-        </div>
-
-      </section>
-
-
-      <!-- =========================
-           EMI & RECEIVABLES
-      ========================== -->
-
-      <section class="more-section">
-
-        <div class="section-title">
-          EMI & Receivables
-        </div>
-
-        <div class="menu-card">
-
-
-          <button
-            class="menu-item"
-            data-page="buyers"
-          >
-
-            <div class="menu-icon">
-              👤
-            </div>
-
-            <div class="menu-content">
-
-              <div class="menu-title">
-                FF Buyers
-              </div>
-
-              <div class="menu-description">
-                Buyer balances and EMI payments
-              </div>
-
-            </div>
-
-            <div class="menu-arrow">
-              ›
-            </div>
-
-          </button>
-
-
-          <button
-            class="menu-item"
-            data-page="give-money"
-          >
-
-            <div class="menu-icon">
-              🤝
-            </div>
-
-            <div class="menu-content">
-
-              <div class="menu-title">
-                Money To Give
-              </div>
-
-              <div class="menu-description">
-                Track money you need to pay
-              </div>
-
-            </div>
-
-            <div class="menu-arrow">
-              ›
-            </div>
-
-          </button>
-
-
-          <button
-            class="menu-item"
-            data-page="emi"
-          >
-
-            <div class="menu-icon">
-              📅
-            </div>
-
-            <div class="menu-content">
-
-              <div class="menu-title">
-                My EMI
-              </div>
-
-              <div class="menu-description">
-                Bank, card, vehicle and loan EMI
-              </div>
-
-            </div>
-
-            <div class="menu-arrow">
-              ›
-            </div>
-
-          </button>
-
-
-          <button
-            class="menu-item"
-            data-page="recurring"
-          >
-
-            <div class="menu-icon">
-              🔄
-            </div>
-
-            <div class="menu-content">
-
-              <div class="menu-title">
-                Recurring Payments
-              </div>
-
-              <div class="menu-description">
-                Bills and repeated payments
-              </div>
-
-            </div>
-
-            <div class="menu-arrow">
-              ›
-            </div>
-
-          </button>
-
-
-        </div>
-
-      </section>
-
-
-      <!-- =========================
-           TOOLS
-      ========================== -->
-
-      <section class="more-section">
-
-        <div class="section-title">
-          Tools
-        </div>
-
-        <div class="menu-card">
-
-
-          <button
-            class="menu-item"
-            data-page="reports"
-          >
-
-            <div class="menu-icon">
-              📊
-            </div>
-
-            <div class="menu-content">
-
-              <div class="menu-title">
-                Reports
-              </div>
-
-              <div class="menu-description">
-                Understand your income and spending
-              </div>
-
-            </div>
-
-            <div class="menu-arrow">
-              ›
-            </div>
-
-          </button>
-
-
-          <button
-            class="menu-item"
-            data-page="calculator"
-          >
-
-            <div class="menu-icon">
-              🧮
-            </div>
-
-            <div class="menu-content">
-
-              <div class="menu-title">
-                Calculator
-              </div>
-
-              <div class="menu-description">
-                Quick calculations without saving
-              </div>
-
-            </div>
-
-            <div class="menu-arrow">
-              ›
-            </div>
-
-          </button>
-
-
-          <button
-            class="menu-item"
-            data-page="notifications"
-          >
-
-            <div class="menu-icon">
-              🔔
-            </div>
-
-            <div class="menu-content">
-
-              <div class="menu-title">
-                Notifications
-              </div>
-
-              <div class="menu-description">
-                Due dates and wallet alerts
-              </div>
-
-            </div>
-
-            <div class="menu-right">
-
-              <span
-                class="badge"
-                id="notificationBadge"
-              >
-                VIEW
-              </span>
-
-              <span class="menu-arrow">
-                ›
-              </span>
-
-            </div>
-
-          </button>
-
-
-        </div>
-
-      </section>
-
-
-      <!-- =========================
-           APP
-      ========================== -->
-
-      <section class="more-section">
-
-        <div class="section-title">
-          App
-        </div>
-
-        <div class="menu-card">
-
-
-          <button
-            class="menu-item"
-            data-page="trash"
-          >
-
-            <div class="menu-icon">
-              🗑️
-            </div>
-
-            <div class="menu-content">
-
-              <div class="menu-title">
-                Trash
-              </div>
-
-              <div class="menu-description">
-                Restore or permanently delete records
-              </div>
-
-            </div>
-
-            <div class="menu-right">
-
-              <span
-                class="badge"
-                id="trashBadge"
-              >
-                0
-              </span>
-
-              <span class="menu-arrow">
-                ›
-              </span>
-
-            </div>
-
-          </button>
-
-
-          <button
-            class="menu-item"
-            data-page="settings"
-          >
-
-            <div class="menu-icon">
-              ⚙️
-            </div>
-
-            <div class="menu-content">
-
-              <div class="menu-title">
-                Settings
-              </div>
-
-              <div class="menu-description">
-                Currency, backup and wallet settings
-              </div>
-
-            </div>
-
-            <div class="menu-arrow">
-              ›
-            </div>
-
-          </button>
-
-
-          <button
-            class="menu-item"
-            data-page="security"
-          >
-
-            <div class="menu-icon">
-              🔐
-            </div>
-
-            <div class="menu-content">
-
-              <div class="menu-title">
-                Security
-              </div>
-
-              <div class="menu-description">
-                PIN, biometric and backup security
-              </div>
-
-            </div>
-
-            <div class="menu-arrow">
-              ›
-            </div>
-
-          </button>
-
-
-          <button
-            class="menu-item"
-            data-page="privacy"
-          >
-
-            <div class="menu-icon">
-              🛡️
-            </div>
-
-            <div class="menu-content">
-
-              <div class="menu-title">
-                Privacy & Security
-              </div>
-
-              <div class="menu-description">
-                How Tamilanda Wallet handles your data
-              </div>
-
-            </div>
-
-            <div class="menu-arrow">
-              ›
-            </div>
-
-          </button>
-
-
-          <button
-            class="menu-item"
-            data-page="about"
-          >
-
-            <div class="menu-icon">
-              ℹ️
-            </div>
-
-            <div class="menu-content">
-
-              <div class="menu-title">
-                About
-              </div>
-
-              <div class="menu-description">
-                App information and version
-              </div>
-
-            </div>
-
-            <div class="menu-arrow">
-              ›
-            </div>
-
-          </button>
-
-
-        </div>
-
-      </section>
-
-
-      <!-- =========================
-           FOOTER
-      ========================== -->
-
-      <div class="app-footer">
-
-        <strong>
-          TAMILANDA WALLET
-        </strong>
-
-        <br>
-
-        Private • Local-first • Personal
-
-        <br>
-
-        Version 1.0.0
-
-      </div>
-
-
-    </main>
-
-
-    <!-- =========================
-         BOTTOM NAV
-    ========================== -->
-
-    <nav class="bottom-nav">
-
-
       <button
-        class="nav-item"
-        data-page="home"
+        class="profile-button"
+        onclick="location.href='profile.html'"
       >
-
-        <span class="nav-icon">
-          🏠
-        </span>
-
-        <span class="nav-label">
-          Home
-        </span>
-
+        Edit
       </button>
 
-
-      <button
-        class="nav-item"
-        data-page="transactions"
-      >
-
-        <span class="nav-icon">
-          📋
-        </span>
-
-        <span class="nav-label">
-          Transactions
-        </span>
-
-      </button>
-
-
-      <button
-        class="nav-item"
-        data-page="buyers"
-      >
-
-        <span class="nav-icon">
-          👤
-        </span>
-
-        <span class="nav-label">
-          Buyers
-        </span>
-
-      </button>
-
-
-      <button
-        class="nav-item"
-        data-page="accounts"
-      >
-
-        <span class="nav-icon">
-          🏦
-        </span>
-
-        <span class="nav-label">
-          Accounts
-        </span>
-
-      </button>
-
-
-      <button
-        class="nav-item active"
-        data-page="more"
-      >
-
-        <span class="nav-icon">
-          ☰
-        </span>
-
-        <span class="nav-label">
-          More
-        </span>
-
-      </button>
-
-
-    </nav>
+    </div>
 
   </div>
 
 
-  <!-- =========================
-       APP JS
-  ========================== -->
+  <!-- MONEY -->
+
+  <div class="section">
+
+    <div class="section-title">
+      Money
+    </div>
+
+    <div class="menu-card">
+
+      <button
+        class="menu-item"
+        onclick="location.href='income.html'"
+      >
+        <div class="menu-icon">📥</div>
+
+        <div class="menu-content">
+          <div class="menu-title">Income</div>
+          <div class="menu-description">
+            Add and manage income
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="location.href='expense.html'"
+      >
+        <div class="menu-icon">📤</div>
+
+        <div class="menu-content">
+          <div class="menu-title">Expenses</div>
+          <div class="menu-description">
+            Track your spending
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="location.href='accounts.html'"
+      >
+        <div class="menu-icon">🏦</div>
+
+        <div class="menu-content">
+          <div class="menu-title">Accounts</div>
+          <div class="menu-description">
+            Bank, cash, UPI and wallets
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="location.href='transfer.html'"
+      >
+        <div class="menu-icon">↔️</div>
+
+        <div class="menu-content">
+          <div class="menu-title">Transfer</div>
+          <div class="menu-description">
+            Move money between accounts
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="location.href='transactions.html'"
+      >
+        <div class="menu-icon">📒</div>
+
+        <div class="menu-content">
+          <div class="menu-title">Transactions</div>
+          <div class="menu-description">
+            View your complete ledger
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- EMI & RECEIVABLES -->
+
+  <div class="section">
+
+    <div class="section-title">
+      EMI & Receivables
+    </div>
+
+    <div class="menu-card">
+
+      <button
+        class="menu-item"
+        onclick="location.href='buyers.html'"
+      >
+        <div class="menu-icon">👤</div>
+
+        <div class="menu-content">
+          <div class="menu-title">FF Buyers</div>
+          <div class="menu-description">
+            Buyer EMI and money to receive
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="location.href='give-money.html'"
+      >
+        <div class="menu-icon">🤝</div>
+
+        <div class="menu-content">
+          <div class="menu-title">Money To Give</div>
+          <div class="menu-description">
+            Track money you need to pay
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="location.href='emi.html'"
+      >
+        <div class="menu-icon">💳</div>
+
+        <div class="menu-content">
+          <div class="menu-title">My EMI</div>
+          <div class="menu-description">
+            Bank, card, loan and other EMI
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="location.href='recurring.html'"
+      >
+        <div class="menu-icon">🔁</div>
+
+        <div class="menu-content">
+          <div class="menu-title">Recurring Payments</div>
+          <div class="menu-description">
+            Bills and repeated payments
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- TOOLS -->
+
+  <div class="section">
+
+    <div class="section-title">
+      Tools
+    </div>
+
+    <div class="menu-card">
+
+      <button
+        class="menu-item"
+        onclick="location.href='quick-add.html'"
+      >
+        <div class="menu-icon">⚡</div>
+
+        <div class="menu-content">
+          <div class="menu-title">Quick Add</div>
+          <div class="menu-description">
+            Add income, expense and records quickly
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="location.href='calendar.html'"
+      >
+        <div class="menu-icon">📅</div>
+
+        <div class="menu-content">
+          <div class="menu-title">Calendar</div>
+          <div class="menu-description">
+            View upcoming financial dates
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="location.href='search.html'"
+      >
+        <div class="menu-icon">🔎</div>
+
+        <div class="menu-content">
+          <div class="menu-title">Global Search</div>
+          <div class="menu-description">
+            Search across your wallet
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="location.href='reports.html'"
+      >
+        <div class="menu-icon">📊</div>
+
+        <div class="menu-content">
+          <div class="menu-title">Reports</div>
+          <div class="menu-description">
+            Analyse income and expenses
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="location.href='net-worth.html'"
+      >
+        <div class="menu-icon">💎</div>
+
+        <div class="menu-content">
+          <div class="menu-title">Net Worth</div>
+          <div class="menu-description">
+            Assets minus liabilities
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="location.href='calculator.html'"
+      >
+        <div class="menu-icon">🧮</div>
+
+        <div class="menu-content">
+          <div class="menu-title">Calculator</div>
+          <div class="menu-description">
+            Calculate before saving
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="location.href='notifications.html'"
+      >
+        <div class="menu-icon">🔔</div>
+
+        <div class="menu-content">
+          <div class="menu-title">Notifications</div>
+          <div class="menu-description">
+            Upcoming and overdue alerts
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- DATA -->
+
+  <div class="section">
+
+    <div class="section-title">
+      Data & Backup
+    </div>
+
+    <div class="menu-card">
+
+      <button
+        class="menu-item"
+        onclick="location.href='backup.html'"
+      >
+        <div class="menu-icon">💾</div>
+
+        <div class="menu-content">
+          <div class="menu-title">Backup & Restore</div>
+          <div class="menu-description">
+            Protect and restore wallet data
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="location.href='export.html'"
+      >
+        <div class="menu-icon">📤</div>
+
+        <div class="menu-content">
+          <div class="menu-title">Export</div>
+          <div class="menu-description">
+            Export transactions and records
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="location.href='attachments.html'"
+      >
+        <div class="menu-icon">📎</div>
+
+        <div class="menu-content">
+          <div class="menu-title">Attachments</div>
+          <div class="menu-description">
+            Manage receipts and proof files
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="location.href='trash.html'"
+      >
+        <div class="menu-icon">🗑️</div>
+
+        <div class="menu-content">
+          <div class="menu-title">Trash</div>
+          <div class="menu-description">
+            Restore or permanently delete records
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- APP -->
+
+  <div class="section">
+
+    <div class="section-title">
+      App
+    </div>
+
+    <div class="menu-card">
+
+      <button
+        class="menu-item"
+        onclick="location.href='settings.html'"
+      >
+        <div class="menu-icon">⚙️</div>
+
+        <div class="menu-content">
+          <div class="menu-title">Settings</div>
+          <div class="menu-description">
+            Wallet preferences
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="location.href='security.html'"
+      >
+        <div class="menu-icon">🔐</div>
+
+        <div class="menu-content">
+          <div class="menu-title">Security</div>
+          <div class="menu-description">
+            PIN and privacy controls
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="location.href='privacy.html'"
+      >
+        <div class="menu-icon">🛡️</div>
+
+        <div class="menu-content">
+          <div class="menu-title">Privacy & Security</div>
+          <div class="menu-description">
+            How your wallet data is handled
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="location.href='about.html'"
+      >
+        <div class="menu-icon">ℹ️</div>
+
+        <div class="menu-content">
+          <div class="menu-title">About</div>
+          <div class="menu-description">
+            About Tamilanda Wallet
+          </div>
+        </div>
+
+        <div class="menu-arrow">›</div>
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="app-version">
+    TAMILANDA WALLET<br>
+    Private • Local First • Offline Ready
+  </div>
+
+
+  <div class="bottom-nav">
+
+    <button
+      onclick="location.href='../index.html'"
+    >
+      🏠
+      <span>Home</span>
+    </button>
+
+    <button
+      onclick="location.href='transactions.html'"
+    >
+      📒
+      <span>Transactions</span>
+    </button>
+
+    <button
+      onclick="location.href='buyers.html'"
+    >
+      👤
+      <span>Buyers</span>
+    </button>
+
+    <button
+      onclick="location.href='accounts.html'"
+    >
+      🏦
+      <span>Accounts</span>
+    </button>
+
+    <button
+      class="active"
+      onclick="location.href='more.html'"
+    >
+      ☰
+      <span>More</span>
+    </button>
+
+  </div>
+
 
   <script src="../js/app.js"></script>
 
-
   <script>
 
-    document.addEventListener(
-      "DOMContentLoaded",
-      function () {
+    function loadProfile() {
 
+      try {
 
-        /* =========================
-           GET WALLET DATA
-        ========================== */
-
-        let walletData = null;
-
-
-        if (
+        const data =
           window.TamilandaWallet &&
-          typeof
-            window.TamilandaWallet.getData ===
-            "function"
-        ) {
-
-          walletData =
-            window.TamilandaWallet.getData();
-
-        }
-
-
-        if (!walletData) {
-
-          try {
-
-            walletData =
-              JSON.parse(
+          typeof window.TamilandaWallet.getData === "function"
+            ? window.TamilandaWallet.getData()
+            : JSON.parse(
                 localStorage.getItem(
                   "tamilanda_wallet_data"
                 )
               ) || {};
 
-          } catch (error) {
+        const profile =
+          data.profile || {};
 
-            walletData = {};
+        const name =
+          String(
+            profile.name || ""
+          ).trim();
 
-          }
+        const phone =
+          String(
+            profile.phone || ""
+          ).trim();
 
-        }
+        document.getElementById(
+          "profileName"
+        ).textContent =
+          name || "My Profile";
 
-
-        /* =========================
-           PROFILE NAME
-        ========================== */
-
-        const profileName =
-          document.getElementById(
-            "profileName"
+        document.getElementById(
+          "profileSub"
+        ).textContent =
+          phone ||
+          (
+            name
+              ? "Tamilanda Wallet profile"
+              : "Manage your wallet profile"
           );
 
-
-        const savedName =
-          walletData.profile &&
-          walletData.profile.name
-            ? walletData.profile.name
-            : "";
-
-
-        profileName.textContent =
-          savedName ||
-          "My Wallet";
-
-
-        /* =========================
-           TRASH BADGE
-        ========================== */
-
-        const trashBadge =
-          document.getElementById(
-            "trashBadge"
-          );
-
-
-        const trashCount =
-          Array.isArray(
-            walletData.trash
-          )
-            ? walletData.trash.length
-            : 0;
-
-
-        trashBadge.textContent =
-          trashCount;
-
-
-        /* =========================
-           NOTIFICATION BADGE
-        ========================== */
-
-        const notificationBadge =
-          document.getElementById(
-            "notificationBadge"
-          );
-
-
-        notificationBadge.textContent =
-          "VIEW";
-
-
-        /* =========================
-           PROFILE
-        ========================== */
-
-        document
-          .getElementById(
-            "profileCard"
-          )
-          .addEventListener(
-            "click",
-            function () {
-
-              window.location.href =
-                "./profile.html";
-
-            }
-          );
-
-
-        /* =========================
-           MENU NAVIGATION
-        ========================== */
-
-        document
-          .querySelectorAll(
-            ".menu-item[data-page]"
-          )
-          .forEach(
-            function (button) {
-
-              button.addEventListener(
-                "click",
-                function () {
-
-                  const page =
-                    button.dataset.page;
-
-
-                  const pageMap = {
-
-                    income:
-                      "./income.html",
-
-                    expense:
-                      "./expense.html",
-
-                    accounts:
-                      "./accounts.html",
-
-                    transactions:
-                      "./transactions.html",
-
-                    buyers:
-                      "./buyers.html",
-
-                    "give-money":
-                      "./give-money.html",
-
-                    emi:
-                      "./emi.html",
-
-                    recurring:
-                      "./recurring.html",
-
-                    reports:
-                      "./reports.html",
-
-                    calculator:
-                      "./calculator.html",
-
-                    notifications:
-                      "./notifications.html",
-
-                    trash:
-                      "./trash.html",
-
-                    settings:
-                      "./settings.html",
-
-                    security:
-                      "./security.html",
-
-                    privacy:
-                      "./privacy.html",
-
-                    about:
-                      "./about.html"
-
-                  };
-
-
-                  if (
-                    pageMap[page]
-                  ) {
-
-                    window.location.href =
-                      pageMap[page];
-
-                  }
-
-                }
-              );
-
-            }
-          );
-
-
-        /* =========================
-           BOTTOM NAV
-        ========================== */
-
-        document
-          .querySelectorAll(
-            ".bottom-nav .nav-item"
-          )
-          .forEach(
-            function (item) {
-
-              item.addEventListener(
-                "click",
-                function () {
-
-                  const page =
-                    item.dataset.page;
-
-
-                  const navMap = {
-
-                    home:
-                      "../index.html",
-
-                    transactions:
-                      "./transactions.html",
-
-                    buyers:
-                      "./buyers.html",
-
-                    accounts:
-                      "./accounts.html",
-
-                    more:
-                      "./more.html"
-
-                  };
-
-
-                  if (
-                    navMap[page]
-                  ) {
-
-                    window.location.href =
-                      navMap[page];
-
-                  }
-
-                }
-              );
-
-            }
-          );
-
-
-        /* =========================
-           UPDATE BADGES
-        ========================== */
-
-        window.addEventListener(
-          "walletDataUpdated",
-          function () {
-
-            const updatedData =
-              window.TamilandaWallet &&
-              typeof
-                window.TamilandaWallet.getData ===
-                "function"
-                ? window.TamilandaWallet.getData()
-                : walletData;
-
-
-            const updatedTrash =
-              Array.isArray(
-                updatedData.trash
-              )
-                ? updatedData.trash.length
-                : 0;
-
-
-            trashBadge.textContent =
-              updatedTrash;
-
-
-            const updatedName =
-              updatedData.profile &&
-              updatedData.profile.name
-                ? updatedData.profile.name
-                : "My Wallet";
-
-
-            profileName.textContent =
-              updatedName;
-
-          }
+      } catch (error) {
+
+        console.error(
+          "Profile load failed:",
+          error
         );
 
       }
-    );
+
+    }
+
+
+    loadProfile();
 
   </script>
 
 </body>
-
 </html>
