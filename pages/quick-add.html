@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Quick Add - Tamilanda Wallet</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+
+  <style>
+    .page-header {
+      padding: 22px 16px 12px;
+    }
+
+    .page-header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .page-header p {
+      margin: 5px 0 0;
+      font-size: 13px;
+      opacity: .6;
+    }
+
+    .section {
+      padding: 0 16px;
+      margin-bottom: 15px;
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .quick-card {
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.055);
+      color: inherit;
+      border-radius: 16px;
+      padding: 18px 12px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .quick-card .icon {
+      font-size: 27px;
+      margin-bottom: 8px;
+    }
+
+    .quick-card strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .quick-card span {
+      display: block;
+      margin-top: 4px;
+      font-size: 10px;
+      opacity: .55;
+      line-height: 1.4;
+    }
+
+    .form-card {
+      display: none;
+      padding: 17px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.055);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .form-card.active {
+      display: block;
+    }
+
+    .form-card h3 {
+      margin: 0 0 13px;
+      font-size: 16px;
+    }
+
+    .field {
+      margin-bottom: 11px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 11px;
+      opacity: .65;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 11px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.05);
+      color: inherit;
+      outline: none;
+      font-size: 12px;
+    }
+
+    .field textarea {
+      min-height: 70px;
+      resize: vertical;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 13px;
+    }
+
+    .button {
+      flex: 1;
+      border: 0;
+      border-radius: 10px;
+      padding: 12px;
+      background: rgba(255,255,255,.09);
+      color: inherit;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .button.primary {
+      background: rgba(74,222,128,.14);
+    }
+
+    .button.cancel {
+      background: rgba(255,255,255,.05);
+    }
+
+    .status {
+      display: none;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(255,255,255,.04);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .tip {
+      padding: 13px;
+      border-radius: 13px;
+      background: rgba(255,255,255,.04);
+      font-size: 10px;
+      line-height: 1.6;
+      opacity: .6;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page-header">
+    <h1>⚡ Quick Add</h1>
+    <p>Add common wallet entries quickly</p>
+  </div>
+
+
+  <!-- QUICK OPTIONS -->
+  <div class="section">
+
+    <div class="quick-grid">
+
+      <button
+        class="quick-card"
+        onclick="openForm('income')"
+      >
+        <div class="icon">💚</div>
+        <strong>Income</strong>
+        <span>Add money received</span>
+      </button>
+
+      <button
+        class="quick-card"
+        onclick="openForm('expense')"
+      >
+        <div class="icon">💸</div>
+        <strong>Expense</strong>
+        <span>Add money spent</span>
+      </button>
+
+      <button
+        class="quick-card"
+        onclick="openForm('buyer')"
+      >
+        <div class="icon">👤</div>
+        <strong>Buyer</strong>
+        <span>Add FF buyer</span>
+      </button>
+
+      <button
+        class="quick-card"
+        onclick="openForm('give')"
+      >
+        <div class="icon">🤝</div>
+        <strong>Money To Give</strong>
+        <span>Add pending payment</span>
+      </button>
+
+      <button
+        class="quick-card"
+        onclick="openForm('emi')"
+      >
+        <div class="icon">🏦</div>
+        <strong>My EMI</strong>
+        <span>Add loan or EMI</span>
+      </button>
+
+      <button
+        class="quick-card"
+        onclick="location.href='transfer.html'"
+      >
+        <div class="icon">🔄</div>
+        <strong>Transfer</strong>
+        <span>Move money between accounts</span>
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- INCOME -->
+  <div
+    class="section form-section"
+    id="incomeSection"
+  >
+
+    <div class="form-card" id="incomeForm">
+
+      <h3>💚 Quick Income</h3>
+
+      <div class="field">
+        <label>Category</label>
+
+        <select id="incomeCategory">
+          <option value="Business">Business</option>
+          <option value="FF Account Sale">FF Account Sale</option>
+          <option value="Salary">Salary</option>
+          <option value="Other Income">Other Income</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Amount</label>
+
+        <input
+          type="number"
+          id="incomeAmount"
+          min="0"
+          step="0.01"
+          placeholder="₹ Amount"
+        >
+      </div>
+
+      <div class="field">
+        <label>Received Into</label>
+
+        <select id="incomeAccount">
+          <option value="">Select account</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Description</label>
+
+        <input
+          type="text"
+          id="incomeDescription"
+          placeholder="What was this income?"
+        >
+      </div>
+
+      <div class="button-row">
+
+        <button
+          class="button cancel"
+          onclick="closeForms()"
+        >
+          Cancel
+        </button>
+
+        <button
+          class="button primary"
+          onclick="saveIncome()"
+        >
+          Add Income
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- EXPENSE -->
+  <div
+    class="section form-section"
+    id="expenseSection"
+  >
+
+    <div class="form-card" id="expenseForm">
+
+      <h3>💸 Quick Expense</h3>
+
+      <div class="field">
+        <label>Category</label>
+
+        <select id="expenseCategory">
+          <option value="Food">Food</option>
+          <option value="Petrol">Petrol</option>
+          <option value="Shopping">Shopping</option>
+          <option value="Business">Business</option>
+          <option value="Bills">Bills</option>
+          <option value="Vehicle">Vehicle</option>
+          <option value="EMI">EMI</option>
+          <option value="Other Expense">Other Expense</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Amount</label>
+
+        <input
+          type="number"
+          id="expenseAmount"
+          min="0"
+          step="0.01"
+          placeholder="₹ Amount"
+        >
+      </div>
+
+      <div class="field">
+        <label>Paid From</label>
+
+        <select id="expenseAccount">
+          <option value="">Select account</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Description</label>
+
+        <input
+          type="text"
+          id="expenseDescription"
+          placeholder="What did you spend on?"
+        >
+      </div>
+
+      <div class="button-row">
+
+        <button
+          class="button cancel"
+          onclick="closeForms()"
+        >
+          Cancel
+        </button>
+
+        <button
+          class="button primary"
+          onclick="saveExpense()"
+        >
+          Add Expense
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- BUYER -->
+  <div
+    class="section form-section"
+    id="buyerSection"
+  >
+
+    <div class="form-card" id="buyerForm">
+
+      <h3>👤 Quick Buyer</h3>
+
+      <div class="field">
+        <label>Buyer Name</label>
+
+        <input
+          type="text"
+          id="buyerName"
+          placeholder="Buyer name"
+        >
+      </div>
+
+      <div class="field">
+        <label>Phone</label>
+
+        <input
+          type="tel"
+          id="buyerPhone"
+          placeholder="Phone number"
+        >
+      </div>
+
+      <div class="field">
+        <label>FF ID / Account</label>
+
+        <input
+          type="text"
+          id="buyerFFId"
+          placeholder="FF ID"
+        >
+      </div>
+
+      <div class="field">
+        <label>Total Amount</label>
+
+        <input
+          type="number"
+          id="buyerAmount"
+          min="0"
+          step="0.01"
+          placeholder="₹ Total amount"
+        >
+      </div>
+
+      <div class="field">
+        <label>Initial Payment</label>
+
+        <input
+          type="number"
+          id="buyerInitial"
+          min="0"
+          step="0.01"
+          value="0"
+          placeholder="₹ Initial payment"
+        >
+      </div>
+
+      <div class="button-row">
+
+        <button
+          class="button cancel"
+          onclick="closeForms()"
+        >
+          Cancel
+        </button>
+
+        <button
+          class="button primary"
+          onclick="saveBuyer()"
+        >
+          Add Buyer
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- MONEY TO GIVE -->
+  <div
+    class="section form-section"
+    id="giveSection"
+  >
+
+    <div class="form-card" id="giveForm">
+
+      <h3>🤝 Quick Money To Give</h3>
+
+      <div class="field">
+        <label>Person Name</label>
+
+        <input
+          type="text"
+          id="giveName"
+          placeholder="Person name"
+        >
+      </div>
+
+      <div class="field">
+        <label>Total Amount</label>
+
+        <input
+          type="number"
+          id="giveAmount"
+          min="0"
+          step="0.01"
+          placeholder="₹ Amount"
+        >
+      </div>
+
+      <div class="field">
+        <label>Reason</label>
+
+        <input
+          type="text"
+          id="giveReason"
+          placeholder="Reason"
+        >
+      </div>
+
+      <div class="button-row">
+
+        <button
+          class="button cancel"
+          onclick="closeForms()"
+        >
+          Cancel
+        </button>
+
+        <button
+          class="button primary"
+          onclick="saveGive()"
+        >
+          Add To Give
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- EMI -->
+  <div
+    class="section form-section"
+    id="emiSection"
+  >
+
+    <div class="form-card" id="emiForm">
+
+      <h3>🏦 Quick EMI</h3>
+
+      <div class="field">
+        <label>EMI / Loan Name</label>
+
+        <input
+          type="text"
+          id="emiName"
+          placeholder="Phone EMI / Bike EMI / Loan"
+        >
+      </div>
+
+      <div class="field">
+        <label>Lender</label>
+
+        <input
+          type="text"
+          id="emiLender"
+          placeholder="Bank / Finance company"
+        >
+      </div>
+
+      <div class="field">
+        <label>Total Amount</label>
+
+        <input
+          type="number"
+          id="emiAmount"
+          min="0"
+          step="0.01"
+          placeholder="₹ Total amount"
+        >
+      </div>
+
+      <div class="field">
+        <label>Monthly Payment</label>
+
+        <input
+          type="number"
+          id="emiMonthly"
+          min="0"
+          step="0.01"
+          placeholder="₹ Monthly EMI"
+        >
+      </div>
+
+      <div class="field">
+        <label>Next Due Date</label>
+
+        <input
+          type="date"
+          id="emiDueDate"
+        >
+      </div>
+
+      <div class="button-row">
+
+        <button
+          class="button cancel"
+          onclick="closeForms()"
+        >
+          Cancel
+        </button>
+
+        <button
+          class="button primary"
+          onclick="saveEmi()"
+        >
+          Add EMI
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="section">
+
+    <div
+      class="status"
+      id="status"
+    ></div>
+
+    <div class="tip">
+      ⚡ Quick Add is designed for simple entries.
+      For full details, payment history and editing,
+      use the respective section from the More menu.
+    </div>
+
+  </div>
+
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+
+    <button onclick="location.href='../index.html'">
+      🏠
+      <span>Home</span>
+    </button>
+
+    <button onclick="location.href='transactions.html'">
+      📒
+      <span>Transactions</span>
+    </button>
+
+    <button onclick="location.href='buyers.html'">
+      👤
+      <span>Buyers</span>
+    </button>
+
+    <button onclick="location.href='accounts.html'">
+      🏦
+      <span>Accounts</span>
+    </button>
+
+    <button class="active" onclick="location.href='more.html'">
+      ☰
+      <span>More</span>
+    </button>
+
+  </div>
+
+
+  <script src="../js/app.js"></script>
+
+  <script>
+
+    let walletData = {};
+
+
+    function getData() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.getData === "function"
+      ) {
+        return window.TamilandaWallet.getData();
+      }
+
+      try {
+        return JSON.parse(
+          localStorage.getItem(
+            "tamilanda_wallet_data"
+          )
+        ) || {};
+      } catch (error) {
+        return {};
+      }
+
+    }
+
+
+    function saveData() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.save === "function"
+      ) {
+        window.TamilandaWallet.save();
+      } else {
+        localStorage.setItem(
+          "tamilanda_wallet_data",
+          JSON.stringify(walletData)
+        );
+      }
+
+    }
+
+
+    function generateId(prefix) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.generateId === "function"
+      ) {
+        return window.TamilandaWallet.generateId(
+          prefix
+        );
+      }
+
+      return (
+        prefix +
+        "_" +
+        Date.now() +
+        "_" +
+        Math.random()
+          .toString(36)
+          .slice(2, 8)
+      );
+
+    }
+
+
+    function today() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.todayString === "function"
+      ) {
+        return window.TamilandaWallet.todayString();
+      }
+
+      const d = new Date();
+
+      return [
+        d.getFullYear(),
+        String(d.getMonth() + 1).padStart(2, "0"),
+        String(d.getDate()).padStart(2, "0")
+      ].join("-");
+
+    }
+
+
+    function openForm(type) {
+
+      closeForms();
+
+      const form =
+        document.getElementById(
+          type + "Form"
+        );
+
+      if (!form) {
+        return;
+      }
+
+      form.classList.add(
+        "active"
+      );
+
+
+      if (type === "income") {
+
+        document.getElementById(
+          "incomeAmount"
+        ).focus();
+
+      }
+
+
+      if (type === "expense") {
+
+        document.getElementById(
+          "expenseAmount"
+        ).focus();
+
+      }
+
+
+      if (type === "buyer") {
+
+        document.getElementById(
+          "buyerName"
+        ).focus();
+
+      }
+
+
+      if (type === "give") {
+
+        document.getElementById(
+          "giveName"
+        ).focus();
+
+      }
+
+
+      if (type === "emi") {
+
+        document.getElementById(
+          "emiName"
+        ).focus();
+
+      }
+
+    }
+
+
+    function closeForms() {
+
+      document
+        .querySelectorAll(
+          ".form-card"
+        )
+        .forEach(
+          form =>
+            form.classList.remove(
+              "active"
+            )
+        );
+
+    }
+
+
+    function populateAccounts() {
+
+      walletData =
+        getData();
+
+
+      const selects = [
+
+        document.getElementById(
+          "incomeAccount"
+        ),
+
+        document.getElementById(
+          "expenseAccount"
+        )
+
+      ];
+
+
+      selects.forEach(
+        select => {
+
+          if (!select) {
+            return;
+          }
+
+          select.innerHTML =
+            `<option value="">
+              Select account
+            </option>`;
+
+
+          (walletData.accounts || [])
+            .forEach(
+              account => {
+
+                const option =
+                  document.createElement(
+                    "option"
+                  );
+
+                option.value =
+                  account.id;
+
+                option.textContent =
+                  `${account.name || "Account"} — ₹${
+                    Number(account.balance || 0)
+                      .toLocaleString("en-IN")
+                  }`;
+
+                select.appendChild(
+                  option
+                );
+
+              }
+            );
+
+        }
+      );
+
+    }
+
+
+    function showStatus(
+      message
+    ) {
+
+      const status =
+        document.getElementById(
+          "status"
+        );
+
+      status.textContent =
+        message;
+
+      status.style.display =
+        "block";
+
+    }
+
+
+    function saveIncome() {
+
+      walletData =
+        getData();
+
+
+      const amount =
+        Number(
+          document.getElementById(
+            "incomeAmount"
+          ).value
+        );
+
+
+      const accountId =
+        document.getElementById(
+          "incomeAccount"
+        ).value;
+
+
+      const category =
+        document.getElementById(
+          "incomeCategory"
+        ).value;
+
+
+      const description =
+        document.getElementById(
+          "incomeDescription"
+        ).value.trim();
+
+
+      if (
+        !Number.isFinite(amount) ||
+        amount <= 0
+      ) {
+
+        alert(
+          "Enter a valid amount."
+        );
+
+        return;
+
+      }
+
+
+      if (!accountId) {
+
+        alert(
+          "Select the account."
+        );
+
+        return;
+
+      }
+
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.addTransaction === "function"
+      ) {
+
+        window.TamilandaWallet.addTransaction({
+          type: "income",
+          category,
+          amount,
+          accountId,
+          description,
+          note: "",
+          date: today()
+        });
+
+      } else {
+
+        const account =
+          (walletData.accounts || [])
+            .find(
+              a =>
+                String(a.id) ===
+                String(accountId)
+            );
+
+
+        if (!account) {
+          alert("Account not found.");
+          return;
+        }
+
+
+        account.balance =
+          (Number(account.balance) || 0) +
+          amount;
+
+
+        walletData.transactions =
+          walletData.transactions || [];
+
+
+        walletData.transactions.push({
+
+          id:
+            generateId("txn"),
+
+          type:
+            "income",
+
+          category,
+
+          amount,
+
+          accountId,
+
+          description,
+
+          note: "",
+
+          date:
+            today(),
+
+          createdAt:
+            new Date().toISOString()
+
+        });
+
+
+        saveData();
+
+      }
+
+
+      showStatus(
+        "✅ Income added successfully."
+      );
+
+
+      document.getElementById(
+        "incomeAmount"
+      ).value = "";
+
+      document.getElementById(
+        "incomeDescription"
+      ).value = "";
+
+      closeForms();
+
+      populateAccounts();
+
+    }
+
+
+    function saveExpense() {
+
+      walletData =
+        getData();
+
+
+      const amount =
+        Number(
+          document.getElementById(
+            "expenseAmount"
+          ).value
+        );
+
+
+      const accountId =
+        document.getElementById(
+          "expenseAccount"
+        ).value;
+
+
+      const category =
+        document.getElementById(
+          "expenseCategory"
+        ).value;
+
+
+      const description =
+        document.getElementById(
+          "expenseDescription"
+        ).value.trim();
+
+
+      if (
+        !Number.isFinite(amount) ||
+        amount <= 0
+      ) {
+
+        alert(
+          "Enter a valid amount."
+        );
+
+        return;
+
+      }
+
+
+      if (!accountId) {
+
+        alert(
+          "Select the account."
+        );
+
+        return;
+
+      }
+
+
+      const account =
+        (walletData.accounts || [])
+          .find(
+            a =>
+              String(a.id) ===
+              String(accountId)
+          );
+
+
+      if (!account) {
+
+        alert(
+          "Account not found."
+        );
+
+        return;
+
+      }
+
+
+      const balance =
+        Number(account.balance) || 0;
+
+
+      if (amount > balance) {
+
+        alert(
+          "Insufficient account balance."
+        );
+
+        return;
+
+      }
+
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.addTransaction === "function"
+      ) {
+
+        window.TamilandaWallet.addTransaction({
+          type: "expense",
+          category,
+          amount,
+          accountId,
+          description,
+          note: "",
+          date: today()
+        });
+
+      } else {
+
+        account.balance =
+          balance - amount;
+
+
+        walletData.transactions =
+          walletData.transactions || [];
+
+
+        walletData.transactions.push({
+
+          id:
+            generateId("txn"),
+
+          type:
+            "expense",
+
+          category,
+
+          amount,
+
+          accountId,
+
+          description,
+
+          note: "",
+
+          date:
+            today(),
+
+          createdAt:
+            new Date().toISOString()
+
+        });
+
+
+        saveData();
+
+      }
+
+
+      showStatus(
+        "✅ Expense added successfully."
+      );
+
+
+      document.getElementById(
+        "expenseAmount"
+      ).value = "";
+
+      document.getElementById(
+        "expenseDescription"
+      ).value = "";
+
+      closeForms();
+
+      populateAccounts();
+
+    }
+
+
+    function saveBuyer() {
+
+      walletData =
+        getData();
+
+
+      const name =
+        document.getElementById(
+          "buyerName"
+        ).value.trim();
+
+
+      const phone =
+        document.getElementById(
+          "buyerPhone"
+        ).value.trim();
+
+
+      const ffId =
+        document.getElementById(
+          "buyerFFId"
+        ).value.trim();
+
+
+      const totalAmount =
+        Number(
+          document.getElementById(
+            "buyerAmount"
+          ).value
+        );
+
+
+      const initialPayment =
+        Number(
+          document.getElementById(
+            "buyerInitial"
+          ).value
+        ) || 0;
+
+
+      if (!name) {
+
+        alert(
+          "Enter buyer name."
+        );
+
+        return;
+
+      }
+
+
+      if (
+        !Number.isFinite(totalAmount) ||
+        totalAmount <= 0
+      ) {
+
+        alert(
+          "Enter a valid total amount."
+        );
+
+        return;
+
+      }
+
+
+      if (
+        initialPayment < 0 ||
+        initialPayment > totalAmount
+      ) {
+
+        alert(
+          "Check initial payment."
+        );
+
+        return;
+
+      }
+
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.addBuyer === "function"
+      ) {
+
+        window.TamilandaWallet.addBuyer({
+
+          name,
+          phone,
+          ffId,
+          totalAmount,
+          initialPayment,
+          emiDuration: "",
+          dueDate: "",
+          notes: ""
+
+        });
+
+      } else {
+
+        walletData.buyers =
+          walletData.buyers || [];
+
+
+        walletData.buyers.push({
+
+          id:
+            generateId("buyer"),
+
+          name,
+          phone,
+          ffId,
+          totalAmount,
+          initialPayment,
+          emiDuration: "",
+          dueDate: "",
+          notes: "",
+
+          createdAt:
+            new Date().toISOString()
+
+        });
+
+
+        saveData();
+
+      }
+
+
+      showStatus(
+        "✅ Buyer added successfully."
+      );
+
+
+      document.getElementById(
+        "buyerName"
+      ).value = "";
+
+      document.getElementById(
+        "buyerPhone"
+      ).value = "";
+
+      document.getElementById(
+        "buyerFFId"
+      ).value = "";
+
+      document.getElementById(
+        "buyerAmount"
+      ).value = "";
+
+      document.getElementById(
+        "buyerInitial"
+      ).value = "0";
+
+      closeForms();
+
+    }
+
+
+    function saveGive() {
+
+      walletData =
+        getData();
+
+
+      const name =
+        document.getElementById(
+          "giveName"
+        ).value.trim();
+
+
+      const amount =
+        Number(
+          document.getElementById(
+            "giveAmount"
+          ).value
+        );
+
+
+      const reason =
+        document.getElementById(
+          "giveReason"
+        ).value.trim();
+
+
+      if (!name) {
+
+        alert(
+          "Enter person name."
+        );
+
+        return;
+
+      }
+
+
+      if (
+        !Number.isFinite(amount) ||
+        amount <= 0
+      ) {
+
+        alert(
+          "Enter a valid amount."
+        );
+
+        return;
+
+      }
+
+
+      walletData.moneyToGive =
+        walletData.moneyToGive || [];
+
+
+      walletData.moneyToGive.push({
+
+        id:
+          generateId("give"),
+
+        name,
+
+        personName:
+          name,
+
+        phone:
+          "",
+
+        totalAmount:
+          amount,
+
+        alreadyPaid:
+          0,
+
+        reason,
+
+        dueDate:
+          "",
+
+        notes:
+          "",
+
+        createdAt:
+          new Date().toISOString()
+
+      });
+
+
+      saveData();
+
+
+      showStatus(
+        "✅ Money To Give added."
+      );
+
+
+      document.getElementById(
+        "giveName"
+      ).value = "";
+
+      document.getElementById(
+        "giveAmount"
+      ).value = "";
+
+      document.getElementById(
+        "giveReason"
+      ).value = "";
+
+      closeForms();
+
+    }
+
+
+    function saveEmi() {
+
+      walletData =
+        getData();
+
+
+      const name =
+        document.getElementById(
+          "emiName"
+        ).value.trim();
+
+
+      const lender =
+        document.getElementById(
+          "emiLender"
+        ).value.trim();
+
+
+      const totalAmount =
+        Number(
+          document.getElementById(
+            "emiAmount"
+          ).value
+        );
+
+
+      const monthlyPayment =
+        Number(
+          document.getElementById(
+            "emiMonthly"
+          ).value
+        );
+
+
+      const nextDueDate =
+        document.getElementById(
+          "emiDueDate"
+        ).value;
+
+
+      if (!name) {
+
+        alert(
+          "Enter EMI name."
+        );
+
+        return;
+
+      }
+
+
+      if (
+        !Number.isFinite(totalAmount) ||
+        totalAmount <= 0
+      ) {
+
+        alert(
+          "Enter a valid total amount."
+        );
+
+        return;
+
+      }
+
+
+      if (
+        !Number.isFinite(monthlyPayment) ||
+        monthlyPayment <= 0
+      ) {
+
+        alert(
+          "Enter monthly payment."
+        );
+
+        return;
+
+      }
+
+
+      walletData.myEmis =
+        walletData.myEmis || [];
+
+
+      walletData.myEmis.push({
+
+        id:
+          generateId("emi"),
+
+        name,
+
+        lender,
+
+        loanNumber:
+          "",
+
+        totalAmount,
+
+        alreadyPaid:
+          0,
+
+        monthlyPayment,
+
+        totalMonths:
+          0,
+
+        nextDueDate,
+
+        paymentAccountId:
+          "",
+
+        notes:
+          "",
+
+        createdAt:
+          new Date().toISOString()
+
+      });
+
+
+      saveData();
+
+
+      showStatus(
+        "✅ EMI added successfully."
+      );
+
+
+      document.getElementById(
+        "emiName"
+      ).value = "";
+
+      document.getElementById(
+        "emiLender"
+      ).value = "";
+
+      document.getElementById(
+        "emiAmount"
+      ).value = "";
+
+      document.getElementById(
+        "emiMonthly"
+      ).value = "";
+
+      document.getElementById(
+        "emiDueDate"
+      ).value = "";
+
+      closeForms();
+
+    }
+
+
+    populateAccounts();
+
+  </script>
+
+</body>
+</html>
