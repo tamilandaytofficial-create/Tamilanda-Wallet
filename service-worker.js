@@ -29,7 +29,6 @@ const APP_FILES = [
   "./pages/security.html",
   "./pages/trash.html",
   "./pages/transfer.html",
-
   "./pages/net-worth.html",
   "./pages/search.html",
   "./pages/backup.html",
@@ -42,194 +41,65 @@ const APP_FILES = [
   "./icons/icon-512.png"
 ];
 
-
-/* =========================================================
-   INSTALL
-========================================================= */
-
 self.addEventListener("install", event => {
-
   event.waitUntil(
-
     caches.open(CACHE_NAME)
-
-      .then(cache => {
-        return cache.addAll(APP_FILES);
-      })
-
-      .then(() => {
-
-        /*
-         * Activate the new service worker immediately.
-         */
-
-        return self.skipWaiting();
-
-      })
-
+      .then(cache => cache.addAll(APP_FILES))
+      .then(() => self.skipWaiting())
   );
-
 });
-
-
-/* =========================================================
-   ACTIVATE
-========================================================= */
 
 self.addEventListener("activate", event => {
-
   event.waitUntil(
-
     caches.keys()
-
-      .then(cacheNames => {
-
-        return Promise.all(
-
+      .then(cacheNames =>
+        Promise.all(
           cacheNames
-            .filter(cacheName => {
-
-              return cacheName !== CACHE_NAME;
-
-            })
-            .map(cacheName => {
-
-              return caches.delete(cacheName);
-
-            })
-
-        );
-
-      })
-
-      .then(() => {
-
-        /*
-         * Take control of all open pages.
-         */
-
-        return self.clients.claim();
-
-      })
-
+            .filter(name => name !== CACHE_NAME)
+            .map(name => caches.delete(name))
+        )
+      )
+      .then(() => self.clients.claim())
   );
-
 });
 
-
-/* =========================================================
-   FETCH
-========================================================= */
-
-/*
- * NETWORK-FIRST
- *
- * 1. Always try GitHub/network first.
- * 2. Save successful responses to the current cache.
- * 3. If network fails, use cached response.
- *
- * This prevents an old cached app.js / HTML / CSS
- * from permanently overriding the latest GitHub files.
- */
-
 self.addEventListener("fetch", event => {
-
   if (event.request.method !== "GET") {
     return;
   }
 
-
   event.respondWith(
-
     fetch(event.request)
-
-      .then(networkResponse => {
-
-        /*
-         * Cache only successful same-origin responses.
-         */
-
+      .then(response => {
         if (
-          networkResponse &&
-          networkResponse.status === 200 &&
-          networkResponse.type === "basic"
+          response &&
+          response.status === 200 &&
+          response.type === "basic"
         ) {
-
-          const responseClone =
-            networkResponse.clone();
-
-
+          const clone = response.clone();
           caches.open(CACHE_NAME)
-
-            .then(cache => {
-
-              return cache.put(
-                event.request,
-                responseClone
-              );
-
-            })
-
-            .catch(error => {
-
-              console.warn(
-                "Cache update failed:",
-                error
-              );
-
-            });
-
+            .then(cache => cache.put(event.request, clone))
+            .catch(() => {});
         }
 
-
-        return networkResponse;
-
+        return response;
       })
-
-      .catch(() => {
-
-        /*
-         * Network unavailable.
-         * Use cached version.
-         */
-
-        return caches.match(event.request)
-
-          .then(cachedResponse => {
-
-            if (cachedResponse) {
-              return cachedResponse;
+      .catch(() =>
+        caches.match(event.request)
+          .then(cached => {
+            if (cached) {
+              return cached;
             }
 
-
-            /*
-             * If navigation is unavailable offline,
-             * return cached home page.
-             */
-
-            if (
-              event.request.mode === "navigate"
-            ) {
-
-              return caches.match(
-                "./index.html"
-              );
-
+            if (event.request.mode === "navigate") {
+              return caches.match("./index.html");
             }
 
-
-            return new Response(
-              "Offline",
-              {
-                status: 503,
-                statusText: "Offline"
-              }
-            );
-
-          });
-
-      })
-
+            return new Response("Offline", {
+              status: 503,
+              statusText: "Offline"
+            });
+          })
+      )
   );
-
 });
