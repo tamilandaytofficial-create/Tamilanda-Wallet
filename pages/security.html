@@ -318,6 +318,41 @@
       opacity: 0.55;
     }
 
+    .app-lock-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      box-sizing: border-box;
+      background: rgba(0,0,0,.94);
+      backdrop-filter: blur(14px);
+    }
+
+    .app-lock-card {
+      width: min(100%, 360px);
+      padding: 28px 20px;
+      box-sizing: border-box;
+      text-align: center;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.05);
+    }
+
+    .app-lock-card h2 { margin: 12px 0 6px; font-size: 20px; }
+    .app-lock-card p { margin: 0 0 18px; font-size: 12px; opacity: .6; }
+    .app-lock-card .security-input { margin-bottom: 10px; text-align: center; }
+    .app-lock-card .save-pin-button { margin-top: 2px; }
+
+    .lock-shake { animation: lockShake .25s linear 0s 2; }
+    @keyframes lockShake {
+      0%,100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
     .security-footer {
       margin-top: 28px;
 
@@ -492,9 +527,7 @@
 
         <div class="warning-box">
 
-          ⚠️ Security foundation only:
-          full lock-screen enforcement and secure PIN storage
-          will be implemented in the next security stage.
+          🔐 PIN protection is active on this device. The PIN is stored as a one-way hash and is never saved as plain text. Full biometric unlock remains optional.
 
         </div>
 
@@ -699,6 +732,22 @@
 
     </main>
 
+
+    <!-- APP LOCK OVERLAY -->
+    <div id="appLockOverlay" class="app-lock-overlay" style="display:none;">
+      <div class="app-lock-card">
+        <div class="security-icon">🔐</div>
+        <h2>Tamilanda Wallet Locked</h2>
+        <p>Enter your PIN to continue.</p>
+
+        <input id="unlockPinInput" class="security-input"
+               type="password" inputmode="numeric" maxlength="6"
+               autocomplete="current-password" placeholder="Enter PIN">
+
+        <button id="unlockPinButton" class="save-pin-button">Unlock</button>
+        <div id="unlockStatus" class="status-box"></div>
+      </div>
+    </div>
 
     <!-- BOTTOM NAV -->
 
@@ -950,6 +999,10 @@
               false;
 
 
+            
+            delete walletData.security.pinHash;
+            walletData.security.pinConfigured = false;
+
             saveData();
 
 
@@ -973,74 +1026,196 @@
             "click",
             () => {
 
-              const pin =
-                pinInput.value.trim();
+          const pin =
+            pinInput.value.trim();
 
+          const confirmPin =
+            confirmPinInput.value.trim();
 
-              const confirmPin =
-                confirmPinInput.value.trim();
+          if (!/^\d{4,6}$/.test(pin)) {
+            showStatus("PIN must contain 4 to 6 digits.");
+            return;
+          }
 
+          if (pin !== confirmPin) {
+            showStatus("PINs do not match.");
+            return;
+          }
 
-              if (
-                !/^\d{4,6}$/.test(pin)
-              ) {
-
-                showStatus(
-                  "PIN must contain 4 to 6 digits."
-                );
-
-                return;
-
-              }
-
-
-              if (
-                pin !== confirmPin
-              ) {
-
-                showStatus(
-                  "PINs do not match."
-                );
-
-                return;
-
-              }
-
-
-              /*
-               * IMPORTANT:
-               * This stage does NOT store
-               * the actual PIN.
-               */
-
-              walletData.security.pinEnabled =
-                true;
-
-
-              walletData.security.pinConfigured =
-                true;
-
+          hashPin(pin).then(
+            (pinHash) => {
+              walletData.security.pinHash = pinHash;
+              walletData.security.pinEnabled = true;
+              walletData.security.pinConfigured = true;
 
               saveData();
 
+              pinToggle.checked = true;
+              pinInput.value = "";
+              confirmPinInput.value = "";
 
-              pinToggle.checked =
-                true;
-
-
-              pinInput.value =
-                "";
-
-              confirmPinInput.value =
-                "";
-
-
-              showStatus(
-                "PIN Lock enabled. Full secure lock will be connected later."
-              );
+              showStatus("PIN Lock enabled successfully. 🔐");
+            }
+          ).catch(
+            (error) => {
+              console.error("PIN hashing failed:", error);
+              showStatus("Could not secure the PIN. Please try again.");
+            }
+          );
 
             }
           );
+
+
+
+        /* =========================
+           PIN SECURITY
+        ========================== */
+
+        const appLockOverlay =
+          document.getElementById("appLockOverlay");
+
+        const unlockPinInput =
+          document.getElementById("unlockPinInput");
+
+        const unlockPinButton =
+          document.getElementById("unlockPinButton");
+
+        const unlockStatus =
+          document.getElementById("unlockStatus");
+
+        const LOCK_SESSION_KEY =
+          "tamilanda_wallet_unlocked";
+
+        function bytesToHex(bytes) {
+          return Array.from(bytes)
+            .map(byte => byte.toString(16).padStart(2, "0"))
+            .join("");
+        }
+
+        async function hashPin(pin) {
+          if (
+            window.crypto &&
+            window.crypto.subtle &&
+            typeof TextEncoder !== "undefined"
+          ) {
+            const data = new TextEncoder().encode(
+              "TamilandaWallet::PIN::" + pin
+            );
+
+            const digest = await crypto.subtle.digest(
+              "SHA-256",
+              data
+            );
+
+            return bytesToHex(new Uint8Array(digest));
+          }
+
+          let hash = 2166136261;
+
+          for (let i = 0; i < pin.length; i++) {
+            hash ^= pin.charCodeAt(i);
+            hash +=
+              (hash << 1) +
+              (hash << 4) +
+              (hash << 7) +
+              (hash << 8) +
+              (hash << 24);
+          }
+
+          return "fallback-" + (hash >>> 0).toString(16);
+        }
+
+        function showUnlockStatus(message) {
+          if (!unlockStatus) return;
+          unlockStatus.textContent = message;
+          unlockStatus.classList.add("show");
+
+          setTimeout(() => {
+            unlockStatus.classList.remove("show");
+          }, 2500);
+        }
+
+        function showLockScreen() {
+          if (!appLockOverlay) return;
+
+          appLockOverlay.style.display = "flex";
+
+          setTimeout(() => {
+            unlockPinInput?.focus();
+          }, 50);
+        }
+
+        function hideLockScreen() {
+          if (!appLockOverlay) return;
+
+          appLockOverlay.style.display = "none";
+          sessionStorage.setItem(LOCK_SESSION_KEY, "true");
+        }
+
+        async function tryUnlock() {
+          const pin =
+            String(unlockPinInput?.value || "").trim();
+
+          if (!/^\d{4,6}$/.test(pin)) {
+            showUnlockStatus("Enter your 4-6 digit PIN.");
+            return;
+          }
+
+          if (!walletData.security?.pinHash) {
+            showUnlockStatus("PIN setup is incomplete.");
+            return;
+          }
+
+          try {
+            const enteredHash = await hashPin(pin);
+
+            if (
+              enteredHash ===
+              walletData.security.pinHash
+            ) {
+              unlockPinInput.value = "";
+              hideLockScreen();
+              return;
+            }
+
+            unlockPinInput.value = "";
+            showUnlockStatus("Incorrect PIN. ❌");
+
+            const card =
+              appLockOverlay?.querySelector(".app-lock-card");
+
+            card?.classList.remove("lock-shake");
+            void card?.offsetWidth;
+            card?.classList.add("lock-shake");
+          } catch (error) {
+            console.error("PIN unlock failed:", error);
+            showUnlockStatus("Unlock failed. Please try again.");
+          }
+        }
+
+        unlockPinButton?.addEventListener(
+          "click",
+          tryUnlock
+        );
+
+        unlockPinInput?.addEventListener(
+          "keydown",
+          event => {
+            if (event.key === "Enter") {
+              tryUnlock();
+            }
+          }
+        );
+
+        if (
+          walletData.security?.pinEnabled === true &&
+          walletData.security?.pinConfigured === true &&
+          walletData.security?.pinHash &&
+          sessionStorage.getItem(LOCK_SESSION_KEY) !== "true"
+        ) {
+          showLockScreen();
+        }
 
 
         /* =========================
@@ -1110,6 +1285,23 @@
           );
 
         }
+
+
+
+        document.addEventListener(
+          "visibilitychange",
+          () => {
+            if (
+              document.visibilityState === "visible" &&
+              walletData.security?.pinEnabled === true &&
+              walletData.security?.pinConfigured === true &&
+              walletData.security?.pinHash
+            ) {
+              sessionStorage.removeItem(LOCK_SESSION_KEY);
+              showLockScreen();
+            }
+          }
+        );
 
 
         /* =========================
