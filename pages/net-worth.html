@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Net Worth - Tamilanda Wallet</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+
+  <style>
+    .page-header {
+      padding: 22px 16px 12px;
+    }
+
+    .page-header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .page-header p {
+      margin: 5px 0 0;
+      font-size: 13px;
+      opacity: 0.6;
+    }
+
+    .hero-card {
+      margin: 8px 16px 14px;
+      padding: 22px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .hero-card small {
+      opacity: 0.6;
+      font-size: 12px;
+    }
+
+    .hero-card h2 {
+      margin: 7px 0 0;
+      font-size: 30px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 0 16px 16px;
+    }
+
+    .summary-card {
+      padding: 16px;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .summary-card small {
+      display: block;
+      font-size: 11px;
+      opacity: 0.6;
+      margin-bottom: 6px;
+    }
+
+    .summary-card strong {
+      font-size: 16px;
+    }
+
+    .section {
+      padding: 0 16px;
+      margin-bottom: 17px;
+    }
+
+    .section h3 {
+      margin: 0 0 9px;
+      font-size: 16px;
+    }
+
+    .card {
+      padding: 15px;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 9px 0;
+      font-size: 13px;
+    }
+
+    .row + .row {
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .row span {
+      opacity: 0.72;
+    }
+
+    .row strong {
+      white-space: nowrap;
+    }
+
+    .total-row {
+      margin-top: 5px;
+      padding-top: 13px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-weight: 800;
+    }
+
+    .account-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 0;
+    }
+
+    .account-row + .account-row {
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .account-name {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .account-type {
+      font-size: 10px;
+      opacity: 0.5;
+      margin-top: 3px;
+    }
+
+    .account-balance {
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .positive {
+      color: #4ade80;
+    }
+
+    .negative {
+      color: #fb7185;
+    }
+
+    .info-box {
+      padding: 13px;
+      border-radius: 13px;
+      background: rgba(255,255,255,0.04);
+      font-size: 11px;
+      line-height: 1.6;
+      opacity: 0.68;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 20px 10px;
+      opacity: 0.55;
+      font-size: 12px;
+    }
+
+    .bottom-space {
+      height: 80px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page-header">
+    <h1>📊 Net Worth</h1>
+    <p>Assets minus liabilities</p>
+  </div>
+
+
+  <!-- NET WORTH -->
+  <div class="hero-card">
+
+    <small>💎 Your Current Net Worth</small>
+
+    <h2 id="netWorth">₹0</h2>
+
+  </div>
+
+
+  <!-- SUMMARY -->
+  <div class="summary-grid">
+
+    <div class="summary-card">
+      <small>💰 Total Assets</small>
+      <strong class="positive" id="totalAssets">₹0</strong>
+    </div>
+
+    <div class="summary-card">
+      <small>📌 Total Liabilities</small>
+      <strong class="negative" id="totalLiabilities">₹0</strong>
+    </div>
+
+  </div>
+
+
+  <!-- ASSET BREAKDOWN -->
+  <div class="section">
+
+    <h3>💰 Assets</h3>
+
+    <div class="card">
+
+      <div class="row">
+        <span>🏦 Account Balance</span>
+        <strong id="accountBalance">₹0</strong>
+      </div>
+
+      <div class="row">
+        <span>👤 Money To Receive</span>
+        <strong id="receivable">₹0</strong>
+      </div>
+
+      <div class="row total-row">
+        <span>Total Assets</span>
+        <strong id="assetTotal">₹0</strong>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- LIABILITIES -->
+  <div class="section">
+
+    <h3>📌 Liabilities</h3>
+
+    <div class="card">
+
+      <div class="row">
+        <span>🤝 Money To Give</span>
+        <strong id="payable">₹0</strong>
+      </div>
+
+      <div class="row">
+        <span>🏦 My EMI Remaining</span>
+        <strong id="emiRemaining">₹0</strong>
+      </div>
+
+      <div class="row total-row">
+        <span>Total Liabilities</span>
+        <strong id="liabilityTotal">₹0</strong>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ACCOUNTS -->
+  <div class="section">
+
+    <h3>🏦 Account Balances</h3>
+
+    <div class="card" id="accountsList"></div>
+
+  </div>
+
+
+  <!-- EXPLANATION -->
+  <div class="section">
+
+    <div class="info-box">
+      💡 <strong>Net Worth = Assets − Liabilities</strong><br><br>
+
+      Bank/Cash/UPI balances and money you are
+      supposed to receive are treated as assets.<br><br>
+
+      Money you have to give and your remaining
+      EMI/loan obligations are treated as liabilities.
+    </div>
+
+  </div>
+
+
+  <div class="bottom-space"></div>
+
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+
+    <button onclick="location.href='../index.html'">
+      🏠
+      <span>Home</span>
+    </button>
+
+    <button onclick="location.href='transactions.html'">
+      📒
+      <span>Transactions</span>
+    </button>
+
+    <button onclick="location.href='buyers.html'">
+      👤
+      <span>Buyers</span>
+    </button>
+
+    <button onclick="location.href='accounts.html'">
+      🏦
+      <span>Accounts</span>
+    </button>
+
+    <button onclick="location.href='more.html'">
+      ☰
+      <span>More</span>
+    </button>
+
+  </div>
+
+
+  <script src="../js/app.js"></script>
+
+  <script>
+
+    function getData() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.getData === "function"
+      ) {
+        return window.TamilandaWallet.getData();
+      }
+
+      try {
+        return JSON.parse(
+          localStorage.getItem("tamilanda_wallet_data")
+        ) || {};
+      } catch (error) {
+        return {};
+      }
+
+    }
+
+
+    function money(value) {
+
+      value = Number(value) || 0;
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.formatMoney === "function"
+      ) {
+        return window.TamilandaWallet.formatMoney(value);
+      }
+
+      return "₹" + value.toLocaleString("en-IN");
+
+    }
+
+
+    function remainingBuyer(data, buyer) {
+
+      const total =
+        Number(
+          buyer.totalAmount ??
+          buyer.amount ??
+          0
+        );
+
+      const initial =
+        Number(
+          buyer.initialPayment ??
+          buyer.paid ??
+          0
+        );
+
+      const payments =
+        (data.buyerPayments || [])
+          .filter(
+            p =>
+              String(p.buyerId) === String(buyer.id)
+          )
+          .reduce(
+            (sum, p) =>
+              sum + (Number(p.amount) || 0),
+            0
+          );
+
+      return Math.max(
+        0,
+        total - initial - payments
+      );
+
+    }
+
+
+    function calculateReceivable(data) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.calculateMoneyToReceive === "function"
+      ) {
+        return window.TamilandaWallet.calculateMoneyToReceive();
+      }
+
+      return (data.buyers || [])
+        .reduce(
+          (sum, buyer) =>
+            sum + remainingBuyer(data, buyer),
+          0
+        );
+
+    }
+
+
+    function remainingGive(data, item) {
+
+      const total =
+        Number(
+          item.totalAmount ??
+          item.amount ??
+          0
+        );
+
+      const alreadyPaid =
+        Number(
+          item.alreadyPaid ??
+          item.paid ??
+          0
+        );
+
+      const payments =
+        (data.givePayments || [])
+          .filter(
+            p =>
+              String(p.giveId) === String(item.id)
+          )
+          .reduce(
+            (sum, p) =>
+              sum + (Number(p.amount) || 0),
+            0
+          );
+
+      return Math.max(
+        0,
+        total - alreadyPaid - payments
+      );
+
+    }
+
+
+    function calculatePayable(data) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.calculateMoneyToGive === "function"
+      ) {
+        return window.TamilandaWallet.calculateMoneyToGive();
+      }
+
+      return (data.moneyToGive || [])
+        .reduce(
+          (sum, item) =>
+            sum + remainingGive(data, item),
+          0
+        );
+
+    }
+
+
+    function remainingEmi(data, item) {
+
+      const total =
+        Number(
+          item.totalAmount ??
+          item.emiAmount ??
+          item.amount ??
+          0
+        );
+
+      const alreadyPaid =
+        Number(
+          item.alreadyPaid ??
+          item.paid ??
+          0
+        );
+
+      const payments =
+        (data.emiPayments || [])
+          .filter(
+            p =>
+              String(p.emiId) === String(item.id)
+          )
+          .reduce(
+            (sum, p) =>
+              sum + (Number(p.amount) || 0),
+            0
+          );
+
+      return Math.max(
+        0,
+        total - alreadyPaid - payments
+      );
+
+    }
+
+
+    function calculateEmi(data) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.calculateEmiToPay === "function"
+      ) {
+        return window.TamilandaWallet.calculateEmiToPay();
+      }
+
+      return (data.myEmis || [])
+        .reduce(
+          (sum, item) =>
+            sum + remainingEmi(data, item),
+          0
+        );
+
+    }
+
+
+    function calculateAccountBalance(data) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.calculateTotalBalance === "function"
+      ) {
+        return window.TamilandaWallet.calculateTotalBalance();
+      }
+
+      return (data.accounts || [])
+        .reduce(
+          (sum, account) =>
+            sum + (Number(account.balance) || 0),
+          0
+        );
+
+    }
+
+
+    function calculateAssets(data) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.calculateTotalAssets === "function"
+      ) {
+        return window.TamilandaWallet.calculateTotalAssets();
+      }
+
+      return (
+        calculateAccountBalance(data) +
+        calculateReceivable(data)
+      );
+
+    }
+
+
+    function calculateLiabilities(data) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.calculateTotalLiabilities === "function"
+      ) {
+        return window.TamilandaWallet.calculateTotalLiabilities();
+      }
+
+      return (
+        calculatePayable(data) +
+        calculateEmi(data)
+      );
+
+    }
+
+
+    function calculateNetWorth(data) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.calculateNetWorth === "function"
+      ) {
+        return window.TamilandaWallet.calculateNetWorth();
+      }
+
+      return (
+        calculateAssets(data) -
+        calculateLiabilities(data)
+      );
+
+    }
+
+
+    function renderAccounts(data) {
+
+      const container =
+        document.getElementById("accountsList");
+
+      const accounts =
+        data.accounts || [];
+
+
+      if (!accounts.length) {
+
+        container.innerHTML = `
+          <div class="empty">
+            🏦 No accounts added yet.
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      container.innerHTML =
+        accounts.map(account => {
+
+          const balance =
+            Number(account.balance) || 0;
+
+          return `
+            <div class="account-row">
+
+              <div>
+
+                <div class="account-name">
+                  ${escapeHtml(account.name || "Account")}
+                </div>
+
+                <div class="account-type">
+                  ${escapeHtml(account.type || "Other")}
+                </div>
+
+              </div>
+
+              <div class="account-balance">
+                ${money(balance)}
+              </div>
+
+            </div>
+          `;
+
+        }).join("");
+
+    }
+
+
+    function escapeHtml(text) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.escapeHtml === "function"
+      ) {
+        return window.TamilandaWallet.escapeHtml(
+          String(text ?? "")
+        );
+      }
+
+      return String(text ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    function render() {
+
+      const data =
+        getData();
+
+
+      const accountBalance =
+        calculateAccountBalance(data);
+
+      const receivable =
+        calculateReceivable(data);
+
+      const payable =
+        calculatePayable(data);
+
+      const emiRemaining =
+        calculateEmi(data);
+
+      const assets =
+        calculateAssets(data);
+
+      const liabilities =
+        calculateLiabilities(data);
+
+      const netWorth =
+        calculateNetWorth(data);
+
+
+      document.getElementById("netWorth")
+        .textContent =
+          money(netWorth);
+
+      document.getElementById("totalAssets")
+        .textContent =
+          money(assets);
+
+      document.getElementById("totalLiabilities")
+        .textContent =
+          money(liabilities);
+
+      document.getElementById("accountBalance")
+        .textContent =
+          money(accountBalance);
+
+      document.getElementById("receivable")
+        .textContent =
+          money(receivable);
+
+      document.getElementById("assetTotal")
+        .textContent =
+          money(assets);
+
+      document.getElementById("payable")
+        .textContent =
+          money(payable);
+
+      document.getElementById("emiRemaining")
+        .textContent =
+          money(emiRemaining);
+
+      document.getElementById("liabilityTotal")
+        .textContent =
+          money(liabilities);
+
+
+      renderAccounts(data);
+
+    }
+
+
+    render();
+
+    window.addEventListener(
+      "storage",
+      render
+    );
+
+  </script>
+
+</body>
+</html>
