@@ -1,869 +1,324 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <meta
-    name="theme-color"
-    content="#09070d"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Recurring Payments - Tamilanda Wallet</title>
 
-  <link
-    rel="stylesheet"
-    href="../css/style.css"
-  >
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/style.css">
 
-  <style>
-
-    .recurring-summary {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-
-    .recurring-stat {
-      background: #15111d;
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 17px;
-      padding: 15px;
-    }
-
-    .recurring-stat-value {
-      font-size: 21px;
-      font-weight: 700;
-      color: #ffc857;
-    }
-
-    .recurring-stat-label {
-      margin-top: 5px;
-      font-size: 11px;
-      color: rgba(255,255,255,0.5);
-    }
-
-    .toolbar {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .toolbar input,
-    .toolbar select {
-      flex: 1;
-    }
-
-    .recurring-card {
-      background: #15111d;
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 20px;
-      padding: 16px;
-      margin-bottom: 12px;
-    }
-
-    .recurring-top {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-    }
-
-    .recurring-icon {
-      width: 46px;
-      height: 46px;
-      min-width: 46px;
-      border-radius: 14px;
-      background: #1c1725;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 21px;
-    }
-
-    .recurring-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .recurring-name {
-      font-size: 16px;
-      font-weight: 700;
-    }
-
-    .recurring-meta {
-      margin-top: 4px;
-      font-size: 12px;
-      color: rgba(255,255,255,0.5);
-      line-height: 1.5;
-    }
-
-    .recurring-amount {
-      font-size: 17px;
-      font-weight: 700;
-      color: #ffc857;
-      white-space: nowrap;
-    }
-
-    .recurring-status {
-      display: inline-flex;
-      margin-top: 10px;
-      padding: 5px 9px;
-      border-radius: 20px;
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-    }
-
-    .status-pending {
-      color: #ffc857;
-      background: rgba(255,200,87,0.1);
-    }
-
-    .status-paid {
-      color: #55d98b;
-      background: rgba(85,217,139,0.1);
-    }
-
-    .status-overdue {
-      color: #ff667a;
-      background: rgba(255,102,122,0.1);
-    }
-
-    .status-inactive {
-      color: rgba(255,255,255,0.55);
-      background: rgba(255,255,255,0.07);
-    }
-
-    .recurring-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 14px;
-      flex-wrap: wrap;
-    }
-
-    .small-button {
-      border: 1px solid rgba(255,255,255,0.08);
-      background: #1c1725;
-      color: #ffffff;
-      border-radius: 11px;
-      padding: 9px 12px;
-      font-size: 12px;
-      cursor: pointer;
-    }
-
-    .small-button.primary {
-      color: #09070d;
-      background: #ffc857;
-      border-color: #ffc857;
-      font-weight: 700;
-    }
-
-    .small-button.danger {
-      color: #ff667a;
-    }
-
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.72);
-      display: none;
-      align-items: flex-end;
-      justify-content: center;
-      z-index: 9999;
-      padding: 15px;
-      box-sizing: border-box;
-    }
-
-    .modal-overlay.active {
-      display: flex;
-    }
-
-    .modal {
-      width: 100%;
-      max-width: 520px;
-      max-height: 90vh;
-      overflow-y: auto;
-      background: #15111d;
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 24px 24px 18px 18px;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-
-    .modal-header h2 {
-      margin: 0;
-      font-size: 20px;
-    }
-
-    .modal-close {
-      width: 38px;
-      height: 38px;
-      border: 0;
-      border-radius: 12px;
-      background: #1c1725;
-      color: #ffffff;
-      font-size: 21px;
-      cursor: pointer;
-    }
-
-    .modal-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 18px;
-    }
-
-    .history-item {
-      padding: 13px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .history-item:last-child {
-      border-bottom: 0;
-    }
-
-    .history-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .history-amount {
-      font-weight: 700;
-      color: #ff667a;
-    }
-
-    .history-meta {
-      margin-top: 4px;
-      font-size: 12px;
-      color: rgba(255,255,255,0.5);
-    }
-
-    .empty-box {
-      padding: 35px 15px;
-      text-align: center;
-      background: #15111d;
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 20px;
-    }
-
-    .empty-box-icon {
-      font-size: 35px;
-      margin-bottom: 10px;
-    }
-
-    .empty-box h3 {
-      margin: 0;
-      font-size: 17px;
-    }
-
-    .empty-box p {
-      margin: 7px 0 0;
-      color: rgba(255,255,255,0.5);
-      font-size: 12px;
-    }
-
-    @media (max-width: 600px) {
-
-      .recurring-summary {
-        grid-template-columns: 1fr;
-      }
-
-      .toolbar {
-        flex-direction: column;
-      }
-
-      .recurring-amount {
-        font-size: 15px;
-      }
-
-    }
-
-  </style>
-
+  <meta name="theme-color" content="#09070d">
 </head>
 
-
 <body>
-
 
   <!-- =========================
        HEADER
   ========================== -->
 
-  <header class="page-header">
+  <header class="app-header">
 
-    <div class="page-header-left">
-
-      <button
-        type="button"
-        class="icon-button"
-        id="backButton"
-      >
-        ←
-      </button>
-
-      <div>
-
-        <h1>
-          Recurring Payments
-        </h1>
-
-        <p>
-          Bills and payments that repeat
-        </p>
-
-      </div>
-
+    <div>
+      <h1>Recurring Payments</h1>
+      <p>Track bills and payments that repeat</p>
     </div>
 
-
     <button
-      type="button"
-      class="primary-button"
-      id="addRecurringButton"
+      class="icon-button"
+      onclick="goBack()"
     >
-      + Add
+      ←
     </button>
 
   </header>
 
 
   <!-- =========================
-       MAIN
+       SUMMARY
   ========================== -->
 
-  <main class="page-container">
+  <section class="summary-grid">
+
+    <div class="summary-card">
+      <span>Total Bills</span>
+      <strong id="totalBills">0</strong>
+    </div>
+
+    <div class="summary-card">
+      <span>Monthly Estimate</span>
+      <strong id="monthlyTotal">₹0.00</strong>
+    </div>
+
+    <div class="summary-card">
+      <span>Due Soon</span>
+      <strong id="dueSoon">0</strong>
+    </div>
+
+    <div class="summary-card">
+      <span>Overdue</span>
+      <strong id="overdueCount">0</strong>
+    </div>
+
+  </section>
 
 
-    <!-- =========================
-         SUMMARY
-    ========================== -->
+  <!-- =========================
+       ADD BUTTON
+  ========================== -->
 
-    <section class="recurring-summary">
+  <section class="page-actions">
 
-      <div class="recurring-stat">
+    <button
+      class="primary-button"
+      onclick="openRecurringForm()"
+    >
+      + Add Recurring Payment
+    </button>
 
-        <div
-          class="recurring-stat-value"
-          id="monthlyTotal"
-        >
-          ₹0
-        </div>
-
-        <div class="recurring-stat-label">
-          Monthly Total
-        </div>
-
-      </div>
+  </section>
 
 
-      <div class="recurring-stat">
+  <!-- =========================
+       SEARCH / FILTER
+  ========================== -->
 
-        <div
-          class="recurring-stat-value"
-          id="pendingTotal"
-        >
-          ₹0
-        </div>
+  <section class="card">
 
-        <div class="recurring-stat-label">
-          Pending
-        </div>
+    <input
+      type="search"
+      id="searchInput"
+      class="input"
+      placeholder="🔎 Search bill, category..."
+      oninput="renderRecurring()"
+    >
 
-      </div>
+    <div class="filter-row">
 
-
-      <div class="recurring-stat">
-
-        <div
-          class="recurring-stat-value"
-          id="overdueTotal"
-        >
-          ₹0
-        </div>
-
-        <div class="recurring-stat-label">
-          Overdue
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =========================
-         SEARCH / FILTER
-    ========================== -->
-
-    <div class="toolbar">
-
-      <input
-        type="search"
-        id="searchInput"
-        placeholder="Search bills..."
+      <select
+        id="statusFilter"
+        class="input"
+        onchange="renderRecurring()"
       >
-
-
-      <select id="statusFilter">
-
-        <option value="all">
-          All Status
-        </option>
-
-        <option value="pending">
-          Pending
-        </option>
-
-        <option value="paid">
-          Paid
-        </option>
-
-        <option value="overdue">
-          Overdue
-        </option>
-
-        <option value="inactive">
-          Inactive
-        </option>
-
+        <option value="all">All Status</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+        <option value="overdue">Overdue</option>
+        <option value="dueSoon">Due Soon</option>
       </select>
 
 
-      <select id="frequencyFilter">
-
-        <option value="all">
-          All Frequency
-        </option>
-
-        <option value="daily">
-          Daily
-        </option>
-
-        <option value="weekly">
-          Weekly
-        </option>
-
-        <option value="monthly">
-          Monthly
-        </option>
-
-        <option value="yearly">
-          Yearly
-        </option>
-
+      <select
+        id="frequencyFilter"
+        class="input"
+        onchange="renderRecurring()"
+      >
+        <option value="all">All Frequency</option>
+        <option value="daily">Daily</option>
+        <option value="weekly">Weekly</option>
+        <option value="monthly">Monthly</option>
+        <option value="yearly">Yearly</option>
       </select>
 
     </div>
 
+  </section>
 
-    <!-- =========================
-         LIST
-    ========================== -->
+
+  <!-- =========================
+       FORM
+  ========================== -->
+
+  <section
+    class="card"
+    id="recurringFormCard"
+    style="display:none;"
+  >
+
+    <div class="section-title">
+
+      <h2 id="formTitle">
+        Add Recurring Payment
+      </h2>
+
+      <button
+        class="secondary-button"
+        onclick="closeRecurringForm()"
+      >
+        Cancel
+      </button>
+
+    </div>
+
+
+    <input
+      type="hidden"
+      id="editingRecurringId"
+    >
+
+
+    <label>Payment / Bill Name</label>
+
+    <input
+      type="text"
+      id="recurringName"
+      class="input"
+      placeholder="Example: Internet, Rent, Netflix, EB Bill"
+    >
+
+
+    <label>Amount</label>
+
+    <input
+      type="number"
+      id="recurringAmount"
+      class="input"
+      placeholder="₹ Amount"
+      min="0"
+      step="0.01"
+    >
+
+
+    <label>Frequency</label>
+
+    <select
+      id="recurringFrequency"
+      class="input"
+    >
+
+      <option value="daily">
+        Daily
+      </option>
+
+      <option value="weekly">
+        Weekly
+      </option>
+
+      <option
+        value="monthly"
+        selected
+      >
+        Monthly
+      </option>
+
+      <option value="yearly">
+        Yearly
+      </option>
+
+    </select>
+
+
+    <label>Category</label>
+
+    <input
+      type="text"
+      id="recurringCategory"
+      class="input"
+      placeholder="Example: Bills, Subscription, Rent"
+    >
+
+
+    <label>Next Due Date</label>
+
+    <input
+      type="date"
+      id="recurringDueDate"
+      class="input"
+    >
+
+
+    <label>Pay From Account</label>
+
+    <select
+      id="recurringAccount"
+      class="input"
+    >
+
+      <option value="">
+        Select account
+      </option>
+
+    </select>
+
+
+    <label>Notes</label>
+
+    <textarea
+      id="recurringNotes"
+      class="input"
+      rows="3"
+      placeholder="Optional notes..."
+    ></textarea>
+
+
+    <label class="toggle-row">
+
+      <span>
+        Active
+      </span>
+
+      <input
+        type="checkbox"
+        id="recurringActive"
+        checked
+      >
+
+    </label>
+
+
+    <button
+      class="primary-button"
+      onclick="saveRecurring()"
+    >
+      Save Recurring Payment
+    </button>
+
+  </section>
+
+
+  <!-- =========================
+       LIST
+  ========================== -->
+
+  <section>
+
+    <div class="section-heading">
+      <h2>Recurring List</h2>
+    </div>
 
     <div id="recurringList"></div>
 
-
-  </main>
+  </section>
 
 
   <!-- =========================
-       ADD / EDIT MODAL
+       PAYMENT HISTORY MODAL
   ========================== -->
 
   <div
-    class="modal-overlay"
-    id="formModal"
-  >
-
-    <div class="modal">
-
-      <div class="modal-header">
-
-        <h2 id="formTitle">
-          Add Recurring Payment
-        </h2>
-
-        <button
-          type="button"
-          class="modal-close"
-          id="closeFormModal"
-        >
-          ×
-        </button>
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label for="nameInput">
-          Payment Name
-        </label>
-
-        <input
-          type="text"
-          id="nameInput"
-          placeholder="e.g. Rent, EB, Netflix"
-        >
-
-      </div>
-
-
-      <div class="form-row">
-
-        <div class="form-group">
-
-          <label for="amountInput">
-            Amount
-          </label>
-
-          <input
-            type="number"
-            id="amountInput"
-            min="0"
-            step="0.01"
-            placeholder="0"
-          >
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="frequencyInput">
-            Frequency
-          </label>
-
-          <select id="frequencyInput">
-
-            <option value="daily">
-              Daily
-            </option>
-
-            <option value="weekly">
-              Weekly
-            </option>
-
-            <option value="monthly" selected>
-              Monthly
-            </option>
-
-            <option value="yearly">
-              Yearly
-            </option>
-
-          </select>
-
-        </div>
-
-      </div>
-
-
-      <div class="form-row">
-
-        <div class="form-group">
-
-          <label for="categoryInput">
-            Category
-          </label>
-
-          <select id="categoryInput">
-
-            <option value="Rent">
-              Rent
-            </option>
-
-            <option value="Utilities">
-              Utilities
-            </option>
-
-            <option value="Internet">
-              Internet
-            </option>
-
-            <option value="Phone">
-              Phone
-            </option>
-
-            <option value="Subscription">
-              Subscription
-            </option>
-
-            <option value="Insurance">
-              Insurance
-            </option>
-
-            <option value="Business">
-              Business
-            </option>
-
-            <option value="Other">
-              Other
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="dueDateInput">
-            Next Due Date
-          </label>
-
-          <input
-            type="date"
-            id="dueDateInput"
-          >
-
-        </div>
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label for="accountInput">
-          Paid From Account
-        </label>
-
-        <select id="accountInput">
-
-          <option value="">
-            Select account
-          </option>
-
-        </select>
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label for="noteInput">
-          Note
-        </label>
-
-        <textarea
-          id="noteInput"
-          rows="3"
-          placeholder="Optional note"
-        ></textarea>
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label>
-
-          <input
-            type="checkbox"
-            id="activeInput"
-            checked
-          >
-
-          Active recurring payment
-
-        </label>
-
-      </div>
-
-
-      <div class="modal-actions">
-
-        <button
-          type="button"
-          class="secondary-button"
-          id="cancelFormButton"
-        >
-          Cancel
-        </button>
-
-        <button
-          type="button"
-          class="primary-button"
-          id="saveRecurringButton"
-        >
-          Save
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- =========================
-       PAYMENT MODAL
-  ========================== -->
-
-  <div
-    class="modal-overlay"
-    id="paymentModal"
-  >
-
-    <div class="modal">
-
-      <div class="modal-header">
-
-        <h2>
-          Record Payment
-        </h2>
-
-        <button
-          type="button"
-          class="modal-close"
-          id="closePaymentModal"
-        >
-          ×
-        </button>
-
-      </div>
-
-
-      <div
-        id="paymentBillName"
-        style="
-          margin-bottom:15px;
-          font-weight:700;
-        "
-      >
-      </div>
-
-
-      <div class="form-group">
-
-        <label for="paymentAmountInput">
-          Payment Amount
-        </label>
-
-        <input
-          type="number"
-          id="paymentAmountInput"
-          min="0"
-          step="0.01"
-          placeholder="0"
-        >
-
-      </div>
-
-
-      <div class="form-row">
-
-        <div class="form-group">
-
-          <label for="paymentDateInput">
-            Payment Date
-          </label>
-
-          <input
-            type="date"
-            id="paymentDateInput"
-          >
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="paymentAccountInput">
-            Paid From
-          </label>
-
-          <select id="paymentAccountInput">
-
-            <option value="">
-              Select account
-            </option>
-
-          </select>
-
-        </div>
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label for="paymentNoteInput">
-          Note
-        </label>
-
-        <textarea
-          id="paymentNoteInput"
-          rows="3"
-          placeholder="Optional note"
-        ></textarea>
-
-      </div>
-
-
-      <div class="modal-actions">
-
-        <button
-          type="button"
-          class="secondary-button"
-          id="cancelPaymentButton"
-        >
-          Cancel
-        </button>
-
-        <button
-          type="button"
-          class="primary-button"
-          id="savePaymentButton"
-        >
-          Mark Paid
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- =========================
-       HISTORY MODAL
-  ========================== -->
-
-  <div
-    class="modal-overlay"
     id="historyModal"
+    class="modal"
+    style="display:none;"
   >
 
-    <div class="modal">
+    <div class="modal-content">
 
-      <div class="modal-header">
+      <div class="section-title">
 
-        <h2>
-          Payment History
-        </h2>
+        <div>
+
+          <h2>Payment History</h2>
+
+          <p id="historyBillName">
+            Bill
+          </p>
+
+        </div>
 
         <button
-          type="button"
-          class="modal-close"
-          id="closeHistoryModal"
+          class="icon-button"
+          onclick="closeHistoryModal()"
         >
           ×
         </button>
@@ -871,13 +326,45 @@
       </div>
 
 
-      <div
-        id="historyContent"
-      ></div>
+      <div id="historyList"></div>
 
     </div>
 
   </div>
+
+
+  <!-- =========================
+       BOTTOM NAV
+  ========================== -->
+
+  <nav class="bottom-nav">
+
+    <button onclick="goToPage('home')">
+      🏠
+      <span>Home</span>
+    </button>
+
+    <button onclick="goToPage('transactions')">
+      📋
+      <span>Transactions</span>
+    </button>
+
+    <button onclick="goToPage('buyers')">
+      👤
+      <span>Buyers</span>
+    </button>
+
+    <button onclick="goToPage('accounts')">
+      🏦
+      <span>Accounts</span>
+    </button>
+
+    <button onclick="goToPage('more')">
+      ☰
+      <span>More</span>
+    </button>
+
+  </nav>
 
 
   <!-- =========================
@@ -889,124 +376,61 @@
 
   <script>
 
-    let walletData = null;
-
-    let editingId = null;
-
-    let paymentRecurringId = null;
-
-    let historyRecurringId = null;
+    let walletData;
+    let editingRecurringId = null;
 
 
     /* =========================
        HELPERS
     ========================== */
 
-    function getWalletData() {
+    function money(value) {
 
       if (
         window.TamilandaWallet &&
-        typeof window.TamilandaWallet.getData === "function"
-      ) {
-
-        return window.TamilandaWallet.getData();
-
-      }
-
-      return null;
-
-    }
-
-
-    function saveWalletData() {
-
-      if (
-        window.TamilandaWallet &&
-        typeof window.TamilandaWallet.save === "function"
-      ) {
-
-        window.TamilandaWallet.save();
-
-        return true;
-
-      }
-
-      return false;
-
-    }
-
-
-    function formatMoney(amount) {
-
-      if (
-        window.TamilandaWallet &&
-        typeof window.TamilandaWallet.formatMoney === "function"
+        typeof window.TamilandaWallet.formatMoney ===
+        "function"
       ) {
 
         return window.TamilandaWallet.formatMoney(
-          amount
+          Number(value) || 0
         );
 
       }
-
 
       return "₹" +
-        Number(
-          amount || 0
-        ).toLocaleString(
-          "en-IN"
+        (Number(value) || 0).toLocaleString(
+          "en-IN",
+          {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }
         );
 
     }
 
 
-    function escapeHtml(value) {
+    function today() {
 
       if (
         window.TamilandaWallet &&
-        typeof window.TamilandaWallet.escapeHtml === "function"
-      ) {
-
-        return window.TamilandaWallet.escapeHtml(
-          value
-        );
-
-      }
-
-
-      return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
-    }
-
-
-    function todayString() {
-
-      if (
-        window.TamilandaWallet &&
-        typeof window.TamilandaWallet.todayString === "function"
+        typeof window.TamilandaWallet.todayString ===
+        "function"
       ) {
 
         return window.TamilandaWallet.todayString();
 
       }
 
+      const d = new Date();
 
-      const date = new Date();
-
-      return [
-        date.getFullYear(),
-        String(
-          date.getMonth() + 1
-        ).padStart(2, "0"),
-        String(
-          date.getDate()
-        ).padStart(2, "0")
-      ].join("-");
+      return (
+        d.getFullYear() +
+        "-" +
+        String(d.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(d.getDate()).padStart(2, "0")
+      );
 
     }
 
@@ -1015,20 +439,59 @@
 
       if (
         window.TamilandaWallet &&
-        typeof window.TamilandaWallet.generateId === "function"
+        typeof window.TamilandaWallet.generateId ===
+        "function"
       ) {
 
         return window.TamilandaWallet.generateId();
 
       }
 
-
       return (
         Date.now().toString(36) +
         Math.random()
           .toString(36)
-          .substring(2)
+          .substring(2, 8)
       );
+
+    }
+
+
+    function saveData() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.save ===
+        "function"
+      ) {
+
+        window.TamilandaWallet.save();
+
+      }
+
+    }
+
+
+    function escapeHtml(value) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.escapeHtml ===
+        "function"
+      ) {
+
+        return window.TamilandaWallet.escapeHtml(
+          value
+        );
+
+      }
+
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
     }
 
@@ -1039,132 +502,111 @@
         return "-";
       }
 
+      const parts =
+        dateString.split("-");
 
-      const date =
-        new Date(
-          dateString + "T00:00:00"
-        );
-
-
-      if (
-        Number.isNaN(
-          date.getTime()
-        )
-      ) {
-
+      if (parts.length !== 3) {
         return dateString;
-
       }
 
-
-      return date.toLocaleDateString(
-        "en-IN",
-        {
-          day: "2-digit",
-          month: "short",
-          year: "numeric"
-        }
+      return (
+        parts[2] +
+        "/" +
+        parts[1] +
+        "/" +
+        parts[0]
       );
 
     }
 
 
-    function addDays(
-      dateString,
-      days
-    ) {
+    function getAccountName(accountId) {
 
-      const date =
+      const account =
+        (walletData.accounts || [])
+          .find(
+            account =>
+              account.id === accountId
+          );
+
+      return account
+        ? account.name
+        : "Unknown Account";
+
+    }
+
+
+    function daysUntil(dateString) {
+
+      if (!dateString) {
+        return null;
+      }
+
+      const todayDate =
         new Date(
-          dateString + "T00:00:00"
+          today() +
+          "T00:00:00"
         );
 
-
-      date.setDate(
-        date.getDate() + days
-      );
-
-
-      return [
-        date.getFullYear(),
-        String(
-          date.getMonth() + 1
-        ).padStart(2, "0"),
-        String(
-          date.getDate()
-        ).padStart(2, "0")
-      ].join("-");
-
-    }
-
-
-    function addMonths(
-      dateString,
-      months
-    ) {
-
-      const date =
+      const dueDate =
         new Date(
-          dateString + "T00:00:00"
+          dateString +
+          "T00:00:00"
         );
 
-
-      date.setMonth(
-        date.getMonth() + months
+      return Math.ceil(
+        (
+          dueDate -
+          todayDate
+        ) /
+        (1000 * 60 * 60 * 24)
       );
-
-
-      return [
-        date.getFullYear(),
-        String(
-          date.getMonth() + 1
-        ).padStart(2, "0"),
-        String(
-          date.getDate()
-        ).padStart(2, "0")
-      ].join("-");
 
     }
 
 
-    function addYears(
-      dateString,
-      years
-    ) {
+    function isOverdue(item) {
 
-      const date =
-        new Date(
-          dateString + "T00:00:00"
+      if (
+        !item.active ||
+        !item.nextDueDate
+      ) {
+        return false;
+      }
+
+      return (
+        item.nextDueDate < today()
+      );
+
+    }
+
+
+    function isDueSoon(item) {
+
+      if (
+        !item.active ||
+        !item.nextDueDate
+      ) {
+        return false;
+      }
+
+      const days =
+        daysUntil(
+          item.nextDueDate
         );
 
-
-      date.setFullYear(
-        date.getFullYear() + years
+      return (
+        days !== null &&
+        days >= 0 &&
+        days <= 7
       );
-
-
-      return [
-        date.getFullYear(),
-        String(
-          date.getMonth() + 1
-        ).padStart(2, "0"),
-        String(
-          date.getDate()
-        ).padStart(2, "0")
-      ].join("-");
 
     }
 
 
-    /* =========================
-       FREQUENCY
-    ========================== */
+    function frequencyText(value) {
 
-    function frequencyLabel(
-      frequency
-    ) {
-
-      const labels = {
+      const map = {
 
         daily: "Daily",
 
@@ -1176,151 +618,41 @@
 
       };
 
-
       return (
-        labels[frequency] ||
-        frequency
+        map[value] ||
+        value ||
+        "-"
       );
-
-    }
-
-
-    function getNextDueDate(
-      recurring
-    ) {
-
-      return recurring.nextDueDate;
 
     }
 
 
     /* =========================
-       STATUS
+       INIT
     ========================== */
 
-    function getStatus(
-      recurring
-    ) {
+    document.addEventListener(
+      "DOMContentLoaded",
+      function() {
 
-      if (
-        recurring.active === false
-      ) {
-
-        return "inactive";
-
-      }
+        walletData =
+          window.TamilandaWallet.getData();
 
 
-      const dueDate =
-        recurring.nextDueDate;
+        document.getElementById(
+          "recurringDueDate"
+        ).value =
+          today();
 
 
-      if (!dueDate) {
+        renderSummary();
 
-        return "pending";
+        populateAccounts();
 
-      }
-
-
-      const today =
-        todayString();
-
-
-      if (
-        recurring.lastPaidDate ===
-        today
-      ) {
-
-        return "paid";
+        renderRecurring();
 
       }
-
-
-      if (
-        dueDate < today
-      ) {
-
-        return "overdue";
-
-      }
-
-
-      return "pending";
-
-    }
-
-
-    function statusLabel(
-      status
-    ) {
-
-      const labels = {
-
-        pending: "Pending",
-
-        paid: "Paid",
-
-        overdue: "Overdue",
-
-        inactive: "Inactive"
-
-      };
-
-
-      return (
-        labels[status] ||
-        status
-      );
-
-    }
-
-
-    function statusClass(
-      status
-    ) {
-
-      return {
-        pending: "status-pending",
-        paid: "status-paid",
-        overdue: "status-overdue",
-        inactive: "status-inactive"
-      }[status] ||
-      "status-pending";
-
-    }
-
-
-    function getIcon(
-      category
-    ) {
-
-      const icons = {
-
-        Rent: "🏠",
-
-        Utilities: "⚡",
-
-        Internet: "🌐",
-
-        Phone: "📱",
-
-        Subscription: "📺",
-
-        Insurance: "🛡️",
-
-        Business: "💼",
-
-        Other: "🔁"
-
-      };
-
-
-      return (
-        icons[category] ||
-        "🔁"
-      );
-
-    }
+    );
 
 
     /* =========================
@@ -1329,84 +661,732 @@
 
     function populateAccounts() {
 
-      const selects = [
-
+      const select =
         document.getElementById(
-          "accountInput"
-        ),
-
-        document.getElementById(
-          "paymentAccountInput"
-        )
-
-      ];
+          "recurringAccount"
+        );
 
 
-      selects.forEach(
-        select => {
-
-          const current =
-            select.value;
-
-
-          select.innerHTML = `
-
-            <option value="">
-              Select account
-            </option>
-
-          `;
+      select.innerHTML =
+        `<option value="">
+          Select account
+        </option>`;
 
 
-          (
-            walletData.accounts ||
-            []
-          )
-          .forEach(
-            account => {
+      (walletData.accounts || [])
+        .forEach(account => {
 
-              const option =
-                document.createElement(
-                  "option"
-                );
+          const option =
+            document.createElement(
+              "option"
+            );
+
+          option.value =
+            account.id;
+
+          option.textContent =
+            account.name +
+            " — " +
+            money(account.balance);
+
+          select.appendChild(
+            option
+          );
+
+        });
+
+    }
 
 
-              option.value =
-                account.id;
+    /* =========================
+       SUMMARY
+    ========================== */
+
+    function renderSummary() {
+
+      const list =
+        walletData.recurringBills || [];
 
 
-              option.textContent =
-                `${account.name} — ${formatMoney(account.balance)}`;
+      let monthly =
+        0;
+
+      let dueSoon =
+        0;
+
+      let overdue =
+        0;
 
 
-              select.appendChild(
-                option
-              );
+      list.forEach(item => {
 
-            }
+        if (!item.active) {
+          return;
+        }
+
+
+        const amount =
+          Number(
+            item.amount || 0
           );
 
 
-          select.value =
-            current;
+        if (
+          item.frequency ===
+          "daily"
+        ) {
+
+          monthly +=
+            amount * 30;
+
+        } else if (
+          item.frequency ===
+          "weekly"
+        ) {
+
+          monthly +=
+            amount * 4.33;
+
+        } else if (
+          item.frequency ===
+          "yearly"
+        ) {
+
+          monthly +=
+            amount / 12;
+
+        } else {
+
+          monthly +=
+            amount;
 
         }
+
+
+        if (
+          isOverdue(item)
+        ) {
+
+          overdue++;
+
+        } else if (
+          isDueSoon(item)
+        ) {
+
+          dueSoon++;
+
+        }
+
+      });
+
+
+      document.getElementById(
+        "totalBills"
+      ).textContent =
+        list.length;
+
+
+      document.getElementById(
+        "monthlyTotal"
+      ).textContent =
+        money(monthly);
+
+
+      document.getElementById(
+        "dueSoon"
+      ).textContent =
+        dueSoon;
+
+
+      document.getElementById(
+        "overdueCount"
+      ).textContent =
+        overdue;
+
+    }
+
+
+    /* =========================
+       FORM
+    ========================== */
+
+    function openRecurringForm() {
+
+      editingRecurringId =
+        null;
+
+
+      document.getElementById(
+        "formTitle"
+      ).textContent =
+        "Add Recurring Payment";
+
+
+      document.getElementById(
+        "recurringFormCard"
+      ).style.display =
+        "block";
+
+
+      clearForm();
+
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
+    }
+
+
+    function closeRecurringForm() {
+
+      document.getElementById(
+        "recurringFormCard"
+      ).style.display =
+        "none";
+
+
+      editingRecurringId =
+        null;
+
+
+      clearForm();
+
+    }
+
+
+    function clearForm() {
+
+      document.getElementById(
+        "editingRecurringId"
+      ).value = "";
+
+
+      document.getElementById(
+        "recurringName"
+      ).value = "";
+
+
+      document.getElementById(
+        "recurringAmount"
+      ).value = "";
+
+
+      document.getElementById(
+        "recurringFrequency"
+      ).value =
+        "monthly";
+
+
+      document.getElementById(
+        "recurringCategory"
+      ).value = "";
+
+
+      document.getElementById(
+        "recurringDueDate"
+      ).value =
+        today();
+
+
+      document.getElementById(
+        "recurringAccount"
+      ).value = "";
+
+
+      document.getElementById(
+        "recurringNotes"
+      ).value = "";
+
+
+      document.getElementById(
+        "recurringActive"
+      ).checked =
+        true;
+
+    }
+
+
+    /* =========================
+       SAVE
+    ========================== */
+
+    function saveRecurring() {
+
+      const name =
+        document.getElementById(
+          "recurringName"
+        ).value.trim();
+
+
+      const amount =
+        Number(
+          document.getElementById(
+            "recurringAmount"
+          ).value
+        ) || 0;
+
+
+      const frequency =
+        document.getElementById(
+          "recurringFrequency"
+        ).value;
+
+
+      const category =
+        document.getElementById(
+          "recurringCategory"
+        ).value.trim();
+
+
+      const nextDueDate =
+        document.getElementById(
+          "recurringDueDate"
+        ).value;
+
+
+      const accountId =
+        document.getElementById(
+          "recurringAccount"
+        ).value;
+
+
+      const notes =
+        document.getElementById(
+          "recurringNotes"
+        ).value.trim();
+
+
+      const active =
+        document.getElementById(
+          "recurringActive"
+        ).checked;
+
+
+      if (!name) {
+
+        alert(
+          "Please enter payment / bill name."
+        );
+
+        return;
+
+      }
+
+
+      if (amount <= 0) {
+
+        alert(
+          "Please enter a valid amount."
+        );
+
+        return;
+
+      }
+
+
+      if (!nextDueDate) {
+
+        alert(
+          "Please select next due date."
+        );
+
+        return;
+
+      }
+
+
+      if (!walletData.recurringBills) {
+
+        walletData.recurringBills =
+          [];
+
+      }
+
+
+      /* =========================
+         EDIT
+      ========================== */
+
+      if (editingRecurringId) {
+
+        const item =
+          walletData.recurringBills
+            .find(
+              x =>
+                x.id ===
+                editingRecurringId
+            );
+
+
+        if (!item) {
+
+          alert(
+            "Recurring payment not found."
+          );
+
+          return;
+
+        }
+
+
+        item.name =
+          name;
+
+        item.amount =
+          amount;
+
+        item.frequency =
+          frequency;
+
+        item.category =
+          category;
+
+        item.nextDueDate =
+          nextDueDate;
+
+        item.accountId =
+          accountId;
+
+        item.notes =
+          notes;
+
+        item.active =
+          active;
+
+
+        saveData();
+
+        walletData =
+          window.TamilandaWallet.getData();
+
+
+        closeRecurringForm();
+
+        renderSummary();
+
+        renderRecurring();
+
+        alert(
+          "Recurring payment updated successfully. ✅"
+        );
+
+        return;
+
+      }
+
+
+      /* =========================
+         NEW
+      ========================== */
+
+      walletData.recurringBills.push({
+
+        id:
+          generateId(),
+
+        name:
+          name,
+
+        amount:
+          amount,
+
+        frequency:
+          frequency,
+
+        category:
+          category,
+
+        nextDueDate:
+          nextDueDate,
+
+        accountId:
+          accountId,
+
+        notes:
+          notes,
+
+        active:
+          active,
+
+        createdAt:
+          new Date().toISOString()
+
+      });
+
+
+      saveData();
+
+      walletData =
+        window.TamilandaWallet.getData();
+
+
+      closeRecurringForm();
+
+      renderSummary();
+
+      renderRecurring();
+
+
+      alert(
+        "Recurring payment added successfully. 🎉"
       );
 
     }
 
 
     /* =========================
-       GET PAYMENTS
+       EDIT
     ========================== */
 
-    function getPayments(
-      recurringId
-    ) {
+    function editRecurring(id) {
+
+      const item =
+        walletData.recurringBills
+          .find(
+            x =>
+              x.id === id
+          );
+
+
+      if (!item) {
+        return;
+      }
+
+
+      editingRecurringId =
+        id;
+
+
+      document.getElementById(
+        "formTitle"
+      ).textContent =
+        "Edit Recurring Payment";
+
+
+      document.getElementById(
+        "recurringName"
+      ).value =
+        item.name ||
+        "";
+
+
+      document.getElementById(
+        "recurringAmount"
+      ).value =
+        item.amount ||
+        "";
+
+
+      document.getElementById(
+        "recurringFrequency"
+      ).value =
+        item.frequency ||
+        "monthly";
+
+
+      document.getElementById(
+        "recurringCategory"
+      ).value =
+        item.category ||
+        "";
+
+
+      document.getElementById(
+        "recurringDueDate"
+      ).value =
+        item.nextDueDate ||
+        today();
+
+
+      document.getElementById(
+        "recurringAccount"
+      ).value =
+        item.accountId ||
+        "";
+
+
+      document.getElementById(
+        "recurringNotes"
+      ).value =
+        item.notes ||
+        "";
+
+
+      document.getElementById(
+        "recurringActive"
+      ).checked =
+        item.active !== false;
+
+
+      document.getElementById(
+        "recurringFormCard"
+      ).style.display =
+        "block";
+
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
+    }
+
+
+    /* =========================
+       MARK PAID
+    ========================== */
+
+    function markAsPaid(id) {
+
+      const item =
+        walletData.recurringBills
+          .find(
+            x =>
+              x.id === id
+          );
+
+
+      if (!item) {
+        return;
+      }
+
+
+      if (!item.active) {
+
+        alert(
+          "This recurring payment is inactive."
+        );
+
+        return;
+
+      }
+
+
+      const amount =
+        Number(
+          item.amount || 0
+        );
+
+
+      if (amount <= 0) {
+
+        alert(
+          "Invalid recurring payment amount."
+        );
+
+        return;
+
+      }
+
+
+      let accountId =
+        item.accountId ||
+        "";
+
+
+      /*
+        If default account is missing,
+        ask user to choose one.
+      */
+
+      if (!accountId) {
+
+        const accounts =
+          walletData.accounts || [];
+
+
+        if (accounts.length === 1) {
+
+          accountId =
+            accounts[0].id;
+
+        } else {
+
+          const select =
+            prompt(
+              "Enter Account ID for payment:\n\n" +
+              accounts
+                .map(
+                  account =>
+                    account.name +
+                    " = " +
+                    account.id
+                )
+                .join("\n")
+            );
+
+
+          if (!select) {
+            return;
+          }
+
+
+          accountId =
+            select.trim();
+
+        }
+
+      }
+
+
+      const account =
+        walletData.accounts
+          .find(
+            a =>
+              a.id === accountId
+          );
+
+
+      if (!account) {
+
+        alert(
+          "Payment account not found. Please edit this recurring payment and select an account."
+        );
+
+        return;
+
+      }
+
 
       if (
-        !walletData.recurringPayments
+        Number(account.balance || 0) <
+        amount
       ) {
+
+        alert(
+          "Insufficient balance in selected account."
+        );
+
+        return;
+
+      }
+
+
+      const confirmPayment =
+        confirm(
+          `Pay ${item.name} — ${money(amount)}?`
+        );
+
+
+      if (!confirmPayment) {
+        return;
+      }
+
+
+      /*
+        Reduce account balance.
+      */
+
+      account.balance =
+        Number(
+          account.balance || 0
+        ) -
+        amount;
+
+
+      if (!walletData.recurringPayments) {
 
         walletData.recurringPayments =
           [];
@@ -1414,22 +1394,474 @@
       }
 
 
-      return walletData.recurringPayments
+      walletData.recurringPayments.push({
+
+        id:
+          generateId(),
+
+        recurringId:
+          item.id,
+
+        amount:
+          amount,
+
+        accountId:
+          accountId,
+
+        date:
+          today(),
+
+        createdAt:
+          new Date().toISOString()
+
+      });
+
+
+      /*
+        Create expense transaction.
+      */
+
+      walletData.transactions.push({
+
+        id:
+          generateId(),
+
+        type:
+          "expense",
+
+        category:
+          item.category ||
+          "Bills",
+
+        amount:
+          amount,
+
+        accountId:
+          accountId,
+
+        date:
+          today(),
+
+        description:
+          `Recurring Payment - ${item.name}`,
+
+        note:
+          item.notes ||
+          "",
+
+        source:
+          "recurring_payment",
+
+        recurringId:
+          item.id,
+
+        createdAt:
+          new Date().toISOString()
+
+      });
+
+
+      /*
+        Move next due date forward.
+      */
+
+      item.nextDueDate =
+        getNextDueDate(
+          item.nextDueDate,
+          item.frequency
+        );
+
+
+      saveData();
+
+      walletData =
+        window.TamilandaWallet.getData();
+
+
+      populateAccounts();
+
+      renderSummary();
+
+      renderRecurring();
+
+
+      alert(
+        `${item.name} payment recorded successfully. 💳`
+      );
+
+    }
+
+
+    /* =========================
+       NEXT DUE DATE
+    ========================== */
+
+    function getNextDueDate(
+      currentDate,
+      frequency
+    ) {
+
+      const date =
+        new Date(
+          (
+            currentDate ||
+            today()
+          ) +
+          "T00:00:00"
+        );
+
+
+      if (
+        frequency ===
+        "daily"
+      ) {
+
+        date.setDate(
+          date.getDate() + 1
+        );
+
+      } else if (
+        frequency ===
+        "weekly"
+      ) {
+
+        date.setDate(
+          date.getDate() + 7
+        );
+
+      } else if (
+        frequency ===
+        "yearly"
+      ) {
+
+        date.setFullYear(
+          date.getFullYear() + 1
+        );
+
+      } else {
+
+        date.setMonth(
+          date.getMonth() + 1
+        );
+
+      }
+
+
+      return (
+        date.getFullYear() +
+        "-" +
+        String(
+          date.getMonth() + 1
+        ).padStart(2, "0") +
+        "-" +
+        String(
+          date.getDate()
+        ).padStart(2, "0")
+      );
+
+    }
+
+
+    /* =========================
+       TOGGLE ACTIVE
+    ========================== */
+
+    function toggleActive(id) {
+
+      const item =
+        walletData.recurringBills
+          .find(
+            x =>
+              x.id === id
+          );
+
+
+      if (!item) {
+        return;
+      }
+
+
+      item.active =
+        item.active === false;
+
+
+      saveData();
+
+      walletData =
+        window.TamilandaWallet.getData();
+
+
+      renderSummary();
+
+      renderRecurring();
+
+    }
+
+
+    /* =========================
+       HISTORY
+    ========================== */
+
+    function getPayments(id) {
+
+      return (
+        walletData.recurringPayments ||
+        []
+      )
         .filter(
           payment =>
-            payment.recurringId ===
-            recurringId
+            payment.recurringId === id
         )
         .sort(
           (a, b) =>
-            String(
-              b.date
-            ).localeCompare(
-              String(
-                a.date
-              )
+            new Date(
+              b.date ||
+              b.createdAt
+            ) -
+            new Date(
+              a.date ||
+              a.createdAt
             )
         );
+
+    }
+
+
+    function openHistory(id) {
+
+      const item =
+        walletData.recurringBills
+          .find(
+            x =>
+              x.id === id
+          );
+
+
+      if (!item) {
+        return;
+      }
+
+
+      const payments =
+        getPayments(id);
+
+
+      document.getElementById(
+        "historyBillName"
+      ).textContent =
+        item.name;
+
+
+      const container =
+        document.getElementById(
+          "historyList"
+        );
+
+
+      if (payments.length === 0) {
+
+        container.innerHTML = `
+
+          <div class="empty-state">
+
+            <div class="empty-icon">
+              🧾
+            </div>
+
+            <h3>
+              No Payments Yet
+            </h3>
+
+            <p>
+              Payment history will appear here.
+            </p>
+
+          </div>
+
+        `;
+
+      } else {
+
+        container.innerHTML =
+          payments
+            .map(
+              payment => `
+
+                <div class="history-item">
+
+                  <div>
+
+                    <strong>
+                      ${money(
+                        payment.amount
+                      )}
+                    </strong>
+
+                    <small>
+                      ${formatDate(
+                        payment.date
+                      )}
+                    </small>
+
+                  </div>
+
+                  <div>
+
+                    <small>
+                      Paid from:
+                      ${escapeHtml(
+                        getAccountName(
+                          payment.accountId
+                        )
+                      )}
+                    </small>
+
+                  </div>
+
+                </div>
+
+              `
+            )
+            .join("");
+
+      }
+
+
+      document.getElementById(
+        "historyModal"
+      ).style.display =
+        "flex";
+
+    }
+
+
+    function closeHistoryModal() {
+
+      document.getElementById(
+        "historyModal"
+      ).style.display =
+        "none";
+
+    }
+
+
+    /* =========================
+       DELETE
+    ========================== */
+
+    function deleteRecurring(id) {
+
+      const item =
+        walletData.recurringBills
+          .find(
+            x =>
+              x.id === id
+          );
+
+
+      if (!item) {
+        return;
+      }
+
+
+      const payments =
+        getPayments(id);
+
+
+      if (payments.length > 0) {
+
+        alert(
+          "This recurring payment has payment history. Please keep it for accounting history. You can deactivate it instead."
+        );
+
+        return;
+
+      }
+
+
+      if (
+        !confirm(
+          `Move "${item.name}" to Trash?`
+        )
+      ) {
+
+        return;
+
+      }
+
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.moveToTrash ===
+        "function"
+      ) {
+
+        window.TamilandaWallet.moveToTrash(
+          "recurringBills",
+          item
+        );
+
+      } else {
+
+        walletData.trash =
+          walletData.trash ||
+          [];
+
+        walletData.trash.push({
+
+          id:
+            generateId(),
+
+          type:
+            "recurringBills",
+
+          originalCollection:
+            "recurringBills",
+
+          data:
+            item,
+
+          deletedAt:
+            new Date().toISOString()
+
+        });
+
+      }
+
+
+      const index =
+        walletData.recurringBills
+          .findIndex(
+            x =>
+              x.id === id
+          );
+
+
+      if (index !== -1) {
+
+        walletData.recurringBills
+          .splice(
+            index,
+            1
+          );
+
+      }
+
+
+      saveData();
+
+      walletData =
+        window.TamilandaWallet.getData();
+
+
+      renderSummary();
+
+      renderRecurring();
+
+
+      alert(
+        "Recurring payment moved to Trash. 🗑️"
+      );
 
     }
 
@@ -1438,7 +1870,7 @@
        RENDER
     ========================== */
 
-    function renderList() {
+    function renderRecurring() {
 
       const container =
         document.getElementById(
@@ -1449,9 +1881,10 @@
       const search =
         document.getElementById(
           "searchInput"
-        ).value
-          .trim()
-          .toLowerCase();
+        )
+        .value
+        .trim()
+        .toLowerCase();
 
 
       const statusFilter =
@@ -1466,93 +1899,193 @@
         ).value;
 
 
-      let records =
-        (
-          walletData.recurringBills ||
-          []
-        ).slice();
+      let list =
+        [
+          ...(walletData.recurringBills || [])
+        ];
 
 
-      records =
-        records.filter(
-          record => {
+      list =
+        list.filter(item => {
 
-            const status =
-              getStatus(
-                record
-              );
+          const overdue =
+            isOverdue(item);
 
 
-            const matchesSearch =
-              !search ||
-              String(
-                record.name || ""
-              )
-              .toLowerCase()
-              .includes(search) ||
-              String(
-                record.category || ""
-              )
-              .toLowerCase()
-              .includes(search);
+          const dueSoon =
+            isDueSoon(item);
 
 
-            const matchesStatus =
-              statusFilter === "all" ||
-              status === statusFilter;
+          if (
+            statusFilter ===
+            "active" &&
+            (
+              item.active === false ||
+              overdue
+            )
+          ) {
 
-
-            const matchesFrequency =
-              frequencyFilter === "all" ||
-              record.frequency ===
-              frequencyFilter;
-
-
-            return (
-              matchesSearch &&
-              matchesStatus &&
-              matchesFrequency
-            );
+            return false;
 
           }
-        );
 
 
-      records.sort(
-        (a, b) =>
-          String(
-            a.nextDueDate || ""
-          ).localeCompare(
-            String(
-              b.nextDueDate || ""
+          if (
+            statusFilter ===
+            "inactive" &&
+            item.active !== false
+          ) {
+
+            return false;
+
+          }
+
+
+          if (
+            statusFilter ===
+            "overdue" &&
+            !overdue
+          ) {
+
+            return false;
+
+          }
+
+
+          if (
+            statusFilter ===
+            "dueSoon" &&
+            !dueSoon
+          ) {
+
+            return false;
+
+          }
+
+
+          if (
+            frequencyFilter !==
+            "all" &&
+            item.frequency !==
+            frequencyFilter
+          ) {
+
+            return false;
+
+          }
+
+
+          if (!search) {
+            return true;
+          }
+
+
+          const searchable =
+            [
+              item.name,
+              item.category,
+              item.notes,
+              item.frequency
+            ]
+            .join(" ")
+            .toLowerCase();
+
+
+          return searchable.includes(
+            search
+          );
+
+        });
+
+
+      /*
+        Sort:
+        overdue → due soon → upcoming → inactive
+      */
+
+      list.sort(
+        (a, b) => {
+
+          const aOverdue =
+            isOverdue(a);
+
+          const bOverdue =
+            isOverdue(b);
+
+
+          if (
+            aOverdue &&
+            !bOverdue
+          ) {
+            return -1;
+          }
+
+
+          if (
+            !aOverdue &&
+            bOverdue
+          ) {
+            return 1;
+          }
+
+
+          if (
+            a.active !== false &&
+            b.active === false
+          ) {
+            return -1;
+          }
+
+
+          if (
+            a.active === false &&
+            b.active !== false
+          ) {
+            return 1;
+          }
+
+
+          return (
+            new Date(
+              a.nextDueDate || "9999-12-31"
+            ) -
+            new Date(
+              b.nextDueDate || "9999-12-31"
             )
-          )
+          );
+
+        }
       );
 
 
-      if (records.length === 0) {
+      if (list.length === 0) {
 
         container.innerHTML = `
 
-          <div class="empty-box">
+          <div class="empty-state">
 
-            <div class="empty-box-icon">
+            <div class="empty-icon">
               🔁
             </div>
 
             <h3>
-              No recurring payments
+              No Recurring Payments
             </h3>
 
             <p>
-              Add rent, bills, subscriptions or other repeating payments.
+              Add rent, bills, subscriptions or other repeated payments.
             </p>
+
+            <button
+              class="primary-button"
+              onclick="openRecurringForm()"
+            >
+              + Add Recurring Payment
+            </button>
 
           </div>
 
         `;
-
-        updateSummary();
 
         return;
 
@@ -1560,1633 +2093,418 @@
 
 
       container.innerHTML =
-        records
+        list
           .map(
-            record => {
-
-              const status =
-                getStatus(
-                  record
-                );
-
-
-              const payments =
-                getPayments(
-                  record.id
-                );
-
-
-              const lastPayment =
-                payments.length
-                  ? payments[0]
-                  : null;
-
-
-              return `
-
-                <div
-                  class="recurring-card"
-                  data-id="${escapeHtml(record.id)}"
-                >
-
-                  <div class="recurring-top">
-
-                    <div class="recurring-icon">
-
-                      ${getIcon(
-                        record.category
-                      )}
-
-                    </div>
-
-
-                    <div class="recurring-info">
-
-                      <div class="recurring-name">
-
-                        ${escapeHtml(
-                          record.name
-                        )}
-
-                      </div>
-
-
-                      <div class="recurring-meta">
-
-                        ${escapeHtml(
-                          record.category ||
-                          "Other"
-                        )}
-
-                        •
-
-                        ${frequencyLabel(
-                          record.frequency
-                        )}
-
-                        <br>
-
-                        Next due:
-                        ${formatDate(
-                          getNextDueDate(record)
-                        )}
-
-                      </div>
-
-
-                      <span
-                        class="
-                          recurring-status
-                          ${statusClass(status)}
-                        "
-                      >
-
-                        ${statusLabel(
-                          status
-                        )}
-
-                      </span>
-
-                    </div>
-
-
-                    <div class="recurring-amount">
-
-                      ${formatMoney(
-                        record.amount
-                      )}
-
-                    </div>
-
-                  </div>
-
-
-                  ${
-                    lastPayment
-                      ? `
-
-                        <div
-                          class="recurring-meta"
-                          style="margin-top:12px;"
-                        >
-
-                          Last paid:
-                          ${formatMoney(lastPayment.amount)}
-
-                          on
-                          ${formatDate(lastPayment.date)}
-
-                        </div>
-
-                      `
-                      : ""
-                  }
-
-
-                  ${
-                    record.note
-                      ? `
-
-                        <div
-                          class="recurring-meta"
-                          style="margin-top:8px;"
-                        >
-
-                          📝
-                          ${escapeHtml(record.note)}
-
-                        </div>
-
-                      `
-                      : ""
-                  }
-
-
-                  <div class="recurring-actions">
-
-                    ${
-                      record.active !== false
-                        ? `
-
-                          <button
-                            type="button"
-                            class="small-button primary"
-                            data-action="pay"
-                            data-id="${escapeHtml(record.id)}"
-                          >
-                            ✓ Mark Paid
-                          </button>
-
-                        `
-                        : ""
-                    }
-
-
-                    <button
-                      type="button"
-                      class="small-button"
-                      data-action="history"
-                      data-id="${escapeHtml(record.id)}"
-                    >
-                      History
-                    </button>
-
-
-                    <button
-                      type="button"
-                      class="small-button"
-                      data-action="edit"
-                      data-id="${escapeHtml(record.id)}"
-                    >
-                      Edit
-                    </button>
-
-
-                    <button
-                      type="button"
-                      class="small-button danger"
-                      data-action="delete"
-                      data-id="${escapeHtml(record.id)}"
-                    >
-                      Delete
-                    </button>
-
-                  </div>
-
-                </div>
-
-              `;
-
-            }
+            renderRecurringCard
           )
           .join("");
 
-
-      updateSummary();
-
     }
 
 
     /* =========================
-       SUMMARY
+       CARD
     ========================== */
 
-    function updateSummary() {
-
-      const records =
-        (
-          walletData.recurringBills ||
-          []
-        )
-        .filter(
-          record =>
-            record.active !== false
-        );
-
-
-      let monthlyTotal = 0;
-
-      let pendingTotal = 0;
-
-      let overdueTotal = 0;
-
-
-      records.forEach(
-        record => {
-
-          const amount =
-            Number(
-              record.amount || 0
-            );
-
-
-          if (
-            record.frequency ===
-            "monthly"
-          ) {
-
-            monthlyTotal +=
-              amount;
-
-          }
-
-
-          const status =
-            getStatus(
-              record
-            );
-
-
-          if (
-            status === "pending"
-          ) {
-
-            pendingTotal +=
-              amount;
-
-          }
-
-
-          if (
-            status === "overdue"
-          ) {
-
-            overdueTotal +=
-              amount;
-
-          }
-
-        }
-      );
-
-
-      document.getElementById(
-        "monthlyTotal"
-      ).textContent =
-        formatMoney(
-          monthlyTotal
-        );
-
-
-      document.getElementById(
-        "pendingTotal"
-      ).textContent =
-        formatMoney(
-          pendingTotal
-        );
-
-
-      document.getElementById(
-        "overdueTotal"
-      ).textContent =
-        formatMoney(
-          overdueTotal
-        );
-
-    }
-
-
-    /* =========================
-       OPEN FORM
-    ========================== */
-
-    function openAddForm() {
-
-      editingId =
-        null;
-
-
-      document.getElementById(
-        "formTitle"
-      ).textContent =
-        "Add Recurring Payment";
-
-
-      document.getElementById(
-        "nameInput"
-      ).value =
-        "";
-
-
-      document.getElementById(
-        "amountInput"
-      ).value =
-        "";
-
-
-      document.getElementById(
-        "frequencyInput"
-      ).value =
-        "monthly";
-
-
-      document.getElementById(
-        "categoryInput"
-      ).value =
-        "Other";
-
-
-      document.getElementById(
-        "dueDateInput"
-      ).value =
-        todayString();
-
-
-      document.getElementById(
-        "accountInput"
-      ).value =
-        "";
-
-
-      document.getElementById(
-        "noteInput"
-      ).value =
-        "";
-
-
-      document.getElementById(
-        "activeInput"
-      ).checked =
-        true;
-
-
-      document.getElementById(
-        "formModal"
-      ).classList.add(
-        "active"
-      );
-
-    }
-
-
-    function openEditForm(
-      id
-    ) {
-
-      const record =
-        (
-          walletData.recurringBills ||
-          []
-        )
-        .find(
-          item =>
-            item.id === id
-        );
-
-
-      if (!record) {
-        return;
-      }
-
-
-      editingId =
-        id;
-
-
-      document.getElementById(
-        "formTitle"
-      ).textContent =
-        "Edit Recurring Payment";
-
-
-      document.getElementById(
-        "nameInput"
-      ).value =
-        record.name || "";
-
-
-      document.getElementById(
-        "amountInput"
-      ).value =
-        record.amount || "";
-
-
-      document.getElementById(
-        "frequencyInput"
-      ).value =
-        record.frequency ||
-        "monthly";
-
-
-      document.getElementById(
-        "categoryInput"
-      ).value =
-        record.category ||
-        "Other";
-
-
-      document.getElementById(
-        "dueDateInput"
-      ).value =
-        record.nextDueDate ||
-        todayString();
-
-
-      document.getElementById(
-        "accountInput"
-      ).value =
-        record.accountId ||
-        "";
-
-
-      document.getElementById(
-        "noteInput"
-      ).value =
-        record.note || "";
-
-
-      document.getElementById(
-        "activeInput"
-      ).checked =
-        record.active !== false;
-
-
-      document.getElementById(
-        "formModal"
-      ).classList.add(
-        "active"
-      );
-
-    }
-
-
-    function closeForm() {
-
-      document.getElementById(
-        "formModal"
-      ).classList.remove(
-        "active"
-      );
-
-      editingId =
-        null;
-
-    }
-
-
-    /* =========================
-       SAVE FORM
-    ========================== */
-
-    function saveRecurring() {
-
-      const name =
-        document.getElementById(
-          "nameInput"
-        ).value
-          .trim();
-
+    function renderRecurringCard(item) {
 
       const amount =
         Number(
-          document.getElementById(
-            "amountInput"
-          ).value
+          item.amount || 0
         );
 
 
-      const frequency =
-        document.getElementById(
-          "frequencyInput"
-        ).value;
+      const overdue =
+        isOverdue(item);
 
 
-      const category =
-        document.getElementById(
-          "categoryInput"
-        ).value;
-
-
-      const dueDate =
-        document.getElementById(
-          "dueDateInput"
-        ).value;
-
-
-      const accountId =
-        document.getElementById(
-          "accountInput"
-        ).value;
-
-
-      const note =
-        document.getElementById(
-          "noteInput"
-        ).value
-          .trim();
+      const dueSoon =
+        isDueSoon(item);
 
 
       const active =
-        document.getElementById(
-          "activeInput"
-        ).checked;
-
-
-      if (!name) {
-
-        alert(
-          "Please enter payment name."
-        );
-
-        return;
-
-      }
-
-
-      if (
-        !amount ||
-        amount <= 0
-      ) {
-
-        alert(
-          "Please enter a valid amount."
-        );
-
-        return;
-
-      }
-
-
-      if (!dueDate) {
-
-        alert(
-          "Please select a due date."
-        );
-
-        return;
-
-      }
-
-
-      if (
-        !walletData.recurringBills
-      ) {
-
-        walletData.recurringBills =
-          [];
-
-      }
-
-
-      if (editingId) {
-
-        const record =
-          walletData.recurringBills
-            .find(
-              item =>
-                item.id ===
-                editingId
-            );
-
-
-        if (!record) {
-          return;
-        }
-
-
-        record.name =
-          name;
-
-        record.amount =
-          amount;
-
-        record.frequency =
-          frequency;
-
-        record.category =
-          category;
-
-        record.nextDueDate =
-          dueDate;
-
-        record.accountId =
-          accountId;
-
-        record.note =
-          note;
-
-        record.active =
-          active;
-
-      } else {
-
-        walletData.recurringBills
-          .push({
-
-            id:
-              generateId(),
-
-            name:
-              name,
-
-            amount:
-              amount,
-
-            frequency:
-              frequency,
-
-            category:
-              category,
-
-            nextDueDate:
-              dueDate,
-
-            accountId:
-              accountId,
-
-            note:
-              note,
-
-            active:
-              active,
-
-            createdAt:
-              new Date().toISOString()
-
-          });
-
-      }
-
-
-      saveWalletData();
-
-      closeForm();
-
-      renderList();
-
-    }
-
-
-    /* =========================
-       PAYMENT
-    ========================== */
-
-    function openPaymentForm(
-      id
-    ) {
-
-      const record =
-        (
-          walletData.recurringBills ||
-          []
-        )
-        .find(
-          item =>
-            item.id === id
-        );
-
-
-      if (!record) {
-        return;
-      }
-
-
-      paymentRecurringId =
-        id;
-
-
-      document.getElementById(
-        "paymentBillName"
-      ).textContent =
-        `${record.name} • ${formatMoney(record.amount)}`;
-
-
-      document.getElementById(
-        "paymentAmountInput"
-      ).value =
-        record.amount;
-
-
-      document.getElementById(
-        "paymentDateInput"
-      ).value =
-        todayString();
-
-
-      document.getElementById(
-        "paymentAccountInput"
-      ).value =
-        record.accountId ||
-        "";
-
-
-      document.getElementById(
-        "paymentNoteInput"
-      ).value =
-        "";
-
-
-      document.getElementById(
-        "paymentModal"
-      ).classList.add(
-        "active"
-      );
-
-    }
-
-
-    function closePaymentForm() {
-
-      document.getElementById(
-        "paymentModal"
-      ).classList.remove(
-        "active"
-      );
-
-      paymentRecurringId =
-        null;
-
-    }
-
-
-    function savePayment() {
-
-      const record =
-        (
-          walletData.recurringBills ||
-          []
-        )
-        .find(
-          item =>
-            item.id ===
-            paymentRecurringId
-        );
-
-
-      if (!record) {
-        return;
-      }
-
-
-      const amount =
-        Number(
-          document.getElementById(
-            "paymentAmountInput"
-          ).value
-        );
-
-
-      const date =
-        document.getElementById(
-          "paymentDateInput"
-        ).value;
-
-
-      const accountId =
-        document.getElementById(
-          "paymentAccountInput"
-        ).value;
-
-
-      const note =
-        document.getElementById(
-          "paymentNoteInput"
-        ).value
-          .trim();
-
-
-      if (
-        !amount ||
-        amount <= 0
-      ) {
-
-        alert(
-          "Please enter a valid payment amount."
-        );
-
-        return;
-
-      }
-
-
-      if (!date) {
-
-        alert(
-          "Please select payment date."
-        );
-
-        return;
-
-      }
-
-
-      if (!accountId) {
-
-        alert(
-          "Please select the account used for payment."
-        );
-
-        return;
-
-      }
-
-
-      const account =
-        (
-          walletData.accounts ||
-          []
-        )
-        .find(
-          item =>
-            item.id ===
-            accountId
-        );
-
-
-      if (!account) {
-
-        alert(
-          "Selected account was not found."
-        );
-
-        return;
-
-      }
-
-
-      const currentBalance =
-        Number(
-          account.balance || 0
-        );
-
-
-      if (
-        currentBalance <
-        amount
-      ) {
-
-        alert(
-          `Insufficient balance in ${account.name}.`
-        );
-
-        return;
-
-      }
-
-
-      /*
-        Reduce account balance.
-      */
-
-      account.balance =
-        currentBalance -
-        amount;
-
-
-      /*
-        Create recurring payment.
-      */
-
-      if (
-        !walletData.recurringPayments
-      ) {
-
-        walletData.recurringPayments =
-          [];
-
-      }
-
-
-      walletData.recurringPayments
-        .push({
-
-          id:
-            generateId(),
-
-          recurringId:
-            record.id,
-
-          amount:
-            amount,
-
-          date:
-            date,
-
-          accountId:
-            accountId,
-
-          note:
-            note,
-
-          createdAt:
-            new Date().toISOString()
-
-        });
-
-
-      /*
-        Create expense transaction.
-      */
-
-      if (
-        !walletData.transactions
-      ) {
-
-        walletData.transactions =
-          [];
-
-      }
-
-
-      walletData.transactions
-        .push({
-
-          id:
-            generateId(),
-
-          type:
-            "expense",
-
-          amount:
-            amount,
-
-          title:
-            record.name,
-
-          category:
-            record.category ||
-            "Bills",
-
-          accountId:
-            accountId,
-
-          date:
-            date,
-
-          time:
-            new Date()
-              .toTimeString()
-              .slice(0, 5),
-
-          note:
-            note ||
-            `Recurring payment - ${record.name}`,
-
-          createdAt:
-            new Date().toISOString()
-
-        });
-
-
-      /*
-        Move next due date forward.
-      */
-
-      if (
-        record.frequency ===
-        "daily"
-      ) {
-
-        record.nextDueDate =
-          addDays(
-            record.nextDueDate,
-            1
-          );
-
-      }
-
-
-      if (
-        record.frequency ===
-        "weekly"
-      ) {
-
-        record.nextDueDate =
-          addDays(
-            record.nextDueDate,
-            7
-          );
-
-      }
-
-
-      if (
-        record.frequency ===
-        "monthly"
-      ) {
-
-        record.nextDueDate =
-          addMonths(
-            record.nextDueDate,
-            1
-          );
-
-      }
-
-
-      if (
-        record.frequency ===
-        "yearly"
-      ) {
-
-        record.nextDueDate =
-          addYears(
-            record.nextDueDate,
-            1
-          );
-
-      }
-
-
-      record.lastPaidDate =
-        date;
-
-
-      record.lastPaidAmount =
-        amount;
-
-
-      saveWalletData();
-
-      closePaymentForm();
-
-      renderList();
-
-
-      alert(
-        "Payment recorded successfully."
-      );
-
-    }
-
-
-    /* =========================
-       HISTORY
-    ========================== */
-
-    function openHistory(
-      id
-    ) {
-
-      const record =
-        (
-          walletData.recurringBills ||
-          []
-        )
-        .find(
-          item =>
-            item.id === id
-        );
-
-
-      if (!record) {
-        return;
-      }
-
-
-      historyRecurringId =
-        id;
+        item.active !== false;
 
 
       const payments =
         getPayments(
-          id
+          item.id
         );
 
 
-      const container =
-        document.getElementById(
-          "historyContent"
-        );
+      let statusClass =
+        "status-success";
 
 
-      if (payments.length === 0) {
+      let statusText =
+        "ACTIVE";
 
-        container.innerHTML = `
 
-          <div class="empty-box">
+      if (!active) {
 
-            <div class="empty-box-icon">
-              🧾
+        statusClass =
+          "status-muted";
+
+        statusText =
+          "INACTIVE";
+
+      } else if (overdue) {
+
+        statusClass =
+          "status-danger";
+
+        statusText =
+          "OVERDUE";
+
+      } else if (dueSoon) {
+
+        statusClass =
+          "status-warning";
+
+        statusText =
+          "DUE SOON";
+
+      }
+
+
+      let dueText =
+        "";
+
+
+      if (
+        item.nextDueDate
+      ) {
+
+        const days =
+          daysUntil(
+            item.nextDueDate
+          );
+
+
+        if (overdue) {
+
+          dueText =
+            "Overdue";
+
+        } else if (
+          days === 0
+        ) {
+
+          dueText =
+            "Due Today";
+
+        } else if (
+          days === 1
+        ) {
+
+          dueText =
+            "Due Tomorrow";
+
+        } else {
+
+          dueText =
+            `Due in ${days} days`;
+
+        }
+
+      }
+
+
+      return `
+
+        <article class="card recurring-card">
+
+          <!-- HEADER -->
+
+          <div class="recurring-header">
+
+            <div>
+
+              <div class="recurring-title">
+
+                <h3>
+                  ${escapeHtml(
+                    item.name ||
+                    "Unnamed Payment"
+                  )}
+                </h3>
+
+                <span class="${statusClass}">
+                  ${statusText}
+                </span>
+
+              </div>
+
+
+              ${
+                item.category
+                  ? `
+                    <p>
+                      🏷️
+                      ${escapeHtml(
+                        item.category
+                      )}
+                    </p>
+                  `
+                  : ""
+              }
+
             </div>
 
-            <h3>
-              No payment history
-            </h3>
 
-            <p>
-              Payments for this bill will appear here.
-            </p>
+            <div class="recurring-menu">
+
+              <button
+                class="icon-button"
+                onclick="editRecurring('${item.id}')"
+                title="Edit"
+              >
+                ✏️
+              </button>
+
+              <button
+                class="icon-button"
+                onclick="deleteRecurring('${item.id}')"
+                title="Delete"
+              >
+                🗑️
+              </button>
+
+            </div>
 
           </div>
 
-        `;
+
+          <!-- AMOUNT -->
+
+          <div class="amount-display">
+
+            <span>
+              Amount
+            </span>
+
+            <strong>
+              ${money(amount)}
+            </strong>
+
+          </div>
+
+
+          <!-- DETAILS -->
+
+          <div class="details-grid">
+
+            <div>
+
+              <span>
+                Frequency
+              </span>
+
+              <strong>
+                ${frequencyText(
+                  item.frequency
+                )}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                Next Due
+              </span>
+
+              <strong>
+                ${formatDate(
+                  item.nextDueDate
+                )}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                Status
+              </span>
+
+              <strong>
+                ${dueText || statusText}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                Account
+              </span>
+
+              <strong>
+                ${escapeHtml(
+                  getAccountName(
+                    item.accountId
+                  )
+                )}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          ${
+            item.notes
+              ? `
+                <div class="note-box">
+                  📝
+                  ${escapeHtml(
+                    item.notes
+                  )}
+                </div>
+              `
+              : ""
+          }
+
+
+          <!-- ACTIONS -->
+
+          <div class="recurring-actions">
+
+            ${
+              active
+                ? `
+                  <button
+                    class="primary-button"
+                    onclick="markAsPaid('${item.id}')"
+                  >
+                    💳 Mark Paid
+                  </button>
+                `
+                : ""
+            }
+
+
+            <button
+              class="secondary-button"
+              onclick="openHistory('${item.id}')"
+            >
+              🧾 History (${payments.length})
+            </button>
+
+
+            <button
+              class="secondary-button"
+              onclick="toggleActive('${item.id}')"
+            >
+              ${
+                active
+                  ? "⏸️ Pause"
+                  : "▶️ Activate"
+              }
+            </button>
+
+          </div>
+
+        </article>
+
+      `;
+
+    }
+
+
+    /* =========================
+       NAVIGATION
+    ========================== */
+
+    function goBack() {
+
+      if (
+        window.history.length > 1
+      ) {
+
+        window.history.back();
 
       } else {
 
-        container.innerHTML =
-          payments
-            .map(
-              payment => {
-
-                const account =
-                  (
-                    walletData.accounts ||
-                    []
-                  )
-                  .find(
-                    item =>
-                      item.id ===
-                      payment.accountId
-                  );
-
-
-                return `
-
-                  <div class="history-item">
-
-                    <div class="history-top">
-
-                      <div>
-
-                        <strong>
-                          ${formatDate(payment.date)}
-                        </strong>
-
-                      </div>
-
-                      <div class="history-amount">
-
-                        -${formatMoney(payment.amount)}
-
-                      </div>
-
-                    </div>
-
-
-                    <div class="history-meta">
-
-                      Account:
-                      ${escapeHtml(
-                        account
-                          ? account.name
-                          : "Unknown"
-                      )}
-
-                    </div>
-
-
-                    ${
-                      payment.note
-                        ? `
-
-                          <div class="history-meta">
-
-                            📝
-                            ${escapeHtml(
-                              payment.note
-                            )}
-
-                          </div>
-
-                        `
-                        : ""
-                    }
-
-                  </div>
-
-                `;
-
-              }
-            )
-            .join("");
+        goToPage("home");
 
       }
-
-
-      document.getElementById(
-        "historyModal"
-      ).classList.add(
-        "active"
-      );
 
     }
 
 
-    function closeHistory() {
-
-      document.getElementById(
-        "historyModal"
-      ).classList.remove(
-        "active"
-      );
-
-      historyRecurringId =
-        null;
-
-    }
-
-
-    /* =========================
-       DELETE
-    ========================== */
-
-    function deleteRecurring(
-      id
-    ) {
-
-      const record =
-        (
-          walletData.recurringBills ||
-          []
-        )
-        .find(
-          item =>
-            item.id === id
-        );
-
-
-      if (!record) {
-        return;
-      }
-
-
-      const payments =
-        getPayments(
-          id
-        );
-
-
-      let message =
-        `Delete "${record.name}"?`;
-
-
-      if (payments.length > 0) {
-
-        message +=
-          `\n\nThis payment has ${payments.length} recorded payment(s). The recurring record will be deleted, but existing transaction/payment history will remain.`;
-
-      }
-
+    function goToPage(page) {
 
       if (
-        !confirm(
-          message
-        )
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.goToPage ===
+        "function"
       ) {
+
+        window.TamilandaWallet.goToPage(
+          page
+        );
 
         return;
 
       }
 
 
-      walletData.recurringBills =
-        (
-          walletData.recurringBills ||
-          []
-        )
-        .filter(
-          item =>
-            item.id !== id
-        );
+      const pages = {
+
+        home:
+          "../index.html",
+
+        transactions:
+          "transactions.html",
+
+        buyers:
+          "buyers.html",
+
+        accounts:
+          "accounts.html",
+
+        more:
+          "more.html"
+
+      };
 
 
-      /*
-        Keep historical payments
-        and transactions untouched.
-      */
+      if (pages[page]) {
 
-      saveWalletData();
+        window.location.href =
+          pages[page];
 
-      renderList();
+      }
 
     }
 
 
     /* =========================
-       EVENT DELEGATION
-    ========================== */
-
-    document
-      .getElementById(
-        "recurringList"
-      )
-      .addEventListener(
-        "click",
-        event => {
-
-          const button =
-            event.target.closest(
-              "[data-action]"
-            );
-
-
-          if (!button) {
-            return;
-          }
-
-
-          const action =
-            button.dataset.action;
-
-
-          const id =
-            button.dataset.id;
-
-
-          if (
-            action === "pay"
-          ) {
-
-            openPaymentForm(
-              id
-            );
-
-          }
-
-
-          if (
-            action === "history"
-          ) {
-
-            openHistory(
-              id
-            );
-
-          }
-
-
-          if (
-            action === "edit"
-          ) {
-
-            openEditForm(
-              id
-            );
-
-          }
-
-
-          if (
-            action === "delete"
-          ) {
-
-            deleteRecurring(
-              id
-            );
-
-          }
-
-        }
-      );
-
-
-    /* =========================
-       EVENTS
-    ========================== */
-
-    document
-      .getElementById(
-        "backButton"
-      )
-      .addEventListener(
-        "click",
-        () => {
-
-          window.location.href =
-            "../index.html";
-
-        }
-      );
-
-
-    document
-      .getElementById(
-        "addRecurringButton"
-      )
-      .addEventListener(
-        "click",
-        openAddForm
-      );
-
-
-    document
-      .getElementById(
-        "closeFormModal"
-      )
-      .addEventListener(
-        "click",
-        closeForm
-      );
-
-
-    document
-      .getElementById(
-        "cancelFormButton"
-      )
-      .addEventListener(
-        "click",
-        closeForm
-      );
-
-
-    document
-      .getElementById(
-        "saveRecurringButton"
-      )
-      .addEventListener(
-        "click",
-        saveRecurring
-      );
-
-
-    document
-      .getElementById(
-        "closePaymentModal"
-      )
-      .addEventListener(
-        "click",
-        closePaymentForm
-      );
-
-
-    document
-      .getElementById(
-        "cancelPaymentButton"
-      )
-      .addEventListener(
-        "click",
-        closePaymentForm
-      );
-
-
-    document
-      .getElementById(
-        "savePaymentButton"
-      )
-      .addEventListener(
-        "click",
-        savePayment
-      );
-
-
-    document
-      .getElementById(
-        "closeHistoryModal"
-      )
-      .addEventListener(
-        "click",
-        closeHistory
-      );
-
-
-    document
-      .getElementById(
-        "searchInput"
-      )
-      .addEventListener(
-        "input",
-        renderList
-      );
-
-
-    document
-      .getElementById(
-        "statusFilter"
-      )
-      .addEventListener(
-        "change",
-        renderList
-      );
-
-
-    document
-      .getElementById(
-        "frequencyFilter"
-      )
-      .addEventListener(
-        "change",
-        renderList
-      );
-
-
-    document
-      .getElementById(
-        "formModal"
-      )
-      .addEventListener(
-        "click",
-        event => {
-
-          if (
-            event.target.id ===
-            "formModal"
-          ) {
-
-            closeForm();
-
-          }
-
-        }
-      );
-
-
-    document
-      .getElementById(
-        "paymentModal"
-      )
-      .addEventListener(
-        "click",
-        event => {
-
-          if (
-            event.target.id ===
-            "paymentModal"
-          ) {
-
-            closePaymentForm();
-
-          }
-
-        }
-      );
-
-
-    document
-      .getElementById(
-        "historyModal"
-      )
-      .addEventListener(
-        "click",
-        event => {
-
-          if (
-            event.target.id ===
-            "historyModal"
-          ) {
-
-            closeHistory();
-
-          }
-
-        }
-      );
-
-
-    /* =========================
-       INITIALIZE
+       OUTSIDE MODAL
     ========================== */
 
     document.addEventListener(
-      "DOMContentLoaded",
-      () => {
+      "click",
+      function(event) {
 
-        walletData =
-          getWalletData();
-
-
-        if (!walletData) {
-          return;
-        }
+        const modal =
+          document.getElementById(
+            "historyModal"
+          );
 
 
         if (
-          !walletData.recurringBills
+          event.target === modal
         ) {
 
-          walletData.recurringBills =
-            [];
-
-          saveWalletData();
+          closeHistoryModal();
 
         }
-
-
-        if (
-          !walletData.recurringPayments
-        ) {
-
-          walletData.recurringPayments =
-            [];
-
-          saveWalletData();
-
-        }
-
-
-        populateAccounts();
-
-        renderList();
 
       }
     );
@@ -3194,6 +2512,448 @@
   </script>
 
 
-</body>
+  <!-- =========================
+       PAGE STYLES
+  ========================== -->
 
+  <style>
+
+    .filter-row {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(2, 1fr);
+
+      gap: 10px;
+
+    }
+
+
+    .toggle-row {
+
+      display: flex;
+
+      justify-content:
+        space-between;
+
+      align-items: center;
+
+      padding: 12px 0;
+
+      cursor: pointer;
+
+    }
+
+
+    .toggle-row input {
+
+      width: 20px;
+
+      height: 20px;
+
+    }
+
+
+    .recurring-card {
+
+      margin-bottom: 16px;
+
+    }
+
+
+    .recurring-header {
+
+      display: flex;
+
+      justify-content:
+        space-between;
+
+      gap: 12px;
+
+      align-items:
+        flex-start;
+
+    }
+
+
+    .recurring-title {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 8px;
+
+      flex-wrap: wrap;
+
+    }
+
+
+    .recurring-title h3 {
+
+      margin: 0;
+
+    }
+
+
+    .recurring-header p {
+
+      margin: 5px 0 0;
+
+      opacity: 0.7;
+
+      font-size: 13px;
+
+    }
+
+
+    .recurring-menu {
+
+      display: flex;
+
+      gap: 4px;
+
+    }
+
+
+    .amount-display {
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content:
+        space-between;
+
+      padding: 16px;
+
+      margin: 15px 0;
+
+      border-radius: 14px;
+
+      background:
+        rgba(255,255,255,0.05);
+
+    }
+
+
+    .amount-display span {
+
+      font-size: 13px;
+
+      opacity: 0.7;
+
+    }
+
+
+    .amount-display strong {
+
+      font-size: 21px;
+
+    }
+
+
+    .details-grid {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(2, 1fr);
+
+      gap: 10px;
+
+    }
+
+
+    .details-grid > div {
+
+      padding: 11px;
+
+      border-radius: 11px;
+
+      background:
+        rgba(255,255,255,0.04);
+
+    }
+
+
+    .details-grid span {
+
+      display: block;
+
+      font-size: 11px;
+
+      opacity: 0.65;
+
+      margin-bottom: 4px;
+
+    }
+
+
+    .details-grid strong {
+
+      font-size: 13px;
+
+    }
+
+
+    .recurring-actions {
+
+      display: flex;
+
+      gap: 8px;
+
+      flex-wrap: wrap;
+
+      margin-top: 14px;
+
+    }
+
+
+    .recurring-actions button {
+
+      flex: 1;
+
+      min-width: 130px;
+
+    }
+
+
+    .status-success,
+    .status-warning,
+    .status-danger,
+    .status-muted {
+
+      display: inline-block;
+
+      padding: 4px 8px;
+
+      border-radius: 20px;
+
+      font-size: 10px;
+
+      font-weight: 700;
+
+    }
+
+
+    .status-success {
+
+      background:
+        rgba(50,205,120,0.15);
+
+    }
+
+
+    .status-warning {
+
+      background:
+        rgba(255,180,50,0.15);
+
+    }
+
+
+    .status-danger {
+
+      background:
+        rgba(255,70,70,0.15);
+
+    }
+
+
+    .status-muted {
+
+      background:
+        rgba(150,150,150,0.15);
+
+    }
+
+
+    .note-box {
+
+      padding: 10px 12px;
+
+      margin-top: 10px;
+
+      border-radius: 10px;
+
+      background:
+        rgba(255,255,255,0.035);
+
+      font-size: 13px;
+
+    }
+
+
+    .history-item {
+
+      display: flex;
+
+      justify-content:
+        space-between;
+
+      gap: 10px;
+
+      padding: 13px 0;
+
+      border-bottom:
+        1px solid
+        rgba(255,255,255,0.07);
+
+    }
+
+
+    .history-item:last-child {
+
+      border-bottom: none;
+
+    }
+
+
+    .history-item small {
+
+      display: block;
+
+      opacity: 0.65;
+
+      margin-top: 4px;
+
+    }
+
+
+    .empty-state {
+
+      text-align: center;
+
+      padding: 45px 20px;
+
+      opacity: 0.8;
+
+    }
+
+
+    .empty-icon {
+
+      font-size: 45px;
+
+      margin-bottom: 10px;
+
+    }
+
+
+    .modal {
+
+      position: fixed;
+
+      inset: 0;
+
+      z-index: 9999;
+
+      background:
+        rgba(0,0,0,0.75);
+
+      align-items:
+        center;
+
+      justify-content:
+        center;
+
+      padding: 18px;
+
+    }
+
+
+    .modal-content {
+
+      width: 100%;
+
+      max-width: 500px;
+
+      max-height: 90vh;
+
+      overflow-y: auto;
+
+      border-radius: 18px;
+
+      padding: 20px;
+
+      background:
+        #111018;
+
+      box-shadow:
+        0 20px 60px
+        rgba(0,0,0,0.45);
+
+    }
+
+
+    label {
+
+      display: block;
+
+      margin-top: 12px;
+
+      margin-bottom: 6px;
+
+      font-size: 13px;
+
+      opacity: 0.85;
+
+    }
+
+
+    .section-title {
+
+      display: flex;
+
+      justify-content:
+        space-between;
+
+      align-items:
+        center;
+
+      gap: 10px;
+
+      margin-bottom: 15px;
+
+    }
+
+
+    .section-title h2 {
+
+      margin: 0;
+
+    }
+
+
+    @media (max-width: 480px) {
+
+      .filter-row {
+
+        grid-template-columns:
+          1fr;
+
+      }
+
+
+      .recurring-actions {
+
+        flex-direction:
+          column;
+
+      }
+
+
+      .recurring-actions button {
+
+        width: 100%;
+
+      }
+
+    }
+
+  </style>
+
+</body>
 </html>
