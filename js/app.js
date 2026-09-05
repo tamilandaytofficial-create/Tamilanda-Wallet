@@ -1,9 +1,8 @@
-/* =========================================================
-   TAMILANDA WALLET
-   Main Application Logic
-   ========================================================= */
+(function (window, document) {
 
 "use strict";
+
+
 
 
 /* =========================================================
@@ -3085,7 +3084,6 @@ function renderRecentTransactions() {
 function goToPage(page) {
 
   const pageMap = {
-    home: "index.html",
     dashboard: "dashboard.html",
     income: "income.html",
     expense: "expense.html",
@@ -3115,17 +3113,30 @@ function goToPage(page) {
     calendar: "calendar.html"
   };
 
-  if (!pageMap[page]) {
-    return;
+  if (page === "home") {
+    const rootHome = new URL(
+      "../index.html",
+      window.location.href
+    );
+
+    window.location.assign(rootHome.href);
+    return true;
   }
 
-  const onPagesDirectory =
-    window.location.pathname.includes("/pages/");
+  if (!pageMap[page]) {
+    console.warn("Tamilanda Wallet: unknown page", page);
+    return false;
+  }
 
-  window.location.href =
-    onPagesDirectory
-      ? pageMap[page]
-      : "./pages/" + pageMap[page];
+  const inPagesDirectory =
+    /\/pages\//i.test(window.location.pathname);
+
+  const target = inPagesDirectory
+    ? new URL(pageMap[page], window.location.href)
+    : new URL("./pages/" + pageMap[page], window.location.href);
+
+  window.location.assign(target.href);
+  return true;
 }
 
 
@@ -3279,18 +3290,25 @@ window.TamilandaWallet = {
    GLOBAL NAVIGATION / DASHBOARD ACTIONS
    ========================================================= */
 
-/*
-  The current HTML uses data-page buttons and dashboard
-  action IDs. This delegated handler keeps them clickable
-  without changing any accounting logic.
-*/
 document.addEventListener(
   "click",
   function (event) {
 
+    const target =
+      event.target instanceof Element
+        ? event.target
+        : null;
+
+    if (!target) {
+      return;
+    }
+
+    /* Bottom navigation: supports both button and anchor variants. */
     const navItem =
-      event.target.closest(
-        ".bottom-nav .nav-item, .bottom-nav .bottom-nav-item"
+      target.closest(
+        ".bottom-nav [data-page], " +
+        ".bottom-nav .nav-item[data-page], " +
+        ".bottom-nav .bottom-nav-item[data-page]"
       );
 
     if (navItem) {
@@ -3305,8 +3323,9 @@ document.addEventListener(
       }
     }
 
+    /* Dashboard actions. */
     const actionButton =
-      event.target.closest(
+      target.closest(
         "#settingsButton, " +
         "#addIncomeButton, " +
         "#addExpenseButton, " +
@@ -3342,6 +3361,249 @@ document.addEventListener(
 
 
 /* =========================================================
+   CUSTOM DARK SELECT FALLBACK
+   ========================================================= */
+
+function setupCustomSelects() {
+
+  const selects =
+    document.querySelectorAll(
+      "select:not([multiple]):not([data-tw-customized])"
+    );
+
+  selects.forEach(select => {
+
+    if (select.disabled && select.dataset.twSkipCustom === "true") {
+      return;
+    }
+
+    select.dataset.twCustomized = "true";
+    select.classList.add("tw-select-source");
+
+    const trigger =
+      document.createElement("button");
+
+    trigger.type = "button";
+    trigger.className = "tw-select-trigger";
+    trigger.setAttribute("aria-haspopup", "listbox");
+    trigger.setAttribute("aria-expanded", "false");
+
+    const menu =
+      document.createElement("div");
+
+    menu.className = "tw-select-menu";
+    menu.setAttribute("role", "listbox");
+    menu.hidden = true;
+
+    function getOptions() {
+      return Array.from(select.options || [])
+        .filter(option => !option.disabled);
+    }
+
+    function syncTrigger() {
+      const option =
+        select.options[select.selectedIndex];
+
+      trigger.textContent =
+        option ? option.textContent.trim() : "Select";
+
+      trigger.disabled = select.disabled;
+    }
+
+    function renderMenu() {
+      menu.innerHTML = "";
+
+      getOptions().forEach(option => {
+
+        const item =
+          document.createElement("button");
+
+        item.type = "button";
+        item.className = "tw-select-option";
+        item.textContent = option.textContent.trim();
+        item.setAttribute("role", "option");
+        item.setAttribute(
+          "aria-selected",
+          option.value === select.value ? "true" : "false"
+        );
+
+        if (option.value === select.value) {
+          item.classList.add("selected");
+        }
+
+        item.addEventListener("click", function () {
+
+          const previous = select.value;
+
+          select.value = option.value;
+
+          syncTrigger();
+          renderMenu();
+          closeMenu();
+
+          if (previous !== select.value) {
+            select.dispatchEvent(
+              new Event("change", { bubbles: true })
+            );
+          }
+        });
+
+        menu.appendChild(item);
+      });
+    }
+
+    function positionMenu() {
+
+      const rect =
+        trigger.getBoundingClientRect();
+
+      const viewportPadding = 8;
+      const maxHeight =
+        Math.max(160, window.innerHeight - 120);
+
+      menu.style.minWidth =
+        `${Math.max(rect.width, 180)}px`;
+
+      menu.style.maxHeight =
+        `${maxHeight}px`;
+
+      let top = rect.bottom + 6;
+      let left = rect.left;
+
+      const measuredHeight =
+        Math.min(menu.scrollHeight || 0, maxHeight);
+
+      if (
+        measuredHeight > 0 &&
+        top + measuredHeight >
+          window.innerHeight - viewportPadding
+      ) {
+        top =
+          rect.top - measuredHeight - 6;
+      }
+
+      if (top < viewportPadding) {
+        top = viewportPadding;
+      }
+
+      const menuWidth =
+        Math.max(rect.width, 180);
+
+      if (
+        left + menuWidth >
+        window.innerWidth - viewportPadding
+      ) {
+        left =
+          window.innerWidth -
+          menuWidth -
+          viewportPadding;
+      }
+
+      if (left < viewportPadding) {
+        left = viewportPadding;
+      }
+
+      menu.style.left = `${left}px`;
+      menu.style.top = `${top}px`;
+    }
+
+    function openMenu() {
+
+      if (trigger.disabled) {
+        return;
+      }
+
+      renderMenu();
+      menu.hidden = false;
+      trigger.setAttribute("aria-expanded", "true");
+      menu.classList.add("open");
+      positionMenu();
+    }
+
+    function closeMenu() {
+
+      menu.classList.remove("open");
+      menu.hidden = true;
+      trigger.setAttribute("aria-expanded", "false");
+    }
+
+    trigger.addEventListener("click", function (event) {
+      event.preventDefault();
+
+      if (menu.hidden) {
+        openMenu();
+      } else {
+        closeMenu();
+      }
+    });
+
+    select.addEventListener("change", function () {
+      syncTrigger();
+      renderMenu();
+    });
+
+    document.addEventListener("click", function (event) {
+
+      if (
+        event.target !== trigger &&
+        !menu.contains(event.target)
+      ) {
+        closeMenu();
+      }
+    });
+
+    window.addEventListener("resize", function () {
+      if (!menu.hidden) {
+        positionMenu();
+      }
+    }, { passive: true });
+
+    window.addEventListener("scroll", function () {
+      if (!menu.hidden) {
+        positionMenu();
+      }
+    }, { passive: true, capture: true });
+
+    const observer =
+      new MutationObserver(function () {
+        syncTrigger();
+        renderMenu();
+      });
+
+    observer.observe(select, {
+      childList: true,
+      subtree: true
+    });
+
+    select.insertAdjacentElement(
+      "afterend",
+      trigger
+    );
+
+    document.body.appendChild(menu);
+
+    syncTrigger();
+    renderMenu();
+  });
+}
+
+
+/* =========================================================
+   LEGACY GLOBAL COMPATIBILITY
+   ========================================================= */
+
+window.goToPage = goToPage;
+window.addTransaction = addTransaction;
+window.addAccount = addAccount;
+window.addBuyer = addBuyer;
+window.addBuyerPayment = addBuyerPayment;
+window.transferBetweenAccounts = transferBetweenAccounts;
+window.deleteRecord = deleteRecord;
+window.restoreFromTrash = restoreFromTrash;
+window.restoreAllFromTrash = restoreAllFromTrash;
+
+
+/* =========================================================
    AUTO DASHBOARD UPDATE
    ========================================================= */
 
@@ -3350,6 +3612,7 @@ document.addEventListener(
   function () {
 
     updateDashboard();
+    setupCustomSelects();
 
   }
 );
@@ -3382,3 +3645,6 @@ window.addEventListener(
 /* =========================================================
    END OF APP.JS
    ========================================================= */
+
+
+})(window, document);
