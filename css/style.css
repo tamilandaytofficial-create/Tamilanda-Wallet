@@ -1589,3 +1589,180 @@ textarea.input {
 .bottom-nav > .bottom-nav-item.active {
     color: var(--gold) !important;
 }
+
+
+/* =========================================================
+   BOTTOM NAV — BARE .nav-item TEXT FIX
+   Accounts page uses <a class="nav-item"><span class="nav-icon">...</span>Label</a>
+   The label is a text node, so the parent font-size must be the label size.
+   Keep the icon large via .nav-icon.
+   ========================================================= */
+.bottom-nav > .nav-item {
+    font-size: 10px !important;
+    line-height: 12px !important;
+    font-weight: 700 !important;
+    color: var(--text-muted) !important;
+}
+
+.bottom-nav > .nav-item .nav-icon {
+    display: block !important;
+    width: auto !important;
+    height: 20px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 20px !important;
+    line-height: 20px !important;
+}
+
+.bottom-nav > .nav-item.active {
+    font-size: 10px !important;
+    line-height: 12px !important;
+}
+
+
+/* =========================================================
+   TAMILANDA WALLET — ALL 5 BOTTOM NAV BUTTONS IDENTICAL
+   ========================================================= */
+nav.bottom-nav,
+.bottom-nav {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 76px !important;
+    min-height: 76px !important;
+    max-height: 76px !important;
+    padding: 8px !important;
+    gap: 0 !important;
+    overflow: hidden !important;
+}
+
+nav.bottom-nav > button,
+nav.bottom-nav > a,
+nav.bottom-nav > .nav-item,
+nav.bottom-nav > .bottom-nav-item,
+.bottom-nav > button,
+.bottom-nav > a,
+.bottom-nav > .nav-item,
+.bottom-nav > .bottom-nav-item {
+    flex: 0 0 20% !important;
+    width: 20% !important;
+    min-width: 20% !important;
+    max-width: 20% !important;
+    height: 60px !important;
+    min-height: 60px !important;
+    max-height: 60px !important;
+    margin: 0 !important;
+    padding: 4px 2px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 3px !important;
+    font-size: 10px !important;
+    line-height: 12px !important;
+    font-weight: 700 !important;
+    transform: none !important;
+    scale: 1 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+}
+
+nav.bottom-nav > button:active,
+nav.bottom-nav > a:active,
+nav.bottom-nav > .nav-item:active,
+nav.bottom-nav > .bottom-nav-item:active,
+nav.bottom-nav > button:focus,
+nav.bottom-nav > a:focus,
+nav.bottom-nav > .nav-item:focus,
+nav.bottom-nav > .bottom-nav-item:focus,
+nav.bottom-nav > button:focus-visible,
+nav.bottom-nav > a:focus-visible,
+nav.bottom-nav > .nav-item:focus-visible,
+nav.bottom-nav > .bottom-nav-item:focus-visible,
+.bottom-nav > button:active,
+.bottom-nav > a:active,
+.bottom-nav > .nav-item:active,
+.bottom-nav > .bottom-nav-item:active {
+    flex: 0 0 20% !important;
+    width: 20% !important;
+    min-width: 20% !important;
+    max-width: 20% !important;
+    height: 60px !important;
+    min-height: 60px !important;
+    max-height: 60px !important;
+    margin: 0 !important;
+    padding: 4px 2px !important;
+    transform: none !important;
+    scale: 1 !important;
+    font-size: 10px !important;
+    line-height: 12px !important;
+    outline: none !important;
+}
+
+nav.bottom-nav > button > span,
+nav.bottom-nav > a > span,
+nav.bottom-nav > .nav-item > span,
+nav.bottom-nav > .bottom-nav-item > span,
+.bottom-nav > button > span,
+.bottom-nav > a > span,
+.bottom-nav .nav-icon,
+.bottom-nav .nav-label {
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+    scale: 1 !important;
+    line-height: 1 !important;
+}
+
+nav.bottom-nav .nav-icon,
+nav.bottom-nav > button > span:first-child,
+nav.bottom-nav > a > span:first-child {
+    height: 22px !important;
+    min-height: 22px !important;
+    max-height: 22px !important;
+    font-size: 20px !important;
+    line-height: 22px !important;
+}
+
+nav.bottom-nav .nav-label,
+nav.bottom-nav > button > span:last-child,
+nav.bottom-nav > a > span:last-child {
+    height: 12px !important;
+    min-height: 12px !important;
+    max-height: 12px !important;
+    font-size: 10px !important;
+    line-height: 12px !important;
+    font-weight: 700 !important;
+}
+
+nav.bottom-nav > .nav-item {
+    font-size: 10px !important;
+    line-height: 12px !important;
+}
+
+nav.bottom-nav > .nav-item .nav-icon {
+    font-size: 20px !important;
+    line-height: 22px !important;
+}
+
+nav.bottom-nav > .nav-item.active,
+nav.bottom-nav > .bottom-nav-item.active,
+nav.bottom-nav > button.active,
+nav.bottom-nav > a.active {
+    flex: 0 0 20% !important;
+    width: 20% !important;
+    height: 60px !important;
+    min-height: 60px !important;
+    max-height: 60px !important;
+    transform: none !important;
+    scale: 1 !important;
+    font-size: 10px !important;
+}
