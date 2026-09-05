@@ -3085,103 +3085,47 @@ function renderRecentTransactions() {
 function goToPage(page) {
 
   const pageMap = {
-
-    home:
-      "../index.html",
-
-    dashboard:
-      "pages/dashboard.html",
-
-    income:
-      "pages/income.html",
-
-    expense:
-      "pages/expense.html",
-
-    accounts:
-      "pages/accounts.html",
-
-    transfer:
-      "pages/transfer.html",
-
-    transactions:
-      "pages/transactions.html",
-
-    buyers:
-      "pages/buyers.html",
-
-    giveMoney:
-      "pages/give-money.html",
-
-    emi:
-      "pages/emi.html",
-
-    recurring:
-      "pages/recurring.html",
-
-    reports:
-      "pages/reports.html",
-
-    calculator:
-      "pages/calculator.html",
-
-    notifications:
-      "pages/notifications.html",
-
-    settings:
-      "pages/settings.html",
-
-    security:
-      "pages/security.html",
-
-    profile:
-      "pages/profile.html",
-
-    privacy:
-      "pages/privacy.html",
-
-    about:
-      "pages/about.html",
-
-    more:
-      "pages/more.html",
-
-    trash:
-      "pages/trash.html",
-
-    netWorth:
-      "pages/net-worth.html",
-
-    search:
-      "pages/search.html",
-
-    backup:
-      "pages/backup.html",
-
-    attachments:
-      "pages/attachments.html",
-
-    export:
-      "pages/export.html",
-
-    quickAdd:
-      "pages/quick-add.html",
-
-    calendar:
-      "pages/calendar.html"
-
+    home: "index.html",
+    dashboard: "dashboard.html",
+    income: "income.html",
+    expense: "expense.html",
+    accounts: "accounts.html",
+    transfer: "transfer.html",
+    transactions: "transactions.html",
+    buyers: "buyers.html",
+    giveMoney: "give-money.html",
+    emi: "emi.html",
+    recurring: "recurring.html",
+    reports: "reports.html",
+    calculator: "calculator.html",
+    notifications: "notifications.html",
+    settings: "settings.html",
+    security: "security.html",
+    profile: "profile.html",
+    privacy: "privacy.html",
+    about: "about.html",
+    more: "more.html",
+    trash: "trash.html",
+    netWorth: "net-worth.html",
+    search: "search.html",
+    backup: "backup.html",
+    attachments: "attachments.html",
+    export: "export.html",
+    quickAdd: "quick-add.html",
+    calendar: "calendar.html"
   };
 
-
-  if (
-    pageMap[page]
-  ) {
-
-    window.location.href =
-      pageMap[page];
-
+  if (!pageMap[page]) {
+    return;
   }
 
+  const onPagesDirectory =
+    window.location.pathname.includes("/pages/");
+
+  window.location.href =
+    onPagesDirectory
+      ? pageMap[page]
+      : "./pages/" + pageMap[page];
 }
 
 
@@ -3329,6 +3273,72 @@ window.TamilandaWallet = {
     goToPage
 
 };
+
+
+/* =========================================================
+   GLOBAL NAVIGATION / DASHBOARD ACTIONS
+   ========================================================= */
+
+/*
+  The current HTML uses data-page buttons and dashboard
+  action IDs. This delegated handler keeps them clickable
+  without changing any accounting logic.
+*/
+document.addEventListener(
+  "click",
+  function (event) {
+
+    const navItem =
+      event.target.closest(
+        ".bottom-nav .nav-item, .bottom-nav .bottom-nav-item"
+      );
+
+    if (navItem) {
+
+      const page =
+        navItem.getAttribute("data-page");
+
+      if (page) {
+        event.preventDefault();
+        goToPage(page);
+        return;
+      }
+    }
+
+    const actionButton =
+      event.target.closest(
+        "#settingsButton, " +
+        "#addIncomeButton, " +
+        "#addExpenseButton, " +
+        "#addBuyerButton, " +
+        "#addEmiButton, " +
+        "#viewAccountsButton, " +
+        "#viewTransactionsButton"
+      );
+
+    if (!actionButton) {
+      return;
+    }
+
+    const actionMap = {
+      settingsButton: "settings",
+      addIncomeButton: "income",
+      addExpenseButton: "expense",
+      addBuyerButton: "buyers",
+      addEmiButton: "emi",
+      viewAccountsButton: "accounts",
+      viewTransactionsButton: "transactions"
+    };
+
+    const page =
+      actionMap[actionButton.id];
+
+    if (page) {
+      event.preventDefault();
+      goToPage(page);
+    }
+  }
+);
 
 
 /* =========================================================
