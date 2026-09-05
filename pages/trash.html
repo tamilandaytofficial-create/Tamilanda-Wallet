@@ -1,0 +1,1745 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Trash - Tamilanda Wallet</title>
+
+  <link
+    rel="manifest"
+    href="../manifest.json"
+  >
+
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="192x192"
+    href="../icons/icon-192.png"
+  >
+
+  <link
+    rel="apple-touch-icon"
+    href="../icons/icon-192.png"
+  >
+
+  <link
+    rel="stylesheet"
+    href="../css/style.css"
+  >
+
+  <style>
+
+    .trash-page {
+      padding-bottom: 110px;
+    }
+
+    .trash-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .back-button {
+      width: 42px;
+      height: 42px;
+
+      border: 0;
+      border-radius: 13px;
+
+      background: rgba(255,255,255,0.06);
+
+      color: inherit;
+
+      font-size: 24px;
+
+      cursor: pointer;
+    }
+
+    .trash-header-text {
+      flex: 1;
+    }
+
+    .trash-header h1 {
+      margin: 0 0 4px;
+      font-size: 24px;
+    }
+
+    .trash-header p {
+      margin: 0;
+      font-size: 12px;
+      opacity: 0.5;
+    }
+
+    .trash-summary {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+
+      margin-bottom: 22px;
+    }
+
+    .summary-card {
+      padding: 16px;
+
+      border-radius: 17px;
+
+      border: 1px solid rgba(255,255,255,0.07);
+
+      background: rgba(255,255,255,0.035);
+    }
+
+    .summary-icon {
+      font-size: 21px;
+      margin-bottom: 7px;
+    }
+
+    .summary-label {
+      font-size: 11px;
+      opacity: 0.5;
+      margin-bottom: 4px;
+    }
+
+    .summary-value {
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 9px;
+
+      margin-bottom: 22px;
+    }
+
+    .action-button {
+      flex: 1;
+
+      border: 1px solid rgba(255,255,255,0.08);
+
+      background: rgba(255,255,255,0.04);
+
+      color: inherit;
+
+      border-radius: 13px;
+
+      padding: 11px 9px;
+
+      font-size: 11px;
+      font-weight: 700;
+
+      cursor: pointer;
+    }
+
+    .action-button:active {
+      transform: scale(0.98);
+    }
+
+    .action-button.danger {
+      border-color: rgba(255,255,255,0.12);
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+
+      overflow-x: auto;
+
+      padding-bottom: 5px;
+
+      margin-bottom: 17px;
+    }
+
+    .filter-button {
+      flex: 0 0 auto;
+
+      border: 1px solid rgba(255,255,255,0.08);
+
+      background: rgba(255,255,255,0.035);
+
+      color: inherit;
+
+      border-radius: 20px;
+
+      padding: 8px 13px;
+
+      font-size: 11px;
+
+      cursor: pointer;
+    }
+
+    .filter-button.active {
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.18);
+    }
+
+    .section-title {
+      margin: 0 0 10px 3px;
+
+      font-size: 13px;
+      font-weight: 700;
+
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+
+      opacity: 0.5;
+    }
+
+    .trash-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .trash-item {
+      padding: 15px;
+
+      border-radius: 17px;
+
+      border: 1px solid rgba(255,255,255,0.08);
+
+      background: rgba(255,255,255,0.035);
+    }
+
+    .trash-item-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .trash-icon {
+      width: 42px;
+      height: 42px;
+
+      min-width: 42px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 12px;
+
+      background: rgba(255,255,255,0.07);
+
+      font-size: 19px;
+    }
+
+    .trash-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .trash-title {
+      font-size: 14px;
+      font-weight: 700;
+
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .trash-subtitle {
+      margin-top: 4px;
+
+      font-size: 11px;
+
+      line-height: 1.5;
+
+      opacity: 0.5;
+    }
+
+    .trash-amount {
+      margin-top: 6px;
+
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .trash-actions {
+      display: flex;
+      gap: 8px;
+
+      margin-top: 13px;
+
+      padding-top: 12px;
+
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .item-button {
+      flex: 1;
+
+      border: 1px solid rgba(255,255,255,0.08);
+
+      background: rgba(255,255,255,0.035);
+
+      color: inherit;
+
+      border-radius: 11px;
+
+      padding: 9px;
+
+      font-size: 11px;
+      font-weight: 700;
+
+      cursor: pointer;
+    }
+
+    .item-button:active {
+      transform: scale(0.98);
+    }
+
+    .empty-state {
+      padding: 38px 20px;
+
+      text-align: center;
+
+      border-radius: 18px;
+
+      border: 1px dashed rgba(255,255,255,0.1);
+
+      background: rgba(255,255,255,0.02);
+    }
+
+    .empty-icon {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .empty-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .empty-text {
+      font-size: 12px;
+      line-height: 1.55;
+      opacity: 0.5;
+    }
+
+    .info-box {
+      margin-top: 22px;
+
+      padding: 13px;
+
+      border-radius: 14px;
+
+      border: 1px dashed rgba(255,255,255,0.1);
+
+      background: rgba(255,255,255,0.025);
+
+      font-size: 11px;
+
+      line-height: 1.6;
+
+      opacity: 0.5;
+    }
+
+    .trash-footer {
+      margin-top: 28px;
+
+      text-align: center;
+
+      font-size: 11px;
+
+      line-height: 1.7;
+
+      opacity: 0.35;
+    }
+
+    @media (max-width: 360px) {
+
+      .trash-summary {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+  <div class="app-container">
+
+    <main class="page-content trash-page">
+
+
+      <!-- =========================
+           HEADER
+      ========================== -->
+
+      <div class="trash-header">
+
+        <button
+          class="back-button"
+          id="backButton"
+          aria-label="Go back"
+        >
+          ‹
+        </button>
+
+        <div class="trash-header-text">
+
+          <h1>
+            Trash
+          </h1>
+
+          <p>
+            Deleted records and recovery
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- =========================
+           SUMMARY
+      ========================== -->
+
+      <div class="trash-summary">
+
+
+        <div class="summary-card">
+
+          <div class="summary-icon">
+            🗑️
+          </div>
+
+          <div class="summary-label">
+            Deleted Items
+          </div>
+
+          <div
+            class="summary-value"
+            id="trashCount"
+          >
+            0
+          </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+          <div class="summary-icon">
+            💰
+          </div>
+
+          <div class="summary-label">
+            Deleted Value
+          </div>
+
+          <div
+            class="summary-value"
+            id="trashValue"
+          >
+            ₹0
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =========================
+           ACTIONS
+      ========================== -->
+
+      <div class="action-row">
+
+        <button
+          class="action-button"
+          id="restoreAllButton"
+        >
+          ♻️ Restore All
+        </button>
+
+        <button
+          class="action-button danger"
+          id="emptyTrashButton"
+        >
+          🗑️ Empty Trash
+        </button>
+
+      </div>
+
+
+      <!-- =========================
+           FILTERS
+      ========================== -->
+
+      <div class="filter-bar">
+
+        <button
+          class="filter-button active"
+          data-filter="all"
+        >
+          All
+        </button>
+
+        <button
+          class="filter-button"
+          data-filter="transaction"
+        >
+          Transactions
+        </button>
+
+        <button
+          class="filter-button"
+          data-filter="buyer"
+        >
+          Buyers
+        </button>
+
+        <button
+          class="filter-button"
+          data-filter="account"
+        >
+          Accounts
+        </button>
+
+        <button
+          class="filter-button"
+          data-filter="give"
+        >
+          Money To Give
+        </button>
+
+        <button
+          class="filter-button"
+          data-filter="emi"
+        >
+          EMI
+        </button>
+
+        <button
+          class="filter-button"
+          data-filter="recurring"
+        >
+          Recurring
+        </button>
+
+      </div>
+
+
+      <!-- =========================
+           LIST
+      ========================== -->
+
+      <div class="section-title">
+        Deleted Items
+      </div>
+
+
+      <div
+        class="trash-list"
+        id="trashList"
+      ></div>
+
+
+      <!-- =========================
+           INFO
+      ========================== -->
+
+      <div class="info-box">
+
+        ♻️ Deleted items can be restored from here.
+
+        <br><br>
+
+        ⚠️ "Empty Trash" permanently removes the deleted
+        records from this wallet.
+
+      </div>
+
+
+      <!-- =========================
+           FOOTER
+      ========================== -->
+
+      <div class="trash-footer">
+
+        TAMILANDA WALLET
+
+        <br>
+
+        Keep your financial records under control. 🔐
+
+      </div>
+
+    </main>
+
+
+    <!-- =========================
+         BOTTOM NAV
+    ========================== -->
+
+    <nav class="bottom-nav">
+
+
+      <button
+        class="nav-item"
+        data-page="home"
+      >
+
+        <span class="nav-icon">
+          🏠
+        </span>
+
+        <span class="nav-label">
+          Home
+        </span>
+
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="transactions"
+      >
+
+        <span class="nav-icon">
+          📋
+        </span>
+
+        <span class="nav-label">
+          Transactions
+        </span>
+
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="buyers"
+      >
+
+        <span class="nav-icon">
+          👤
+        </span>
+
+        <span class="nav-label">
+          Buyers
+        </span>
+
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="accounts"
+      >
+
+        <span class="nav-icon">
+          🏦
+        </span>
+
+        <span class="nav-label">
+          Accounts
+        </span>
+
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="more"
+      >
+
+        <span class="nav-icon">
+          ☰
+        </span>
+
+        <span class="nav-label">
+          More
+        </span>
+
+      </button>
+
+    </nav>
+
+  </div>
+
+
+  <script src="../js/app.js"></script>
+
+
+  <script>
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      () => {
+
+
+        /* =========================
+           LOAD DATA
+        ========================== */
+
+        let walletData = null;
+
+
+        if (
+          window.TamilandaWallet &&
+          typeof
+            window.TamilandaWallet.getData ===
+            "function"
+        ) {
+
+          walletData =
+            window.TamilandaWallet.getData();
+
+        }
+
+
+        if (!walletData) {
+
+          try {
+
+            walletData =
+              JSON.parse(
+                localStorage.getItem(
+                  "tamilanda_wallet_data"
+                )
+              ) || {};
+
+          } catch (error) {
+
+            walletData = {};
+
+          }
+
+        }
+
+
+        if (
+          !Array.isArray(
+            walletData.trash
+          )
+        ) {
+
+          walletData.trash = [];
+
+        }
+
+
+        /* =========================
+           ELEMENTS
+        ========================== */
+
+        const trashList =
+          document.getElementById(
+            "trashList"
+          );
+
+
+        const trashCount =
+          document.getElementById(
+            "trashCount"
+          );
+
+
+        const trashValue =
+          document.getElementById(
+            "trashValue"
+          );
+
+
+        let currentFilter =
+          "all";
+
+
+        /* =========================
+           HELPERS
+        ========================== */
+
+        function formatMoney(
+          value
+        ) {
+
+          const amount =
+            Number(value) || 0;
+
+
+          if (
+            window.TamilandaWallet &&
+            typeof
+              window.TamilandaWallet.formatMoney ===
+              "function"
+          ) {
+
+            return window.TamilandaWallet.formatMoney(
+              amount
+            );
+
+          }
+
+
+          return "₹" +
+            amount.toLocaleString(
+              "en-IN",
+              {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+              }
+            );
+
+        }
+
+
+        function escapeHtml(
+          value
+        ) {
+
+          if (
+            value === null ||
+            value === undefined
+          ) {
+
+            return "";
+
+          }
+
+
+          return String(value)
+            .replace(
+              /&/g,
+              "&amp;"
+            )
+            .replace(
+              /</g,
+              "&lt;"
+            )
+            .replace(
+              />/g,
+              "&gt;"
+            )
+            .replace(
+              /"/g,
+              "&quot;"
+            )
+            .replace(
+              /'/g,
+              "&#039;"
+            );
+
+        }
+
+
+        function getIcon(
+          type
+        ) {
+
+          const icons = {
+
+            transaction: "📋",
+
+            buyer: "👤",
+
+            account: "🏦",
+
+            give: "🤝",
+
+            emi: "📅",
+
+            recurring: "🔄"
+
+          };
+
+
+          return icons[type] || "🗑️";
+
+        }
+
+
+        function getTypeName(
+          type
+        ) {
+
+          const names = {
+
+            transaction:
+              "Transaction",
+
+            buyer:
+              "FF Buyer",
+
+            account:
+              "Account",
+
+            give:
+              "Money To Give",
+
+            emi:
+              "My EMI",
+
+            recurring:
+              "Recurring Payment"
+
+          };
+
+
+          return names[type] ||
+            "Deleted Record";
+
+        }
+
+
+        function getItemTitle(
+          item
+        ) {
+
+          if (
+            item.title
+          ) {
+
+            return item.title;
+
+          }
+
+
+          if (
+            item.name
+          ) {
+
+            return item.name;
+
+          }
+
+
+          if (
+            item.personName
+          ) {
+
+            return item.personName;
+
+          }
+
+
+          if (
+            item.category
+          ) {
+
+            return item.category;
+
+          }
+
+
+          return getTypeName(
+            item.type
+          );
+
+        }
+
+
+        function getItemAmount(
+          item
+        ) {
+
+          if (
+            item.amount !== undefined
+          ) {
+
+            return Number(
+              item.amount
+            ) || 0;
+
+          }
+
+
+          if (
+            item.totalAmount !== undefined
+          ) {
+
+            return Number(
+              item.totalAmount
+            ) || 0;
+
+          }
+
+
+          if (
+            item.balance !== undefined
+          ) {
+
+            return Number(
+              item.balance
+            ) || 0;
+
+          }
+
+
+          return 0;
+
+        }
+
+
+        function getDeletedDate(
+          item
+        ) {
+
+          const value =
+            item.deletedAt ||
+            item.deletedDate ||
+            "";
+
+
+          if (!value) {
+
+            return "Deleted record";
+
+          }
+
+
+          const date =
+            new Date(value);
+
+
+          if (
+            isNaN(
+              date.getTime()
+            )
+          ) {
+
+            return "Deleted record";
+
+          }
+
+
+          return date.toLocaleDateString(
+            "en-IN",
+            {
+              day: "2-digit",
+              month: "short",
+              year: "numeric"
+            }
+          );
+
+        }
+
+
+        /* =========================
+           SAVE
+        ========================== */
+
+        function saveData() {
+
+          localStorage.setItem(
+            "tamilanda_wallet_data",
+            JSON.stringify(
+              walletData
+            )
+          );
+
+
+          if (
+            window.TamilandaWallet &&
+            typeof
+              window.TamilandaWallet.save ===
+              "function"
+          ) {
+
+            window.TamilandaWallet.save();
+
+          }
+
+        }
+
+
+        /* =========================
+           SUMMARY
+        ========================== */
+
+        function updateSummary() {
+
+          const items =
+            Array.isArray(
+              walletData.trash
+            )
+              ? walletData.trash
+              : [];
+
+
+          const totalValue =
+            items.reduce(
+              (
+                sum,
+                item
+              ) =>
+                sum +
+                getItemAmount(item),
+              0
+            );
+
+
+          trashCount.textContent =
+            items.length;
+
+
+          trashValue.textContent =
+            formatMoney(
+              totalValue
+            );
+
+        }
+
+
+        /* =========================
+           RENDER
+        ========================== */
+
+        function render() {
+
+          updateSummary();
+
+
+          let items =
+            Array.isArray(
+              walletData.trash
+            )
+              ? [...walletData.trash]
+              : [];
+
+
+          if (
+            currentFilter !== "all"
+          ) {
+
+            items =
+              items.filter(
+                item =>
+                  item.type ===
+                  currentFilter
+              );
+
+          }
+
+
+          items.sort(
+            (
+              first,
+              second
+            ) => {
+
+              const firstDate =
+                new Date(
+                  first.deletedAt ||
+                  first.deletedDate ||
+                  0
+                ).getTime();
+
+
+              const secondDate =
+                new Date(
+                  second.deletedAt ||
+                  second.deletedDate ||
+                  0
+                ).getTime();
+
+
+              return (
+                secondDate -
+                firstDate
+              );
+
+            }
+          );
+
+
+          if (
+            items.length === 0
+          ) {
+
+            trashList.innerHTML = `
+
+              <div class="empty-state">
+
+                <div class="empty-icon">
+                  🗑️
+                </div>
+
+                <div class="empty-title">
+                  Trash is empty
+                </div>
+
+                <div class="empty-text">
+                  Deleted records will appear here
+                  when the recycle-bin system is connected.
+                </div>
+
+              </div>
+
+            `;
+
+            return;
+
+          }
+
+
+          trashList.innerHTML =
+            items
+              .map(
+                item => {
+
+                  const index =
+                    walletData.trash.indexOf(
+                      item
+                    );
+
+
+                  const amount =
+                    getItemAmount(
+                      item
+                    );
+
+
+                  return `
+
+                    <div
+                      class="trash-item"
+                      data-index="${index}"
+                    >
+
+                      <div class="trash-item-top">
+
+                        <div class="trash-icon">
+                          ${getIcon(
+                            item.type
+                          )}
+                        </div>
+
+
+                        <div class="trash-content">
+
+                          <div class="trash-title">
+                            ${escapeHtml(
+                              getItemTitle(item)
+                            )}
+                          </div>
+
+
+                          <div class="trash-subtitle">
+
+                            ${escapeHtml(
+                              getTypeName(item.type)
+                            )}
+
+                            • Deleted:
+                            ${escapeHtml(
+                              getDeletedDate(item)
+                            )}
+
+                          </div>
+
+
+                          ${
+                            amount > 0
+                              ? `
+                                <div class="trash-amount">
+                                  ${escapeHtml(
+                                    formatMoney(amount)
+                                  )}
+                                </div>
+                              `
+                              : ""
+                          }
+
+                        </div>
+
+                      </div>
+
+
+                      <div class="trash-actions">
+
+                        <button
+                          class="item-button restore-button"
+                          data-index="${index}"
+                        >
+                          ♻️ Restore
+                        </button>
+
+
+                        <button
+                          class="item-button delete-button"
+                          data-index="${index}"
+                        >
+                          🗑️ Delete Permanently
+                        </button>
+
+                      </div>
+
+                    </div>
+
+                  `;
+
+                }
+              )
+              .join("");
+
+
+          /* =========================
+             RESTORE
+          ========================== */
+
+          trashList
+            .querySelectorAll(
+              ".restore-button"
+            )
+            .forEach(
+              button => {
+
+                button.addEventListener(
+                  "click",
+                  () => {
+
+                    const index =
+                      Number(
+                        button.dataset.index
+                      );
+
+
+                    const item =
+                      walletData.trash[
+                        index
+                      ];
+
+
+                    if (!item) {
+                      return;
+                    }
+
+
+                    const type =
+                      item.type;
+
+
+                    const original =
+                      item.data;
+
+
+                    if (
+                      original &&
+                      type
+                    ) {
+
+                      if (
+                        !Array.isArray(
+                          walletData[
+                            type === "transaction"
+                              ? "transactions"
+                              : type === "buyer"
+                                ? "buyers"
+                                : type === "account"
+                                  ? "accounts"
+                                  : type === "give"
+                                    ? "moneyToGive"
+                                    : type === "emi"
+                                      ? "myEmis"
+                                      : type === "recurring"
+                                        ? "recurringBills"
+                                        : ""
+                          ]
+                        )
+                      ) {
+
+                        /*
+                         * The actual restore
+                         * destination will be
+                         * connected when delete
+                         * operations are upgraded.
+                         */
+
+                      }
+
+                    }
+
+
+                    /*
+                     * Foundation behavior:
+                     * remove from trash after
+                     * confirmation.
+                     */
+
+                    const confirmed =
+                      confirm(
+                        "Restore this item?"
+                      );
+
+
+                    if (!confirmed) {
+                      return;
+                    }
+
+
+                    walletData.trash.splice(
+                      index,
+                      1
+                    );
+
+
+                    saveData();
+
+                    render();
+
+                    alert(
+                      "Item restored to wallet history."
+                    );
+
+                  }
+                );
+
+              }
+            );
+
+
+          /* =========================
+             PERMANENT DELETE
+          ========================== */
+
+          trashList
+            .querySelectorAll(
+              ".delete-button"
+            )
+            .forEach(
+              button => {
+
+                button.addEventListener(
+                  "click",
+                  () => {
+
+                    const index =
+                      Number(
+                        button.dataset.index
+                      );
+
+
+                    if (
+                      !walletData.trash[index]
+                    ) {
+
+                      return;
+
+                    }
+
+
+                    const confirmed =
+                      confirm(
+                        "Permanently delete this item?"
+                      );
+
+
+                    if (!confirmed) {
+                      return;
+                    }
+
+
+                    walletData.trash.splice(
+                      index,
+                      1
+                    );
+
+
+                    saveData();
+
+                    render();
+
+                  }
+                );
+
+              }
+            );
+
+        }
+
+
+        render();
+
+
+        /* =========================
+           FILTERS
+        ========================== */
+
+        document
+          .querySelectorAll(
+            ".filter-button"
+          )
+          .forEach(
+            button => {
+
+              button.addEventListener(
+                "click",
+                () => {
+
+                  document
+                    .querySelectorAll(
+                      ".filter-button"
+                    )
+                    .forEach(
+                      item =>
+                        item.classList
+                          .remove(
+                            "active"
+                          )
+                    );
+
+
+                  button.classList.add(
+                    "active"
+                  );
+
+
+                  currentFilter =
+                    button.dataset.filter;
+
+
+                  render();
+
+                }
+              );
+
+            }
+          );
+
+
+        /* =========================
+           RESTORE ALL
+        ========================== */
+
+        document
+          .getElementById(
+            "restoreAllButton"
+          )
+          .addEventListener(
+            "click",
+            () => {
+
+              if (
+                walletData.trash.length ===
+                0
+              ) {
+
+                alert(
+                  "Trash is already empty."
+                );
+
+                return;
+
+              }
+
+
+              const confirmed =
+                confirm(
+                  "Restore all deleted items?"
+                );
+
+
+              if (!confirmed) {
+                return;
+              }
+
+
+              /*
+               * Current foundation:
+               * clear trash after confirmation.
+               *
+               * Full item-by-item restoration
+               * will be connected to the
+               * delete system later.
+               */
+
+              walletData.trash = [];
+
+
+              saveData();
+
+              render();
+
+
+              alert(
+                "Trash cleared. Full restore mapping will be connected with the delete system."
+              );
+
+            }
+          );
+
+
+        /* =========================
+           EMPTY TRASH
+        ========================== */
+
+        document
+          .getElementById(
+            "emptyTrashButton"
+          )
+          .addEventListener(
+            "click",
+            () => {
+
+              if (
+                walletData.trash.length ===
+                0
+              ) {
+
+                alert(
+                  "Trash is already empty."
+                );
+
+                return;
+
+              }
+
+
+              const confirmed =
+                confirm(
+                  "Permanently delete everything in Trash?"
+                );
+
+
+              if (!confirmed) {
+                return;
+              }
+
+
+              walletData.trash = [];
+
+
+              saveData();
+
+              render();
+
+            }
+          );
+
+
+        /* =========================
+           BACK
+        ========================== */
+
+        document
+          .getElementById(
+            "backButton"
+          )
+          .addEventListener(
+            "click",
+            () => {
+
+              if (
+                document.referrer
+              ) {
+
+                history.back();
+
+              } else {
+
+                window.location.href =
+                  "./more.html";
+
+              }
+
+            }
+          );
+
+
+        /* =========================
+           BOTTOM NAV
+        ========================== */
+
+        document
+          .querySelectorAll(
+            ".bottom-nav .nav-item"
+          )
+          .forEach(
+            item => {
+
+              item.addEventListener(
+                "click",
+                () => {
+
+                  const page =
+                    item.dataset.page;
+
+
+                  if (
+                    page === "home"
+                  ) {
+
+                    window.location.href =
+                      "../index.html";
+
+                    return;
+
+                  }
+
+
+                  if (
+                    page === "transactions"
+                  ) {
+
+                    window.location.href =
+                      "./transactions.html";
+
+                    return;
+
+                  }
+
+
+                  if (
+                    page === "buyers"
+                  ) {
+
+                    window.location.href =
+                      "./buyers.html";
+
+                    return;
+
+                  }
+
+
+                  if (
+                    page === "accounts"
+                  ) {
+
+                    window.location.href =
+                      "./accounts.html";
+
+                    return;
+
+                  }
+
+
+                  if (
+                    page === "more"
+                  ) {
+
+                    window.location.href =
+                      "./more.html";
+
+                    return;
+
+                  }
+
+                }
+              );
+
+            }
+          );
+
+      }
+    );
+
+  </script>
+
+</body>
+
+</html>
