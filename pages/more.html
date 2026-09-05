@@ -2,19 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>More - Tamilanda Wallet</title>
 
-  <link rel="manifest" href="../manifest.json">
-  <link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png">
-  <link rel="apple-touch-icon" href="../icons/icon-192.png">
+  <link
+    rel="manifest"
+    href="../manifest.json"
+  >
 
-  <link rel="stylesheet" href="../css/style.css">
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="192x192"
+    href="../icons/icon-192.png"
+  >
+
+  <link
+    rel="apple-touch-icon"
+    href="../icons/icon-192.png"
+  >
+
+  <link
+    rel="stylesheet"
+    href="../css/style.css"
+  >
 
   <style>
     .more-page {
-      padding-bottom: 100px;
+      padding-bottom: 110px;
     }
 
     .more-header {
@@ -26,8 +45,8 @@
     }
 
     .more-header p {
-      opacity: 0.65;
       margin: 0;
+      opacity: 0.65;
     }
 
     .more-section {
@@ -35,12 +54,12 @@
     }
 
     .more-section-title {
+      margin: 0 0 10px 4px;
       font-size: 13px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
       opacity: 0.55;
-      margin: 0 0 10px 4px;
     }
 
     .more-menu {
@@ -56,12 +75,17 @@
       color: inherit;
       border-radius: 16px;
       padding: 15px;
+
       display: flex;
       align-items: center;
       gap: 14px;
+
       text-align: left;
       cursor: pointer;
-      transition: 0.2s ease;
+
+      transition:
+        background 0.2s ease,
+        transform 0.2s ease;
     }
 
     .more-item:hover {
@@ -77,11 +101,15 @@
       width: 44px;
       height: 44px;
       min-width: 44px;
+
       border-radius: 13px;
+
       display: flex;
       align-items: center;
       justify-content: center;
+
       font-size: 21px;
+
       background: rgba(255, 255, 255, 0.07);
     }
 
@@ -91,27 +119,28 @@
     }
 
     .more-title {
+      margin-bottom: 3px;
       font-size: 15px;
       font-weight: 700;
-      margin-bottom: 3px;
     }
 
     .more-description {
       font-size: 12px;
-      opacity: 0.55;
       line-height: 1.4;
+      opacity: 0.55;
     }
 
     .more-arrow {
-      opacity: 0.45;
       font-size: 20px;
+      opacity: 0.45;
     }
 
     .more-footer {
       margin-top: 30px;
       text-align: center;
-      opacity: 0.4;
       font-size: 12px;
+      line-height: 1.6;
+      opacity: 0.4;
     }
   </style>
 </head>
@@ -122,14 +151,25 @@
 
     <main class="page-content more-page">
 
-      <!-- Header -->
+      <!-- =========================
+           HEADER
+      ========================== -->
+
       <div class="more-header">
+
         <h1>More</h1>
-        <p>Manage your Tamilanda Wallet</p>
+
+        <p>
+          Manage your Tamilanda Wallet
+        </p>
+
       </div>
 
 
-      <!-- Money -->
+      <!-- =========================
+           MONEY
+      ========================== -->
+
       <section class="more-section">
 
         <div class="more-section-title">
@@ -138,66 +178,130 @@
 
         <div class="more-menu">
 
-          <button class="more-item" data-page="income.html">
-            <div class="more-icon">💰</div>
+          <!-- Income -->
+          <button
+            class="more-item"
+            data-page="income.html"
+          >
+
+            <div class="more-icon">
+              💰
+            </div>
 
             <div class="more-content">
-              <div class="more-title">Income</div>
+
+              <div class="more-title">
+                Income
+              </div>
+
               <div class="more-description">
                 Add and manage your income
               </div>
+
             </div>
 
-            <div class="more-arrow">›</div>
+            <div class="more-arrow">
+              ›
+            </div>
+
           </button>
 
 
-          <button class="more-item" data-page="expense.html">
-            <div class="more-icon">💸</div>
+          <!-- Expenses -->
+          <button
+            class="more-item"
+            data-page="expense.html"
+          >
+
+            <div class="more-icon">
+              💸
+            </div>
 
             <div class="more-content">
-              <div class="more-title">Expenses</div>
+
+              <div class="more-title">
+                Expenses
+              </div>
+
               <div class="more-description">
                 Track your daily spending
               </div>
+
             </div>
 
-            <div class="more-arrow">›</div>
+            <div class="more-arrow">
+              ›
+            </div>
+
           </button>
 
 
-          <button class="more-item" data-page="accounts.html">
-            <div class="more-icon">🏦</div>
+          <!-- Accounts -->
+          <button
+            class="more-item"
+            data-page="accounts.html"
+          >
+
+            <div class="more-icon">
+              🏦
+            </div>
 
             <div class="more-content">
-              <div class="more-title">Accounts</div>
+
+              <div class="more-title">
+                Accounts
+              </div>
+
               <div class="more-description">
                 Bank, cash, UPI and wallet accounts
               </div>
+
             </div>
 
-            <div class="more-arrow">›</div>
+            <div class="more-arrow">
+              ›
+            </div>
+
           </button>
 
 
-          <button class="more-item" data-page="transactions.html">
-            <div class="more-icon">📋</div>
+          <!-- Transactions -->
+          <button
+            class="more-item"
+            data-page="transactions.html"
+          >
+
+            <div class="more-icon">
+              📋
+            </div>
 
             <div class="more-content">
-              <div class="more-title">Transactions</div>
+
+              <div class="more-title">
+                Transactions
+              </div>
+
               <div class="more-description">
                 View all your money movements
               </div>
+
             </div>
 
-            <div class="more-arrow">›</div>
+            <div class="more-arrow">
+              ›
+            </div>
+
           </button>
 
         </div>
+
       </section>
 
 
-      <!-- EMI & Receivables -->
+      <!-- =========================
+           EMI & RECEIVABLES
+      ========================== -->
+
       <section class="more-section">
 
         <div class="more-section-title">
@@ -206,66 +310,130 @@
 
         <div class="more-menu">
 
-          <button class="more-item" data-page="buyers.html">
-            <div class="more-icon">👤</div>
+          <!-- FF Buyers -->
+          <button
+            class="more-item"
+            data-page="buyers.html"
+          >
+
+            <div class="more-icon">
+              👤
+            </div>
 
             <div class="more-content">
-              <div class="more-title">FF Buyers</div>
+
+              <div class="more-title">
+                FF Buyers
+              </div>
+
               <div class="more-description">
                 Manage buyers and pending payments
               </div>
+
             </div>
 
-            <div class="more-arrow">›</div>
+            <div class="more-arrow">
+              ›
+            </div>
+
           </button>
 
 
-          <button class="more-item" data-page="give-money.html">
-            <div class="more-icon">🤝</div>
+          <!-- Money To Give -->
+          <button
+            class="more-item"
+            data-page="give-money.html"
+          >
+
+            <div class="more-icon">
+              🤝
+            </div>
 
             <div class="more-content">
-              <div class="more-title">Money To Give</div>
+
+              <div class="more-title">
+                Money To Give
+              </div>
+
               <div class="more-description">
                 Track money you need to pay others
               </div>
+
             </div>
 
-            <div class="more-arrow">›</div>
+            <div class="more-arrow">
+              ›
+            </div>
+
           </button>
 
 
-          <button class="more-item" data-page="emi.html">
-            <div class="more-icon">📅</div>
+          <!-- My EMI -->
+          <button
+            class="more-item"
+            data-page="emi.html"
+          >
+
+            <div class="more-icon">
+              📅
+            </div>
 
             <div class="more-content">
-              <div class="more-title">My EMI</div>
+
+              <div class="more-title">
+                My EMI
+              </div>
+
               <div class="more-description">
                 Manage your loans and monthly EMIs
               </div>
+
             </div>
 
-            <div class="more-arrow">›</div>
+            <div class="more-arrow">
+              ›
+            </div>
+
           </button>
 
 
-          <button class="more-item" data-page="recurring.html">
-            <div class="more-icon">🔄</div>
+          <!-- Recurring Payments -->
+          <button
+            class="more-item"
+            data-page="recurring.html"
+          >
+
+            <div class="more-icon">
+              🔄
+            </div>
 
             <div class="more-content">
-              <div class="more-title">Recurring Payments</div>
+
+              <div class="more-title">
+                Recurring Payments
+              </div>
+
               <div class="more-description">
                 Bills and payments that repeat
               </div>
+
             </div>
 
-            <div class="more-arrow">›</div>
+            <div class="more-arrow">
+              ›
+            </div>
+
           </button>
 
         </div>
+
       </section>
 
 
-      <!-- Tools -->
+      <!-- =========================
+           TOOLS
+      ========================== -->
+
       <section class="more-section">
 
         <div class="more-section-title">
@@ -274,38 +442,72 @@
 
         <div class="more-menu">
 
-          <button class="more-item" data-page="reports.html">
-            <div class="more-icon">📊</div>
+          <!-- Reports -->
+          <button
+            class="more-item"
+            data-page="reports.html"
+          >
+
+            <div class="more-icon">
+              📊
+            </div>
 
             <div class="more-content">
-              <div class="more-title">Reports</div>
+
+              <div class="more-title">
+                Reports
+              </div>
+
               <div class="more-description">
                 Analyse income, expenses and profit
               </div>
+
             </div>
 
-            <div class="more-arrow">›</div>
+            <div class="more-arrow">
+              ›
+            </div>
+
           </button>
 
 
-          <button class="more-item" data-page="calculator.html">
-            <div class="more-icon">🧮</div>
+          <!-- Calculator -->
+          <button
+            class="more-item"
+            data-page="calculator.html"
+          >
+
+            <div class="more-icon">
+              🧮
+            </div>
 
             <div class="more-content">
-              <div class="more-title">Calculator</div>
+
+              <div class="more-title">
+                Calculator
+              </div>
+
               <div class="more-description">
                 Quick calculations without leaving Wallet
               </div>
+
             </div>
 
-            <div class="more-arrow">›</div>
+            <div class="more-arrow">
+              ›
+            </div>
+
           </button>
 
         </div>
+
       </section>
 
 
-      <!-- App -->
+      <!-- =========================
+           APP
+      ========================== -->
+
       <section class="more-section">
 
         <div class="more-section-title">
@@ -314,58 +516,173 @@
 
         <div class="more-menu">
 
-          <button class="more-item" data-page="settings.html">
-            <div class="more-icon">⚙️</div>
+          <!-- Settings -->
+          <button
+            class="more-item"
+            data-page="settings.html"
+          >
+
+            <div class="more-icon">
+              ⚙️
+            </div>
 
             <div class="more-content">
-              <div class="more-title">Settings</div>
+
+              <div class="more-title">
+                Settings
+              </div>
+
               <div class="more-description">
                 Backup, restore and wallet settings
               </div>
+
             </div>
 
-            <div class="more-arrow">›</div>
+            <div class="more-arrow">
+              ›
+            </div>
+
+          </button>
+
+
+          <!-- Privacy & Security -->
+          <button
+            class="more-item"
+            data-page="privacy.html"
+          >
+
+            <div class="more-icon">
+              🔐
+            </div>
+
+            <div class="more-content">
+
+              <div class="more-title">
+                Privacy & Security
+              </div>
+
+              <div class="more-description">
+                Wallet privacy and security information
+              </div>
+
+            </div>
+
+            <div class="more-arrow">
+              ›
+            </div>
+
           </button>
 
         </div>
+
       </section>
 
 
+      <!-- =========================
+           FOOTER
+      ========================== -->
+
       <div class="more-footer">
+
         TAMILANDA WALLET
+
         <br>
+
         Your money. Your control. 🔐
+
       </div>
 
     </main>
 
 
-    <!-- Bottom Navigation -->
+    <!-- =========================
+         BOTTOM NAVIGATION
+    ========================== -->
+
     <nav class="bottom-nav">
 
-      <button class="nav-item" data-page="home">
-        <span class="nav-icon">🏠</span>
-        <span class="nav-label">Home</span>
+      <!-- Home -->
+      <button
+        class="nav-item"
+        data-page="home"
+      >
+
+        <span class="nav-icon">
+          🏠
+        </span>
+
+        <span class="nav-label">
+          Home
+        </span>
+
       </button>
 
-      <button class="nav-item" data-page="transactions">
-        <span class="nav-icon">📋</span>
-        <span class="nav-label">Transactions</span>
+
+      <!-- Transactions -->
+      <button
+        class="nav-item"
+        data-page="transactions"
+      >
+
+        <span class="nav-icon">
+          📋
+        </span>
+
+        <span class="nav-label">
+          Transactions
+        </span>
+
       </button>
 
-      <button class="nav-item" data-page="buyers">
-        <span class="nav-icon">👤</span>
-        <span class="nav-label">Buyers</span>
+
+      <!-- Buyers -->
+      <button
+        class="nav-item"
+        data-page="buyers"
+      >
+
+        <span class="nav-icon">
+          👤
+        </span>
+
+        <span class="nav-label">
+          Buyers
+        </span>
+
       </button>
 
-      <button class="nav-item" data-page="accounts">
-        <span class="nav-icon">🏦</span>
-        <span class="nav-label">Accounts</span>
+
+      <!-- Accounts -->
+      <button
+        class="nav-item"
+        data-page="accounts"
+      >
+
+        <span class="nav-icon">
+          🏦
+        </span>
+
+        <span class="nav-label">
+          Accounts
+        </span>
+
       </button>
 
-      <button class="nav-item active" data-page="more">
-        <span class="nav-icon">☰</span>
-        <span class="nav-label">More</span>
+
+      <!-- More -->
+      <button
+        class="nav-item active"
+        data-page="more"
+      >
+
+        <span class="nav-icon">
+          ☰
+        </span>
+
+        <span class="nav-label">
+          More
+        </span>
+
       </button>
 
     </nav>
@@ -373,62 +690,99 @@
   </div>
 
 
+  <!-- =========================
+       APP JAVASCRIPT
+  ========================== -->
+
   <script src="../js/app.js"></script>
+
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
 
-      // More menu navigation
-      document.querySelectorAll(".more-item").forEach(item => {
+      /*
+       * More Menu Navigation
+       */
 
-        item.addEventListener("click", () => {
+      document
+        .querySelectorAll(".more-item")
+        .forEach((item) => {
 
-          const page = item.dataset.page;
+          item.addEventListener("click", () => {
 
-          if (!page) return;
+            const page = item.dataset.page;
 
-          window.location.href = page;
+            if (!page) {
+              return;
+            }
 
-        });
+            window.location.href = page;
 
-      });
-
-
-      // Bottom navigation
-      document.querySelectorAll(".bottom-nav .nav-item").forEach(item => {
-
-        item.addEventListener("click", () => {
-
-          const page = item.dataset.page;
-
-          if (page === "home") {
-            window.location.href = "../index.html";
-            return;
-          }
-
-          if (page === "more") {
-            window.location.href = "./more.html";
-            return;
-          }
-
-          if (page === "transactions") {
-            window.location.href = "./transactions.html";
-            return;
-          }
-
-          if (page === "buyers") {
-            window.location.href = "./buyers.html";
-            return;
-          }
-
-          if (page === "accounts") {
-            window.location.href = "./accounts.html";
-            return;
-          }
+          });
 
         });
 
-      });
+
+      /*
+       * Bottom Navigation
+       */
+
+      document
+        .querySelectorAll(".bottom-nav .nav-item")
+        .forEach((item) => {
+
+          item.addEventListener("click", () => {
+
+            const page = item.dataset.page;
+
+
+            if (page === "home") {
+
+              window.location.href =
+                "../index.html";
+
+              return;
+            }
+
+
+            if (page === "transactions") {
+
+              window.location.href =
+                "./transactions.html";
+
+              return;
+            }
+
+
+            if (page === "buyers") {
+
+              window.location.href =
+                "./buyers.html";
+
+              return;
+            }
+
+
+            if (page === "accounts") {
+
+              window.location.href =
+                "./accounts.html";
+
+              return;
+            }
+
+
+            if (page === "more") {
+
+              window.location.href =
+                "./more.html";
+
+              return;
+            }
+
+          });
+
+        });
 
     });
   </script>
