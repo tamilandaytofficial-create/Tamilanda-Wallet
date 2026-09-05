@@ -2,17 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Buyers - Tamilanda Wallet</title>
+  <title>FF Buyers - Tamilanda Wallet</title>
 
-  <link
-    rel="stylesheet"
-    href="../css/style.css"
-  >
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/style.css">
+
+  <meta name="theme-color" content="#09070d">
 </head>
 
 <body>
@@ -20,508 +17,300 @@
   <!-- =========================
        HEADER
   ========================== -->
-  <header class="page-header">
-
-    <div class="page-header-left">
-
-      <button
-        type="button"
-        class="icon-button"
-        id="backButton"
-        aria-label="Go back"
-      >
-        ←
-      </button>
-
-      <div>
-        <h1>Buyers</h1>
-        <p>FF EMI buyers & receivables</p>
-      </div>
-
+  <header class="app-header">
+    <div>
+      <h1>FF Buyers</h1>
+      <p>Manage FF account buyers & EMI payments</p>
     </div>
 
-    <button
-      type="button"
-      class="primary-button"
-      id="addBuyerButton"
-    >
-      + Add Buyer
-    </button>
-
+    <button class="icon-button" onclick="goBack()">←</button>
   </header>
 
 
   <!-- =========================
-       MAIN
+       SUMMARY
   ========================== -->
-  <main class="page-container">
+  <section class="summary-grid">
 
+    <div class="summary-card">
+      <span>Total Buyers</span>
+      <strong id="totalBuyers">0</strong>
+    </div>
 
-    <!-- =========================
-         SUMMARY
-    ========================== -->
-    <section class="summary-grid">
+    <div class="summary-card">
+      <span>Money To Receive</span>
+      <strong id="moneyToReceive">₹0.00</strong>
+    </div>
 
-      <div class="summary-card">
+    <div class="summary-card">
+      <span>Completed</span>
+      <strong id="completedBuyers">0</strong>
+    </div>
 
-        <span class="summary-label">
-          Total Buyers
-        </span>
+    <div class="summary-card">
+      <span>Pending</span>
+      <strong id="pendingBuyers">0</strong>
+    </div>
 
-        <strong id="totalBuyers">
-          0
-        </strong>
-
-      </div>
-
-
-      <div class="summary-card income-card">
-
-        <span class="summary-label">
-          Received
-        </span>
-
-        <strong id="totalReceived">
-          ₹0
-        </strong>
-
-      </div>
-
-
-      <div class="summary-card expense-card">
-
-        <span class="summary-label">
-          To Receive
-        </span>
-
-        <strong id="totalRemaining">
-          ₹0
-        </strong>
-
-      </div>
-
-    </section>
-
-
-    <!-- =========================
-         SEARCH / FILTER
-    ========================== -->
-    <section class="card">
-
-      <div class="section-header">
-
-        <div>
-          <h2>Find Buyer</h2>
-          <p>Search or filter your buyers</p>
-        </div>
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label for="searchInput">
-          Search
-        </label>
-
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Name, phone, FF ID..."
-          autocomplete="off"
-        >
-
-      </div>
-
-
-      <div class="form-row">
-
-        <div class="form-group">
-
-          <label for="statusFilter">
-            Status
-          </label>
-
-          <select id="statusFilter">
-
-            <option value="all">
-              All
-            </option>
-
-            <option value="pending">
-              Pending
-            </option>
-
-            <option value="completed">
-              Completed
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="sortFilter">
-            Sort
-          </label>
-
-          <select id="sortFilter">
-
-            <option value="newest">
-              Newest
-            </option>
-
-            <option value="oldest">
-              Oldest
-            </option>
-
-            <option value="highest">
-              Highest Amount
-            </option>
-
-            <option value="remaining">
-              Highest Remaining
-            </option>
-
-            <option value="name">
-              Name A-Z
-            </option>
-
-          </select>
-
-        </div>
-
-      </div>
-
-
-      <button
-        type="button"
-        class="secondary-button full-width"
-        id="clearFiltersButton"
-      >
-        Clear Filters
-      </button>
-
-    </section>
-
-
-    <!-- =========================
-         BUYER LIST
-    ========================== -->
-    <section class="card">
-
-      <div class="section-header">
-
-        <div>
-          <h2>Buyer List</h2>
-
-          <p id="buyerCount">
-            0 buyers
-          </p>
-        </div>
-
-      </div>
-
-
-      <div
-        id="buyersList"
-        class="transaction-list"
-      >
-        <!-- Buyers will appear here -->
-      </div>
-
-    </section>
-
-  </main>
+  </section>
 
 
   <!-- =========================
-       ADD / EDIT BUYER MODAL
+       ADD BUYER BUTTON
   ========================== -->
-  <div
-    class="modal-overlay"
-    id="buyerModal"
-    style="display: none;"
+  <section class="page-actions">
+    <button class="primary-button" onclick="openBuyerForm()">
+      + Add FF Buyer
+    </button>
+  </section>
+
+
+  <!-- =========================
+       SEARCH & FILTER
+  ========================== -->
+  <section class="card">
+
+    <input
+      type="search"
+      id="searchInput"
+      class="input"
+      placeholder="🔎 Search buyer name, phone or FF ID..."
+      oninput="renderBuyers()"
+    >
+
+    <select
+      id="statusFilter"
+      class="input"
+      onchange="renderBuyers()"
+    >
+      <option value="all">All Buyers</option>
+      <option value="pending">Pending</option>
+      <option value="completed">Completed</option>
+    </select>
+
+</section>
+
+
+  <!-- =========================
+       BUYER FORM
+  ========================== -->
+  <section
+    class="card"
+    id="buyerFormCard"
+    style="display:none;"
   >
 
-    <div class="modal">
-
-      <div class="modal-header">
-
-        <div>
-          <h2 id="modalTitle">
-            Add Buyer
-          </h2>
-
-          <p>
-            Enter buyer & EMI details
-          </p>
-        </div>
-
-
-        <button
-          type="button"
-          class="icon-button"
-          id="closeBuyerModal"
-        >
-          ×
-        </button>
-
-      </div>
-
-
-      <form id="buyerForm">
-
-        <input
-          type="hidden"
-          id="buyerId"
-        >
-
-
-        <!-- Buyer Name -->
-
-        <div class="form-group">
-
-          <label for="buyerName">
-            Buyer Name
-          </label>
-
-          <input
-            type="text"
-            id="buyerName"
-            placeholder="Enter buyer name"
-            required
-          >
-
-        </div>
-
-
-        <!-- Phone -->
-
-        <div class="form-group">
-
-          <label for="buyerPhone">
-            Phone Number
-          </label>
-
-          <input
-            type="tel"
-            id="buyerPhone"
-            placeholder="Enter phone number"
-          >
-
-        </div>
-
-
-        <!-- FF ID -->
-
-        <div class="form-group">
-
-          <label for="ffId">
-            FF ID / Account
-          </label>
-
-          <input
-            type="text"
-            id="ffId"
-            placeholder="Enter FF ID or account"
-          >
-
-        </div>
-
-
-        <!-- Total Amount -->
-
-        <div class="form-group">
-
-          <label for="totalAmount">
-            Total Amount
-          </label>
-
-          <input
-            type="number"
-            id="totalAmount"
-            min="0.01"
-            step="0.01"
-            placeholder="₹ 50,000"
-            required
-          >
-
-        </div>
-
-
-        <!-- Initial Payment -->
-
-        <div class="form-group">
-
-          <label for="initialPayment">
-            Initial Payment
-          </label>
-
-          <input
-            type="number"
-            id="initialPayment"
-            min="0"
-            step="0.01"
-            value="0"
-            placeholder="₹ 0"
-          >
-
-        </div>
-
-
-        <!-- EMI Duration -->
-
-        <div class="form-group">
-
-          <label for="emiDuration">
-            EMI Duration
-          </label>
-
-          <select id="emiDuration">
-
-            <option value="1">
-              1 Month
-            </option>
-
-            <option value="2">
-              2 Months
-            </option>
-
-            <option value="3">
-              3 Months
-            </option>
-
-            <option value="6">
-              6 Months
-            </option>
-
-            <option value="custom">
-              Custom
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <!-- Custom Months -->
-
-        <div
-          class="form-group"
-          id="customMonthsGroup"
-          style="display: none;"
-        >
-
-          <label for="customMonths">
-            Custom Duration (Months)
-          </label>
-
-          <input
-            type="number"
-            id="customMonths"
-            min="1"
-            step="1"
-            placeholder="Example: 9"
-          >
-
-        </div>
-
-
-        <!-- Due Date -->
-
-        <div class="form-group">
-
-          <label for="dueDate">
-            Due Date
-          </label>
-
-          <input
-            type="date"
-            id="dueDate"
-          >
-
-        </div>
-
-
-        <!-- Note -->
-
-        <div class="form-group">
-
-          <label for="buyerNote">
-            Note
-          </label>
-
-          <textarea
-            id="buyerNote"
-            rows="3"
-            placeholder="Optional note"
-          ></textarea>
-
-        </div>
-
-
-        <!-- Buttons -->
-
-        <div class="modal-actions">
-
-          <button
-            type="button"
-            class="secondary-button"
-            id="cancelBuyerButton"
-          >
-            Cancel
-          </button>
-
-
-          <button
-            type="submit"
-            class="primary-button"
-          >
-            Save Buyer
-          </button>
-
-        </div>
-
-      </form>
+    <div class="section-title">
+      <h2 id="formTitle">Add FF Buyer</h2>
+
+      <button
+        class="secondary-button"
+        onclick="closeBuyerForm()"
+      >
+        Cancel
+      </button>
+    </div>
+
+
+    <input
+      type="hidden"
+      id="editingBuyerId"
+    >
+
+
+    <label>Buyer Name</label>
+    <input
+      type="text"
+      id="buyerName"
+      class="input"
+      placeholder="Enter buyer name"
+    >
+
+
+    <label>Phone Number</label>
+    <input
+      type="tel"
+      id="buyerPhone"
+      class="input"
+      placeholder="Enter phone number"
+    >
+
+
+    <label>FF ID / Account ID</label>
+    <input
+      type="text"
+      id="ffId"
+      class="input"
+      placeholder="Enter FF ID"
+    >
+
+
+    <label>Total Sale Amount</label>
+    <input
+      type="number"
+      id="totalAmount"
+      class="input"
+      placeholder="₹ Total amount"
+      min="0"
+      step="0.01"
+      oninput="updateInitialPreview()"
+    >
+
+
+    <label>Initial Payment Received</label>
+    <input
+      type="number"
+      id="initialPayment"
+      class="input"
+      placeholder="₹ Initial payment"
+      min="0"
+      step="0.01"
+      oninput="updateInitialPreview()"
+    >
+
+
+    <div
+      id="initialPaymentFields"
+      style="display:none;"
+    >
+
+      <label>Initial Payment Received Into</label>
+
+      <select
+        id="initialPaymentAccount"
+        class="input"
+      >
+        <option value="">Select account</option>
+      </select>
+
+      <label>Initial Payment Date</label>
+
+      <input
+        type="date"
+        id="initialPaymentDate"
+        class="input"
+      >
 
     </div>
 
-  </div>
+
+    <div class="info-box">
+      <span>Remaining after initial payment</span>
+      <strong id="initialRemainingPreview">₹0.00</strong>
+    </div>
+
+
+    <label>EMI Duration</label>
+
+    <select
+      id="emiDuration"
+      class="input"
+      onchange="handleDurationChange()"
+    >
+      <option value="1">1 Month</option>
+      <option value="2">2 Months</option>
+      <option value="3">3 Months</option>
+      <option value="6" selected>6 Months</option>
+      <option value="custom">Custom</option>
+    </select>
+
+
+    <div
+      id="customDurationBox"
+      style="display:none;"
+    >
+
+      <label>Custom Duration</label>
+
+      <input
+        type="number"
+        id="customDuration"
+        class="input"
+        placeholder="Number of months"
+        min="1"
+        step="1"
+        oninput="updateEmiPreview()"
+      >
+
+    </div>
+
+
+    <div class="info-box">
+
+      <span>Estimated Monthly EMI</span>
+
+      <strong id="emiPreview">
+        ₹0.00
+      </strong>
+
+    </div>
+
+
+    <label>Due Date</label>
+
+    <input
+      type="date"
+      id="dueDate"
+      class="input"
+    >
+
+
+    <label>Notes</label>
+
+    <textarea
+      id="buyerNotes"
+      class="input"
+      rows="3"
+      placeholder="Optional notes..."
+    ></textarea>
+
+
+    <button
+      class="primary-button"
+      id="saveBuyerButton"
+      onclick="saveBuyer()"
+    >
+      Save Buyer
+    </button>
+
+  </section>
+
+
+  <!-- =========================
+       BUYERS LIST
+  ========================== -->
+  <section>
+
+    <div class="section-heading">
+      <h2>Buyer List</h2>
+    </div>
+
+    <div id="buyersList"></div>
+
+  </section>
 
 
   <!-- =========================
        PAYMENT MODAL
   ========================== -->
   <div
-    class="modal-overlay"
     id="paymentModal"
-    style="display: none;"
+    class="modal"
+    style="display:none;"
   >
 
-    <div class="modal">
+    <div class="modal-content">
 
-      <div class="modal-header">
+      <div class="section-title">
 
         <div>
-
-          <h2>
-            Add Payment
-          </h2>
-
-          <p id="paymentBuyerName">
-            Buyer
-          </p>
-
+          <h2>Receive Payment</h2>
+          <p id="paymentBuyerName"></p>
         </div>
 
-
         <button
-          type="button"
           class="icon-button"
-          id="closePaymentModal"
+          onclick="closePaymentModal()"
         >
           ×
         </button>
@@ -529,199 +318,70 @@
       </div>
 
 
-      <form id="paymentForm">
+      <div class="info-box">
 
-        <input
-          type="hidden"
-          id="paymentBuyerId"
-        >
+        <span>Remaining Amount</span>
 
-
-        <!-- Remaining -->
-
-        <div class="summary-card">
-
-          <span class="summary-label">
-            Remaining
-          </span>
-
-          <strong id="paymentRemaining">
-            ₹0
-          </strong>
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="paymentAmount">
-            Amount Received
-          </label>
-
-          <input
-            type="number"
-            id="paymentAmount"
-            min="0.01"
-            step="0.01"
-            placeholder="Enter received amount"
-            required
-          >
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="paymentDate">
-            Payment Date
-          </label>
-
-          <input
-            type="date"
-            id="paymentDate"
-            required
-          >
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="paymentMethod">
-            Received Through
-          </label>
-
-          <select id="paymentMethod">
-
-            <option value="cash">
-              Cash
-            </option>
-
-            <option value="bank">
-              Bank
-            </option>
-
-            <option value="upi">
-              UPI
-            </option>
-
-            <option value="wallet">
-              Wallet
-            </option>
-
-            <option value="other">
-              Other
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <!-- Account -->
-
-        <div class="form-group">
-
-          <label for="paymentAccount">
-            Received In Account
-          </label>
-
-          <select id="paymentAccount">
-
-            <option value="">
-              Select account
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="paymentNote">
-            Note
-          </label>
-
-          <textarea
-            id="paymentNote"
-            rows="3"
-            placeholder="Optional payment note"
-          ></textarea>
-
-        </div>
-
-
-        <div class="modal-actions">
-
-          <button
-            type="button"
-            class="secondary-button"
-            id="cancelPaymentButton"
-          >
-            Cancel
-          </button>
-
-
-          <button
-            type="submit"
-            class="primary-button"
-          >
-            Save Payment
-          </button>
-
-        </div>
-
-      </form>
-
-    </div>
-
-  </div>
-
-
-  <!-- =========================
-       PAYMENT HISTORY MODAL
-  ========================== -->
-  <div
-    class="modal-overlay"
-    id="historyModal"
-    style="display: none;"
-  >
-
-    <div class="modal">
-
-      <div class="modal-header">
-
-        <div>
-
-          <h2>
-            Payment History
-          </h2>
-
-          <p id="historyBuyerName">
-            Buyer
-          </p>
-
-        </div>
-
-
-        <button
-          type="button"
-          class="icon-button"
-          id="closeHistoryModal"
-        >
-          ×
-        </button>
+        <strong id="paymentRemaining">
+          ₹0.00
+        </strong>
 
       </div>
 
 
-      <div
-        id="paymentHistoryList"
-        class="transaction-list"
+      <input
+        type="hidden"
+        id="paymentBuyerId"
       >
-        <!-- Payment history -->
-      </div>
+
+
+      <label>Amount Received</label>
+
+      <input
+        type="number"
+        id="paymentAmount"
+        class="input"
+        placeholder="₹ Amount"
+        min="0"
+        step="0.01"
+      >
+
+
+      <label>Received Into</label>
+
+      <select
+        id="paymentAccount"
+        class="input"
+      >
+        <option value="">Select account</option>
+      </select>
+
+
+      <label>Date</label>
+
+      <input
+        type="date"
+        id="paymentDate"
+        class="input"
+      >
+
+
+      <label>Note</label>
+
+      <textarea
+        id="paymentNote"
+        class="input"
+        rows="3"
+        placeholder="Optional payment note..."
+      ></textarea>
+
+
+      <button
+        class="primary-button"
+        onclick="saveBuyerPayment()"
+      >
+        + Record Payment
+      </button>
 
     </div>
 
@@ -729,58 +389,89 @@
 
 
   <!-- =========================
-       JAVASCRIPT
+       BOTTOM NAV
+  ========================== -->
+  <nav class="bottom-nav">
+
+    <button onclick="goToPage('home')">
+      🏠
+      <span>Home</span>
+    </button>
+
+    <button onclick="goToPage('transactions')">
+      📋
+      <span>Transactions</span>
+    </button>
+
+    <button class="active">
+      👤
+      <span>Buyers</span>
+    </button>
+
+    <button onclick="goToPage('accounts')">
+      🏦
+      <span>Accounts</span>
+    </button>
+
+    <button onclick="goToPage('more')">
+      ☰
+      <span>More</span>
+    </button>
+
+  </nav>
+
+
+  <!-- =========================
+       APP JS
   ========================== -->
   <script src="../js/app.js"></script>
 
 
   <script>
 
-    let walletData = null;
-
-    let filteredBuyers = [];
+    let walletData;
+    let editingBuyerId = null;
 
 
     /* =========================
        HELPERS
     ========================== */
 
-    function getWalletData() {
-
-      if (
-        window.TamilandaWallet &&
-        typeof window.TamilandaWallet.getData === "function"
-      ) {
-        return window.TamilandaWallet.getData();
-      }
-
-      return null;
-    }
-
-
-    function saveWalletData() {
-
-      if (
-        window.TamilandaWallet &&
-        typeof window.TamilandaWallet.save === "function"
-      ) {
-        window.TamilandaWallet.save();
-      }
-
-    }
-
-
-    function formatMoney(amount) {
+    function money(value) {
 
       if (
         window.TamilandaWallet &&
         typeof window.TamilandaWallet.formatMoney === "function"
       ) {
-        return window.TamilandaWallet.formatMoney(amount);
+        return window.TamilandaWallet.formatMoney(Number(value) || 0);
       }
 
-      return "₹" +
-        Number(amount || 0).toLocaleString("en-IN");
+      return "₹" + (Number(value) || 0).toLocaleString("en-IN", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+
+    }
+
+
+    function today() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.todayString === "function"
+      ) {
+        return window.TamilandaWallet.todayString();
+      }
+
+      const d = new Date();
+
+      return (
+        d.getFullYear() +
+        "-" +
+        String(d.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(d.getDate()).padStart(2, "0")
+      );
 
     }
 
@@ -796,8 +487,20 @@
 
       return (
         Date.now().toString(36) +
-        Math.random().toString(36).substring(2, 9)
+        Math.random().toString(36).substring(2, 8)
       );
+
+    }
+
+
+    function saveData() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.save === "function"
+      ) {
+        window.TamilandaWallet.save();
+      }
 
     }
 
@@ -811,7 +514,7 @@
         return window.TamilandaWallet.escapeHtml(value);
       }
 
-      return String(value ?? "")
+      return String(value || "")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
@@ -821,134 +524,66 @@
     }
 
 
-    function todayString() {
+    function getRemaining(buyer) {
 
       if (
         window.TamilandaWallet &&
-        typeof window.TamilandaWallet.todayString === "function"
+        typeof window.TamilandaWallet.getBuyerRemaining === "function"
       ) {
-        return window.TamilandaWallet.todayString();
+        return Number(
+          window.TamilandaWallet.getBuyerRemaining(buyer.id)
+        ) || 0;
       }
 
-      const date = new Date();
+      const payments = (walletData.buyerPayments || [])
+        .filter(p => p.buyerId === buyer.id)
+        .reduce(
+          (sum, p) => sum + Number(p.amount || 0),
+          0
+        );
 
-      const year =
-        date.getFullYear();
+      return Math.max(
+        0,
+        Number(buyer.totalAmount || 0) -
+        Number(buyer.initialPayment || 0) -
+        payments
+      );
 
-      const month =
-        String(date.getMonth() + 1)
-          .padStart(2, "0");
+    }
 
-      const day =
-        String(date.getDate())
-          .padStart(2, "0");
 
-      return `${year}-${month}-${day}`;
+    function getDuration(buyer) {
+
+      if (buyer.emiDuration === "custom") {
+        return Number(buyer.customDuration || 1);
+      }
+
+      return Number(buyer.emiDuration || 1);
 
     }
 
 
     function formatDate(dateString) {
 
-      if (!dateString) {
-        return "-";
-      }
+      if (!dateString) return "-";
 
-      const date =
-        new Date(dateString + "T00:00:00");
+      const parts = dateString.split("-");
 
-      if (Number.isNaN(date.getTime())) {
+      if (parts.length !== 3) {
         return dateString;
       }
 
-      return date.toLocaleDateString(
-        "en-IN",
-        {
-          day: "2-digit",
-          month: "short",
-          year: "numeric"
-        }
-      );
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
 
     }
 
 
-    /* =========================
-       BUYER CALCULATIONS
-    ========================== */
+    function getAccountName(accountId) {
 
-    function getBuyerPayments(buyerId) {
+      const account = (walletData.accounts || [])
+        .find(a => a.id === accountId);
 
-      return (walletData.buyerPayments || [])
-        .filter(payment =>
-          payment.buyerId === buyerId
-        );
-
-    }
-
-
-    function getBuyerReceived(buyer) {
-
-      const payments =
-        getBuyerPayments(buyer.id);
-
-      const paymentTotal =
-        payments.reduce(
-          (sum, payment) =>
-            sum + Number(payment.amount || 0),
-          0
-        );
-
-      /*
-        Initial payment is included separately.
-        Old records without payment history
-        can still work.
-      */
-
-      return Number(buyer.initialPayment || 0)
-        + paymentTotal;
-
-    }
-
-
-    function getBuyerRemaining(buyer) {
-
-      const total =
-        Number(buyer.totalAmount || 0);
-
-      const received =
-        getBuyerReceived(buyer);
-
-      return Math.max(
-        0,
-        total - received
-      );
-
-    }
-
-
-    function getBuyerStatus(buyer) {
-
-      return getBuyerRemaining(buyer) <= 0
-        ? "completed"
-        : "pending";
-
-    }
-
-
-    function getBuyerDuration(buyer) {
-
-      if (buyer.emiDuration === "custom") {
-
-        return Number(
-          buyer.customMonths || 0
-        );
-
-      }
-
-      return Number(
-        buyer.emiDuration || 0
-      );
+      return account ? account.name : "Unknown Account";
 
     }
 
@@ -957,33 +592,63 @@
        INITIALIZE
     ========================== */
 
-    function initializeBuyers() {
+    document.addEventListener("DOMContentLoaded", function() {
 
       walletData =
-        getWalletData();
+        window.TamilandaWallet.getData();
 
-      if (!walletData) {
-        return;
-      }
+      document.getElementById("initialPaymentDate").value = today();
+      document.getElementById("paymentDate").value = today();
 
-
-      if (!walletData.buyers) {
-        walletData.buyers = [];
-      }
-
-
-      if (!walletData.buyerPayments) {
-        walletData.buyerPayments = [];
-      }
-
-
-      renderAccountsForPayment();
+      populateAccountSelects();
 
       renderSummary();
+      renderBuyers();
 
-      applyFilters();
+    });
 
-      setupEvents();
+
+    /* =========================
+       ACCOUNT SELECTS
+    ========================== */
+
+    function populateAccountSelects() {
+
+      const initialSelect =
+        document.getElementById("initialPaymentAccount");
+
+      const paymentSelect =
+        document.getElementById("paymentAccount");
+
+      initialSelect.innerHTML =
+        `<option value="">Select account</option>`;
+
+      paymentSelect.innerHTML =
+        `<option value="">Select account</option>`;
+
+
+      (walletData.accounts || []).forEach(account => {
+
+        const option1 =
+          document.createElement("option");
+
+        option1.value = account.id;
+        option1.textContent =
+          `${account.name} — ${money(account.balance)}`;
+
+        initialSelect.appendChild(option1);
+
+
+        const option2 =
+          document.createElement("option");
+
+        option2.value = account.id;
+        option2.textContent =
+          `${account.name} — ${money(account.balance)}`;
+
+        paymentSelect.appendChild(option2);
+
+      });
 
     }
 
@@ -997,673 +662,202 @@
       const buyers =
         walletData.buyers || [];
 
-
-      let received = 0;
-
-      let remaining = 0;
+      let pending = 0;
+      let completed = 0;
+      let receive = 0;
 
 
       buyers.forEach(buyer => {
 
-        received +=
-          getBuyerReceived(buyer);
+        const remaining =
+          getRemaining(buyer);
 
-        remaining +=
-          getBuyerRemaining(buyer);
+        receive += remaining;
+
+        if (remaining <= 0) {
+          completed++;
+        } else {
+          pending++;
+        }
 
       });
 
 
-      document.getElementById(
-        "totalBuyers"
-      ).textContent =
+      document.getElementById("totalBuyers").textContent =
         buyers.length;
 
+      document.getElementById("moneyToReceive").textContent =
+        money(receive);
 
-      document.getElementById(
-        "totalReceived"
-      ).textContent =
-        formatMoney(received);
+      document.getElementById("completedBuyers").textContent =
+        completed;
 
-
-      document.getElementById(
-        "totalRemaining"
-      ).textContent =
-        formatMoney(remaining);
+      document.getElementById("pendingBuyers").textContent =
+        pending;
 
     }
 
 
     /* =========================
-       FILTER
+       BUYER FORM
     ========================== */
 
-    function applyFilters() {
+    function openBuyerForm() {
 
-      const buyers =
-        walletData.buyers || [];
+      editingBuyerId = null;
 
+      document.getElementById("formTitle").textContent =
+        "Add FF Buyer";
 
-      const search =
-        document.getElementById(
-          "searchInput"
-        )
-        .value
-        .trim()
-        .toLowerCase();
+      document.getElementById("saveBuyerButton").textContent =
+        "Save Buyer";
 
+      document.getElementById("buyerFormCard").style.display =
+        "block";
 
-      const status =
-        document.getElementById(
-          "statusFilter"
-        ).value;
+      clearBuyerForm();
 
-
-      const sort =
-        document.getElementById(
-          "sortFilter"
-        ).value;
-
-
-      filteredBuyers =
-        buyers.filter(buyer => {
-
-          if (search) {
-
-            const searchable =
-              [
-                buyer.name,
-                buyer.phone,
-                buyer.ffId,
-                buyer.note
-              ]
-                .filter(Boolean)
-                .join(" ")
-                .toLowerCase();
-
-
-            if (
-              !searchable.includes(search)
-            ) {
-              return false;
-            }
-
-          }
-
-
-          const buyerStatus =
-            getBuyerStatus(buyer);
-
-
-          if (
-            status !== "all" &&
-            buyerStatus !== status
-          ) {
-            return false;
-          }
-
-
-          return true;
-
-        });
-
-
-      filteredBuyers.sort(
-        (a, b) => {
-
-          if (sort === "name") {
-
-            return String(a.name || "")
-              .localeCompare(
-                String(b.name || "")
-              );
-
-          }
-
-
-          if (sort === "highest") {
-
-            return Number(b.totalAmount || 0)
-              - Number(a.totalAmount || 0);
-
-          }
-
-
-          if (sort === "remaining") {
-
-            return getBuyerRemaining(b)
-              - getBuyerRemaining(a);
-
-          }
-
-
-          const dateA =
-            String(a.createdAt || a.date || "");
-
-          const dateB =
-            String(b.createdAt || b.date || "");
-
-
-          if (sort === "oldest") {
-            return dateA.localeCompare(dateB);
-          }
-
-
-          return dateB.localeCompare(dateA);
-
-        }
-      );
-
-
-      renderBuyers();
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
 
     }
 
 
-    /* =========================
-       RENDER BUYERS
-    ========================== */
+    function closeBuyerForm() {
 
-    function renderBuyers() {
-
-      const container =
-        document.getElementById(
-          "buyersList"
-        );
-
-
-      const count =
-        document.getElementById(
-          "buyerCount"
-        );
-
-
-      count.textContent =
-        `${filteredBuyers.length} ${
-          filteredBuyers.length === 1
-            ? "buyer"
-            : "buyers"
-        }`;
-
-
-      if (
-        filteredBuyers.length === 0
-      ) {
-
-        container.innerHTML = `
-
-          <div class="empty-state">
-
-            <div class="empty-icon">
-              👤
-            </div>
-
-            <h3>
-              No buyers found
-            </h3>
-
-            <p>
-              Add your first FF EMI buyer.
-            </p>
-
-          </div>
-
-        `;
-
-        return;
-
-      }
-
-
-      container.innerHTML =
-        filteredBuyers
-          .map(
-            buyer =>
-              createBuyerHtml(buyer)
-          )
-          .join("");
-
-    }
-
-
-    function createBuyerHtml(buyer) {
-
-      const total =
-        Number(buyer.totalAmount || 0);
-
-
-      const received =
-        getBuyerReceived(buyer);
-
-
-      const remaining =
-        getBuyerRemaining(buyer);
-
-
-      const status =
-        getBuyerStatus(buyer);
-
-
-      const duration =
-        getBuyerDuration(buyer);
-
-
-      const percentage =
-        total > 0
-          ? Math.min(
-              100,
-              (received / total) * 100
-            )
-          : 0;
-
-
-      return `
-
-        <div class="transaction-item">
-
-          <div class="transaction-icon">
-
-            👤
-
-          </div>
-
-
-          <div class="transaction-info">
-
-            <div class="transaction-title">
-
-              ${escapeHtml(
-                buyer.name || "Unnamed Buyer"
-              )}
-
-            </div>
-
-
-            <div class="transaction-meta">
-
-              ${
-                buyer.phone
-                  ? escapeHtml(buyer.phone)
-                  : ""
-              }
-
-              ${
-                buyer.ffId
-                  ? (
-                    buyer.phone
-                      ? " • "
-                      : ""
-                  ) +
-                    "FF: " +
-                    escapeHtml(buyer.ffId)
-                  : ""
-              }
-
-            </div>
-
-
-            <div class="transaction-meta">
-
-              ${
-                duration
-                  ? duration +
-                    (
-                      duration === 1
-                        ? " Month"
-                        : " Months"
-                    )
-                  : ""
-              }
-
-              ${
-                buyer.dueDate
-                  ? " • Due " +
-                    escapeHtml(
-                      formatDate(
-                        buyer.dueDate
-                      )
-                    )
-                  : ""
-              }
-
-            </div>
-
-
-            <div
-              style="
-                margin-top:10px;
-                height:6px;
-                border-radius:10px;
-                background:rgba(255,255,255,0.08);
-                overflow:hidden;
-              "
-            >
-
-              <div
-                style="
-                  width:${percentage}%;
-                  height:100%;
-                  border-radius:10px;
-                  background:#55d98b;
-                "
-              ></div>
-
-            </div>
-
-
-            <div
-              style="
-                margin-top:6px;
-                font-size:12px;
-                opacity:0.7;
-              "
-            >
-
-              ${percentage.toFixed(0)}% paid
-
-            </div>
-
-          </div>
-
-
-          <div class="transaction-right">
-
-            <div
-              class="transaction-amount"
-              style="
-                color:${
-                  status === "completed"
-                    ? "#55d98b"
-                    : "#ffc857"
-                };
-              "
-            >
-
-              ${
-                status === "completed"
-                  ? "PAID"
-                  : formatMoney(remaining)
-              }
-
-            </div>
-
-
-            <div
-              style="
-                font-size:11px;
-                opacity:0.65;
-                margin-top:3px;
-              "
-            >
-
-              ${
-                status === "completed"
-                  ? "Completed"
-                  : "Remaining"
-              }
-
-            </div>
-
-
-            <div class="transaction-actions">
-
-              ${
-                status !== "completed"
-                  ? `
-                    <button
-                      type="button"
-                      class="small-button"
-                      onclick="openPaymentModal('${buyer.id}')"
-                    >
-                      + Payment
-                    </button>
-                  `
-                  : ""
-              }
-
-
-              <button
-                type="button"
-                class="small-button"
-                onclick="openHistoryModal('${buyer.id}')"
-              >
-                History
-              </button>
-
-
-              <button
-                type="button"
-                class="small-button"
-                onclick="openEditBuyer('${buyer.id}')"
-              >
-                Edit
-              </button>
-
-
-              <button
-                type="button"
-                class="small-button danger-button"
-                onclick="deleteBuyer('${buyer.id}')"
-              >
-                Delete
-              </button>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      `;
-
-    }
-
-
-    /* =========================
-       ACCOUNT OPTIONS
-    ========================== */
-
-    function renderAccountsForPayment() {
-
-      const select =
-        document.getElementById(
-          "paymentAccount"
-        );
-
-
-      select.innerHTML = `
-        <option value="">
-          Select account
-        </option>
-      `;
-
-
-      (walletData.accounts || [])
-        .forEach(account => {
-
-          const option =
-            document.createElement(
-              "option"
-            );
-
-
-          option.value =
-            account.id;
-
-
-          option.textContent =
-            `${account.name} — ${
-              formatMoney(
-                account.balance
-              )
-            }`;
-
-
-          select.appendChild(option);
-
-        });
-
-    }
-
-
-    /* =========================
-       OPEN BUYER MODAL
-    ========================== */
-
-    function openAddBuyer() {
-
-      document.getElementById(
-        "buyerForm"
-      ).reset();
-
-
-      document.getElementById(
-        "buyerId"
-      ).value = "";
-
-
-      document.getElementById(
-        "modalTitle"
-      ).textContent =
-        "Add Buyer";
-
-
-      document.getElementById(
-        "initialPayment"
-      ).value = "0";
-
-
-      document.getElementById(
-        "customMonthsGroup"
-      ).style.display =
+      document.getElementById("buyerFormCard").style.display =
         "none";
 
+      editingBuyerId = null;
 
-      document.getElementById(
-        "buyerModal"
-      ).style.display =
-        "flex";
+      clearBuyerForm();
 
     }
 
 
-    /* =========================
-       EDIT BUYER
-    ========================== */
+    function clearBuyerForm() {
 
-    function openEditBuyer(id) {
+      document.getElementById("editingBuyerId").value = "";
 
-      const buyer =
-        (walletData.buyers || [])
-          .find(
-            item => item.id === id
-          );
+      document.getElementById("buyerName").value = "";
+      document.getElementById("buyerPhone").value = "";
+      document.getElementById("ffId").value = "";
+      document.getElementById("totalAmount").value = "";
+      document.getElementById("initialPayment").value = "";
 
+      document.getElementById("initialPaymentAccount").value = "";
 
-      if (!buyer) {
-        return;
-      }
+      document.getElementById("initialPaymentDate").value =
+        today();
 
+      document.getElementById("emiDuration").value = "6";
 
-      document.getElementById(
-        "buyerId"
-      ).value =
-        buyer.id;
+      document.getElementById("customDuration").value = "";
 
+      document.getElementById("dueDate").value = "";
 
-      document.getElementById(
-        "buyerName"
-      ).value =
-        buyer.name || "";
+      document.getElementById("buyerNotes").value = "";
 
+      document.getElementById("customDurationBox").style.display =
+        "none";
 
-      document.getElementById(
-        "buyerPhone"
-      ).value =
-        buyer.phone || "";
+      document.getElementById("initialPaymentFields").style.display =
+        "none";
 
+      document.getElementById("initialRemainingPreview").textContent =
+        money(0);
 
-      document.getElementById(
-        "ffId"
-      ).value =
-        buyer.ffId || "";
+      document.getElementById("emiPreview").textContent =
+        money(0);
+
+    }
 
 
-      document.getElementById(
-        "totalAmount"
-      ).value =
-        buyer.totalAmount || "";
+    function updateInitialPreview() {
+
+      const total =
+        Number(
+          document.getElementById("totalAmount").value
+        ) || 0;
+
+      const initial =
+        Number(
+          document.getElementById("initialPayment").value
+        ) || 0;
+
+      const remaining =
+        Math.max(0, total - initial);
 
 
-      document.getElementById(
-        "initialPayment"
-      ).value =
-        buyer.initialPayment || 0;
+      document.getElementById("initialRemainingPreview")
+        .textContent = money(remaining);
 
 
-      document.getElementById(
-        "emiDuration"
-      ).value =
-        buyer.emiDuration || "1";
+      document.getElementById("initialPaymentFields").style.display =
+        initial > 0 ? "block" : "none";
 
 
-      document.getElementById(
-        "customMonths"
-      ).value =
-        buyer.customMonths || "";
+      updateEmiPreview();
+
+    }
 
 
-      document.getElementById(
-        "dueDate"
-      ).value =
-        buyer.dueDate || "";
+    function handleDurationChange() {
+
+      const value =
+        document.getElementById("emiDuration").value;
+
+      document.getElementById("customDurationBox").style.display =
+        value === "custom" ? "block" : "none";
+
+      updateEmiPreview();
+
+    }
 
 
-      document.getElementById(
-        "buyerNote"
-      ).value =
-        buyer.note || "";
+    function updateEmiPreview() {
 
+      const total =
+        Number(
+          document.getElementById("totalAmount").value
+        ) || 0;
 
-      if (
-        buyer.emiDuration === "custom"
-      ) {
+      const initial =
+        Number(
+          document.getElementById("initialPayment").value
+        ) || 0;
 
-        document.getElementById(
-          "customMonthsGroup"
-        ).style.display =
-          "block";
+      let duration =
+        document.getElementById("emiDuration").value;
+
+      if (duration === "custom") {
+
+        duration =
+          Number(
+            document.getElementById("customDuration").value
+          ) || 1;
 
       } else {
 
-        document.getElementById(
-          "customMonthsGroup"
-        ).style.display =
-          "none";
+        duration =
+          Number(duration) || 1;
 
       }
 
 
-      document.getElementById(
-        "modalTitle"
-      ).textContent =
-        "Edit Buyer";
+      const remaining =
+        Math.max(0, total - initial);
+
+      const emi =
+        duration > 0
+          ? remaining / duration
+          : remaining;
 
 
-      document.getElementById(
-        "buyerModal"
-      ).style.display =
-        "flex";
-
-    }
-
-
-    function closeBuyerModal() {
-
-      document.getElementById(
-        "buyerModal"
-      ).style.display =
-        "none";
+      document.getElementById("emiPreview")
+        .textContent = money(emi);
 
     }
 
@@ -1672,338 +866,396 @@
        SAVE BUYER
     ========================== */
 
-    function saveBuyer(event) {
-
-      event.preventDefault();
-
-
-      const id =
-        document.getElementById(
-          "buyerId"
-        ).value;
-
+    function saveBuyer() {
 
       const name =
-        document.getElementById(
-          "buyerName"
-        ).value.trim();
-
+        document.getElementById("buyerName")
+          .value.trim();
 
       const phone =
-        document.getElementById(
-          "buyerPhone"
-        ).value.trim();
-
+        document.getElementById("buyerPhone")
+          .value.trim();
 
       const ffId =
-        document.getElementById(
-          "ffId"
-        ).value.trim();
-
+        document.getElementById("ffId")
+          .value.trim();
 
       const totalAmount =
         Number(
-          document.getElementById(
-            "totalAmount"
-          ).value
-        );
-
+          document.getElementById("totalAmount").value
+        ) || 0;
 
       const initialPayment =
         Number(
-          document.getElementById(
-            "initialPayment"
-          ).value || 0
-        );
+          document.getElementById("initialPayment").value
+        ) || 0;
 
+      const initialAccountId =
+        document.getElementById("initialPaymentAccount").value;
+
+      const initialPaymentDate =
+        document.getElementById("initialPaymentDate").value ||
+        today();
 
       const emiDuration =
-        document.getElementById(
-          "emiDuration"
-        ).value;
+        document.getElementById("emiDuration").value;
 
-
-      const customMonths =
+      const customDuration =
         Number(
-          document.getElementById(
-            "customMonths"
-          ).value || 0
-        );
-
+          document.getElementById("customDuration").value
+        ) || 0;
 
       const dueDate =
-        document.getElementById(
-          "dueDate"
-        ).value;
+        document.getElementById("dueDate").value;
+
+      const notes =
+        document.getElementById("buyerNotes")
+          .value.trim();
 
 
-      const note =
-        document.getElementById(
-          "buyerNote"
-        ).value.trim();
-
+      /* Validation */
 
       if (!name) {
-
-        alert(
-          "Please enter buyer name."
-        );
-
+        alert("Please enter buyer name.");
         return;
-
       }
 
-
-      if (
-        !totalAmount ||
-        totalAmount <= 0
-      ) {
-
-        alert(
-          "Please enter a valid total amount."
-        );
-
+      if (totalAmount <= 0) {
+        alert("Please enter a valid total amount.");
         return;
-
       }
 
-
-      if (
-        initialPayment < 0
-      ) {
-
-        alert(
-          "Initial payment cannot be negative."
-        );
-
+      if (initialPayment < 0) {
+        alert("Initial payment cannot be negative.");
         return;
-
       }
 
-
-      if (
-        initialPayment > totalAmount
-      ) {
-
+      if (initialPayment > totalAmount) {
         alert(
           "Initial payment cannot be greater than total amount."
         );
-
         return;
-
       }
-
 
       if (
         emiDuration === "custom" &&
-        (
-          !customMonths ||
-          customMonths < 1
-        )
+        customDuration <= 0
       ) {
-
-        alert(
-          "Please enter custom EMI duration."
-        );
-
+        alert("Please enter valid custom EMI duration.");
         return;
-
       }
 
 
-      if (id) {
+      /* =========================
+         EDIT BUYER
+      ========================== */
+
+      if (editingBuyerId) {
 
         const buyer =
-          walletData.buyers
-            .find(
-              item => item.id === id
-            );
-
+          walletData.buyers.find(
+            b => b.id === editingBuyerId
+          );
 
         if (!buyer) {
+          alert("Buyer not found.");
           return;
         }
 
 
         /*
-          Prevent changing initial payment
-          below payments already received.
+          Keep financial values unchanged while editing
+          if payment history already exists.
         */
 
-        const paymentTotal =
-          getBuyerPayments(id)
-            .reduce(
-              (sum, payment) =>
-                sum +
-                Number(
-                  payment.amount || 0
-                ),
-              0
-            );
+        const hasPayments =
+          (walletData.buyerPayments || [])
+            .some(p => p.buyerId === buyer.id);
 
 
-        if (
-          initialPayment +
-            paymentTotal >
-          totalAmount
-        ) {
+        if (hasPayments) {
 
-          alert(
-            "Received amount cannot be greater than total amount."
-          );
+          buyer.name = name;
+          buyer.phone = phone;
+          buyer.ffId = ffId;
+          buyer.dueDate = dueDate;
+          buyer.notes = notes;
+          buyer.emiDuration = emiDuration;
+          buyer.customDuration =
+            emiDuration === "custom"
+              ? customDuration
+              : 0;
 
-          return;
+        } else {
+
+          buyer.name = name;
+          buyer.phone = phone;
+          buyer.ffId = ffId;
+          buyer.totalAmount = totalAmount;
+          buyer.initialPayment = initialPayment;
+          buyer.initialPaymentAccountId =
+            initialAccountId;
+          buyer.initialPaymentDate =
+            initialPaymentDate;
+          buyer.dueDate = dueDate;
+          buyer.notes = notes;
+          buyer.emiDuration = emiDuration;
+          buyer.customDuration =
+            emiDuration === "custom"
+              ? customDuration
+              : 0;
 
         }
 
 
-        buyer.name =
-          name;
+        saveData();
 
-        buyer.phone =
-          phone;
+        walletData =
+          window.TamilandaWallet.getData();
 
-        buyer.ffId =
-          ffId;
+        alert("Buyer updated successfully. ✅");
 
-        buyer.totalAmount =
-          totalAmount;
+        closeBuyerForm();
 
-        buyer.initialPayment =
-          initialPayment;
+        populateAccountSelects();
+        renderSummary();
+        renderBuyers();
 
-        buyer.emiDuration =
-          emiDuration;
-
-        buyer.customMonths =
-          customMonths;
-
-        buyer.dueDate =
-          dueDate;
-
-        buyer.note =
-          note;
-
-        buyer.updatedAt =
-          new Date().toISOString();
-
-      } else {
-
-        const buyer = {
-
-          id: generateId(),
-
-          name,
-
-          phone,
-
-          ffId,
-
-          totalAmount,
-
-          initialPayment,
-
-          emiDuration,
-
-          customMonths,
-
-          dueDate,
-
-          note,
-
-          createdAt:
-            new Date().toISOString(),
-
-          updatedAt:
-            new Date().toISOString()
-
-        };
-
-
-        walletData.buyers.push(
-          buyer
-        );
+        return;
 
       }
 
 
-      saveWalletData();
+      /* =========================
+         NEW BUYER
+      ========================== */
 
+      if (
+        initialPayment > 0 &&
+        !initialAccountId
+      ) {
+
+        alert(
+          "Please select the account where initial payment was received."
+        );
+
+        return;
+
+      }
+
+
+      const buyer = {
+
+        id: generateId(),
+
+        name: name,
+
+        phone: phone,
+
+        ffId: ffId,
+
+        totalAmount: totalAmount,
+
+        initialPayment: initialPayment,
+
+        initialPaymentAccountId:
+          initialAccountId || "",
+
+        initialPaymentDate:
+          initialPaymentDate,
+
+        emiDuration:
+          emiDuration,
+
+        customDuration:
+          emiDuration === "custom"
+            ? customDuration
+            : 0,
+
+        dueDate:
+          dueDate,
+
+        notes:
+          notes,
+
+        createdAt:
+          new Date().toISOString()
+
+      };
+
+
+      walletData.buyers.push(buyer);
+
+
+      /*
+        Initial payment is actual money received.
+        Add it to selected account and create transaction.
+      */
+
+      if (
+        initialPayment > 0 &&
+        initialAccountId
+      ) {
+
+        const account =
+          walletData.accounts.find(
+            a => a.id === initialAccountId
+          );
+
+        if (account) {
+
+          account.balance =
+            Number(account.balance || 0) +
+            initialPayment;
+
+
+          walletData.transactions.push({
+
+            id: generateId(),
+
+            type: "income",
+
+            category: "FF Account Sale",
+
+            amount: initialPayment,
+
+            accountId:
+              initialAccountId,
+
+            date:
+              initialPaymentDate,
+
+            description:
+              `FF Buyer Initial Payment - ${name}`,
+
+            note:
+              ffId
+                ? `FF ID: ${ffId}`
+                : "Initial payment",
+
+            source:
+              "buyer_initial_payment",
+
+            buyerId:
+              buyer.id,
+
+            createdAt:
+              new Date().toISOString()
+
+          });
+
+        }
+
+      }
+
+
+      saveData();
+
+      walletData =
+        window.TamilandaWallet.getData();
+
+
+      alert("FF Buyer added successfully. 🎉");
+
+      closeBuyerForm();
+
+      populateAccountSelects();
 
       renderSummary();
 
-      applyFilters();
-
-
-      closeBuyerModal();
-
-
-      alert(
-        id
-          ? "Buyer updated successfully."
-          : "Buyer added successfully."
-      );
+      renderBuyers();
 
     }
 
 
     /* =========================
-       DELETE BUYER
+       EDIT BUYER
     ========================== */
 
-    function deleteBuyer(id) {
-
-      const index =
-        walletData.buyers.findIndex(
-          buyer => buyer.id === id
-        );
-
-
-      if (index === -1) {
-        return;
-      }
-
+    function editBuyer(id) {
 
       const buyer =
-        walletData.buyers[index];
-
-
-      const confirmed =
-        confirm(
-          `Delete ${buyer.name || "this buyer"}?\n\nBuyer payment history will also be deleted.`
+        walletData.buyers.find(
+          b => b.id === id
         );
 
+      if (!buyer) return;
 
-      if (!confirmed) {
-        return;
+
+      editingBuyerId = id;
+
+      document.getElementById("editingBuyerId").value =
+        id;
+
+      document.getElementById("formTitle").textContent =
+        "Edit FF Buyer";
+
+      document.getElementById("saveBuyerButton").textContent =
+        "Update Buyer";
+
+
+      document.getElementById("buyerName").value =
+        buyer.name || "";
+
+      document.getElementById("buyerPhone").value =
+        buyer.phone || "";
+
+      document.getElementById("ffId").value =
+        buyer.ffId || "";
+
+      document.getElementById("totalAmount").value =
+        buyer.totalAmount || "";
+
+      document.getElementById("initialPayment").value =
+        buyer.initialPayment || "";
+
+      document.getElementById("initialPaymentAccount").value =
+        buyer.initialPaymentAccountId || "";
+
+      document.getElementById("initialPaymentDate").value =
+        buyer.initialPaymentDate || today();
+
+
+      const duration =
+        buyer.emiDuration || "6";
+
+      document.getElementById("emiDuration").value =
+        duration;
+
+
+      if (duration === "custom") {
+
+        document.getElementById("customDurationBox")
+          .style.display = "block";
+
+        document.getElementById("customDuration").value =
+          buyer.customDuration || "";
+
+      } else {
+
+        document.getElementById("customDurationBox")
+          .style.display = "none";
+
       }
 
 
-      walletData.buyers.splice(
-        index,
-        1
-      );
+      document.getElementById("dueDate").value =
+        buyer.dueDate || "";
+
+      document.getElementById("buyerNotes").value =
+        buyer.notes || "";
 
 
-      walletData.buyerPayments =
-        (walletData.buyerPayments || [])
-          .filter(
-            payment =>
-              payment.buyerId !== id
-          );
+      updateInitialPreview();
+
+      document.getElementById("buyerFormCard").style.display =
+        "block";
 
 
-      saveWalletData();
-
-
-      renderSummary();
-
-      applyFilters();
-
-
-      alert(
-        "Buyer deleted successfully."
-      );
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
 
     }
 
@@ -2016,23 +1268,20 @@
 
       const buyer =
         walletData.buyers.find(
-          item => item.id === id
+          b => b.id === id
         );
 
-
-      if (!buyer) {
-        return;
-      }
+      if (!buyer) return;
 
 
       const remaining =
-        getBuyerRemaining(buyer);
+        getRemaining(buyer);
 
 
       if (remaining <= 0) {
 
         alert(
-          "This buyer has already completed payment."
+          "This buyer has already completed the payment. ✅"
         );
 
         return;
@@ -2040,41 +1289,31 @@
       }
 
 
-      document.getElementById(
-        "paymentForm"
-      ).reset();
+      document.getElementById("paymentBuyerId").value =
+        id;
+
+      document.getElementById("paymentBuyerName")
+        .textContent =
+        buyer.name || "Buyer";
+
+      document.getElementById("paymentRemaining")
+        .textContent =
+        money(remaining);
+
+      document.getElementById("paymentAmount").value =
+        "";
+
+      document.getElementById("paymentAccount").value =
+        "";
+
+      document.getElementById("paymentDate").value =
+        today();
+
+      document.getElementById("paymentNote").value =
+        "";
 
 
-      document.getElementById(
-        "paymentBuyerId"
-      ).value =
-        buyer.id;
-
-
-      document.getElementById(
-        "paymentBuyerName"
-      ).textContent =
-        buyer.name;
-
-
-      document.getElementById(
-        "paymentRemaining"
-      ).textContent =
-        formatMoney(remaining);
-
-
-      document.getElementById(
-        "paymentDate"
-      ).value =
-        todayString();
-
-
-      renderAccountsForPayment();
-
-
-      document.getElementById(
-        "paymentModal"
-      ).style.display =
+      document.getElementById("paymentModal").style.display =
         "flex";
 
     }
@@ -2082,9 +1321,7 @@
 
     function closePaymentModal() {
 
-      document.getElementById(
-        "paymentModal"
-      ).style.display =
+      document.getElementById("paymentModal").style.display =
         "none";
 
     }
@@ -2094,82 +1331,59 @@
        SAVE PAYMENT
     ========================== */
 
-    function savePayment(event) {
-
-      event.preventDefault();
-
+    function saveBuyerPayment() {
 
       const buyerId =
-        document.getElementById(
-          "paymentBuyerId"
-        ).value;
+        document.getElementById("paymentBuyerId").value;
+
+      const amount =
+        Number(
+          document.getElementById("paymentAmount").value
+        ) || 0;
+
+      const accountId =
+        document.getElementById("paymentAccount").value;
+
+      const date =
+        document.getElementById("paymentDate").value ||
+        today();
+
+      const note =
+        document.getElementById("paymentNote").value
+          .trim();
 
 
       const buyer =
         walletData.buyers.find(
-          item => item.id === buyerId
+          b => b.id === buyerId
         );
 
-
       if (!buyer) {
+
+        alert("Buyer not found.");
+
         return;
+
       }
 
 
-      const amount =
-        Number(
-          document.getElementById(
-            "paymentAmount"
-          ).value
-        );
+      if (amount <= 0) {
 
+        alert("Please enter a valid payment amount.");
 
-      const date =
-        document.getElementById(
-          "paymentDate"
-        ).value;
+        return;
 
-
-      const method =
-        document.getElementById(
-          "paymentMethod"
-        ).value;
-
-
-      const accountId =
-        document.getElementById(
-          "paymentAccount"
-        ).value;
-
-
-      const note =
-        document.getElementById(
-          "paymentNote"
-        ).value.trim();
+      }
 
 
       const remaining =
-        getBuyerRemaining(buyer);
-
-
-      if (
-        !amount ||
-        amount <= 0
-      ) {
-
-        alert(
-          "Please enter a valid payment amount."
-        );
-
-        return;
-
-      }
+        getRemaining(buyer);
 
 
       if (amount > remaining) {
 
         alert(
-          `Payment cannot be greater than remaining amount (${formatMoney(remaining)}).`
+          `Maximum payment allowed is ${money(remaining)}.`
         );
 
         return;
@@ -2177,15 +1391,10 @@
       }
 
 
-      /*
-        If money is received into an account,
-        an account must be selected.
-      */
-
       if (!accountId) {
 
         alert(
-          "Please select the account where this payment was received."
+          "Please select the account where payment was received."
         );
 
         return;
@@ -2194,18 +1403,14 @@
 
 
       const account =
-        (walletData.accounts || [])
-          .find(
-            item =>
-              item.id === accountId
-          );
+        walletData.accounts.find(
+          a => a.id === accountId
+        );
 
 
       if (!account) {
 
-        alert(
-          "Selected account was not found."
-        );
+        alert("Selected account not found.");
 
         return;
 
@@ -2213,123 +1418,144 @@
 
 
       /*
-        Add buyer payment
+        Use central app.js helper.
       */
 
-      const payment = {
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.addBuyerPayment ===
+        "function"
+      ) {
 
-        id: generateId(),
-
-        buyerId,
-
-        amount,
-
-        date,
-
-        method,
-
-        accountId,
-
-        note,
-
-        createdAt:
-          new Date().toISOString()
-
-      };
+        const result =
+          window.TamilandaWallet.addBuyerPayment(
+            buyerId,
+            amount,
+            accountId,
+            date,
+            note
+          );
 
 
-      if (!walletData.buyerPayments) {
-        walletData.buyerPayments = [];
+        if (!result) {
+
+          alert(
+            "Unable to record payment."
+          );
+
+          return;
+
+        }
+
+      } else {
+
+        /*
+          Fallback.
+        */
+
+        account.balance =
+          Number(account.balance || 0) +
+          amount;
+
+
+        walletData.buyerPayments.push({
+
+          id: generateId(),
+
+          buyerId:
+            buyerId,
+
+          amount:
+            amount,
+
+          accountId:
+            accountId,
+
+          date:
+            date,
+
+          note:
+            note,
+
+          createdAt:
+            new Date().toISOString()
+
+        });
+
+
+        walletData.transactions.push({
+
+          id:
+            generateId(),
+
+          type:
+            "income",
+
+          category:
+            "FF Account Sale",
+
+          amount:
+            amount,
+
+          accountId:
+            accountId,
+
+          date:
+            date,
+
+          description:
+            `FF Buyer Payment - ${buyer.name}`,
+
+          note:
+            note,
+
+          source:
+            "buyer_payment",
+
+          buyerId:
+            buyerId,
+
+          createdAt:
+            new Date().toISOString()
+
+        });
+
+
+        saveData();
+
       }
 
 
-      walletData.buyerPayments.push(
-        payment
-      );
+      walletData =
+        window.TamilandaWallet.getData();
 
 
-      /*
-        Increase account balance
-      */
-
-      account.balance =
-        Number(account.balance || 0)
-        + amount;
-
-
-      /*
-        Add income transaction
-      */
-
-      const transaction = {
-
-        id: generateId(),
-
-        type: "income",
-
-        title:
-          `Buyer Payment - ${buyer.name}`,
-
-        category:
-          "FF Account Sale",
-
-        amount,
-
-        accountId,
-
-        date,
-
-        time:
-          new Date().toTimeString()
-            .slice(0, 5),
-
-        note:
-          note ||
-          `EMI payment from ${buyer.name}`,
-
-        buyerId,
-
-        buyerPaymentId:
-          payment.id,
-
-        createdAt:
-          new Date().toISOString()
-
-      };
-
-
-      if (!walletData.transactions) {
-        walletData.transactions = [];
-      }
-
-
-      walletData.transactions.push(
-        transaction
-      );
-
-
-      saveWalletData();
-
-
-      renderAccountsForPayment();
-
-      renderSummary();
-
-      applyFilters();
+      const newRemaining =
+        getRemaining(buyer);
 
 
       closePaymentModal();
 
+      populateAccountSelects();
 
-      const newRemaining =
-        getBuyerRemaining(buyer);
+      renderSummary();
+
+      renderBuyers();
 
 
-      alert(
-        newRemaining <= 0
-          ? "Payment received. Buyer completed! 🎉"
-          : `Payment received. Remaining: ${formatMoney(newRemaining)}`
-      );
+      if (newRemaining <= 0) {
+
+        alert(
+          "Payment received successfully! Buyer account completed. 🎉"
+        );
+
+      } else {
+
+        alert(
+          `Payment received successfully! Remaining: ${money(newRemaining)}`
+        );
+
+      }
 
     }
 
@@ -2338,158 +1564,554 @@
        PAYMENT HISTORY
     ========================== */
 
-    function openHistoryModal(id) {
+    function getBuyerPayments(id) {
+
+      return (walletData.buyerPayments || [])
+        .filter(
+          payment => payment.buyerId === id
+        )
+        .sort(
+          (a, b) =>
+            new Date(b.date || b.createdAt) -
+            new Date(a.date || a.createdAt)
+        );
+
+    }
+
+
+    function togglePaymentHistory(id) {
+
+      const element =
+        document.getElementById(
+          `history-${id}`
+        );
+
+      if (!element) return;
+
+
+      if (element.style.display === "none") {
+
+        element.style.display = "block";
+
+      } else {
+
+        element.style.display = "none";
+
+      }
+
+    }
+
+
+    /* =========================
+       DELETE BUYER
+    ========================== */
+
+    function deleteBuyer(id) {
 
       const buyer =
         walletData.buyers.find(
-          item => item.id === id
+          b => b.id === id
         );
 
-
-      if (!buyer) {
-        return;
-      }
-
-
-      document.getElementById(
-        "historyBuyerName"
-      ).textContent =
-        buyer.name;
+      if (!buyer) return;
 
 
       const payments =
         getBuyerPayments(id);
 
 
-      const container =
-        document.getElementById(
-          "paymentHistoryList"
+      if (payments.length > 0) {
+
+        alert(
+          "This buyer has payment history. Please keep the buyer record to preserve accounting history. You can edit the buyer instead."
         );
+
+        return;
+
+      }
+
+
+      const remaining =
+        getRemaining(buyer);
+
+
+      const message =
+        remaining > 0
+          ? `Delete ${buyer.name}? There is still ${money(remaining)} pending.`
+          : `Delete ${buyer.name}?`;
+
+
+      if (!confirm(message)) {
+        return;
+      }
+
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.moveToTrash ===
+        "function"
+      ) {
+
+        window.TamilandaWallet.moveToTrash(
+          "buyers",
+          buyer
+        );
+
+      } else {
+
+        walletData.trash =
+          walletData.trash || [];
+
+        walletData.trash.push({
+
+          id:
+            generateId(),
+
+          type:
+            "buyer",
+
+          originalCollection:
+            "buyers",
+
+          data:
+            buyer,
+
+          deletedAt:
+            new Date().toISOString()
+
+        });
+
+      }
+
+
+      const index =
+        walletData.buyers.findIndex(
+          b => b.id === id
+        );
+
+
+      if (index !== -1) {
+
+        walletData.buyers.splice(
+          index,
+          1
+        );
+
+      }
+
+
+      saveData();
+
+      walletData =
+        window.TamilandaWallet.getData();
+
+
+      renderSummary();
+      renderBuyers();
+
+      alert("Buyer moved to Trash. 🗑️");
+
+    }
+
+
+    /* =========================
+       RENDER BUYERS
+    ========================== */
+
+    function renderBuyers() {
+
+      const list =
+        document.getElementById("buyersList");
+
+
+      const search =
+        document.getElementById("searchInput")
+          .value
+          .trim()
+          .toLowerCase();
+
+
+      const filter =
+        document.getElementById("statusFilter")
+          .value;
+
+
+      let buyers =
+        [...(walletData.buyers || [])];
+
+
+      buyers = buyers.filter(buyer => {
+
+        const remaining =
+          getRemaining(buyer);
+
+        const completed =
+          remaining <= 0;
+
+
+        if (
+          filter === "completed" &&
+          !completed
+        ) {
+          return false;
+        }
+
+
+        if (
+          filter === "pending" &&
+          completed
+        ) {
+          return false;
+        }
+
+
+        if (!search) {
+          return true;
+        }
+
+
+        const searchable =
+          [
+            buyer.name,
+            buyer.phone,
+            buyer.ffId,
+            buyer.notes
+          ]
+          .join(" ")
+          .toLowerCase();
+
+
+        return searchable.includes(search);
+
+      });
+
+
+      buyers.sort((a, b) => {
+
+        const aRemaining =
+          getRemaining(a);
+
+        const bRemaining =
+          getRemaining(b);
+
+        if (aRemaining <= 0 && bRemaining > 0) {
+          return 1;
+        }
+
+        if (aRemaining > 0 && bRemaining <= 0) {
+          return -1;
+        }
+
+        return (
+          new Date(b.createdAt || 0) -
+          new Date(a.createdAt || 0)
+        );
+
+      });
+
+
+      if (buyers.length === 0) {
+
+        list.innerHTML = `
+
+          <div class="empty-state">
+
+            <div class="empty-icon">👤</div>
+
+            <h3>No Buyers Found</h3>
+
+            <p>
+              Add your first FF buyer to start tracking payments.
+            </p>
+
+            <button
+              class="primary-button"
+              onclick="openBuyerForm()"
+            >
+              + Add FF Buyer
+            </button>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      list.innerHTML =
+        buyers.map(renderBuyerCard).join("");
+
+    }
+
+
+    /* =========================
+       BUYER CARD
+    ========================== */
+
+    function renderBuyerCard(buyer) {
+
+      const total =
+        Number(buyer.totalAmount || 0);
+
+      const initial =
+        Number(buyer.initialPayment || 0);
+
+      const remaining =
+        getRemaining(buyer);
+
+      const received =
+        Math.max(
+          0,
+          total - remaining
+        );
+
+
+      const duration =
+        getDuration(buyer);
+
+
+      const estimatedEmi =
+        duration > 0
+          ? remaining / duration
+          : remaining;
+
+
+      const completed =
+        remaining <= 0;
+
+
+      const payments =
+        getBuyerPayments(buyer.id);
+
+
+      const progress =
+        total > 0
+          ? Math.min(
+              100,
+              Math.round(
+                (received / total) * 100
+              )
+            )
+          : 0;
+
+
+      const statusClass =
+        completed
+          ? "status-success"
+          : "status-warning";
+
+
+      const statusText =
+        completed
+          ? "PAID"
+          : "PENDING";
+
+
+      let paymentHistoryHtml = "";
 
 
       if (payments.length === 0) {
 
-        container.innerHTML = `
+        paymentHistoryHtml = `
 
-          <div class="empty-state">
-
-            <div class="empty-icon">
-              💳
-            </div>
-
-            <h3>
-              No payments yet
-            </h3>
-
-            <p>
-              Initial payment:
-              ${formatMoney(
-                buyer.initialPayment || 0
-              )}
-            </p>
-
+          <div class="muted-text">
+            No payment history yet.
           </div>
 
         `;
 
       } else {
 
-        const sorted =
-          [...payments].sort(
-            (a, b) =>
-              String(b.date || "")
-                .localeCompare(
-                  String(a.date || "")
-                )
-          );
+        paymentHistoryHtml =
+          payments.map(payment => `
 
+            <div class="payment-history-item">
 
-        container.innerHTML = sorted
-          .map(
-            payment =>
-              createPaymentHistoryHtml(
-                payment
-              )
-          )
-          .join("");
+              <div>
+
+                <strong>
+                  ${money(payment.amount)}
+                </strong>
+
+                <small>
+                  ${formatDate(payment.date)}
+                </small>
+
+              </div>
+
+              <div>
+
+                <small>
+                  ${escapeHtml(
+                    getAccountName(
+                      payment.accountId
+                    )
+                  )}
+                </small>
+
+                ${
+                  payment.note
+                    ? `<small>${escapeHtml(payment.note)}</small>`
+                    : ""
+                }
+
+              </div>
+
+            </div>
+
+          `).join("");
 
       }
 
 
-      document.getElementById(
-        "historyModal"
-      ).style.display =
-        "flex";
-
-    }
-
-
-    function createPaymentHistoryHtml(
-      payment
-    ) {
-
-      const account =
-        (walletData.accounts || [])
-          .find(
-            item =>
-              item.id === payment.accountId
-          );
-
-
       return `
 
-        <div class="transaction-item">
+        <article class="card buyer-card">
 
-          <div class="transaction-icon income-icon">
+          <div class="buyer-header">
 
-            ↗
+            <div>
 
-          </div>
+              <div class="buyer-name-row">
 
+                <h3>
+                  ${escapeHtml(
+                    buyer.name || "Unnamed Buyer"
+                  )}
+                </h3>
 
-          <div class="transaction-info">
+                <span class="${statusClass}">
+                  ${statusText}
+                </span>
 
-            <div class="transaction-title">
-
-              Payment Received
-
-            </div>
-
-
-            <div class="transaction-meta">
-
-              ${escapeHtml(
-                formatDate(
-                  payment.date
-                )
-              )}
-
-              •
-
-              ${escapeHtml(
-                payment.method ||
-                "Other"
-              )}
+              </div>
 
               ${
-                account
-                  ? " • " +
-                    escapeHtml(
-                      account.name
-                    )
+                buyer.phone
+                  ? `<p>📞 ${escapeHtml(buyer.phone)}</p>`
+                  : ""
+              }
+
+              ${
+                buyer.ffId
+                  ? `<p>🎮 FF ID: ${escapeHtml(buyer.ffId)}</p>`
                   : ""
               }
 
             </div>
 
+            <div class="buyer-menu">
+
+              <button
+                class="icon-button"
+                onclick="editBuyer('${buyer.id}')"
+                title="Edit"
+              >
+                ✏️
+              </button>
+
+              <button
+                class="icon-button"
+                onclick="deleteBuyer('${buyer.id}')"
+                title="Delete"
+              >
+                🗑️
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <!-- PROGRESS -->
+
+          <div class="progress-section">
+
+            <div class="progress-label">
+
+              <span>
+                Payment Progress
+              </span>
+
+              <strong>
+                ${progress}%
+              </strong>
+
+            </div>
+
+            <div class="progress-bar">
+
+              <div
+                class="progress-fill"
+                style="width:${progress}%"
+              ></div>
+
+            </div>
+
+          </div>
+
+
+          <!-- MONEY DETAILS -->
+
+          <div class="buyer-money-grid">
+
+            <div>
+              <span>Total</span>
+              <strong>${money(total)}</strong>
+            </div>
+
+            <div>
+              <span>Received</span>
+              <strong>${money(received)}</strong>
+            </div>
+
+            <div>
+              <span>Remaining</span>
+              <strong>${money(remaining)}</strong>
+            </div>
+
+            <div>
+              <span>Initial</span>
+              <strong>${money(initial)}</strong>
+            </div>
+
+          </div>
+
+
+          <!-- EMI INFO -->
+
+          <div class="info-box">
+
+            <div>
+
+              <span>EMI Duration</span>
+
+              <strong>
+                ${duration} Month${duration > 1 ? "s" : ""}
+              </strong>
+
+            </div>
+
+            <div>
+
+              <span>Estimated EMI</span>
+
+              <strong>
+                ${money(estimatedEmi)}
+              </strong>
+
+            </div>
 
             ${
-              payment.note
+              buyer.dueDate
                 ? `
-                  <div class="transaction-note">
-                    ${escapeHtml(
-                      payment.note
-                    )}
+                  <div>
+                    <span>Due Date</span>
+                    <strong>
+                      ${formatDate(buyer.dueDate)}
+                    </strong>
                   </div>
                 `
                 : ""
@@ -2498,301 +2120,442 @@
           </div>
 
 
-          <div class="transaction-right">
+          ${
+            buyer.notes
+              ? `
+                <div class="note-box">
+                  📝 ${escapeHtml(buyer.notes)}
+                </div>
+              `
+              : ""
+          }
 
-            <div
-              class="transaction-amount income-amount"
+
+          <!-- ACTIONS -->
+
+          <div class="buyer-actions">
+
+            ${
+              !completed
+                ? `
+                  <button
+                    class="primary-button"
+                    onclick="openPaymentModal('${buyer.id}')"
+                  >
+                    + Receive Payment
+                  </button>
+                `
+                : `
+                  <button
+                    class="secondary-button"
+                    disabled
+                  >
+                    ✓ Payment Completed
+                  </button>
+                `
+            }
+
+
+            <button
+              class="secondary-button"
+              onclick="togglePaymentHistory('${buyer.id}')"
             >
-
-              +${formatMoney(
-                payment.amount
-              )}
-
-            </div>
+              🧾 Payment History (${payments.length})
+            </button>
 
           </div>
 
-        </div>
+
+          <!-- PAYMENT HISTORY -->
+
+          <div
+            id="history-${buyer.id}"
+            class="payment-history"
+            style="display:none;"
+          >
+
+            <h4>
+              Payment History
+            </h4>
+
+            ${paymentHistoryHtml}
+
+          </div>
+
+        </article>
 
       `;
 
     }
 
 
-    function closeHistoryModal() {
+    /* =========================
+       BACK / NAVIGATION
+    ========================== */
 
-      document.getElementById(
-        "historyModal"
-      ).style.display =
-        "none";
+    function goBack() {
+
+      if (
+        window.history.length > 1
+      ) {
+
+        window.history.back();
+
+      } else {
+
+        goToPage("home");
+
+      }
+
+    }
+
+
+    function goToPage(page) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.goToPage ===
+        "function"
+      ) {
+
+        window.TamilandaWallet.goToPage(page);
+
+        return;
+
+      }
+
+
+      const pages = {
+
+        home:
+          "../index.html",
+
+        transactions:
+          "transactions.html",
+
+        buyers:
+          "buyers.html",
+
+        accounts:
+          "accounts.html",
+
+        more:
+          "more.html"
+
+      };
+
+
+      if (pages[page]) {
+
+        window.location.href =
+          pages[page];
+
+      }
 
     }
 
 
     /* =========================
-       CLEAR FILTERS
-    ========================== */
-
-    function clearFilters() {
-
-      document.getElementById(
-        "searchInput"
-      ).value = "";
-
-
-      document.getElementById(
-        "statusFilter"
-      ).value =
-        "all";
-
-
-      document.getElementById(
-        "sortFilter"
-      ).value =
-        "newest";
-
-
-      applyFilters();
-
-    }
-
-
-    /* =========================
-       EVENTS
-    ========================== */
-
-    function setupEvents() {
-
-      document.getElementById(
-        "addBuyerButton"
-      )
-      .addEventListener(
-        "click",
-        openAddBuyer
-      );
-
-
-      document.getElementById(
-        "backButton"
-      )
-      .addEventListener(
-        "click",
-        () => {
-
-          window.location.href =
-            "../index.html";
-
-        }
-      );
-
-
-      document.getElementById(
-        "searchInput"
-      )
-      .addEventListener(
-        "input",
-        applyFilters
-      );
-
-
-      document.getElementById(
-        "statusFilter"
-      )
-      .addEventListener(
-        "change",
-        applyFilters
-      );
-
-
-      document.getElementById(
-        "sortFilter"
-      )
-      .addEventListener(
-        "change",
-        applyFilters
-      );
-
-
-      document.getElementById(
-        "clearFiltersButton"
-      )
-      .addEventListener(
-        "click",
-        clearFilters
-      );
-
-
-      document.getElementById(
-        "buyerForm"
-      )
-      .addEventListener(
-        "submit",
-        saveBuyer
-      );
-
-
-      document.getElementById(
-        "paymentForm"
-      )
-      .addEventListener(
-        "submit",
-        savePayment
-      );
-
-
-      document.getElementById(
-        "emiDuration"
-      )
-      .addEventListener(
-        "change",
-        event => {
-
-          document.getElementById(
-            "customMonthsGroup"
-          ).style.display =
-            event.target.value === "custom"
-              ? "block"
-              : "none";
-
-        }
-      );
-
-
-      document.getElementById(
-        "closeBuyerModal"
-      )
-      .addEventListener(
-        "click",
-        closeBuyerModal
-      );
-
-
-      document.getElementById(
-        "cancelBuyerButton"
-      )
-      .addEventListener(
-        "click",
-        closeBuyerModal
-      );
-
-
-      document.getElementById(
-        "closePaymentModal"
-      )
-      .addEventListener(
-        "click",
-        closePaymentModal
-      );
-
-
-      document.getElementById(
-        "cancelPaymentButton"
-      )
-      .addEventListener(
-        "click",
-        closePaymentModal
-      );
-
-
-      document.getElementById(
-        "closeHistoryModal"
-      )
-      .addEventListener(
-        "click",
-        closeHistoryModal
-      );
-
-
-      /*
-        Close modal by clicking outside
-      */
-
-      document.getElementById(
-        "buyerModal"
-      )
-      .addEventListener(
-        "click",
-        event => {
-
-          if (
-            event.target.id ===
-            "buyerModal"
-          ) {
-            closeBuyerModal();
-          }
-
-        }
-      );
-
-
-      document.getElementById(
-        "paymentModal"
-      )
-      .addEventListener(
-        "click",
-        event => {
-
-          if (
-            event.target.id ===
-            "paymentModal"
-          ) {
-            closePaymentModal();
-          }
-
-        }
-      );
-
-
-      document.getElementById(
-        "historyModal"
-      )
-      .addEventListener(
-        "click",
-        event => {
-
-          if (
-            event.target.id ===
-            "historyModal"
-          ) {
-            closeHistoryModal();
-          }
-
-        }
-      );
-
-    }
-
-
-    /* =========================
-       GLOBAL FUNCTIONS
-    ========================== */
-
-    window.openEditBuyer =
-      openEditBuyer;
-
-
-    window.deleteBuyer =
-      deleteBuyer;
-
-
-    window.openPaymentModal =
-      openPaymentModal;
-
-
-    window.openHistoryModal =
-      openHistoryModal;
-
-
-    /* =========================
-       START
+       MODAL OUTSIDE CLICK
     ========================== */
 
     document.addEventListener(
-      "DOMContentLoaded",
-      initializeBuyers
+      "click",
+      function(event) {
+
+        const modal =
+          document.getElementById("paymentModal");
+
+        if (
+          event.target === modal
+        ) {
+
+          closePaymentModal();
+
+        }
+
+      }
     );
 
   </script>
+
+
+  <!-- =========================
+       PAGE-SPECIFIC STYLES
+  ========================== -->
+  <style>
+
+    .buyer-card {
+      margin-bottom: 16px;
+    }
+
+
+    .buyer-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+
+    .buyer-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+
+    .buyer-name-row h3 {
+      margin: 0;
+    }
+
+
+    .buyer-header p {
+      margin: 5px 0 0;
+      opacity: 0.75;
+    }
+
+
+    .buyer-menu {
+      display: flex;
+      gap: 4px;
+    }
+
+
+    .buyer-money-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+
+    .buyer-money-grid > div {
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.04);
+    }
+
+
+    .buyer-money-grid span,
+    .info-box span,
+    .summary-card span {
+      display: block;
+      font-size: 12px;
+      opacity: 0.7;
+      margin-bottom: 5px;
+    }
+
+
+    .buyer-money-grid strong {
+      font-size: 16px;
+    }
+
+
+    .status-success,
+    .status-warning {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 20px;
+    }
+
+
+    .status-success {
+      background: rgba(50,205,120,0.15);
+    }
+
+
+    .status-warning {
+      background: rgba(255,180,50,0.15);
+    }
+
+
+    .progress-section {
+      margin-top: 16px;
+    }
+
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 7px;
+      font-size: 13px;
+    }
+
+
+    .progress-bar {
+      width: 100%;
+      height: 7px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+    }
+
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 20px;
+      background: currentColor;
+    }
+
+
+    .buyer-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+
+    .buyer-actions button {
+      flex: 1;
+      min-width: 150px;
+    }
+
+
+    .info-box {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px;
+      margin: 12px 0;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.04);
+    }
+
+
+    .info-box > div {
+      min-width: 100px;
+    }
+
+
+    .note-box {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.035);
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
+
+    .payment-history {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+
+    .payment-history h4 {
+      margin-top: 0;
+    }
+
+
+    .payment-history-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 11px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+
+    .payment-history-item:last-child {
+      border-bottom: none;
+    }
+
+
+    .payment-history-item small {
+      display: block;
+      opacity: 0.7;
+      margin-top: 3px;
+    }
+
+
+    .muted-text {
+      opacity: 0.65;
+      font-size: 13px;
+    }
+
+
+    .empty-state {
+      text-align: center;
+      padding: 45px 20px;
+      opacity: 0.8;
+    }
+
+
+    .empty-icon {
+      font-size: 45px;
+      margin-bottom: 10px;
+    }
+
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0,0,0,0.75);
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+
+
+    .modal-content {
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 18px;
+      padding: 20px;
+      background: #111018;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+    }
+
+
+    label {
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 6px;
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+
+    .section-title h2 {
+      margin: 0;
+    }
+
+
+    @media (max-width: 480px) {
+
+      .buyer-money-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .buyer-actions {
+        flex-direction: column;
+      }
+
+      .buyer-actions button {
+        width: 100%;
+      }
+
+    }
+
+  </style>
 
 </body>
 </html>
