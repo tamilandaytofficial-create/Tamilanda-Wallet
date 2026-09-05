@@ -980,6 +980,7 @@
           buyer.ffId = ffId;
           buyer.dueDate = dueDate;
           buyer.notes = notes;
+          buyer.note = notes;
           buyer.emiDuration = emiDuration;
           buyer.customDuration =
             emiDuration === "custom"
@@ -999,6 +1000,7 @@
             initialPaymentDate;
           buyer.dueDate = dueDate;
           buyer.notes = notes;
+          buyer.note = notes;
           buyer.emiDuration = emiDuration;
           buyer.customDuration =
             emiDuration === "custom"
@@ -1109,11 +1111,14 @@
             initialPayment;
 
 
+          const initialPaymentId =
+            generateId("buyer_initial_payment");
+
           walletData.transactions.push({
 
-            id: generateId(),
+            id: initialPaymentId,
 
-            type: "income",
+            type: "buyer_initial_payment",
 
             category: "FF Account Sale",
 
@@ -1138,6 +1143,9 @@
 
             buyerId:
               buyer.id,
+
+            paymentId:
+              initialPaymentId,
 
             createdAt:
               new Date().toISOString()
@@ -1418,6 +1426,43 @@
 
 
       /*
+        Duplicate-payment protection.
+
+        A payment should create exactly one buyerPayments
+        record and exactly one matching transaction.
+      */
+
+      const duplicatePayment =
+        (walletData.buyerPayments || []).some(payment =>
+
+          String(payment.buyerId) ===
+            String(buyerId) &&
+
+          Number(payment.amount || 0) ===
+            Number(amount) &&
+
+          String(payment.accountId || "") ===
+            String(accountId) &&
+
+          String(payment.date || "") ===
+            String(date) &&
+
+          String(payment.note || "") ===
+            String(note)
+
+        );
+
+      if (duplicatePayment) {
+
+        alert(
+          "A matching payment already exists. Duplicate payment was blocked. ⚠️"
+        );
+
+        return;
+      }
+
+
+      /*
         Use central app.js helper.
       */
 
@@ -1447,6 +1492,14 @@
 
         }
 
+        /*
+          app.js has already updated the central wallet data.
+          Reload the local reference before rendering.
+        */
+
+        walletData =
+          window.TamilandaWallet.getData();
+
       } else {
 
         /*
@@ -1458,9 +1511,16 @@
           amount;
 
 
+        const paymentId =
+          generateId("buyer_payment");
+
+        const transactionId =
+          generateId("txn");
+
         walletData.buyerPayments.push({
 
-          id: generateId(),
+          id:
+            paymentId,
 
           buyerId:
             buyerId,
@@ -1477,6 +1537,9 @@
           note:
             note,
 
+          transactionId:
+            transactionId,
+
           createdAt:
             new Date().toISOString()
 
@@ -1486,10 +1549,10 @@
         walletData.transactions.push({
 
           id:
-            generateId(),
+            transactionId,
 
           type:
-            "income",
+            "buyer_payment",
 
           category:
             "FF Account Sale",
@@ -1514,6 +1577,9 @@
 
           buyerId:
             buyerId,
+
+          paymentId:
+            paymentId,
 
           createdAt:
             new Date().toISOString()
