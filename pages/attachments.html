@@ -216,6 +216,40 @@
 
     <div class="card">
 
+      <h3>🔗 Attach To Wallet Record</h3>
+
+      <p>
+        Choose a record before uploading to link the proof directly
+        to a transaction, buyer, money-to-give entry, EMI or recurring bill.
+      </p>
+
+      <select id="recordType" class="file-input">
+        <option value="">No record link</option>
+        <option value="transaction">Transaction</option>
+        <option value="buyer">FF Buyer</option>
+        <option value="moneyToGive">Money To Give</option>
+        <option value="myEmi">My EMI</option>
+        <option value="recurringBill">Recurring Bill</option>
+        <option value="account">Account</option>
+      </select>
+
+      <select id="recordId" class="file-input" disabled>
+        <option value="">Select record</option>
+      </select>
+
+      <div class="warning">
+        Linked attachments are stored with the wallet data and are included in JSON backups.
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="section">
+
+    <div class="card">
+
       <h3>📁 Saved Attachments</h3>
 
       <div
@@ -263,7 +297,7 @@
   <script>
 
     const STORAGE_KEY =
-      "tamilanda_wallet_attachments";
+      "tamilanda_wallet_data";
 
     const MAX_FILE_SIZE =
       3 * 1024 * 1024;
@@ -280,36 +314,437 @@
       );
 
 
-    function getAttachments() {
+    function getWalletData() {
 
-      try {
-
-        return JSON.parse(
-          localStorage.getItem(
-            STORAGE_KEY
-          )
-        ) || [];
-
-      } catch (error) {
-
-        return [];
-
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.getData === "function"
+      ) {
+        return window.TamilandaWallet.getData() || {};
       }
 
+      try {
+        return JSON.parse(
+          localStorage.getItem(STORAGE_KEY)
+        ) || {};
+      } catch (error) {
+        return {};
+      }
     }
 
 
-    function saveAttachments(
-      attachments
-    ) {
+    function saveWalletData(data) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.save === "function"
+      ) {
+
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify(data)
+        );
+
+        window.TamilandaWallet.save();
+        return;
+      }
 
       localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify(
-          attachments
-        )
+        JSON.stringify(data)
+      );
+    }
+
+
+    function getAttachments() {
+
+      const data = getWalletData();
+
+      return Array.isArray(data.attachments)
+        ? data.attachments
+        : [];
+    }
+
+
+    function saveAttachments(attachments) {
+
+      const data = getWalletData();
+
+      data.attachments =
+        Array.isArray(attachments)
+          ? attachments
+          : [];
+
+      saveWalletData(data);
+    }
+
+
+    function getRecordCollections() {
+
+      const data = getWalletData();
+
+      return {
+        transaction: {
+          label: "Transaction",
+          collection: Array.isArray(data.transactions)
+            ? data.transactions
+            : []
+        },
+
+        buyer: {
+          label: "FF Buyer",
+          collection: Array.isArray(data.buyers)
+            ? data.buyers
+            : []
+        },
+
+        moneyToGive: {
+          label: "Money To Give",
+          collection: Array.isArray(data.moneyToGive)
+            ? data.moneyToGive
+            : []
+        },
+
+        myEmi: {
+          label: "My EMI",
+          collection: Array.isArray(data.myEmis)
+            ? data.myEmis
+            : []
+        },
+
+        recurringBill: {
+          label: "Recurring Bill",
+          collection: Array.isArray(data.recurringBills)
+            ? data.recurringBills
+            : []
+        },
+
+        account: {
+          label: "Account",
+          collection: Array.isArray(data.accounts)
+            ? data.accounts
+            : []
+        }
+      };
+    }
+
+
+    function getSelectedRecord() {
+
+      const type =
+        document.getElementById("recordType").value;
+
+      const id =
+        document.getElementById("recordId").value;
+
+      if (!type || !id) {
+        return null;
+      }
+
+      const groups =
+        getRecordCollections();
+
+      const group = groups[type];
+
+      if (!group) {
+        return null;
+      }
+
+      const record =
+        group.collection.find(
+          item =>
+            String(item.id) ===
+            String(id)
+        );
+
+      if (!record) {
+        return null;
+      }
+
+      return {
+        type,
+        id,
+        label: group.label,
+        record
+      };
+    }
+
+
+    function recordDisplayName(
+      type,
+      record
+    ) {
+
+      if (!record) {
+        return "Record";
+      }
+
+      if (type === "transaction") {
+        return (
+          record.description ||
+          record.note ||
+          record.category ||
+          "Transaction"
+        );
+      }
+
+      if (type === "buyer") {
+        return (
+          record.name ||
+          "FF Buyer"
+        );
+      }
+
+      if (type === "moneyToGive") {
+        return (
+          record.personName ||
+          record.name ||
+          "Money To Give"
+        );
+      }
+
+      if (type === "myEmi") {
+        return (
+          record.name ||
+          record.title ||
+          "EMI"
+        );
+      }
+
+      if (type === "recurringBill") {
+        return (
+          record.name ||
+          "Recurring Bill"
+        );
+      }
+
+      if (type === "account") {
+        return (
+          record.name ||
+          "Account"
+        );
+      }
+
+      return "Record";
+    }
+
+
+    function populateRecordSelector() {
+
+      const typeSelect =
+        document.getElementById("recordType");
+
+      const idSelect =
+        document.getElementById("recordId");
+
+      const type =
+        typeSelect.value;
+
+      idSelect.innerHTML =
+        '<option value="">Select record</option>';
+
+      if (!type) {
+        idSelect.disabled = true;
+        return;
+      }
+
+      const groups =
+        getRecordCollections();
+
+      const group =
+        groups[type];
+
+      if (!group || !group.collection.length) {
+        idSelect.disabled = true;
+
+        idSelect.innerHTML =
+          '<option value="">No records available</option>';
+
+        return;
+      }
+
+      group.collection.forEach(
+        record => {
+
+          const option =
+            document.createElement("option");
+
+          option.value =
+            record.id;
+
+          option.textContent =
+            recordDisplayName(
+              type,
+              record
+            );
+
+          idSelect.appendChild(
+            option
+          );
+        }
       );
 
+      idSelect.disabled = false;
+    }
+
+
+    function syncAttachmentLinks() {
+
+      const data =
+        getWalletData();
+
+      const attachments =
+        Array.isArray(data.attachments)
+          ? data.attachments
+          : [];
+
+      const groups =
+        getRecordCollections();
+
+      Object.values(groups).forEach(
+        group => {
+
+          group.collection.forEach(
+            record => {
+
+              if (
+                !Array.isArray(
+                  record.attachments
+                )
+              ) {
+                record.attachments = [];
+              }
+
+              record.attachments =
+                record.attachments.filter(
+                  attachmentId =>
+                    attachments.some(
+                      attachment =>
+                        String(attachment.id) ===
+                        String(attachmentId)
+                    )
+                );
+            }
+          );
+        }
+      );
+
+      saveWalletData(data);
+    }
+
+
+    function linkAttachmentToRecord(
+      attachment,
+      selectedRecord
+    ) {
+
+      if (!selectedRecord) {
+        return;
+      }
+
+      const data =
+        getWalletData();
+
+      const groups =
+        getRecordCollections();
+
+      const group =
+        groups[selectedRecord.type];
+
+      if (!group) {
+        return;
+      }
+
+      const record =
+        group.collection.find(
+          item =>
+            String(item.id) ===
+            String(selectedRecord.id)
+        );
+
+      if (!record) {
+        return;
+      }
+
+      if (
+        !Array.isArray(
+          record.attachments
+        )
+      ) {
+        record.attachments = [];
+      }
+
+      if (
+        !record.attachments.some(
+          attachmentId =>
+            String(attachmentId) ===
+            String(attachment.id)
+        )
+      ) {
+        record.attachments.push(
+          attachment.id
+        );
+      }
+
+      attachment.link =
+        {
+          type:
+            selectedRecord.type,
+
+          recordId:
+            selectedRecord.id
+        };
+
+      saveWalletData(data);
+    }
+
+
+    function unlinkAttachment(
+      attachment
+    ) {
+
+      const data =
+        getWalletData();
+
+      const link =
+        attachment &&
+        attachment.link;
+
+      if (!link) {
+        return;
+      }
+
+      const groups =
+        getRecordCollections();
+
+      const group =
+        groups[link.type];
+
+      if (group) {
+
+        const record =
+          group.collection.find(
+            item =>
+              String(item.id) ===
+              String(link.recordId)
+          );
+
+        if (
+          record &&
+          Array.isArray(
+            record.attachments
+          )
+        ) {
+          record.attachments =
+            record.attachments.filter(
+              attachmentId =>
+                String(attachmentId) !==
+                String(attachment.id)
+            );
+        }
+      }
+
+      saveWalletData(data);
     }
 
 
@@ -438,6 +873,43 @@
     }
 
 
+    function getLinkedRecordLabel(file) {
+
+      if (
+        !file ||
+        !file.link
+      ) {
+        return "";
+      }
+
+      const groups =
+        getRecordCollections();
+
+      const group =
+        groups[file.link.type];
+
+      if (!group) {
+        return "Linked record";
+      }
+
+      const record =
+        group.collection.find(
+          item =>
+            String(item.id) ===
+            String(file.link.recordId)
+        );
+
+      return (
+        group.label +
+        " • " +
+        recordDisplayName(
+          file.link.type,
+          record
+        )
+      );
+    }
+
+
     function render() {
 
       const attachments =
@@ -494,6 +966,14 @@
                       ${formatDate(
                         file.createdAt
                       )}
+                      ${
+                        file.link
+                          ? " • 🔗 " +
+                            escapeHtml(
+                              getLinkedRecordLabel(file)
+                            )
+                          : ""
+                      }
                     </div>
 
                   </div>
@@ -566,6 +1046,8 @@
             const attachments =
               getAttachments();
 
+            const selectedRecord =
+              getSelectedRecord();
 
             const newAttachment = {
 
@@ -592,9 +1074,16 @@
 
               data:
                 event.target.result
-
             };
 
+            if (selectedRecord) {
+              newAttachment.link = {
+                type:
+                  selectedRecord.type,
+                recordId:
+                  selectedRecord.id
+              };
+            }
 
             try {
 
@@ -606,12 +1095,29 @@
                 attachments
               );
 
+              if (selectedRecord) {
+                linkAttachmentToRecord(
+                  newAttachment,
+                  selectedRecord
+                );
+              }
+
               fileInput.value = "";
+
+              document.getElementById(
+                "recordType"
+              ).value = "";
+
+              populateRecordSelector();
 
               render();
 
               alert(
-                "✅ Attachment saved."
+                selectedRecord
+                  ? "✅ Attachment saved and linked to " +
+                    selectedRecord.label +
+                    "."
+                  : "✅ Attachment saved."
               );
 
             } catch (error) {
@@ -792,6 +1298,16 @@
       const attachments =
         getAttachments();
 
+      const file =
+        attachments.find(
+          item =>
+            String(item.id) ===
+            String(id)
+        );
+
+      if (file && file.link) {
+        unlinkAttachment(file);
+      }
 
       const updated =
         attachments.filter(
@@ -800,18 +1316,59 @@
             String(id)
         );
 
-
       saveAttachments(
         updated
       );
-
 
       render();
 
     }
 
 
+    document
+      .getElementById("recordType")
+      .addEventListener(
+        "change",
+        populateRecordSelector
+      );
+
+    window.addEventListener(
+      "storage",
+      event => {
+
+        if (
+          event.key === STORAGE_KEY
+        ) {
+          populateRecordSelector();
+          render();
+        }
+      }
+    );
+
+    populateRecordSelector();
+    syncAttachmentLinks();
     render();
+
+    /*
+     * Public helpers for other wallet pages.
+     * They can use these later to display linked proofs.
+     */
+    window.TamilandaWalletAttachments = {
+      getAll: getAttachments,
+      getForRecord: function(
+        recordType,
+        recordId
+      ) {
+        return getAttachments().filter(
+          attachment =>
+            attachment.link &&
+            String(attachment.link.type) ===
+              String(recordType) &&
+            String(attachment.link.recordId) ===
+              String(recordId)
+        );
+      }
+    };
 
   </script>
 
