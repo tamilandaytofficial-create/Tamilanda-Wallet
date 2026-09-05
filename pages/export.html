@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Export - Tamilanda Wallet</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+
+  <style>
+    .page-header {
+      padding: 22px 16px 12px;
+    }
+
+    .page-header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .page-header p {
+      margin: 5px 0 0;
+      font-size: 13px;
+      opacity: .6;
+    }
+
+    .section {
+      padding: 0 16px;
+      margin-bottom: 15px;
+    }
+
+    .card {
+      padding: 17px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.055);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .card h3 {
+      margin: 0 0 7px;
+      font-size: 16px;
+    }
+
+    .card p {
+      margin: 0 0 13px;
+      font-size: 11px;
+      line-height: 1.6;
+      opacity: .6;
+    }
+
+    .export-button {
+      width: 100%;
+      border: 0;
+      border-radius: 11px;
+      padding: 13px;
+      margin-top: 8px;
+      background: rgba(255,255,255,.09);
+      color: inherit;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .export-button.primary {
+      background: rgba(74,222,128,.14);
+    }
+
+    .export-button.secondary {
+      background: rgba(96,165,250,.13);
+    }
+
+    .format-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 10px;
+    }
+
+    .format-button {
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.045);
+      color: inherit;
+      border-radius: 12px;
+      padding: 14px 8px;
+      cursor: pointer;
+    }
+
+    .format-button .icon {
+      font-size: 23px;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .format-button strong {
+      font-size: 12px;
+    }
+
+    .format-button span {
+      display: block;
+      margin-top: 3px;
+      font-size: 9px;
+      opacity: .5;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .stat {
+      padding: 11px;
+      border-radius: 11px;
+      background: rgba(255,255,255,.04);
+    }
+
+    .stat small {
+      display: block;
+      font-size: 10px;
+      opacity: .5;
+      margin-bottom: 4px;
+    }
+
+    .stat strong {
+      font-size: 13px;
+    }
+
+    .status {
+      display: none;
+      margin-top: 10px;
+      padding: 11px;
+      border-radius: 10px;
+      background: rgba(255,255,255,.04);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page-header">
+    <h1>📤 Export</h1>
+    <p>Export your wallet data for records and analysis</p>
+  </div>
+
+
+  <!-- DATA SUMMARY -->
+  <div class="section">
+
+    <div class="card">
+
+      <h3>📊 Available Data</h3>
+
+      <p>
+        Your current wallet information that can be exported.
+      </p>
+
+      <div class="stats">
+
+        <div class="stat">
+          <small>Accounts</small>
+          <strong id="accountsCount">0</strong>
+        </div>
+
+        <div class="stat">
+          <small>Transactions</small>
+          <strong id="transactionsCount">0</strong>
+        </div>
+
+        <div class="stat">
+          <small>Buyers</small>
+          <strong id="buyersCount">0</strong>
+        </div>
+
+        <div class="stat">
+          <small>EMIs</small>
+          <strong id="emisCount">0</strong>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- CSV EXPORT -->
+  <div class="section">
+
+    <div class="card">
+
+      <h3>📒 Transactions</h3>
+
+      <p>
+        Export transactions as CSV. This can be opened
+        in Excel, Google Sheets or other spreadsheet apps.
+      </p>
+
+      <button
+        class="export-button primary"
+        onclick="exportTransactionsCSV()"
+      >
+        📥 Export Transactions CSV
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ALL DATA -->
+  <div class="section">
+
+    <div class="card">
+
+      <h3>📦 Full Wallet Data</h3>
+
+      <p>
+        Export all wallet collections together as JSON.
+        For complete backup and restore, use the Backup page.
+      </p>
+
+      <button
+        class="export-button secondary"
+        onclick="exportFullJSON()"
+      >
+        📦 Export Full JSON
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- OTHER CSV -->
+  <div class="section">
+
+    <div class="card">
+
+      <h3>📑 Other Reports</h3>
+
+      <p>
+        Export individual sections for easier record keeping.
+      </p>
+
+      <div class="format-grid">
+
+        <button
+          class="format-button"
+          onclick="exportAccountsCSV()"
+        >
+          <span class="icon">🏦</span>
+          <strong>Accounts</strong>
+          <span>CSV</span>
+        </button>
+
+        <button
+          class="format-button"
+          onclick="exportBuyersCSV()"
+        >
+          <span class="icon">👤</span>
+          <strong>Buyers</strong>
+          <span>CSV</span>
+        </button>
+
+        <button
+          class="format-button"
+          onclick="exportGiveCSV()"
+        >
+          <span class="icon">🤝</span>
+          <strong>Money To Give</strong>
+          <span>CSV</span>
+        </button>
+
+        <button
+          class="format-button"
+          onclick="exportEmiCSV()"
+        >
+          <span class="icon">🏦</span>
+          <strong>My EMI</strong>
+          <span>CSV</span>
+        </button>
+
+      </div>
+
+      <div
+        class="status"
+        id="status"
+      ></div>
+
+    </div>
+
+  </div>
+
+
+  <div class="section">
+
+    <div class="card">
+
+      <h3>💡 Note</h3>
+
+      <p>
+        CSV exports are mainly for viewing and analysis.
+        Use Backup & Restore when you want to move or recover
+        the complete wallet data.
+      </p>
+
+      <button
+        class="export-button"
+        onclick="location.href='backup.html'"
+      >
+        💾 Open Backup & Restore
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+
+    <button onclick="location.href='../index.html'">
+      🏠
+      <span>Home</span>
+    </button>
+
+    <button onclick="location.href='transactions.html'">
+      📒
+      <span>Transactions</span>
+    </button>
+
+    <button onclick="location.href='buyers.html'">
+      👤
+      <span>Buyers</span>
+    </button>
+
+    <button onclick="location.href='accounts.html'">
+      🏦
+      <span>Accounts</span>
+    </button>
+
+    <button class="active" onclick="location.href='more.html'">
+      ☰
+      <span>More</span>
+    </button>
+
+  </div>
+
+
+  <script src="../js/app.js"></script>
+
+  <script>
+
+    const STORAGE_KEY =
+      "tamilanda_wallet_data";
+
+
+    function getData() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.getData === "function"
+      ) {
+        return window.TamilandaWallet.getData();
+      }
+
+      try {
+        return JSON.parse(
+          localStorage.getItem(STORAGE_KEY)
+        ) || {};
+      } catch (error) {
+        return {};
+      }
+
+    }
+
+
+    function escapeCSV(value) {
+
+      if (value === null || value === undefined) {
+        return "";
+      }
+
+      const text =
+        String(value);
+
+      return '"' +
+        text
+          .replace(/"/g, '""') +
+        '"';
+
+    }
+
+
+    function downloadFile(
+      content,
+      filename,
+      mimeType
+    ) {
+
+      const blob =
+        new Blob(
+          [content],
+          {
+            type: mimeType
+          }
+        );
+
+
+      const url =
+        URL.createObjectURL(blob);
+
+
+      const link =
+        document.createElement("a");
+
+
+      link.href =
+        url;
+
+      link.download =
+        filename;
+
+
+      document.body.appendChild(
+        link
+      );
+
+      link.click();
+
+      link.remove();
+
+
+      setTimeout(
+        () => URL.revokeObjectURL(url),
+        1000
+      );
+
+    }
+
+
+    function todayFileDate() {
+
+      const d =
+        new Date();
+
+      return [
+        d.getFullYear(),
+        String(d.getMonth() + 1).padStart(2, "0"),
+        String(d.getDate()).padStart(2, "0")
+      ].join("-");
+
+    }
+
+
+    function showStatus(
+      message
+    ) {
+
+      const status =
+        document.getElementById("status");
+
+      status.textContent =
+        message;
+
+      status.style.display =
+        "block";
+
+    }
+
+
+    function exportTransactionsCSV() {
+
+      const data =
+        getData();
+
+      const transactions =
+        data.transactions || [];
+
+
+      const rows = [
+
+        [
+          "Date",
+          "Type",
+          "Category",
+          "Description",
+          "Amount",
+          "Account",
+          "Note",
+          "Source"
+        ]
+
+      ];
+
+
+      transactions.forEach(
+        transaction => {
+
+          const accountId =
+            transaction.accountId ||
+            transaction.paymentAccountId ||
+            transaction.receivedAccountId ||
+            transaction.paidFromAccountId ||
+            "";
+
+
+          let accountName = "";
+
+
+          const account =
+            (data.accounts || [])
+              .find(
+                a =>
+                  String(a.id) ===
+                  String(accountId)
+              );
+
+
+          if (account) {
+            accountName =
+              account.name || "";
+          }
+
+
+          rows.push([
+
+            transaction.date ||
+            transaction.paymentDate ||
+            transaction.transactionDate ||
+            "",
+
+            transaction.type ||
+            transaction.source ||
+            "",
+
+            transaction.category ||
+            "",
+
+            transaction.description ||
+            transaction.name ||
+            transaction.title ||
+            "",
+
+            transaction.amount ||
+            0,
+
+            accountName,
+
+            transaction.note ||
+            "",
+
+            transaction.source ||
+            ""
+
+          ]);
+
+        }
+      );
+
+
+      const csv =
+        rows
+          .map(
+            row =>
+              row
+                .map(escapeCSV)
+                .join(",")
+          )
+          .join("\r\n");
+
+
+      downloadFile(
+        "\uFEFF" + csv,
+        `tamilanda-transactions-${todayFileDate()}.csv`,
+        "text/csv;charset=utf-8"
+      );
+
+
+      showStatus(
+        "✅ Transactions CSV exported."
+      );
+
+    }
+
+
+    function exportAccountsCSV() {
+
+      const data =
+        getData();
+
+
+      const rows = [
+
+        [
+          "Account Name",
+          "Type",
+          "Bank Name",
+          "Account Number",
+          "Balance",
+          "Note"
+        ]
+
+      ];
+
+
+      (data.accounts || [])
+        .forEach(
+          account => {
+
+            rows.push([
+
+              account.name ||
+              "",
+
+              account.type ||
+              "",
+
+              account.bankName ||
+              "",
+
+              account.accountNumber ||
+              "",
+
+              account.balance ||
+              0,
+
+              account.note ||
+              account.notes ||
+              ""
+
+            ]);
+
+          }
+        );
+
+
+      const csv =
+        rows
+          .map(
+            row =>
+              row
+                .map(escapeCSV)
+                .join(",")
+          )
+          .join("\r\n");
+
+
+      downloadFile(
+        "\uFEFF" + csv,
+        `tamilanda-accounts-${todayFileDate()}.csv`,
+        "text/csv;charset=utf-8"
+      );
+
+
+      showStatus(
+        "✅ Accounts CSV exported."
+      );
+
+    }
+
+
+    function exportBuyersCSV() {
+
+      const data =
+        getData();
+
+
+      const rows = [
+
+        [
+          "Buyer Name",
+          "Phone",
+          "FF ID",
+          "Total Amount",
+          "Initial Payment",
+          "Remaining",
+          "Due Date",
+          "Notes"
+        ]
+
+      ];
+
+
+      (data.buyers || [])
+        .forEach(
+          buyer => {
+
+            const total =
+              Number(
+                buyer.totalAmount ??
+                buyer.amount ??
+                0
+              );
+
+
+            const initial =
+              Number(
+                buyer.initialPayment ??
+                buyer.paid ??
+                0
+              );
+
+
+            const payments =
+              (data.buyerPayments || [])
+                .filter(
+                  p =>
+                    String(p.buyerId) ===
+                    String(buyer.id)
+                )
+                .reduce(
+                  (sum, p) =>
+                    sum +
+                    (Number(p.amount) || 0),
+                  0
+                );
+
+
+            const remaining =
+              Math.max(
+                0,
+                total -
+                initial -
+                payments
+              );
+
+
+            rows.push([
+
+              buyer.name ||
+              "",
+
+              buyer.phone ||
+              "",
+
+              buyer.ffId ||
+              buyer.ffID ||
+              "",
+
+              total,
+
+              initial,
+
+              remaining,
+
+              buyer.dueDate ||
+              "",
+
+              buyer.notes ||
+              buyer.note ||
+              ""
+
+            ]);
+
+          }
+        );
+
+
+      const csv =
+        rows
+          .map(
+            row =>
+              row
+                .map(escapeCSV)
+                .join(",")
+          )
+          .join("\r\n");
+
+
+      downloadFile(
+        "\uFEFF" + csv,
+        `tamilanda-buyers-${todayFileDate()}.csv`,
+        "text/csv;charset=utf-8"
+      );
+
+
+      showStatus(
+        "✅ Buyers CSV exported."
+      );
+
+    }
+
+
+    function exportGiveCSV() {
+
+      const data =
+        getData();
+
+
+      const rows = [
+
+        [
+          "Person",
+          "Phone",
+          "Total Amount",
+          "Already Paid",
+          "Payments",
+          "Remaining",
+          "Reason",
+          "Due Date",
+          "Notes"
+        ]
+
+      ];
+
+
+      (data.moneyToGive || [])
+        .forEach(
+          item => {
+
+            const total =
+              Number(
+                item.totalAmount ??
+                item.amount ??
+                0
+              );
+
+
+            const paid =
+              Number(
+                item.alreadyPaid ??
+                item.paid ??
+                0
+              );
+
+
+            const payments =
+              (data.givePayments || [])
+                .filter(
+                  p =>
+                    String(p.giveId) ===
+                    String(item.id)
+                )
+                .reduce(
+                  (sum, p) =>
+                    sum +
+                    (Number(p.amount) || 0),
+                  0
+                );
+
+
+            const remaining =
+              Math.max(
+                0,
+                total -
+                paid -
+                payments
+              );
+
+
+            rows.push([
+
+              item.name ||
+              item.personName ||
+              "",
+
+              item.phone ||
+              "",
+
+              total,
+
+              paid,
+
+              payments,
+
+              remaining,
+
+              item.reason ||
+              "",
+
+              item.dueDate ||
+              "",
+
+              item.notes ||
+              item.note ||
+              ""
+
+            ]);
+
+          }
+        );
+
+
+      const csv =
+        rows
+          .map(
+            row =>
+              row
+                .map(escapeCSV)
+                .join(",")
+          )
+          .join("\r\n");
+
+
+      downloadFile(
+        "\uFEFF" + csv,
+        `tamilanda-money-to-give-${todayFileDate()}.csv`,
+        "text/csv;charset=utf-8"
+      );
+
+
+      showStatus(
+        "✅ Money To Give CSV exported."
+      );
+
+    }
+
+
+    function exportEmiCSV() {
+
+      const data =
+        getData();
+
+
+      const rows = [
+
+        [
+          "EMI Name",
+          "Lender",
+          "Loan Number",
+          "Total Amount",
+          "Already Paid",
+          "Payments",
+          "Remaining",
+          "Monthly Payment",
+          "Next Due Date",
+          "Notes"
+        ]
+
+      ];
+
+
+      (data.myEmis || [])
+        .forEach(
+          item => {
+
+            const total =
+              Number(
+                item.totalAmount ??
+                item.emiAmount ??
+                item.amount ??
+                0
+              );
+
+
+            const paid =
+              Number(
+                item.alreadyPaid ??
+                item.paid ??
+                0
+              );
+
+
+            const payments =
+              (data.emiPayments || [])
+                .filter(
+                  p =>
+                    String(p.emiId) ===
+                    String(item.id)
+                )
+                .reduce(
+                  (sum, p) =>
+                    sum +
+                    (Number(p.amount) || 0),
+                  0
+                );
+
+
+            const remaining =
+              Math.max(
+                0,
+                total -
+                paid -
+                payments
+              );
+
+
+            rows.push([
+
+              item.name ||
+              "",
+
+              item.lender ||
+              "",
+
+              item.loanNumber ||
+              item.accountNumber ||
+              "",
+
+              total,
+
+              paid,
+
+              payments,
+
+              remaining,
+
+              item.monthlyPayment ||
+              "",
+
+              item.nextDueDate ||
+              "",
+
+              item.notes ||
+              item.note ||
+              ""
+
+            ]);
+
+          }
+        );
+
+
+      const csv =
+        rows
+          .map(
+            row =>
+              row
+                .map(escapeCSV)
+                .join(",")
+          )
+          .join("\r\n");
+
+
+      downloadFile(
+        "\uFEFF" + csv,
+        `tamilanda-emi-${todayFileDate()}.csv`,
+        "text/csv;charset=utf-8"
+      );
+
+
+      showStatus(
+        "✅ EMI CSV exported."
+      );
+
+    }
+
+
+    function exportFullJSON() {
+
+      const data =
+        getData();
+
+
+      const exportData = {
+
+        exportFormat:
+          "Tamilanda Wallet Export",
+
+        exportVersion:
+          1,
+
+        exportedAt:
+          new Date().toISOString(),
+
+        data:
+          data
+
+      };
+
+
+      const json =
+        JSON.stringify(
+          exportData,
+          null,
+          2
+        );
+
+
+      downloadFile(
+        json,
+        `tamilanda-wallet-export-${todayFileDate()}.json`,
+        "application/json"
+      );
+
+
+      showStatus(
+        "✅ Full wallet JSON exported."
+      );
+
+    }
+
+
+    function updateStats() {
+
+      const data =
+        getData();
+
+
+      document.getElementById(
+        "accountsCount"
+      ).textContent =
+        (data.accounts || []).length;
+
+
+      document.getElementById(
+        "transactionsCount"
+      ).textContent =
+        (data.transactions || []).length;
+
+
+      document.getElementById(
+        "buyersCount"
+      ).textContent =
+        (data.buyers || []).length;
+
+
+      document.getElementById(
+        "emisCount"
+      ).textContent =
+        (data.myEmis || []).length;
+
+    }
+
+
+    updateStats();
+
+  </script>
+
+</body>
+</html>
