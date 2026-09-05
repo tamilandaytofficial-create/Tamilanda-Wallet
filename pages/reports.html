@@ -1,0 +1,2441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Reports - Tamilanda Wallet</title>
+
+  <link
+    rel="stylesheet"
+    href="../css/style.css"
+  >
+</head>
+
+<body>
+
+  <!-- =========================
+       HEADER
+  ========================== -->
+  <header class="page-header">
+
+    <div class="page-header-left">
+
+      <button
+        type="button"
+        class="icon-button"
+        id="backButton"
+        aria-label="Go back"
+      >
+        ←
+      </button>
+
+      <div>
+        <h1>Reports</h1>
+        <p>Understand where your money goes</p>
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- =========================
+       MAIN CONTENT
+  ========================== -->
+  <main class="page-container">
+
+
+    <!-- =========================
+         PERIOD FILTER
+    ========================== -->
+    <section class="card">
+
+      <div class="section-header">
+
+        <div>
+          <h2>Report Period</h2>
+          <p>Select the period you want to analyse</p>
+        </div>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="periodFilter">
+          Period
+        </label>
+
+        <select id="periodFilter">
+
+          <option value="today">
+            Today
+          </option>
+
+          <option value="7days">
+            Last 7 Days
+          </option>
+
+          <option value="30days" selected>
+            Last 30 Days
+          </option>
+
+          <option value="month">
+            This Month
+          </option>
+
+          <option value="year">
+            This Year
+          </option>
+
+          <option value="all">
+            All Time
+          </option>
+
+          <option value="custom">
+            Custom Range
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- Custom dates -->
+
+      <div
+        id="customDateGroup"
+        style="display:none;"
+      >
+
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label for="startDate">
+              From
+            </label>
+
+            <input
+              type="date"
+              id="startDate"
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="endDate">
+              To
+            </label>
+
+            <input
+              type="date"
+              id="endDate"
+            >
+
+          </div>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="primary-button full-width"
+          id="applyCustomButton"
+        >
+          Apply Range
+        </button>
+
+      </div>
+
+
+      <div
+        id="selectedPeriodText"
+        style="
+          margin-top:12px;
+          font-size:13px;
+          opacity:0.7;
+        "
+      >
+        Last 30 Days
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         MAIN SUMMARY
+    ========================== -->
+    <section class="summary-grid">
+
+      <div class="summary-card income-card">
+
+        <span class="summary-label">
+          Income
+        </span>
+
+        <strong id="reportIncome">
+          ₹0
+        </strong>
+
+      </div>
+
+
+      <div class="summary-card expense-card">
+
+        <span class="summary-label">
+          Expense
+        </span>
+
+        <strong id="reportExpense">
+          ₹0
+        </strong>
+
+      </div>
+
+
+      <div class="summary-card profit-card">
+
+        <span class="summary-label">
+          Profit
+        </span>
+
+        <strong id="reportProfit">
+          ₹0
+        </strong>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         MONEY FLOW
+    ========================== -->
+    <section class="card">
+
+      <div class="section-header">
+
+        <div>
+          <h2>Money Flow</h2>
+          <p>Income vs expense for selected period</p>
+        </div>
+
+      </div>
+
+
+      <div
+        style="
+          margin-top:10px;
+        "
+      >
+
+        <div
+          style="
+            display:flex;
+            justify-content:space-between;
+            gap:12px;
+            font-size:13px;
+            margin-bottom:6px;
+          "
+        >
+
+          <span>
+            Income
+          </span>
+
+          <strong id="incomePercentage">
+            0%
+          </strong>
+
+        </div>
+
+
+        <div
+          style="
+            height:10px;
+            border-radius:20px;
+            background:rgba(255,255,255,0.08);
+            overflow:hidden;
+          "
+        >
+
+          <div
+            id="incomeBar"
+            style="
+              width:0%;
+              height:100%;
+              border-radius:20px;
+              background:#55d98b;
+            "
+          ></div>
+
+        </div>
+
+
+        <div
+          style="
+            display:flex;
+            justify-content:space-between;
+            gap:12px;
+            font-size:13px;
+            margin-top:18px;
+            margin-bottom:6px;
+          "
+        >
+
+          <span>
+            Expense
+          </span>
+
+          <strong id="expensePercentage">
+            0%
+          </strong>
+
+        </div>
+
+
+        <div
+          style="
+            height:10px;
+            border-radius:20px;
+            background:rgba(255,255,255,0.08);
+            overflow:hidden;
+          "
+        >
+
+          <div
+            id="expenseBar"
+            style="
+              width:0%;
+              height:100%;
+              border-radius:20px;
+              background:#ff667a;
+            "
+          ></div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         DAILY BREAKDOWN
+    ========================== -->
+    <section class="card">
+
+      <div class="section-header">
+
+        <div>
+
+          <h2>Daily Breakdown</h2>
+
+          <p>
+            Income, expense and profit by day
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="dailyBreakdown"
+        class="transaction-list"
+      >
+        <!-- Daily report -->
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         EXPENSE CATEGORIES
+    ========================== -->
+    <section class="card">
+
+      <div class="section-header">
+
+        <div>
+
+          <h2>Expense Categories</h2>
+
+          <p>
+            Where your money was spent
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="expenseCategories"
+        class="transaction-list"
+      >
+        <!-- Categories -->
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         INCOME SOURCES
+    ========================== -->
+    <section class="card">
+
+      <div class="section-header">
+
+        <div>
+
+          <h2>Income Sources</h2>
+
+          <p>
+            Where your money came from
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="incomeSources"
+        class="transaction-list"
+      >
+        <!-- Income sources -->
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         ACCOUNT REPORT
+    ========================== -->
+    <section class="card">
+
+      <div class="section-header">
+
+        <div>
+
+          <h2>Account Activity</h2>
+
+          <p>
+            Income and expense by account
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="accountReport"
+        class="transaction-list"
+      >
+        <!-- Account report -->
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         RECEIVABLES & LIABILITIES
+    ========================== -->
+    <section class="summary-grid">
+
+      <div class="summary-card income-card">
+
+        <span class="summary-label">
+          Buyer Receivables
+        </span>
+
+        <strong id="buyerReceivable">
+          ₹0
+        </strong>
+
+      </div>
+
+
+      <div class="summary-card expense-card">
+
+        <span class="summary-label">
+          Money To Give
+        </span>
+
+        <strong id="moneyToGive">
+          ₹0
+        </strong>
+
+      </div>
+
+
+      <div class="summary-card">
+
+        <span class="summary-label">
+          EMI Remaining
+        </span>
+
+        <strong id="emiRemaining">
+          ₹0
+        </strong>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         NET POSITION
+    ========================== -->
+    <section class="card">
+
+      <div class="section-header">
+
+        <div>
+
+          <h2>Financial Position</h2>
+
+          <p>
+            Simple snapshot of your current position
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="transaction-list"
+        style="margin-top:8px;"
+      >
+
+        <div class="transaction-item">
+
+          <div class="transaction-icon">
+            🏦
+          </div>
+
+          <div class="transaction-info">
+
+            <div class="transaction-title">
+              Available Balance
+            </div>
+
+            <div class="transaction-meta">
+              Money currently available in your accounts
+            </div>
+
+          </div>
+
+          <div class="transaction-right">
+
+            <div
+              class="transaction-amount"
+              id="availableBalance"
+            >
+              ₹0
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="transaction-item">
+
+          <div class="transaction-icon">
+            📥
+          </div>
+
+          <div class="transaction-info">
+
+            <div class="transaction-title">
+              Money To Receive
+            </div>
+
+            <div class="transaction-meta">
+              Outstanding buyer payments
+            </div>
+
+          </div>
+
+          <div class="transaction-right">
+
+            <div
+              class="transaction-amount"
+              id="netReceivable"
+            >
+              ₹0
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="transaction-item">
+
+          <div class="transaction-icon">
+            📤
+          </div>
+
+          <div class="transaction-info">
+
+            <div class="transaction-title">
+              Money To Pay
+            </div>
+
+            <div class="transaction-meta">
+              Outstanding liabilities
+            </div>
+
+          </div>
+
+          <div class="transaction-right">
+
+            <div
+              class="transaction-amount"
+              id="netPayable"
+            >
+              ₹0
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="transaction-item">
+
+          <div class="transaction-icon">
+            💎
+          </div>
+
+          <div class="transaction-info">
+
+            <div class="transaction-title">
+              Estimated Net Position
+            </div>
+
+            <div class="transaction-meta">
+              Balance + receivables − liabilities
+            </div>
+
+          </div>
+
+          <div class="transaction-right">
+
+            <div
+              class="transaction-amount"
+              id="netPosition"
+            >
+              ₹0
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =========================
+       JAVASCRIPT
+  ========================== -->
+  <script src="../js/app.js"></script>
+
+
+  <script>
+
+    let walletData = null;
+
+    let currentStartDate = null;
+
+    let currentEndDate = null;
+
+
+    /* =========================
+       HELPERS
+    ========================== */
+
+    function getWalletData() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.getData === "function"
+      ) {
+
+        return window.TamilandaWallet.getData();
+
+      }
+
+      return null;
+
+    }
+
+
+    function formatMoney(amount) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.formatMoney === "function"
+      ) {
+
+        return window.TamilandaWallet.formatMoney(
+          amount
+        );
+
+      }
+
+
+      return "₹" +
+        Number(amount || 0)
+          .toLocaleString("en-IN");
+
+    }
+
+
+    function escapeHtml(value) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.escapeHtml === "function"
+      ) {
+
+        return window.TamilandaWallet.escapeHtml(
+          value
+        );
+
+      }
+
+
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    function todayString() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.todayString === "function"
+      ) {
+
+        return window.TamilandaWallet.todayString();
+
+      }
+
+
+      const date = new Date();
+
+
+      const year =
+        date.getFullYear();
+
+
+      const month =
+        String(
+          date.getMonth() + 1
+        )
+        .padStart(2, "0");
+
+
+      const day =
+        String(
+          date.getDate()
+        )
+        .padStart(2, "0");
+
+
+      return `${year}-${month}-${day}`;
+
+    }
+
+
+    function formatDate(dateString) {
+
+      if (!dateString) {
+        return "-";
+      }
+
+
+      const date =
+        new Date(
+          dateString + "T00:00:00"
+        );
+
+
+      if (
+        Number.isNaN(
+          date.getTime()
+        )
+      ) {
+
+        return dateString;
+
+      }
+
+
+      return date.toLocaleDateString(
+        "en-IN",
+        {
+          day: "2-digit",
+          month: "short",
+          year: "numeric"
+        }
+      );
+
+    }
+
+
+    function dateFromToday(daysAgo) {
+
+      const date = new Date();
+
+      date.setHours(0, 0, 0, 0);
+
+      date.setDate(
+        date.getDate() - daysAgo
+      );
+
+
+      const year =
+        date.getFullYear();
+
+
+      const month =
+        String(
+          date.getMonth() + 1
+        )
+        .padStart(2, "0");
+
+
+      const day =
+        String(
+          date.getDate()
+        )
+        .padStart(2, "0");
+
+
+      return `${year}-${month}-${day}`;
+
+    }
+
+
+    function getMonthStart() {
+
+      const date = new Date();
+
+      date.setDate(1);
+
+      const year =
+        date.getFullYear();
+
+      const month =
+        String(
+          date.getMonth() + 1
+        )
+        .padStart(2, "0");
+
+
+      return `${year}-${month}-01`;
+
+    }
+
+
+    function getYearStart() {
+
+      const year =
+        new Date()
+          .getFullYear();
+
+
+      return `${year}-01-01`;
+
+    }
+
+
+    /* =========================
+       DATE RANGE
+    ========================== */
+
+    function setPeriod(period) {
+
+      const today =
+        todayString();
+
+
+      if (period === "today") {
+
+        currentStartDate =
+          today;
+
+        currentEndDate =
+          today;
+
+        updatePeriodText(
+          "Today"
+        );
+
+      }
+
+
+      if (period === "7days") {
+
+        currentStartDate =
+          dateFromToday(6);
+
+        currentEndDate =
+          today;
+
+        updatePeriodText(
+          "Last 7 Days"
+        );
+
+      }
+
+
+      if (period === "30days") {
+
+        currentStartDate =
+          dateFromToday(29);
+
+        currentEndDate =
+          today;
+
+        updatePeriodText(
+          "Last 30 Days"
+        );
+
+      }
+
+
+      if (period === "month") {
+
+        currentStartDate =
+          getMonthStart();
+
+        currentEndDate =
+          today;
+
+        updatePeriodText(
+          "This Month"
+        );
+
+      }
+
+
+      if (period === "year") {
+
+        currentStartDate =
+          getYearStart();
+
+        currentEndDate =
+          today;
+
+        updatePeriodText(
+          "This Year"
+        );
+
+      }
+
+
+      if (period === "all") {
+
+        currentStartDate =
+          null;
+
+        currentEndDate =
+          null;
+
+        updatePeriodText(
+          "All Time"
+        );
+
+      }
+
+
+      if (period !== "custom") {
+
+        renderReport();
+
+      }
+
+    }
+
+
+    function updatePeriodText(
+      text
+    ) {
+
+      document.getElementById(
+        "selectedPeriodText"
+      ).textContent =
+        text;
+
+    }
+
+
+    function isInSelectedPeriod(
+      dateString
+    ) {
+
+      if (!dateString) {
+        return false;
+      }
+
+
+      if (
+        !currentStartDate &&
+        !currentEndDate
+      ) {
+
+        return true;
+
+      }
+
+
+      return (
+        dateString >=
+          currentStartDate &&
+        dateString <=
+          currentEndDate
+      );
+
+    }
+
+
+    /* =========================
+       GET PERIOD TRANSACTIONS
+    ========================== */
+
+    function getPeriodTransactions() {
+
+      return (
+        walletData.transactions || []
+      )
+      .filter(
+        transaction =>
+          isInSelectedPeriod(
+            transaction.date
+          )
+      );
+
+    }
+
+
+    /* =========================
+       MAIN REPORT
+    ========================== */
+
+    function renderReport() {
+
+      if (!walletData) {
+        return;
+      }
+
+
+      const transactions =
+        getPeriodTransactions();
+
+
+      let income = 0;
+
+      let expense = 0;
+
+
+      transactions.forEach(
+        transaction => {
+
+          const amount =
+            Number(
+              transaction.amount || 0
+            );
+
+
+          if (
+            transaction.type ===
+            "income"
+          ) {
+
+            income += amount;
+
+          }
+
+
+          if (
+            transaction.type ===
+            "expense"
+          ) {
+
+            expense += amount;
+
+          }
+
+        }
+      );
+
+
+      const profit =
+        income - expense;
+
+
+      document.getElementById(
+        "reportIncome"
+      ).textContent =
+        formatMoney(
+          income
+        );
+
+
+      document.getElementById(
+        "reportExpense"
+      ).textContent =
+        formatMoney(
+          expense
+        );
+
+
+      document.getElementById(
+        "reportProfit"
+      ).textContent =
+        formatMoney(
+          profit
+        );
+
+
+      renderMoneyFlow(
+        income,
+        expense
+      );
+
+
+      renderDailyBreakdown(
+        transactions
+      );
+
+
+      renderExpenseCategories(
+        transactions
+      );
+
+
+      renderIncomeSources(
+        transactions
+      );
+
+
+      renderAccountReport(
+        transactions
+      );
+
+
+      renderFinancialPosition();
+
+    }
+
+
+    /* =========================
+       MONEY FLOW
+    ========================== */
+
+    function renderMoneyFlow(
+      income,
+      expense
+    ) {
+
+      const total =
+        income + expense;
+
+
+      let incomePercent = 0;
+
+      let expensePercent = 0;
+
+
+      if (total > 0) {
+
+        incomePercent =
+          (income / total) * 100;
+
+        expensePercent =
+          (expense / total) * 100;
+
+      }
+
+
+      document.getElementById(
+        "incomePercentage"
+      ).textContent =
+        incomePercent.toFixed(0) +
+        "%";
+
+
+      document.getElementById(
+        "expensePercentage"
+      ).textContent =
+        expensePercent.toFixed(0) +
+        "%";
+
+
+      document.getElementById(
+        "incomeBar"
+      ).style.width =
+        incomePercent + "%";
+
+
+      document.getElementById(
+        "expenseBar"
+      ).style.width =
+        expensePercent + "%";
+
+    }
+
+
+    /* =========================
+       DAILY BREAKDOWN
+    ========================== */
+
+    function renderDailyBreakdown(
+      transactions
+    ) {
+
+      const container =
+        document.getElementById(
+          "dailyBreakdown"
+        );
+
+
+      const days = {};
+
+
+      transactions.forEach(
+        transaction => {
+
+          const date =
+            transaction.date ||
+            "Unknown";
+
+
+          if (!days[date]) {
+
+            days[date] = {
+
+              income: 0,
+
+              expense: 0
+
+            };
+
+          }
+
+
+          const amount =
+            Number(
+              transaction.amount || 0
+            );
+
+
+          if (
+            transaction.type ===
+            "income"
+          ) {
+
+            days[date].income +=
+              amount;
+
+          }
+
+
+          if (
+            transaction.type ===
+            "expense"
+          ) {
+
+            days[date].expense +=
+              amount;
+
+          }
+
+        }
+      );
+
+
+      const dates =
+        Object.keys(days)
+          .sort()
+          .reverse();
+
+
+      if (dates.length === 0) {
+
+        container.innerHTML = `
+
+          <div class="empty-state">
+
+            <div class="empty-icon">
+              📊
+            </div>
+
+            <h3>
+              No data
+            </h3>
+
+            <p>
+              No transactions in this period.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      container.innerHTML =
+        dates
+          .map(
+            date => {
+
+              const income =
+                days[date].income;
+
+
+              const expense =
+                days[date].expense;
+
+
+              const profit =
+                income - expense;
+
+
+              return `
+
+                <div class="transaction-item">
+
+                  <div class="transaction-icon">
+                    📅
+                  </div>
+
+
+                  <div class="transaction-info">
+
+                    <div class="transaction-title">
+
+                      ${escapeHtml(
+                        formatDate(date)
+                      )}
+
+                    </div>
+
+
+                    <div class="transaction-meta">
+
+                      Income:
+                      ${formatMoney(income)}
+
+                      • Expense:
+                      ${formatMoney(expense)}
+
+                    </div>
+
+                  </div>
+
+
+                  <div class="transaction-right">
+
+                    <div
+                      class="transaction-amount"
+                      style="
+                        color:${
+                          profit >= 0
+                            ? "#55d98b"
+                            : "#ff667a"
+                        };
+                      "
+                    >
+
+                      ${profit >= 0 ? "+" : ""}
+                      ${formatMoney(profit)}
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              `;
+
+            }
+          )
+          .join("");
+
+    }
+
+
+    /* =========================
+       EXPENSE CATEGORIES
+    ========================== */
+
+    function renderExpenseCategories(
+      transactions
+    ) {
+
+      const container =
+        document.getElementById(
+          "expenseCategories"
+        );
+
+
+      const categories = {};
+
+
+      transactions
+        .filter(
+          transaction =>
+            transaction.type ===
+            "expense"
+        )
+        .forEach(
+          transaction => {
+
+            const category =
+              transaction.category ||
+              "Other";
+
+
+            categories[category] =
+              (
+                categories[category] ||
+                0
+              ) +
+              Number(
+                transaction.amount || 0
+              );
+
+          }
+        );
+
+
+      const entries =
+        Object.entries(
+          categories
+        )
+        .sort(
+          (a, b) =>
+            b[1] - a[1]
+        );
+
+
+      if (entries.length === 0) {
+
+        container.innerHTML = `
+
+          <div class="empty-state">
+
+            <div class="empty-icon">
+              💸
+            </div>
+
+            <h3>
+              No expenses
+            </h3>
+
+            <p>
+              No expense data in this period.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      const total =
+        entries.reduce(
+          (sum, item) =>
+            sum + item[1],
+          0
+        );
+
+
+      container.innerHTML =
+        entries
+          .map(
+            ([category, amount]) => {
+
+              const percentage =
+                total > 0
+                  ? (
+                    amount /
+                    total
+                  ) * 100
+                  : 0;
+
+
+              return `
+
+                <div class="transaction-item">
+
+                  <div class="transaction-icon expense-icon">
+                    💸
+                  </div>
+
+
+                  <div class="transaction-info">
+
+                    <div class="transaction-title">
+
+                      ${escapeHtml(
+                        category
+                      )}
+
+                    </div>
+
+
+                    <div class="transaction-meta">
+
+                      ${percentage.toFixed(1)}%
+                      of expenses
+
+                    </div>
+
+
+                    <div
+                      style="
+                        margin-top:8px;
+                        height:5px;
+                        border-radius:10px;
+                        background:rgba(255,255,255,0.08);
+                        overflow:hidden;
+                      "
+                    >
+
+                      <div
+                        style="
+                          width:${percentage}%;
+                          height:100%;
+                          background:#ff667a;
+                          border-radius:10px;
+                        "
+                      ></div>
+
+                    </div>
+
+                  </div>
+
+
+                  <div class="transaction-right">
+
+                    <div
+                      class="transaction-amount expense-amount"
+                    >
+
+                      ${formatMoney(
+                        amount
+                      )}
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              `;
+
+            }
+          )
+          .join("");
+
+    }
+
+
+    /* =========================
+       INCOME SOURCES
+    ========================== */
+
+    function renderIncomeSources(
+      transactions
+    ) {
+
+      const container =
+        document.getElementById(
+          "incomeSources"
+        );
+
+
+      const sources = {};
+
+
+      transactions
+        .filter(
+          transaction =>
+            transaction.type ===
+            "income"
+        )
+        .forEach(
+          transaction => {
+
+            const source =
+              transaction.category ||
+              transaction.title ||
+              "Other Income";
+
+
+            sources[source] =
+              (
+                sources[source] ||
+                0
+              ) +
+              Number(
+                transaction.amount || 0
+              );
+
+          }
+        );
+
+
+      const entries =
+        Object.entries(
+          sources
+        )
+        .sort(
+          (a, b) =>
+            b[1] - a[1]
+        );
+
+
+      if (entries.length === 0) {
+
+        container.innerHTML = `
+
+          <div class="empty-state">
+
+            <div class="empty-icon">
+              💰
+            </div>
+
+            <h3>
+              No income
+            </h3>
+
+            <p>
+              No income data in this period.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      const total =
+        entries.reduce(
+          (sum, item) =>
+            sum + item[1],
+          0
+        );
+
+
+      container.innerHTML =
+        entries
+          .map(
+            ([source, amount]) => {
+
+              const percentage =
+                total > 0
+                  ? (
+                    amount /
+                    total
+                  ) * 100
+                  : 0;
+
+
+              return `
+
+                <div class="transaction-item">
+
+                  <div class="transaction-icon income-icon">
+                    💰
+                  </div>
+
+
+                  <div class="transaction-info">
+
+                    <div class="transaction-title">
+
+                      ${escapeHtml(
+                        source
+                      )}
+
+                    </div>
+
+
+                    <div class="transaction-meta">
+
+                      ${percentage.toFixed(1)}%
+                      of income
+
+                    </div>
+
+
+                    <div
+                      style="
+                        margin-top:8px;
+                        height:5px;
+                        border-radius:10px;
+                        background:rgba(255,255,255,0.08);
+                        overflow:hidden;
+                      "
+                    >
+
+                      <div
+                        style="
+                          width:${percentage}%;
+                          height:100%;
+                          background:#55d98b;
+                          border-radius:10px;
+                        "
+                      ></div>
+
+                    </div>
+
+                  </div>
+
+
+                  <div class="transaction-right">
+
+                    <div
+                      class="transaction-amount income-amount"
+                    >
+
+                      +${formatMoney(
+                        amount
+                      )}
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              `;
+
+            }
+          )
+          .join("");
+
+    }
+
+
+    /* =========================
+       ACCOUNT REPORT
+    ========================== */
+
+    function renderAccountReport(
+      transactions
+    ) {
+
+      const container =
+        document.getElementById(
+          "accountReport"
+        );
+
+
+      const accountData = {};
+
+
+      (
+        walletData.accounts || []
+      )
+      .forEach(
+        account => {
+
+          accountData[
+            account.id
+          ] = {
+
+            name:
+              account.name,
+
+            income: 0,
+
+            expense: 0
+
+          };
+
+        }
+      );
+
+
+      transactions.forEach(
+        transaction => {
+
+          if (
+            !transaction.accountId
+          ) {
+
+            return;
+
+          }
+
+
+          if (
+            !accountData[
+              transaction.accountId
+            ]
+          ) {
+
+            accountData[
+              transaction.accountId
+            ] = {
+
+              name:
+                "Unknown Account",
+
+              income: 0,
+
+              expense: 0
+
+            };
+
+          }
+
+
+          const amount =
+            Number(
+              transaction.amount || 0
+            );
+
+
+          if (
+            transaction.type ===
+            "income"
+          ) {
+
+            accountData[
+              transaction.accountId
+            ].income +=
+              amount;
+
+          }
+
+
+          if (
+            transaction.type ===
+            "expense"
+          ) {
+
+            accountData[
+              transaction.accountId
+            ].expense +=
+              amount;
+
+          }
+
+        }
+      );
+
+
+      const entries =
+        Object.values(
+          accountData
+        )
+        .filter(
+          account =>
+            account.income > 0 ||
+            account.expense > 0
+        );
+
+
+      if (entries.length === 0) {
+
+        container.innerHTML = `
+
+          <div class="empty-state">
+
+            <div class="empty-icon">
+              🏦
+            </div>
+
+            <h3>
+              No account activity
+            </h3>
+
+            <p>
+              No account transactions in this period.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      container.innerHTML =
+        entries
+          .map(
+            account => {
+
+              const net =
+                account.income -
+                account.expense;
+
+
+              return `
+
+                <div class="transaction-item">
+
+                  <div class="transaction-icon">
+                    🏦
+                  </div>
+
+
+                  <div class="transaction-info">
+
+                    <div class="transaction-title">
+
+                      ${escapeHtml(
+                        account.name
+                      )}
+
+                    </div>
+
+
+                    <div class="transaction-meta">
+
+                      In:
+                      ${formatMoney(
+                        account.income
+                      )}
+
+                      • Out:
+                      ${formatMoney(
+                        account.expense
+                      )}
+
+                    </div>
+
+                  </div>
+
+
+                  <div class="transaction-right">
+
+                    <div
+                      class="transaction-amount"
+                      style="
+                        color:${
+                          net >= 0
+                            ? "#55d98b"
+                            : "#ff667a"
+                        };
+                      "
+                    >
+
+                      ${net >= 0 ? "+" : ""}
+                      ${formatMoney(net)}
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              `;
+
+            }
+          )
+          .join("");
+
+    }
+
+
+    /* =========================
+       BUYER RECEIVABLE
+    ========================== */
+
+    function getBuyerReceivable() {
+
+      return (
+        walletData.buyers || []
+      )
+      .reduce(
+        (sum, buyer) => {
+
+          const total =
+            Number(
+              buyer.totalAmount || 0
+            );
+
+
+          const initial =
+            Number(
+              buyer.initialPayment || 0
+            );
+
+
+          const payments =
+            (
+              walletData.buyerPayments ||
+              []
+            )
+            .filter(
+              payment =>
+                payment.buyerId ===
+                buyer.id
+            )
+            .reduce(
+              (
+                paymentSum,
+                payment
+              ) =>
+                paymentSum +
+                Number(
+                  payment.amount || 0
+                ),
+              0
+            );
+
+
+          const received =
+            initial +
+            payments;
+
+
+          return sum +
+            Math.max(
+              0,
+              total - received
+            );
+
+        },
+        0
+      );
+
+    }
+
+
+    /* =========================
+       MONEY TO GIVE
+    ========================== */
+
+    function getMoneyToGive() {
+
+      return (
+        walletData.moneyToGive ||
+        []
+      )
+      .reduce(
+        (sum, record) => {
+
+          const total =
+            Number(
+              record.owedAmount || 0
+            );
+
+
+          const alreadyPaid =
+            Number(
+              record.alreadyPaid || 0
+            );
+
+
+          const payments =
+            (
+              walletData.givePayments ||
+              []
+            )
+            .filter(
+              payment =>
+                payment.giveId ===
+                record.id
+            )
+            .reduce(
+              (
+                paymentSum,
+                payment
+              ) =>
+                paymentSum +
+                Number(
+                  payment.amount || 0
+                ),
+              0
+            );
+
+
+          return sum +
+            Math.max(
+              0,
+              total -
+              alreadyPaid -
+              payments
+            );
+
+        },
+        0
+      );
+
+    }
+
+
+    /* =========================
+       EMI REMAINING
+    ========================== */
+
+    function getEmiRemaining() {
+
+      return (
+        walletData.myEmis ||
+        []
+      )
+      .reduce(
+        (sum, emi) => {
+
+          const total =
+            Number(
+              emi.totalAmount || 0
+            );
+
+
+          const alreadyPaid =
+            Number(
+              emi.alreadyPaid || 0
+            );
+
+
+          const payments =
+            (
+              walletData.emiPayments ||
+              []
+            )
+            .filter(
+              payment =>
+                payment.emiId ===
+                emi.id
+            )
+            .reduce(
+              (
+                paymentSum,
+                payment
+              ) =>
+                paymentSum +
+                Number(
+                  payment.amount || 0
+                ),
+              0
+            );
+
+
+          return sum +
+            Math.max(
+              0,
+              total -
+              alreadyPaid -
+              payments
+            );
+
+        },
+        0
+      );
+
+    }
+
+
+    /* =========================
+       CURRENT BALANCE
+    ========================== */
+
+    function getAvailableBalance() {
+
+      return (
+        walletData.accounts ||
+        []
+      )
+      .reduce(
+        (sum, account) =>
+          sum +
+          Number(
+            account.balance || 0
+          ),
+        0
+      );
+
+    }
+
+
+    /* =========================
+       FINANCIAL POSITION
+    ========================== */
+
+    function renderFinancialPosition() {
+
+      const balance =
+        getAvailableBalance();
+
+
+      const receivable =
+        getBuyerReceivable();
+
+
+      const payable =
+        getMoneyToGive();
+
+
+      const emi =
+        getEmiRemaining();
+
+
+      const netPosition =
+        balance +
+        receivable -
+        payable -
+        emi;
+
+
+      document.getElementById(
+        "buyerReceivable"
+      ).textContent =
+        formatMoney(
+          receivable
+        );
+
+
+      document.getElementById(
+        "moneyToGive"
+      ).textContent =
+        formatMoney(
+          payable
+        );
+
+
+      document.getElementById(
+        "emiRemaining"
+      ).textContent =
+        formatMoney(
+          emi
+        );
+
+
+      document.getElementById(
+        "availableBalance"
+      ).textContent =
+        formatMoney(
+          balance
+        );
+
+
+      document.getElementById(
+        "netReceivable"
+      ).textContent =
+        formatMoney(
+          receivable
+        );
+
+
+      document.getElementById(
+        "netPayable"
+      ).textContent =
+        formatMoney(
+          payable + emi
+        );
+
+
+      document.getElementById(
+        "netPosition"
+      ).textContent =
+        formatMoney(
+          netPosition
+        );
+
+    }
+
+
+    /* =========================
+       CUSTOM RANGE
+    ========================== */
+
+    function applyCustomRange() {
+
+      const start =
+        document.getElementById(
+          "startDate"
+        ).value;
+
+
+      const end =
+        document.getElementById(
+          "endDate"
+        ).value;
+
+
+      if (!start || !end) {
+
+        alert(
+          "Please select both dates."
+        );
+
+        return;
+
+      }
+
+
+      if (start > end) {
+
+        alert(
+          "Start date cannot be after end date."
+        );
+
+        return;
+
+      }
+
+
+      currentStartDate =
+        start;
+
+
+      currentEndDate =
+        end;
+
+
+      updatePeriodText(
+        `${formatDate(start)} → ${formatDate(end)}`
+      );
+
+
+      renderReport();
+
+    }
+
+
+    /* =========================
+       EVENTS
+    ========================== */
+
+    function setupEvents() {
+
+      document.getElementById(
+        "backButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+
+          window.location.href =
+            "../index.html";
+
+        }
+      );
+
+
+      document.getElementById(
+        "periodFilter"
+      )
+      .addEventListener(
+        "change",
+        event => {
+
+          const value =
+            event.target.value;
+
+
+          document.getElementById(
+            "customDateGroup"
+          ).style.display =
+            value === "custom"
+              ? "block"
+              : "none";
+
+
+          if (
+            value !== "custom"
+          ) {
+
+            setPeriod(
+              value
+            );
+
+          }
+
+        }
+      );
+
+
+      document.getElementById(
+        "applyCustomButton"
+      )
+      .addEventListener(
+        "click",
+        applyCustomRange
+      );
+
+    }
+
+
+    /* =========================
+       START
+    ========================== */
+
+    function initializeReports() {
+
+      walletData =
+        getWalletData();
+
+
+      if (!walletData) {
+        return;
+      }
+
+
+      /*
+        Default: Last 30 Days
+      */
+
+      setPeriod(
+        "30days"
+      );
+
+
+      setupEvents();
+
+    }
+
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      initializeReports
+    );
+
+  </script>
+
+</body>
+</html>
