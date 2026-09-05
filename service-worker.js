@@ -1,4 +1,4 @@
-const CACHE_NAME = "tamilanda-wallet-v3";
+const CACHE_NAME = "tamilanda-wallet-v4";
 
 const APP_FILES = [
   "./",
@@ -45,7 +45,7 @@ const APP_FILES = [
 
 /* =========================================================
    INSTALL
-   ========================================================= */
+========================================================= */
 
 self.addEventListener("install", event => {
 
@@ -54,9 +54,7 @@ self.addEventListener("install", event => {
     caches.open(CACHE_NAME)
 
       .then(cache => {
-
         return cache.addAll(APP_FILES);
-
       })
 
       .then(() => {
@@ -76,7 +74,7 @@ self.addEventListener("install", event => {
 
 /* =========================================================
    ACTIVATE
-   ========================================================= */
+========================================================= */
 
 self.addEventListener("activate", event => {
 
@@ -89,13 +87,11 @@ self.addEventListener("activate", event => {
         return Promise.all(
 
           cacheNames
-
             .filter(cacheName => {
 
               return cacheName !== CACHE_NAME;
 
             })
-
             .map(cacheName => {
 
               return caches.delete(cacheName);
@@ -109,7 +105,7 @@ self.addEventListener("activate", event => {
       .then(() => {
 
         /*
-         * Take control of already-open pages.
+         * Take control of all open pages.
          */
 
         return self.clients.claim();
@@ -123,20 +119,17 @@ self.addEventListener("activate", event => {
 
 /* =========================================================
    FETCH
-   ========================================================= */
+========================================================= */
 
 /*
- * IMPORTANT:
+ * NETWORK-FIRST
  *
- * This app uses NETWORK-FIRST.
+ * 1. Always try GitHub/network first.
+ * 2. Save successful responses to the current cache.
+ * 3. If network fails, use cached response.
  *
- * Latest GitHub Pages files are requested first.
- *
- * If the network is unavailable:
- *      -> use cached version
- *
- * This prevents old app.js / HTML files from
- * permanently blocking newer GitHub updates.
+ * This prevents an old cached app.js / HTML / CSS
+ * from permanently overriding the latest GitHub files.
  */
 
 self.addEventListener("fetch", event => {
@@ -153,7 +146,7 @@ self.addEventListener("fetch", event => {
       .then(networkResponse => {
 
         /*
-         * Only cache successful same-origin responses.
+         * Cache only successful same-origin responses.
          */
 
         if (
@@ -170,7 +163,7 @@ self.addEventListener("fetch", event => {
 
             .then(cache => {
 
-              cache.put(
+              return cache.put(
                 event.request,
                 responseClone
               );
@@ -197,8 +190,7 @@ self.addEventListener("fetch", event => {
 
         /*
          * Network unavailable.
-         *
-         * Fall back to cached response.
+         * Use cached version.
          */
 
         return caches.match(event.request)
@@ -206,15 +198,13 @@ self.addEventListener("fetch", event => {
           .then(cachedResponse => {
 
             if (cachedResponse) {
-
               return cachedResponse;
-
             }
 
 
             /*
-             * If a page is unavailable offline,
-             * return the cached home page.
+             * If navigation is unavailable offline,
+             * return cached home page.
              */
 
             if (
