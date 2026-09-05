@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#09070d"
+    >
+
+    <title>Add Expense | Tamilanda Wallet</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+
+        .form-page {
+            width: 100%;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 18px 16px 40px;
+        }
+
+        .form-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .back-button {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            background: var(--surface);
+            color: #fff;
+            border: 1px solid var(--border);
+            font-size: 20px;
+        }
+
+        .form-title h1 {
+            font-size: 22px;
+            color: var(--red);
+            font-weight: 900;
+        }
+
+        .form-title p {
+            margin-top: 3px;
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        .expense-form-card {
+            padding: 20px;
+            border-radius: 22px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+        }
+
+        .amount-box {
+            padding: 20px;
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255, 102, 122, 0.10),
+                    rgba(255, 102, 122, 0.025)
+                );
+
+            border: 1px solid rgba(255, 102, 122, 0.16);
+
+            margin-bottom: 20px;
+        }
+
+        .amount-label {
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+        }
+
+        .amount-input-wrap {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-top: 8px;
+        }
+
+        .amount-symbol {
+            color: var(--red);
+            font-size: 28px;
+            font-weight: 900;
+        }
+
+        .amount-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #fff;
+            font-size: 34px;
+            font-weight: 900;
+        }
+
+        .amount-input::placeholder {
+            color: #4f4a55;
+        }
+
+        .form-group {
+            margin-bottom: 17px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 7px;
+            color: #d6d1dc;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 14px 15px;
+
+            border-radius: 13px;
+
+            border: 1px solid var(--border);
+
+            outline: none;
+
+            background: var(--surface-2);
+
+            color: #fff;
+
+            font-size: 14px;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            border-color: rgba(255, 102, 122, 0.45);
+        }
+
+        .form-select option {
+            background: #15111d;
+            color: #fff;
+        }
+
+        .form-textarea {
+            min-height: 105px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 11px;
+        }
+
+        .save-expense-button {
+            width: 100%;
+            min-height: 54px;
+            margin-top: 5px;
+
+            border-radius: 15px;
+
+            background: var(--red);
+            color: #19070a;
+
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        .clear-button {
+            width: 100%;
+            min-height: 48px;
+            margin-top: 10px;
+
+            border-radius: 15px;
+
+            background: transparent;
+            color: var(--text-secondary);
+
+            border: 1px solid var(--border);
+
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .success-message {
+            display: none;
+
+            margin-bottom: 15px;
+            padding: 13px 15px;
+
+            border-radius: 13px;
+
+            background: rgba(85, 217, 139, 0.10);
+            border: 1px solid rgba(85, 217, 139, 0.18);
+
+            color: var(--green);
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .error-message {
+            display: none;
+
+            margin-bottom: 15px;
+            padding: 13px 15px;
+
+            border-radius: 13px;
+
+            background: rgba(255, 102, 122, 0.10);
+            border: 1px solid rgba(255, 102, 122, 0.18);
+
+            color: var(--red);
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        @media (max-width: 420px) {
+
+            .form-page {
+                padding-left: 13px;
+                padding-right: 13px;
+            }
+
+            .expense-form-card {
+                padding: 16px;
+            }
+
+            .amount-input {
+                font-size: 30px;
+            }
+        }
+
+        @media (max-width: 350px) {
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <main class="form-page">
+
+        <!-- HEADER -->
+
+        <div class="form-header">
+
+            <button
+                type="button"
+                class="back-button"
+                id="backButton"
+            >
+                ←
+            </button>
+
+            <div class="form-title">
+
+                <h1>ADD EXPENSE</h1>
+
+                <p>
+                    Record money you spent
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- FORM -->
+
+        <section class="expense-form-card">
+
+            <div
+                class="success-message"
+                id="successMessage"
+            >
+                Expense saved successfully. ✅
+            </div>
+
+
+            <div
+                class="error-message"
+                id="errorMessage"
+            >
+                Please enter a valid amount.
+            </div>
+
+
+            <!-- AMOUNT -->
+
+            <div class="amount-box">
+
+                <div class="amount-label">
+                    AMOUNT
+                </div>
+
+                <div class="amount-input-wrap">
+
+                    <span class="amount-symbol">
+                        ₹
+                    </span>
+
+                    <input
+                        type="number"
+                        id="expenseAmount"
+                        class="amount-input"
+                        placeholder="0"
+                        min="0"
+                        step="0.01"
+                        inputmode="decimal"
+                        autocomplete="off"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- EXPENSE TITLE -->
+
+            <div class="form-group">
+
+                <label
+                    class="form-label"
+                    for="expenseTitle"
+                >
+                    EXPENSE NAME
+                </label>
+
+                <input
+                    type="text"
+                    id="expenseTitle"
+                    class="form-input"
+                    placeholder="Example: Petrol"
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <!-- CATEGORY -->
+
+            <div class="form-group">
+
+                <label
+                    class="form-label"
+                    for="expenseCategory"
+                >
+                    CATEGORY
+                </label>
+
+                <select
+                    id="expenseCategory"
+                    class="form-select"
+                >
+
+                    <option value="Food">
+                        Food
+                    </option>
+
+                    <option value="Petrol">
+                        Petrol
+                    </option>
+
+                    <option value="Shopping">
+                        Shopping
+                    </option>
+
+                    <option value="Business">
+                        Business
+                    </option>
+
+                    <option value="Bills">
+                        Bills
+                    </option>
+
+                    <option value="Vehicle">
+                        Vehicle
+                    </option>
+
+                    <option value="EMI">
+                        EMI
+                    </option>
+
+                    <option value="Other Expense">
+                        Other Expense
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- ACCOUNT -->
+
+            <div class="form-group">
+
+                <label
+                    class="form-label"
+                    for="expenseAccount"
+                >
+                    PAID FROM
+                </label>
+
+                <select
+                    id="expenseAccount"
+                    class="form-select"
+                >
+
+                    <option value="">
+                        Select Account
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- DATE + TIME -->
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label
+                        class="form-label"
+                        for="expenseDate"
+                    >
+                        DATE
+                    </label>
+
+                    <input
+                        type="date"
+                        id="expenseDate"
+                        class="form-input"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label
+                        class="form-label"
+                        for="expenseTime"
+                    >
+                        TIME
+                    </label>
+
+                    <input
+                        type="time"
+                        id="expenseTime"
+                        class="form-input"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- NOTE -->
+
+            <div class="form-group">
+
+                <label
+                    class="form-label"
+                    for="expenseNote"
+                >
+                    NOTE
+                </label>
+
+                <textarea
+                    id="expenseNote"
+                    class="form-textarea"
+                    placeholder="Optional note..."
+                ></textarea>
+
+            </div>
+
+
+            <!-- SAVE -->
+
+            <button
+                type="button"
+                class="save-expense-button"
+                id="saveExpenseButton"
+            >
+                SAVE EXPENSE
+            </button>
+
+
+            <!-- CLEAR -->
+
+            <button
+                type="button"
+                class="clear-button"
+                id="clearExpenseButton"
+            >
+                CLEAR
+            </button>
+
+        </section>
+
+    </main>
+
+
+    <script src="../js/app.js"></script>
+
+    <script>
+
+        "use strict";
+
+
+        /* =========================================
+           ELEMENTS
+        ========================================= */
+
+        const amountInput =
+            document.getElementById(
+                "expenseAmount"
+            );
+
+        const titleInput =
+            document.getElementById(
+                "expenseTitle"
+            );
+
+        const categoryInput =
+            document.getElementById(
+                "expenseCategory"
+            );
+
+        const accountInput =
+            document.getElementById(
+                "expenseAccount"
+            );
+
+        const dateInput =
+            document.getElementById(
+                "expenseDate"
+            );
+
+        const timeInput =
+            document.getElementById(
+                "expenseTime"
+            );
+
+        const noteInput =
+            document.getElementById(
+                "expenseNote"
+            );
+
+        const saveButton =
+            document.getElementById(
+                "saveExpenseButton"
+            );
+
+        const clearButton =
+            document.getElementById(
+                "clearExpenseButton"
+            );
+
+        const backButton =
+            document.getElementById(
+                "backButton"
+            );
+
+        const successMessage =
+            document.getElementById(
+                "successMessage"
+            );
+
+        const errorMessage =
+            document.getElementById(
+                "errorMessage"
+            );
+
+
+        /* =========================================
+           DEFAULT DATE / TIME
+        ========================================= */
+
+        function setDefaultDateTime() {
+
+            const now =
+                new Date();
+
+
+            const year =
+                now.getFullYear();
+
+
+            const month =
+                String(
+                    now.getMonth() + 1
+                ).padStart(2, "0");
+
+
+            const day =
+                String(
+                    now.getDate()
+                ).padStart(2, "0");
+
+
+            const hours =
+                String(
+                    now.getHours()
+                ).padStart(2, "0");
+
+
+            const minutes =
+                String(
+                    now.getMinutes()
+                ).padStart(2, "0");
+
+
+            dateInput.value =
+                `${year}-${month}-${day}`;
+
+
+            timeInput.value =
+                `${hours}:${minutes}`;
+        }
+
+
+        /* =========================================
+           LOAD ACCOUNTS
+        ========================================= */
+
+        function loadAccounts() {
+
+            const data =
+                window.TamilandaWallet
+                    ?.getData();
+
+
+            if (!data) {
+                return;
+            }
+
+
+            accountInput.innerHTML = `
+                <option value="">
+                    Select Account
+                </option>
+            `;
+
+
+            data.accounts.forEach(
+                account => {
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+
+                    option.value =
+                        account.id;
+
+
+                    option.textContent =
+                        `${account.name} — ₹${Number(
+                            account.balance || 0
+                        ).toLocaleString("en-IN")}`;
+
+
+                    accountInput.appendChild(
+                        option
+                    );
+
+                }
+            );
+        }
+
+
+        /* =========================================
+           CLEAR FORM
+        ========================================= */
+
+        function clearForm() {
+
+            amountInput.value = "";
+
+            titleInput.value = "";
+
+            categoryInput.value =
+                "Food";
+
+            accountInput.value = "";
+
+            noteInput.value = "";
+
+            successMessage.style.display =
+                "none";
+
+            errorMessage.style.display =
+                "none";
+
+            setDefaultDateTime();
+
+            amountInput.focus();
+        }
+
+
+        /* =========================================
+           SAVE EXPENSE
+        ========================================= */
+
+        function saveExpense() {
+
+            const amount =
+                Number(
+                    amountInput.value
+                );
+
+
+            if (
+                !amount ||
+                amount <= 0
+            ) {
+
+                errorMessage.textContent =
+                    "Please enter a valid expense amount.";
+
+                errorMessage.style.display =
+                    "block";
+
+                successMessage.style.display =
+                    "none";
+
+                amountInput.focus();
+
+                return;
+            }
+
+
+            const title =
+                titleInput.value.trim();
+
+
+            const category =
+                categoryInput.value;
+
+
+            const accountId =
+                accountInput.value;
+
+
+            const wallet =
+                window.TamilandaWallet;
+
+
+            if (!wallet) {
+
+                errorMessage.textContent =
+                    "Wallet system is not available.";
+
+                errorMessage.style.display =
+                    "block";
+
+                return;
+            }
+
+
+            const data =
+                wallet.getData();
+
+
+            const selectedAccount =
+                data.accounts.find(
+                    account =>
+                        String(account.id) ===
+                        String(accountId)
+                );
+
+
+            if (!selectedAccount) {
+
+                errorMessage.textContent =
+                    "Please select an account.";
+
+                errorMessage.style.display =
+                    "block";
+
+                successMessage.style.display =
+                    "none";
+
+                accountInput.focus();
+
+                return;
+            }
+
+
+            /*
+             * Make sure the account has enough
+             * balance for this expense.
+             */
+
+            const currentBalance =
+                Number(
+                    selectedAccount.balance || 0
+                );
+
+
+            if (
+                amount >
+                currentBalance
+            ) {
+
+                errorMessage.textContent =
+                    `Insufficient balance in ${selectedAccount.name}.`;
+
+                errorMessage.style.display =
+                    "block";
+
+                successMessage.style.display =
+                    "none";
+
+                return;
+            }
+
+
+            const transaction =
+                wallet.addTransaction({
+
+                    type: "expense",
+
+                    amount: amount,
+
+                    title:
+                        title ||
+                        category,
+
+                    category:
+                        category,
+
+                    accountId:
+                        accountId,
+
+                    accountName:
+                        selectedAccount.name,
+
+                    date:
+                        dateInput.value,
+
+                    description:
+                        noteInput.value.trim()
+
+                });
+
+
+            if (!transaction) {
+
+                errorMessage.textContent =
+                    "Unable to save expense.";
+
+                errorMessage.style.display =
+                    "block";
+
+                return;
+            }
+
+
+            /*
+             * Reduce account balance.
+             */
+
+            selectedAccount.balance =
+                currentBalance -
+                amount;
+
+
+            wallet.save();
+
+
+            wallet.updateDashboard();
+
+
+            successMessage.textContent =
+                `${wallet.formatMoney(amount)} expense saved successfully. ✅`;
+
+            successMessage.style.display =
+                "block";
+
+
+            errorMessage.style.display =
+                "none";
+
+
+            /*
+             * Refresh account list
+             * with updated balance.
+             */
+
+            loadAccounts();
+
+
+            /*
+             * Keep date/time.
+             * Clear fields for quick
+             * next entry.
+             */
+
+            amountInput.value = "";
+
+            titleInput.value = "";
+
+            noteInput.value = "";
+
+            amountInput.focus();
+        }
+
+
+        /* =========================================
+           EVENTS
+        ========================================= */
+
+        saveButton.addEventListener(
+            "click",
+            saveExpense
+        );
+
+
+        clearButton.addEventListener(
+            "click",
+            clearForm
+        );
+
+
+        backButton.addEventListener(
+            "click",
+            () => {
+
+                if (
+                    document.referrer &&
+                    document.referrer !==
+                    window.location.href
+                ) {
+
+                    history.back();
+
+                } else {
+
+                    window.location.href =
+                        "../index.html";
+                }
+
+            }
+        );
+
+
+        amountInput.addEventListener(
+            "input",
+            () => {
+
+                errorMessage.style.display =
+                    "none";
+
+            }
+        );
+
+
+        /* =========================================
+           INITIALIZE
+        ========================================= */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                setDefaultDateTime();
+
+                loadAccounts();
+
+                amountInput.focus();
+
+            }
+        );
+
+    </script>
+
+</body>
+</html>
