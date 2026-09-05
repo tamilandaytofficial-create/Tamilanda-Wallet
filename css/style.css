@@ -1467,3 +1467,84 @@ textarea.input {
         padding: 14px;
     }
 }
+
+/* =========================================================
+   FINAL BOTTOM NAV FIX
+   Keep navigation size identical before/during/after tap.
+   ========================================================= */
+.bottom-nav,
+.bottom-nav button,
+.bottom-nav a,
+.bottom-nav .nav-item,
+.bottom-nav .bottom-nav-item {
+    box-sizing: border-box !important;
+}
+
+.bottom-nav button,
+.bottom-nav a,
+.bottom-nav .nav-item,
+.bottom-nav .bottom-nav-item {
+    width: 100% !important;
+    height: 51px !important;
+    min-height: 51px !important;
+    max-height: 51px !important;
+    padding: 5px 4px !important;
+    margin: 0 !important;
+    flex: 1 1 0 !important;
+    transform: none !important;
+    scale: 1 !important;
+    font-size: 10px !important;
+    line-height: 1 !important;
+    overflow: hidden !important;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.bottom-nav button:active,
+.bottom-nav a:active,
+.bottom-nav .nav-item:active,
+.bottom-nav .bottom-nav-item:active,
+.bottom-nav button:focus,
+.bottom-nav a:focus,
+.bottom-nav .nav-item:focus,
+.bottom-nav .bottom-nav-item:focus {
+    transform: none !important;
+    scale: 1 !important;
+    outline: none !important;
+}
+
+.bottom-nav button > span,
+.bottom-nav a > span,
+.bottom-nav .nav-icon,
+.bottom-nav .nav-label {
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    transform: none !important;
+    scale: 1 !important;
+}
+
+.bottom-nav button > span:first-child,
+.bottom-nav a > span:first-child,
+.bottom-nav .nav-icon {
+    font-size: 20px !important;
+}
+
+.bottom-nav .nav-label,
+.bottom-nav button > span:last-child,
+.bottom-nav a > span:last-child {
+    font-size: 10px !important;
+    font-weight: 700 !important;
+}
+
+.bottom-nav button.active,
+.bottom-nav a.active,
+.bottom-nav .nav-item.active,
+.bottom-nav .bottom-nav-item.active {
+    transform: none !important;
+    scale: 1 !important;
+}
