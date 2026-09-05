@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Search - Tamilanda Wallet</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+
+  <style>
+    .page-header {
+      padding: 22px 16px 12px;
+    }
+
+    .page-header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .page-header p {
+      margin: 5px 0 0;
+      font-size: 13px;
+      opacity: 0.6;
+    }
+
+    .search-box {
+      padding: 8px 16px 12px;
+    }
+
+    .search-box input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      color: inherit;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .search-box input:focus {
+      border-color: rgba(255,255,255,0.25);
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      padding: 0 16px 12px;
+    }
+
+    .filter-button {
+      flex: 0 0 auto;
+      border: 1px solid rgba(255,255,255,0.09);
+      background: rgba(255,255,255,0.05);
+      color: inherit;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .filter-button.active {
+      background: rgba(255,255,255,0.14);
+    }
+
+    .result-info {
+      padding: 4px 16px 10px;
+      font-size: 11px;
+      opacity: 0.55;
+    }
+
+    .results {
+      padding: 0 16px 100px;
+    }
+
+    .result-card {
+      padding: 14px;
+      margin-bottom: 9px;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .result-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .result-title {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .result-subtitle {
+      margin-top: 4px;
+      font-size: 11px;
+      opacity: 0.55;
+      line-height: 1.5;
+    }
+
+    .result-value {
+      white-space: nowrap;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .result-value.income {
+      color: #4ade80;
+    }
+
+    .result-value.expense {
+      color: #fb7185;
+    }
+
+    .result-value.balance {
+      color: #60a5fa;
+    }
+
+    .result-value.neutral {
+      color: inherit;
+    }
+
+    .result-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 9px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .badge {
+      font-size: 10px;
+      padding: 4px 8px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .result-action {
+      border: 0;
+      background: rgba(255,255,255,0.08);
+      color: inherit;
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-size: 10px;
+      cursor: pointer;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 50px 20px;
+      opacity: 0.55;
+      font-size: 12px;
+    }
+
+    .empty .icon {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page-header">
+    <h1>🔎 Search</h1>
+    <p>Find anything inside your wallet</p>
+  </div>
+
+
+  <div class="search-box">
+
+    <input
+      type="search"
+      id="searchInput"
+      placeholder="Search name, amount, note, account..."
+      autocomplete="off"
+    >
+
+  </div>
+
+
+  <div class="filter-row">
+
+    <button
+      class="filter-button active"
+      data-type="all"
+      onclick="setFilter('all', this)"
+    >
+      All
+    </button>
+
+    <button
+      class="filter-button"
+      data-type="transactions"
+      onclick="setFilter('transactions', this)"
+    >
+      📒 Transactions
+    </button>
+
+    <button
+      class="filter-button"
+      data-type="buyers"
+      onclick="setFilter('buyers', this)"
+    >
+      👤 Buyers
+    </button>
+
+    <button
+      class="filter-button"
+      data-type="give"
+      onclick="setFilter('give', this)"
+    >
+      🤝 To Give
+    </button>
+
+    <button
+      class="filter-button"
+      data-type="emi"
+      onclick="setFilter('emi', this)"
+    >
+      🏦 EMI
+    </button>
+
+    <button
+      class="filter-button"
+      data-type="accounts"
+      onclick="setFilter('accounts', this)"
+    >
+      💳 Accounts
+    </button>
+
+    <button
+      class="filter-button"
+      data-type="recurring"
+      onclick="setFilter('recurring', this)"
+    >
+      🔁 Recurring
+    </button>
+
+  </div>
+
+
+  <div
+    class="result-info"
+    id="resultInfo"
+  >
+    Type something to search
+  </div>
+
+
+  <div
+    class="results"
+    id="results"
+  >
+
+    <div class="empty">
+
+      <div class="icon">🔎</div>
+
+      <strong>Search your wallet</strong>
+
+      <div style="margin-top:6px;">
+        Search buyers, transactions, accounts, EMI and more.
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="bottom-nav">
+
+    <button onclick="location.href='../index.html'">
+      🏠
+      <span>Home</span>
+    </button>
+
+    <button onclick="location.href='transactions.html'">
+      📒
+      <span>Transactions</span>
+    </button>
+
+    <button onclick="location.href='buyers.html'">
+      👤
+      <span>Buyers</span>
+    </button>
+
+    <button onclick="location.href='accounts.html'">
+      🏦
+      <span>Accounts</span>
+    </button>
+
+    <button class="active" onclick="location.href='more.html'">
+      ☰
+      <span>More</span>
+    </button>
+
+  </div>
+
+
+  <script src="../js/app.js"></script>
+
+  <script>
+
+    let walletData = {};
+
+    let activeFilter = "all";
+
+
+    const searchInput =
+      document.getElementById("searchInput");
+
+    const results =
+      document.getElementById("results");
+
+    const resultInfo =
+      document.getElementById("resultInfo");
+
+
+    function getData() {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.getData === "function"
+      ) {
+
+        return window.TamilandaWallet.getData();
+
+      }
+
+
+      try {
+
+        return JSON.parse(
+          localStorage.getItem(
+            "tamilanda_wallet_data"
+          )
+        ) || {};
+
+      } catch (error) {
+
+        return {};
+
+      }
+
+    }
+
+
+    function money(value) {
+
+      value =
+        Number(value) || 0;
+
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.formatMoney === "function"
+      ) {
+
+        return window.TamilandaWallet.formatMoney(
+          value
+        );
+
+      }
+
+
+      return "₹" +
+        value.toLocaleString("en-IN");
+
+    }
+
+
+    function escapeHtml(text) {
+
+      if (
+        window.TamilandaWallet &&
+        typeof window.TamilandaWallet.escapeHtml === "function"
+      ) {
+
+        return window.TamilandaWallet.escapeHtml(
+          String(text ?? "")
+        );
+
+      }
+
+
+      return String(text ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    function getAccountName(id) {
+
+      if (!id) {
+        return "";
+      }
+
+
+      const account =
+        (walletData.accounts || [])
+          .find(
+            a =>
+              String(a.id) ===
+              String(id)
+          );
+
+
+      return account
+        ? account.name
+        : "";
+
+    }
+
+
+    function getTransactionType(transaction) {
+
+      if (
+        transaction.source ===
+        "buyer_payment"
+      ) {
+        return "buyer_payment";
+      }
+
+
+      if (
+        transaction.source ===
+        "buyer_initial_payment"
+      ) {
+        return "buyer_initial_payment";
+      }
+
+
+      if (
+        transaction.source ===
+        "emi_payment"
+      ) {
+        return "emi_payment";
+      }
+
+
+      if (
+        transaction.source ===
+        "money_to_give_payment"
+      ) {
+        return "money_to_give_payment";
+      }
+
+
+      if (
+        transaction.source ===
+        "recurring_payment"
+      ) {
+        return "recurring_payment";
+      }
+
+
+      return transaction.type ||
+        "transaction";
+
+    }
+
+
+    function getTransactionLabel(type) {
+
+      const labels = {
+
+        income:
+          "Income",
+
+        expense:
+          "Expense",
+
+        transfer:
+          "Transfer",
+
+        buyer_payment:
+          "Buyer Payment",
+
+        buyer_initial_payment:
+          "Buyer Initial",
+
+        emi_payment:
+          "EMI Payment",
+
+        money_to_give_payment:
+          "Money To Give",
+
+        recurring_payment:
+          "Recurring Payment",
+
+        transaction:
+          "Transaction"
+
+      };
+
+
+      return labels[type] ||
+        "Transaction";
+
+    }
+
+
+    function transactionValueClass(
+      transaction
+    ) {
+
+      const type =
+        getTransactionType(
+          transaction
+        );
+
+
+      if (
+        type === "income" ||
+        type === "buyer_payment" ||
+        type === "buyer_initial_payment"
+      ) {
+
+        return "income";
+
+      }
+
+
+      if (
+        type === "expense" ||
+        type === "emi_payment" ||
+        type === "money_to_give_payment" ||
+        type === "recurring_payment"
+      ) {
+
+        return "expense";
+
+      }
+
+
+      if (type === "transfer") {
+
+        return "balance";
+
+      }
+
+
+      return "neutral";
+
+    }
+
+
+    function transactionPrefix(
+      transaction
+    ) {
+
+      const type =
+        getTransactionType(
+          transaction
+        );
+
+
+      if (
+        type === "income" ||
+        type === "buyer_payment" ||
+        type === "buyer_initial_payment"
+      ) {
+
+        return "+";
+
+      }
+
+
+      if (
+        type === "expense" ||
+        type === "emi_payment" ||
+        type === "money_to_give_payment" ||
+        type === "recurring_payment"
+      ) {
+
+        return "-";
+
+      }
+
+
+      return "";
+
+    }
+
+
+    function getTransactionSearchText(
+      transaction
+    ) {
+
+      const accountId =
+        transaction.accountId ||
+        transaction.paymentAccountId ||
+        transaction.receivedAccountId ||
+        transaction.paidFromAccountId;
+
+
+      return [
+
+        transaction.description,
+
+        transaction.category,
+
+        transaction.note,
+
+        transaction.name,
+
+        transaction.title,
+
+        transaction.source,
+
+        transaction.amount,
+
+        getAccountName(accountId),
+
+        getTransactionLabel(
+          getTransactionType(
+            transaction
+          )
+        )
+
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+    }
+
+
+    function getBuyerSearchText(
+      buyer
+    ) {
+
+      return [
+
+        buyer.name,
+
+        buyer.phone,
+
+        buyer.ffId,
+
+        buyer.ffID,
+
+        buyer.accountId,
+
+        buyer.totalAmount,
+
+        buyer.initialPayment,
+
+        buyer.dueDate,
+
+        buyer.notes,
+
+        buyer.note
+
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+    }
+
+
+    function getGiveSearchText(
+      item
+    ) {
+
+      return [
+
+        item.name,
+
+        item.personName,
+
+        item.phone,
+
+        item.reason,
+
+        item.notes,
+
+        item.note,
+
+        item.totalAmount,
+
+        item.amount,
+
+        item.dueDate
+
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+    }
+
+
+    function getEmiSearchText(
+      item
+    ) {
+
+      return [
+
+        item.name,
+
+        item.lender,
+
+        item.loanNumber,
+
+        item.accountNumber,
+
+        item.totalAmount,
+
+        item.emiAmount,
+
+        item.monthlyPayment,
+
+        item.nextDueDate,
+
+        item.notes,
+
+        item.note
+
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+    }
+
+
+    function getAccountSearchText(
+      account
+    ) {
+
+      return [
+
+        account.name,
+
+        account.type,
+
+        account.bankName,
+
+        account.accountNumber,
+
+        account.notes,
+
+        account.note,
+
+        account.balance
+
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+    }
+
+
+    function getRecurringSearchText(
+      item
+    ) {
+
+      return [
+
+        item.name,
+
+        item.category,
+
+        item.frequency,
+
+        item.amount,
+
+        item.nextDueDate,
+
+        item.notes,
+
+        item.note
+
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+    }
+
+
+    function buyerRemaining(
+      buyer
+    ) {
+
+      const total =
+        Number(
+          buyer.totalAmount ??
+          buyer.amount ??
+          0
+        );
+
+
+      const initial =
+        Number(
+          buyer.initialPayment ??
+          buyer.paid ??
+          0
+        );
+
+
+      const payments =
+        (walletData.buyerPayments || [])
+          .filter(
+            p =>
+              String(p.buyerId) ===
+              String(buyer.id)
+          )
+          .reduce(
+            (sum, p) =>
+              sum +
+              (Number(p.amount) || 0),
+            0
+          );
+
+
+      return Math.max(
+        0,
+        total -
+        initial -
+        payments
+      );
+
+    }
+
+
+    function giveRemaining(
+      item
+    ) {
+
+      const total =
+        Number(
+          item.totalAmount ??
+          item.amount ??
+          0
+        );
+
+
+      const paid =
+        Number(
+          item.alreadyPaid ??
+          item.paid ??
+          0
+        );
+
+
+      const payments =
+        (walletData.givePayments || [])
+          .filter(
+            p =>
+              String(p.giveId) ===
+              String(item.id)
+          )
+          .reduce(
+            (sum, p) =>
+              sum +
+              (Number(p.amount) || 0),
+            0
+          );
+
+
+      return Math.max(
+        0,
+        total -
+        paid -
+        payments
+      );
+
+    }
+
+
+    function emiRemaining(
+      item
+    ) {
+
+      const total =
+        Number(
+          item.totalAmount ??
+          item.emiAmount ??
+          item.amount ??
+          0
+        );
+
+
+      const paid =
+        Number(
+          item.alreadyPaid ??
+          item.paid ??
+          0
+        );
+
+
+      const payments =
+        (walletData.emiPayments || [])
+          .filter(
+            p =>
+              String(p.emiId) ===
+              String(item.id)
+          )
+          .reduce(
+            (sum, p) =>
+              sum +
+              (Number(p.amount) || 0),
+            0
+          );
+
+
+      return Math.max(
+        0,
+        total -
+        paid -
+        payments
+      );
+
+    }
+
+
+    function setFilter(
+      filter,
+      button
+    ) {
+
+      activeFilter =
+        filter;
+
+
+      document
+        .querySelectorAll(
+          ".filter-button"
+        )
+        .forEach(
+          btn =>
+            btn.classList.remove(
+              "active"
+            )
+        );
+
+
+      button.classList.add(
+        "active"
+      );
+
+
+      render();
+
+    }
+
+
+    function searchMatch(
+      text,
+      query
+    ) {
+
+      if (!query) {
+        return true;
+      }
+
+
+      return String(text)
+        .toLowerCase()
+        .includes(
+          query
+        );
+
+    }
+
+
+    function createTransactionResult(
+      transaction
+    ) {
+
+      const type =
+        getTransactionType(
+          transaction
+        );
+
+
+      const amount =
+        Number(
+          transaction.amount
+        ) || 0;
+
+
+      const accountId =
+        transaction.accountId ||
+        transaction.paymentAccountId ||
+        transaction.receivedAccountId ||
+        transaction.paidFromAccountId;
+
+
+      const accountName =
+        getAccountName(
+          accountId
+        );
+
+
+      const title =
+        transaction.description ||
+        transaction.category ||
+        transaction.name ||
+        transaction.title ||
+        "Transaction";
+
+
+      const date =
+        transaction.date ||
+        transaction.paymentDate ||
+        transaction.transactionDate ||
+        "";
+
+
+      return {
+
+        title,
+
+        subtitle:
+          [
+            getTransactionLabel(type),
+
+            transaction.category,
+
+            accountName,
+
+            date,
+
+            transaction.note
+
+          ]
+            .filter(Boolean)
+            .join(" • "),
+
+        value:
+          transactionPrefix(
+            transaction
+          ) +
+          money(amount),
+
+        valueClass:
+          transactionValueClass(
+            transaction
+          ),
+
+        badge:
+          "📒 Transaction",
+
+        action:
+          "transactions.html"
+
+      };
+
+    }
+
+
+    function createBuyerResult(
+      buyer
+    ) {
+
+      const remaining =
+        buyerRemaining(
+          buyer
+        );
+
+
+      return {
+
+        title:
+          buyer.name ||
+          "Buyer",
+
+        subtitle:
+          [
+            buyer.phone,
+
+            buyer.ffId ||
+            buyer.ffID
+              ? "FF ID: " +
+                (
+                  buyer.ffId ||
+                  buyer.ffID
+                )
+              : "",
+
+            buyer.dueDate
+              ? "Due: " +
+                buyer.dueDate
+              : ""
+
+          ]
+            .filter(Boolean)
+            .join(" • "),
+
+        value:
+          money(remaining),
+
+        valueClass:
+          remaining > 0
+            ? "balance"
+            : "income",
+
+        badge:
+          "👤 Buyer",
+
+        action:
+          "buyers.html"
+
+      };
+
+    }
+
+
+    function createGiveResult(
+      item
+    ) {
+
+      const remaining =
+        giveRemaining(
+          item
+        );
+
+
+      return {
+
+        title:
+          item.name ||
+          item.personName ||
+          "Money To Give",
+
+        subtitle:
+          [
+            item.phone,
+
+            item.reason,
+
+            item.dueDate
+              ? "Due: " +
+                item.dueDate
+              : ""
+
+          ]
+            .filter(Boolean)
+            .join(" • "),
+
+        value:
+          money(remaining),
+
+        valueClass:
+          remaining > 0
+            ? "expense"
+            : "income",
+
+        badge:
+          "🤝 To Give",
+
+        action:
+          "give-money.html"
+
+      };
+
+    }
+
+
+    function createEmiResult(
+      item
+    ) {
+
+      const remaining =
+        emiRemaining(
+          item
+        );
+
+
+      return {
+
+        title:
+          item.name ||
+          "EMI",
+
+        subtitle:
+          [
+            item.lender,
+
+            item.loanNumber ||
+            item.accountNumber,
+
+            item.nextDueDate
+              ? "Due: " +
+                item.nextDueDate
+              : ""
+
+          ]
+            .filter(Boolean)
+            .join(" • "),
+
+        value:
+          money(remaining),
+
+        valueClass:
+          remaining > 0
+            ? "expense"
+            : "income",
+
+        badge:
+          "🏦 EMI",
+
+        action:
+          "emi.html"
+
+      };
+
+    }
+
+
+    function createAccountResult(
+      account
+    ) {
+
+      const balance =
+        Number(
+          account.balance
+        ) || 0;
+
+
+      return {
+
+        title:
+          account.name ||
+          "Account",
+
+        subtitle:
+          [
+            account.type,
+
+            account.bankName,
+
+            account.accountNumber
+
+          ]
+            .filter(Boolean)
+            .join(" • "),
+
+        value:
+          money(balance),
+
+        valueClass:
+          balance >= 0
+            ? "balance"
+            : "expense",
+
+        badge:
+          "💳 Account",
+
+        action:
+          "accounts.html"
+
+      };
+
+    }
+
+
+    function createRecurringResult(
+      item
+    ) {
+
+      const amount =
+        Number(
+          item.amount
+        ) || 0;
+
+
+      return {
+
+        title:
+          item.name ||
+          "Recurring Payment",
+
+        subtitle:
+          [
+            item.category,
+
+            item.frequency,
+
+            item.nextDueDate
+              ? "Due: " +
+                item.nextDueDate
+              : ""
+
+          ]
+            .filter(Boolean)
+            .join(" • "),
+
+        value:
+          money(amount),
+
+        valueClass:
+          "expense",
+
+        badge:
+          "🔁 Recurring",
+
+        action:
+          "recurring.html"
+
+      };
+
+    }
+
+
+    function renderResultCard(
+      item
+    ) {
+
+      return `
+        <div class="result-card">
+
+          <div class="result-top">
+
+            <div>
+
+              <div class="result-title">
+                ${escapeHtml(item.title)}
+              </div>
+
+              <div class="result-subtitle">
+                ${escapeHtml(item.subtitle || "")}
+              </div>
+
+            </div>
+
+            <div class="result-value ${item.valueClass}">
+              ${escapeHtml(item.value)}
+            </div>
+
+          </div>
+
+
+          <div class="result-bottom">
+
+            <span class="badge">
+              ${escapeHtml(item.badge)}
+            </span>
+
+            <button
+              class="result-action"
+              onclick="location.href='${item.action}'"
+            >
+              Open →
+            </button>
+
+          </div>
+
+        </div>
+      `;
+
+    }
+
+
+    function render() {
+
+      walletData =
+        getData();
+
+
+      const query =
+        searchInput.value
+          .trim()
+          .toLowerCase();
+
+
+      if (!query) {
+
+        resultInfo.textContent =
+          "Type something to search";
+
+        results.innerHTML = `
+          <div class="empty">
+
+            <div class="icon">🔎</div>
+
+            <strong>Search your wallet</strong>
+
+            <div style="margin-top:6px;">
+              Search buyers, transactions,
+              accounts, EMI and more.
+            </div>
+
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      const found = [];
+
+
+      /*
+       * TRANSACTIONS
+       */
+      if (
+        activeFilter === "all" ||
+        activeFilter === "transactions"
+      ) {
+
+        (walletData.transactions || [])
+          .forEach(transaction => {
+
+            if (
+              searchMatch(
+                getTransactionSearchText(
+                  transaction
+                ),
+                query
+              )
+            ) {
+
+              found.push(
+                createTransactionResult(
+                  transaction
+                )
+              );
+
+            }
+
+          });
+
+      }
+
+
+      /*
+       * BUYERS
+       */
+      if (
+        activeFilter === "all" ||
+        activeFilter === "buyers"
+      ) {
+
+        (walletData.buyers || [])
+          .forEach(buyer => {
+
+            if (
+              searchMatch(
+                getBuyerSearchText(
+                  buyer
+                ),
+                query
+              )
+            ) {
+
+              found.push(
+                createBuyerResult(
+                  buyer
+                )
+              );
+
+            }
+
+          });
+
+      }
+
+
+      /*
+       * MONEY TO GIVE
+       */
+      if (
+        activeFilter === "all" ||
+        activeFilter === "give"
+      ) {
+
+        (walletData.moneyToGive || [])
+          .forEach(item => {
+
+            if (
+              searchMatch(
+                getGiveSearchText(
+                  item
+                ),
+                query
+              )
+            ) {
+
+              found.push(
+                createGiveResult(
+                  item
+                )
+              );
+
+            }
+
+          });
+
+      }
+
+
+      /*
+       * EMI
+       */
+      if (
+        activeFilter === "all" ||
+        activeFilter === "emi"
+      ) {
+
+        (walletData.myEmis || [])
+          .forEach(item => {
+
+            if (
+              searchMatch(
+                getEmiSearchText(
+                  item
+                ),
+                query
+              )
+            ) {
+
+              found.push(
+                createEmiResult(
+                  item
+                )
+              );
+
+            }
+
+          });
+
+      }
+
+
+      /*
+       * ACCOUNTS
+       */
+      if (
+        activeFilter === "all" ||
+        activeFilter === "accounts"
+      ) {
+
+        (walletData.accounts || [])
+          .forEach(account => {
+
+            if (
+              searchMatch(
+                getAccountSearchText(
+                  account
+                ),
+                query
+              )
+            ) {
+
+              found.push(
+                createAccountResult(
+                  account
+                )
+              );
+
+            }
+
+          });
+
+      }
+
+
+      /*
+       * RECURRING
+       */
+      if (
+        activeFilter === "all" ||
+        activeFilter === "recurring"
+      ) {
+
+        (walletData.recurringBills || [])
+          .forEach(item => {
+
+            if (
+              searchMatch(
+                getRecurringSearchText(
+                  item
+                ),
+                query
+              )
+            ) {
+
+              found.push(
+                createRecurringResult(
+                  item
+                )
+              );
+
+            }
+
+          });
+
+      }
+
+
+      resultInfo.textContent =
+        `${found.length} result${
+          found.length === 1
+            ? ""
+            : "s"
+        } found`;
+
+
+      if (!found.length) {
+
+        results.innerHTML = `
+          <div class="empty">
+
+            <div class="icon">😕</div>
+
+            <strong>No results found</strong>
+
+            <div style="margin-top:6px;">
+              Try another name, phone,
+              account, amount or keyword.
+            </div>
+
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      results.innerHTML =
+        found
+          .map(renderResultCard)
+          .join("");
+
+    }
+
+
+    searchInput.addEventListener(
+      "input",
+      render
+    );
+
+
+    render();
+
+  </script>
+
+</body>
+</html>
